@@ -20,6 +20,8 @@
 		<!-- Project properties -->
 		<java.version>1.8</java.version>
 		<start-class>me.crespel.karaplan.KaraplanApplication</start-class>
+		<nodejs.src.directory>${basedir}/src/main/nodejs</nodejs.src.directory>
+		<nodejs.build.directory>${project.build.directory}/nodejs</nodejs.build.directory>
 		<docker.src.directory>${basedir}/src/main/docker</docker.src.directory>
 		<docker.build.directory>${project.build.directory}/docker-build</docker.build.directory>
 		<docker.app.directory>/opt/${project.artifactId}</docker.app.directory>
@@ -29,6 +31,12 @@
 
 		<!-- Plugin properties -->
 		<dockerfile-plugin.version>1.4.8</dockerfile-plugin.version>
+		<frontend-maven-build.version>1.6</frontend-maven-build.version>
+
+		<!-- Dependency properties -->
+		<node.version>v8.11.3</node.version>
+		<npm.version>6.3.0</npm.version>
+		<socketio-client.version>1.0.0</socketio-client.version>
 	</properties>
 
 	<dependencies>
@@ -81,6 +89,10 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>io.socket</groupId>
+			<artifactId>socket.io-client</artifactId>
+		</dependency>
 		
 		<!-- Databases -->
 		<dependency>
@@ -105,11 +117,100 @@
 		</dependency>
 	</dependencies>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.socket</groupId>
+				<artifactId>socket.io-client</artifactId>
+				<version>${socketio-client.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-nodejs-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${nodejs.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${nodejs.src.directory}</directory>
+									<filtering>false</filtering>
+									<excludes>
+										<exclude>dist/**</exclude>
+										<exclude>node/**</exclude>
+										<exclude>node_modules/**</exclude>
+										<exclude>tmp/**</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>process-nodejs-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${nodejs.build.directory}/dist/karaplan</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>${frontend-maven-build.version}</version>
+				<configuration>
+					<nodeVersion>${node.version}</nodeVersion>
+					<npmVersion>${npm.version}</npmVersion>
+					<workingDirectory>${nodejs.build.directory}</workingDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>install-node-and-npm</id>
+						<goals>
+							<goal>install-node-and-npm</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>npm-install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm-run-build</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>run build</arguments>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
