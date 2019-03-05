@@ -5,6 +5,8 @@ spring:
     encoding:
       charset: UTF-8
       force: true
+  jackson:
+    default-property-inclusion: non-empty
   security:
     user:
       name: root

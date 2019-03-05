@@ -1,6 +1,5 @@
 package me.crespel.karaplan.domain;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,6 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.Sets;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,12 +50,15 @@ public class Song {
 	private Artist artist;
 
 	@OneToMany(mappedBy = "song")
-	private Set<SongVote> votes = new LinkedHashSet<>();
+	@JsonIgnoreProperties("song")
+	private Set<SongVote> votes = Sets.newLinkedHashSet();
 
 	@OneToMany(mappedBy = "song")
-	private Set<SongComment> comments = new LinkedHashSet<>();
+	@JsonIgnoreProperties("song")
+	private Set<SongComment> comments = Sets.newLinkedHashSet();
 
 	@ManyToMany
-	private Set<Playlist> playlists = new LinkedHashSet<>();
+	@JsonIgnoreProperties("songs")
+	private Set<Playlist> playlists = Sets.newLinkedHashSet();
 
 }

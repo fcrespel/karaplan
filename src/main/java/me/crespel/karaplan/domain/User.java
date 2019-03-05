@@ -1,6 +1,5 @@
 package me.crespel.karaplan.domain;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -12,6 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.Sets;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,9 +41,11 @@ public class User {
 	private String lastName;
 
 	@OneToMany(mappedBy = "user")
-	private Set<SongVote> votes = new LinkedHashSet<>();
+	@JsonIgnoreProperties("user")
+	private Set<SongVote> votes = Sets.newLinkedHashSet();
 
 	@OneToMany(mappedBy = "user")
-	private Set<SongComment> comments = new LinkedHashSet<>();
+	@JsonIgnoreProperties("user")
+	private Set<SongComment> comments = Sets.newLinkedHashSet();
 
 }
