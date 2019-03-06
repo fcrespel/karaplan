@@ -25,7 +25,7 @@ public class KaraplanApplicationTests {
 	@Test
 	@Ignore
 	public void getCatalogSong() {
-		CatalogSong song = catalog.getSongInfo(19237);
+		CatalogSong song = catalog.getSong(19237);
 		System.out.println(song);
 	}
 

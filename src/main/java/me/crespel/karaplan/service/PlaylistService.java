@@ -7,8 +7,10 @@ import me.crespel.karaplan.domain.Playlist;
 
 public interface PlaylistService {
 
-	public Optional<Playlist> findById(Long id);
+	Optional<Playlist> findById(Long id);
 
-	public Set<Playlist> findAll();
+	Set<Playlist> findAll();
+
+	Playlist save(Playlist playlist);
 
 }

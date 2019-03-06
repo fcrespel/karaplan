@@ -4,8 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -25,15 +27,18 @@ public class SongVote {
 	@GeneratedValue
 	@Column(name = "ID", unique = true)
 	private Long id;
-	
+
 	@ManyToOne
+	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
 	@JsonIgnoreProperties("votes")
 	private Song song;
 
 	@ManyToOne
+	@JoinColumn(name = "FK_USER", referencedColumnName = "ID")
 	@JsonIgnoreProperties("votes")
 	private User user;
 
+	@NotNull
 	@Column(name = "SCORE")
 	private Integer score;
 

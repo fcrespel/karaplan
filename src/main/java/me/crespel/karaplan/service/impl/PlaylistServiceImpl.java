@@ -28,4 +28,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return Sets.newLinkedHashSet(playlistRepo.findAll());
 	}
 
+	@Override
+	public Playlist save(Playlist playlist) {
+		return playlistRepo.save(playlist);
+	}
+
 }

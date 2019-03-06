@@ -10,4 +10,6 @@ public interface SongRepo extends PagingAndSortingRepository<Song, Long> {
 
 	Optional<Song> findByCatalogId(Long catalogId);
 
+	Iterable<Song> findAllByCatalogIdIn(Iterable<Long> catalogIds);
+
 }

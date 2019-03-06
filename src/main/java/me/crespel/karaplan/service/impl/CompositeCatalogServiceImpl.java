@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.service.CatalogService;
@@ -15,15 +16,20 @@ public class CompositeCatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	@Qualifier("karafunCatalog")
-	private CatalogService karafunCatalog;
-	
+	protected CatalogService karafunCatalog;
+
 	@Autowired
 	@Qualifier("kvCatalog")
-	private CatalogService kvCatalog;
+	protected CatalogService kvCatalog;
 
 	@Override
-	public CatalogSong getSongInfo(long songId) {
-		return karafunCatalog.getSongInfo(songId);
+	public CatalogArtist getArtist(long artistId) {
+		return kvCatalog.getArtist(artistId);
+	}
+
+	@Override
+	public CatalogSong getSong(long songId) {
+		return karafunCatalog.getSong(songId);
 	}
 
 	@Override

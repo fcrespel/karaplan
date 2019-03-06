@@ -1,13 +1,12 @@
 package me.crespel.karaplan.service.impl;
 
 import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -45,7 +44,12 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public CatalogSong getSongInfo(long songId) {
+	public CatalogArtist getArtist(long artistId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public CatalogSong getSong(long songId) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
 					.path(Integer.toString(properties.getRemoteId()))
@@ -82,7 +86,6 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 		}
 	}
 
-	@Component
 	public class KarafunToCatalogArtistConverter implements Converter<KarafunArtist, CatalogArtist> {
 
 		@Override
@@ -95,7 +98,6 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 	}
 
-	@Component
 	public class KarafunToCatalogStyleConverter implements Converter<KarafunStyle, CatalogStyle> {
 
 		@Override
@@ -109,7 +111,6 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 	}
 
-	@Component
 	public class KarafunToCatalogSongConverter implements Converter<KarafunSong, CatalogSong> {
 
 		@Override
@@ -123,11 +124,9 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 			target.setDuration(source.getDuration());
 			target.setYear(source.getYear());
 			if (source.getStyles() != null) {
-				Set<CatalogStyle> targetStyles = new LinkedHashSet<>();
-				for (KarafunStyle sourceStyle : source.getStyles()) {
-					targetStyles.add(conversionService.convert(sourceStyle, CatalogStyle.class));
-				}
-				target.setStyles(targetStyles);
+				target.setStyles(source.getStyles().stream()
+					.map(it -> conversionService.convert(it, CatalogStyle.class))
+					.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
 			target.setImg(source.getImg());
 			target.setLyrics(source.getLyrics());
@@ -137,7 +136,6 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 	}
 
-	@Component
 	public class KarafunToCatalogSongListConverter implements Converter<KarafunSongList, CatalogSongList> {
 
 		@Override
@@ -146,11 +144,9 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 			target.setCount(source.getCount());
 			target.setTotal(source.getTotal());
 			if (source.getSongs() != null) {
-				Set<CatalogSong> targetSongs = new LinkedHashSet<>();
-				for (KarafunSong sourceSong : source.getSongs()) {
-					targetSongs.add(conversionService.convert(sourceSong, CatalogSong.class));
-				}
-				target.setSongs(targetSongs);
+				target.setSongs(source.getSongs().stream()
+					.map(it -> conversionService.convert(it, CatalogSong.class))
+					.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
 			return target;
 		}

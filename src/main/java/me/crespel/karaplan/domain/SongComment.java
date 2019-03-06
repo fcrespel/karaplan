@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -25,12 +26,14 @@ public class SongComment {
 	@GeneratedValue
 	@Column(name = "ID", unique = true)
 	private Long id;
-	
+
 	@ManyToOne
+	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
 	@JsonIgnoreProperties("comments")
 	private Song song;
 
 	@ManyToOne
+	@JoinColumn(name = "FK_USER", referencedColumnName = "ID")
 	@JsonIgnoreProperties("comments")
 	private User user;
 

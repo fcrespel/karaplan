@@ -7,16 +7,13 @@ spring:
       force: true
   jackson:
     default-property-inclusion: non-empty
+  jpa:
+    generateDdl: true
   security:
     user:
       name: root
       password: changeit
       roles: USER,ADMIN
-  datasource:
-    url: jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE
-  jpa:
-    hibernate:
-      ddl-auto: update
 server:
   port: 8080
   compression:

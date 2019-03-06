@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import me.crespel.karaplan.domain.Song;
@@ -20,17 +22,32 @@ public class SongController {
 
 	@Autowired
 	protected SongService songService;
-	
+
 	@GetMapping
 	public Set<Song> getSongs() {
 		return songService.findAll();
 	}
 
-	@GetMapping("/{id}")
-	public Song getSong(@PathVariable Long id) {
-		Optional<Song> song = songService.findById(id);
+	@GetMapping("/search")
+	public Set<Song> search(@RequestParam String query, @RequestParam(required = false) Integer limit, @RequestParam(required = false) Integer offset) {
+		return songService.search(query, limit, offset);
+	}
+
+	@GetMapping("/{catalogId}")
+	public Song getSongByCatalogId(@PathVariable Long catalogId) {
+		Optional<Song> song = songService.findByCatalogId(catalogId);
 		if (song.isPresent()) {
 			return song.get();
+		} else {
+			throw new BusinessException("Invalid song ID");
+		}
+	}
+
+	@PostMapping("/{catalogId}")
+	public Song importSongByCatalogId(@PathVariable Long catalogId) {
+		Optional<Song> song = songService.findByCatalogId(catalogId);
+		if (song.isPresent()) {
+			return songService.save(song.get());
 		} else {
 			throw new BusinessException("Invalid song ID");
 		}

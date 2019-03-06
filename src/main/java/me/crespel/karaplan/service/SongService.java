@@ -7,10 +7,14 @@ import me.crespel.karaplan.domain.Song;
 
 public interface SongService {
 
-	public Optional<Song> findById(Long id);
+	Optional<Song> findById(Long id);
 
-	public Optional<Song> findByCatalogId(Long catalogId);
+	Optional<Song> findByCatalogId(Long catalogId);
 
-	public Set<Song> findAll();
+	Set<Song> findAll();
+
+	Set<Song> search(String query, Integer limit, Integer offset);
+
+	Song save(Song song);
 
 }
