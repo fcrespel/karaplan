@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -37,7 +38,7 @@ public class Artist {
 	@Column(name = "NAME")
 	private String name;
 
-	@OneToMany(mappedBy = "artist")
+	@OneToMany(mappedBy = "artist", fetch = FetchType.LAZY)
 	@JsonIgnoreProperties("artist")
 	private Set<Song> songs = Sets.newLinkedHashSet();
 

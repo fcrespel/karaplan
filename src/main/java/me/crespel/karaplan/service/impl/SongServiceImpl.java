@@ -18,9 +18,13 @@ import org.springframework.stereotype.Service;
 import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Song;
+import me.crespel.karaplan.domain.SongComment;
+import me.crespel.karaplan.domain.SongVote;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
+import me.crespel.karaplan.repository.SongCommentRepo;
 import me.crespel.karaplan.repository.SongRepo;
+import me.crespel.karaplan.repository.SongVoteRepo;
 import me.crespel.karaplan.service.ArtistService;
 import me.crespel.karaplan.service.CatalogService;
 import me.crespel.karaplan.service.SongService;
@@ -30,6 +34,12 @@ public class SongServiceImpl implements SongService {
 
 	@Autowired
 	protected SongRepo songRepo;
+
+	@Autowired
+	protected SongCommentRepo songCommentRepo;
+
+	@Autowired
+	protected SongVoteRepo songVoteRepo;
 
 	@Autowired
 	protected CatalogService catalogService;
@@ -94,6 +104,30 @@ public class SongServiceImpl implements SongService {
 	@Override
 	public Song save(Song song) {
 		return songRepo.save(song);
+	}
+
+	@Override
+	public SongComment addComment(Song song, String comment) {
+		SongComment songComment = new SongComment();
+		songComment.setSong(song);
+		songComment.setComment(comment);
+		return songCommentRepo.save(songComment);
+	}
+
+	@Override
+	public SongVote voteUp(Song song) {
+		SongVote songVote = new SongVote();
+		songVote.setSong(song);
+		songVote.setScore(1);
+		return songVoteRepo.save(songVote);
+	}
+
+	@Override
+	public SongVote voteDown(Song song) {
+		SongVote songVote = new SongVote();
+		songVote.setSong(song);
+		songVote.setScore(-1);
+		return songVoteRepo.save(songVote);
 	}
 
 	public class CatalogSongToSongConverter implements Converter<CatalogSong, Song> {

@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import me.crespel.karaplan.domain.Song;
+import me.crespel.karaplan.domain.SongComment;
+import me.crespel.karaplan.domain.SongVote;
 
 public interface SongService {
 
@@ -16,5 +18,11 @@ public interface SongService {
 	Set<Song> search(String query, Integer limit, Integer offset);
 
 	Song save(Song song);
+
+	SongComment addComment(Song song, String comment);
+
+	SongVote voteUp(Song song);
+
+	SongVote voteDown(Song song);
 
 }

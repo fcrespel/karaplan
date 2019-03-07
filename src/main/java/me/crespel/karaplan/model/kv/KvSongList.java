@@ -1,6 +1,6 @@
 package me.crespel.karaplan.model.kv;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -12,6 +12,6 @@ public class KvSongList {
 
 	private Long totalLength;
 	private Long length;
-	private Set<KvSong> songs;
+	private List<KvSong> songs;
 
 }

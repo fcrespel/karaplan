@@ -1,6 +1,6 @@
 package me.crespel.karaplan.model.karafun;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -12,6 +12,6 @@ public class KarafunSongList {
 
 	private Long count;
 	private Long total;
-	private Set<KarafunSong> songs;
+	private List<KarafunSong> songs;
 
 }

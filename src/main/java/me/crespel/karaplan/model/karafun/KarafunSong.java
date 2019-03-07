@@ -1,6 +1,6 @@
 package me.crespel.karaplan.model.karafun;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -17,7 +17,7 @@ public class KarafunSong {
 	private KarafunArtist artist;
 	private Long duration;
 	private Long year;
-	private Set<KarafunStyle> styles;
+	private List<KarafunStyle> styles;
 	private String img;
 	private String lyrics;
 	private String rights;
