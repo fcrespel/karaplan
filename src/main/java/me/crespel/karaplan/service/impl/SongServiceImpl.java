@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
@@ -20,6 +21,7 @@ import com.google.common.collect.Sets;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
 import me.crespel.karaplan.domain.SongVote;
+import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.repository.SongCommentRepo;
@@ -55,6 +57,16 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
+	public Set<Song> findAll() {
+		return Sets.newLinkedHashSet(songRepo.findAll());
+	}
+
+	@Override
+	public Set<Song> findAll(Pageable pageable) {
+		return Sets.newLinkedHashSet(songRepo.findAll(pageable));
+	}
+
+	@Override
 	public Optional<Song> findById(Long id) {
 		return songRepo.findById(id);
 	}
@@ -69,20 +81,15 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
-	public Set<Song> findAll() {
-		return Sets.newLinkedHashSet(songRepo.findAll());
-	}
-
-	@Override
-	public Set<Song> search(String query, Integer limit, Integer offset) {
+	public Set<Song> search(String query, Pageable pageable) {
 		Set<Song> resultSongs = Sets.newLinkedHashSet();
 
-		CatalogSongList catalogSongList = catalogService.getSongList(query, limit, offset);
+		CatalogSongList catalogSongList = catalogService.getSongList(query, pageable.getPageSize(), pageable.getOffset());
 		if (catalogSongList.getSongs() != null) {
 			// Convert catalog songs
 			Set<Song> catalogSongs = catalogSongList.getSongs().stream()
-				.map(it -> conversionService.convert(it, Song.class))
-				.collect(Collectors.toCollection(LinkedHashSet::new));
+					.map(it -> conversionService.convert(it, Song.class))
+					.collect(Collectors.toCollection(LinkedHashSet::new));
 
 			// Find all catalog IDs
 			Set<Long> catalogSongIds = catalogSongs.stream()
@@ -94,9 +101,9 @@ public class SongServiceImpl implements SongService {
 
 			// Merge results
 			resultSongs.addAll(Stream.of(catalogSongs, localSongs)
-				.flatMap(Collection::stream)
-				.collect(Collectors.toMap(Song::getCatalogId, Function.identity(), (catalog, local) -> local, LinkedHashMap::new))
-				.values());
+					.flatMap(Collection::stream)
+					.collect(Collectors.toMap(Song::getCatalogId, Function.identity(), (catalog, local) -> local, LinkedHashMap::new))
+					.values());
 		}
 		return resultSongs;
 	}
@@ -107,41 +114,39 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
-	public SongComment addComment(Song song, String comment) {
-		SongComment songComment = new SongComment();
-		songComment.setSong(song);
-		songComment.setComment(comment);
+	public SongComment addComment(Song song, User user, String comment) {
+		SongComment songComment = new SongComment()
+				.setSong(song)
+				.setUser(user)
+				.setComment(comment);
 		return songCommentRepo.save(songComment);
 	}
 
 	@Override
-	public SongVote voteUp(Song song) {
-		SongVote songVote = new SongVote();
-		songVote.setSong(song);
-		songVote.setScore(1);
-		return songVoteRepo.save(songVote);
-	}
-
-	@Override
-	public SongVote voteDown(Song song) {
-		SongVote songVote = new SongVote();
-		songVote.setSong(song);
-		songVote.setScore(-1);
-		return songVoteRepo.save(songVote);
+	public SongVote vote(Song song, User user, int score) {
+		SongVote songVote = songVoteRepo.findBySongAndUser(song, user).orElseGet(() -> new SongVote().setSong(song).setUser(user));
+		if (score == 0) {
+			if (songVote.getId() != null) {
+				songVoteRepo.delete(songVote);
+			}
+			return songVote;
+		} else {
+			songVote.setScore(score > 0 ? 1 : -1);
+			return songVoteRepo.save(songVote);
+		}
 	}
 
 	public class CatalogSongToSongConverter implements Converter<CatalogSong, Song> {
 
 		@Override
 		public Song convert(CatalogSong source) {
-			Song target = new Song();
-			target.setCatalogId(source.getId());
-			target.setName(source.getName());
-			target.setDuration(source.getDuration());
-			target.setImage(source.getImg());
-			target.setLyrics(source.getLyrics());
-			target.setArtist(artistService.findByCatalogId(source.getArtist().getId()).orElse(null));
-			return target;
+			return new Song()
+					.setCatalogId(source.getId())
+					.setName(source.getName())
+					.setDuration(source.getDuration())
+					.setImage(source.getImg())
+					.setLyrics(source.getLyrics())
+					.setArtist(artistService.findByCatalogId(source.getArtist().getId()).orElse(null));
 		}
 
 	}

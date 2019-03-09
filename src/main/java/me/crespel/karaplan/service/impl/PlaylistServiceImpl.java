@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
@@ -19,13 +20,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 	protected PlaylistRepo playlistRepo;
 
 	@Override
-	public Optional<Playlist> findById(Long id) {
-		return playlistRepo.findById(id);
+	public Set<Playlist> findAll() {
+		return Sets.newLinkedHashSet(playlistRepo.findAll());
 	}
 
 	@Override
-	public Set<Playlist> findAll() {
-		return Sets.newLinkedHashSet(playlistRepo.findAll());
+	public Set<Playlist> findAll(Pageable pageable) {
+		return Sets.newLinkedHashSet(playlistRepo.findAll(pageable));
+	}
+
+	@Override
+	public Optional<Playlist> findById(Long id) {
+		return playlistRepo.findById(id);
 	}
 
 	@Override

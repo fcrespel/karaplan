@@ -10,10 +10,12 @@ spring:
   jpa:
     generateDdl: true
   security:
-    user:
-      name: root
-      password: changeit
-      roles: USER,ADMIN
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: toComplete
+            client-secret: toComplete
 server:
   port: 8080
   compression:

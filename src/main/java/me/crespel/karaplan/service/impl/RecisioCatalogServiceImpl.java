@@ -11,8 +11,8 @@ import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.service.CatalogService;
 
 @Primary
-@Service("compositeCatalog")
-public class CompositeCatalogServiceImpl implements CatalogService {
+@Service("recisioCatalog")
+public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	@Qualifier("karafunCatalog")
@@ -33,7 +33,7 @@ public class CompositeCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public CatalogSongList getSongList(String filter, Integer limit, Integer offset) {
+	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
 		return kvCatalog.getSongList(filter, limit, offset);
 	}
 

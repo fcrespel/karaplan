@@ -32,8 +32,10 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(exclude = {"artist", "votes", "comments", "playlists"})
 @ToString(of = {"id", "name"})
 @Entity
@@ -101,5 +103,13 @@ public class Song {
 	@ManyToOne
 	@JoinColumn(name = "FK_USER_UPDATED", referencedColumnName = "ID")
 	private User updatedBy;
+
+	public Integer getScore() {
+		if (votes != null) {
+			return votes.stream().mapToInt(SongVote::getScore).sum();
+		} else {
+			return null;
+		}
+	}
 
 }

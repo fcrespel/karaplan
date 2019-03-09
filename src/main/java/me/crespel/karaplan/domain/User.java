@@ -17,8 +17,10 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(exclude = {"votes", "comments"})
 @ToString(of = {"id", "username"})
 @Entity

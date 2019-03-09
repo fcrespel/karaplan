@@ -10,6 +10,6 @@ public interface CatalogService {
 
 	CatalogSong getSong(long songId);
 
-	CatalogSongList getSongList(String filter, Integer limit, Integer offset);
+	CatalogSongList getSongList(String filter, Integer limit, Long offset);
 
 }

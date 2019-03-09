@@ -65,17 +65,17 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public CatalogSongList getSongList(String filter, Integer limit, Integer offset) {
+	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
 					.path(Integer.toString(properties.getRemoteId()))
 					.queryParam("type", "song_list")
 					.queryParam("filter", "sc_" + filter);
 			if (limit != null) {
-				builder = builder.queryParam("limit", Integer.toString(limit));
+				builder = builder.queryParam("limit", limit);
 			}
 			if (offset != null) {
-				builder = builder.queryParam("offset", Integer.toString(offset));
+				builder = builder.queryParam("offset", offset);
 			}
 
 			KarafunSongList songList = restTemplate.getForObject(builder.build().encode().toUri(), KarafunSongList.class);
@@ -90,10 +90,9 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogArtist convert(KarafunArtist source) {
-			CatalogArtist target = new CatalogArtist();
-			target.setId(source.getId());
-			target.setName(source.getName());
-			return target;
+			return new CatalogArtist()
+					.setId(source.getId())
+					.setName(source.getName());
 		}
 
 	}
@@ -102,11 +101,10 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogStyle convert(KarafunStyle source) {
-			CatalogStyle target = new CatalogStyle();
-			target.setId(source.getId());
-			target.setName(source.getName());
-			target.setImg(source.getImg());
-			return target;
+			return new CatalogStyle()
+					.setId(source.getId())
+					.setName(source.getName())
+					.setImg(source.getImg());
 		}
 
 	}
@@ -115,22 +113,20 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogSong convert(KarafunSong source) {
-			CatalogSong target = new CatalogSong();
-			target.setId(source.getId());
-			target.setName(source.getName());
-			if (source.getArtist() != null) {
-				target.setArtist(conversionService.convert(source.getArtist(), CatalogArtist.class));
-			}
-			target.setDuration(source.getDuration());
-			target.setYear(source.getYear());
+			CatalogSong target = new CatalogSong()
+					.setId(source.getId())
+					.setName(source.getName())
+					.setArtist(conversionService.convert(source.getArtist(), CatalogArtist.class))
+					.setDuration(source.getDuration())
+					.setYear(source.getYear())
+					.setImg(source.getImg())
+					.setLyrics(source.getLyrics())
+					.setRights(source.getRights());
 			if (source.getStyles() != null) {
 				target.setStyles(source.getStyles().stream()
-					.map(it -> conversionService.convert(it, CatalogStyle.class))
-					.collect(Collectors.toCollection(LinkedHashSet::new)));
+						.map(it -> conversionService.convert(it, CatalogStyle.class))
+						.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
-			target.setImg(source.getImg());
-			target.setLyrics(source.getLyrics());
-			target.setRights(source.getRights());
 			return target;
 		}
 
@@ -140,13 +136,13 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogSongList convert(KarafunSongList source) {
-			CatalogSongList target = new CatalogSongList();
-			target.setCount(source.getCount());
-			target.setTotal(source.getTotal());
+			CatalogSongList target = new CatalogSongList()
+					.setCount(source.getCount())
+					.setTotal(source.getTotal());
 			if (source.getSongs() != null) {
 				target.setSongs(source.getSongs().stream()
-					.map(it -> conversionService.convert(it, CatalogSong.class))
-					.collect(Collectors.toCollection(LinkedHashSet::new)));
+						.map(it -> conversionService.convert(it, CatalogSong.class))
+						.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
 			return target;
 		}

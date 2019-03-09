@@ -29,8 +29,10 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(exclude = "songs")
 @ToString(of = {"id", "name"})
 @Entity

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
@@ -34,6 +35,16 @@ public class ArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
+	public Set<Artist> findAll() {
+		return Sets.newLinkedHashSet(artistRepo.findAll());
+	}
+
+	@Override
+	public Set<Artist> findAll(Pageable pageable) {
+		return Sets.newLinkedHashSet(artistRepo.findAll(pageable));
+	}
+
+	@Override
 	public Optional<Artist> findById(Long id) {
 		return artistRepo.findById(id);
 	}
@@ -48,11 +59,6 @@ public class ArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
-	public Set<Artist> findAll() {
-		return Sets.newLinkedHashSet(artistRepo.findAll());
-	}
-
-	@Override
 	public Artist save(Artist artist) {
 		return artistRepo.save(artist);
 	}
@@ -61,10 +67,9 @@ public class ArtistServiceImpl implements ArtistService {
 
 		@Override
 		public Artist convert(CatalogArtist source) {
-			Artist target = new Artist();
-			target.setCatalogId(source.getId());
-			target.setName(source.getName());
-			return target;
+			return new Artist()
+					.setCatalogId(source.getId())
+					.setName(source.getName());
 		}
 
 	}

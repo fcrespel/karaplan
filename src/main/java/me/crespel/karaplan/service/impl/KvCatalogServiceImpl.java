@@ -17,7 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import me.crespel.karaplan.config.KVConfig.KVProperties;
+import me.crespel.karaplan.config.KvConfig.KvProperties;
 import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
@@ -34,7 +34,7 @@ import me.crespel.karaplan.service.CatalogService;
 public class KvCatalogServiceImpl implements CatalogService {
 
 	@Autowired
-	private KVProperties properties;
+	private KvProperties properties;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -56,15 +56,14 @@ public class KvCatalogServiceImpl implements CatalogService {
 			Map<String, Object> params = new HashMap<>();
 			params.put("id", artistId);
 
-			KvQuery query = new KvQuery();
-			query.setAffiliateId(properties.getAffiliateId());
-			query.setFunction("get");
-			query.setParameters(params);
+			KvQuery query = new KvQuery()
+					.setAffiliateId(properties.getAffiliateId())
+					.setFunction("get")
+					.setParameters(params);
 
-			UriComponentsBuilder builder;
-				builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
-						.path("/artist/")
-						.queryParam("query", jsonMapper.writeValueAsString(query));
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+					.path("/artist/")
+					.queryParam("query", jsonMapper.writeValueAsString(query));
 
 			KvArtistResponse response = restTemplate.getForObject(builder.build().encode().toUri(), KvArtistResponse.class);
 			return conversionService.convert(response.getArtist(), CatalogArtist.class);
@@ -80,15 +79,14 @@ public class KvCatalogServiceImpl implements CatalogService {
 			Map<String, Object> params = new HashMap<>();
 			params.put("id", songId);
 
-			KvQuery query = new KvQuery();
-			query.setAffiliateId(properties.getAffiliateId());
-			query.setFunction("get");
-			query.setParameters(params);
+			KvQuery query = new KvQuery()
+					.setAffiliateId(properties.getAffiliateId())
+					.setFunction("get")
+					.setParameters(params);
 
-			UriComponentsBuilder builder;
-				builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
-						.path("/song/")
-						.queryParam("query", jsonMapper.writeValueAsString(query));
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+					.path("/song/")
+					.queryParam("query", jsonMapper.writeValueAsString(query));
 
 			KvSongResponse response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongResponse.class);
 			return conversionService.convert(response.getSong(), CatalogSong.class);
@@ -99,7 +97,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public CatalogSongList getSongList(String filter, Integer limit, Integer offset) {
+	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
 		try {
 			Map<String, Object> params = new HashMap<>();
 			params.put("query", filter);
@@ -110,15 +108,14 @@ public class KvCatalogServiceImpl implements CatalogService {
 				params.put("offset", offset);
 			}
 
-			KvQuery query = new KvQuery();
-			query.setAffiliateId(properties.getAffiliateId());
-			query.setFunction("song");
-			query.setParameters(params);
+			KvQuery query = new KvQuery()
+					.setAffiliateId(properties.getAffiliateId())
+					.setFunction("song")
+					.setParameters(params);
 
-			UriComponentsBuilder builder;
-				builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
-						.path("/search/")
-						.queryParam("query", jsonMapper.writeValueAsString(query));
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+					.path("/search/")
+					.queryParam("query", jsonMapper.writeValueAsString(query));
 
 			KvSongList response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongList.class);
 			return conversionService.convert(response, CatalogSongList.class);
@@ -132,10 +129,9 @@ public class KvCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogArtist convert(KvArtist source) {
-			CatalogArtist target = new CatalogArtist();
-			target.setId(source.getId());
-			target.setName(source.getName());
-			return target;
+			return new CatalogArtist()
+					.setId(source.getId())
+					.setName(source.getName());
 		}
 
 	}
@@ -144,15 +140,11 @@ public class KvCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogSong convert(KvSong source) {
-			CatalogArtist artist = new CatalogArtist();
-			artist.setId(source.getArtistId());
-
-			CatalogSong target = new CatalogSong();
-			target.setId(source.getId());
-			target.setName(source.getName());
-			target.setArtist(artist);
-			target.setImg(source.getImgUrl());
-			return target;
+			return new CatalogSong()
+					.setId(source.getId())
+					.setName(source.getName())
+					.setArtist(new CatalogArtist().setId(source.getArtistId()))
+					.setImg(source.getImgUrl());
 		}
 
 	}
@@ -161,9 +153,9 @@ public class KvCatalogServiceImpl implements CatalogService {
 
 		@Override
 		public CatalogSongList convert(KvSongList source) {
-			CatalogSongList target = new CatalogSongList();
-			target.setCount(source.getLength());
-			target.setTotal(source.getTotalLength());
+			CatalogSongList target = new CatalogSongList()
+					.setCount(source.getLength())
+					.setTotal(source.getTotalLength());
 			if (source.getSongs() != null) {
 				target.setSongs(source.getSongs().stream()
 						.map(it -> conversionService.convert(it, CatalogSong.class))
