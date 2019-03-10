@@ -1,0 +1,19 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-pink mb-3">
+  <a class="navbar-brand" href="#" routerLink="/home">Karaplan</a>
+  <button class="navbar-toggler" type="button" (click)="navbarOpen = !navbarOpen" [attr.aria-expanded]="navbarOpen" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="!navbarOpen">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#" routerLink="/songs">Songs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" routerLink="/playlists">Playlists</a>
+      </li>
+    </ul>
+    <span class="navbar-text mx-3" *ngIf="user">{{ user.fullName }}</span>
+    <a class="btn btn-outline-light" href="login" *ngIf="user == null">Login</a>
+    <a class="btn btn-outline-light" href="logout" *ngIf="user">Logout</a>
+  </div>
+</nav>

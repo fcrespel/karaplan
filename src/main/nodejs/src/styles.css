@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+@import url('https://use.fontawesome.com/releases/v5.7.2/css/all.css');
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+
+body {
+	font-family: 'Raleway', sans-serif;
+}
+
+.bg-pink {
+	background-color: #db2c78;
+}
+
+.navbar-brand {
+	font-weight: bold;
+}
