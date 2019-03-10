@@ -43,6 +43,12 @@ public class User {
 	@Column(name = "LASTNAME")
 	private String lastName;
 
+	@Column(name = "FULLNAME")
+	private String fullName;
+
+	@Column(name = "EMAIL")
+	private String email;
+
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	@JsonIgnoreProperties("user")
 	private Set<SongVote> votes = Sets.newLinkedHashSet();

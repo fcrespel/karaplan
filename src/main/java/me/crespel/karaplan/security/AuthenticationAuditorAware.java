@@ -15,8 +15,8 @@ public class AuthenticationAuditorAware implements AuditorAware<User> {
 	@Override
 	public Optional<User> getCurrentAuditor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof User) {
-			return Optional.of((User) authentication.getPrincipal());
+		if (authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof OidcUserWrapper) {
+			return Optional.of(((OidcUserWrapper) authentication.getPrincipal()).getUser());
 		} else {
 			return Optional.empty();
 		}

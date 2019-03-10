@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
 import me.crespel.karaplan.domain.SongVote;
+import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.service.SongService;
 
@@ -61,16 +63,16 @@ public class SongController {
 	@PostMapping("/{catalogId}/comment")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Add a comment to a song by catalog id")
-	public SongComment commentSongByCatalogId(@PathVariable Long catalogId, @RequestBody String comment) {
+	public SongComment commentSongByCatalogId(@PathVariable Long catalogId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		return songService.addComment(song, null, comment); // TODO: add User
+		return songService.addComment(song, user, comment);
 	}
 
 	@PostMapping("/{catalogId}/vote")
-	@ApiOperation("Vote up for a song by catalog id")
-	public SongVote voteUpSongByCatalogId(@PathVariable Long catalogId, @RequestParam(defaultValue = "0") int score) {
+	@ApiOperation("Vote for a song by catalog id")
+	public SongVote voteSongByCatalogId(@PathVariable Long catalogId, @RequestParam(defaultValue = "0") int score, @AuthenticationPrincipal(expression = "user") User user) {
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		return songService.vote(song, null, score); // TODO: add User
+		return songService.vote(song, user, score);
 	}
 
 }
