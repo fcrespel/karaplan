@@ -9,6 +9,7 @@ import { Song } from '../models/song';
 })
 export class SongsComponent implements OnInit {
 
+  searchField: string;
   songs: Song[] = [];
 
   constructor(
@@ -24,4 +25,11 @@ export class SongsComponent implements OnInit {
     });
   }
 
+  voteUp(song: Song) {
+    this.songsService.voteSongByCatalogId(song.catalogId, 1);
+  }
+
+  voteDown(song: Song) {
+    this.songsService.voteSongByCatalogId(song.catalogId, -1);
+  }
 }

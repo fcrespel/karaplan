@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SongsComponent } from './songs/songs.component';
+import { SongDetailComponent } from './song-detail/song-detail.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 
 @NgModule({
@@ -17,7 +18,8 @@ import { PlaylistsComponent } from './playlists/playlists.component';
     NavbarComponent,
     HomeComponent,
     SongsComponent,
-    PlaylistsComponent,
+    SongDetailComponent,
+    PlaylistsComponent
   ],
   imports: [
     BrowserModule,

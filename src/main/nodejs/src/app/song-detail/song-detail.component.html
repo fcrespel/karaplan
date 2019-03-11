@@ -1,0 +1,25 @@
+<div *ngIf="song$ | async as song" class="text-center">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <div class="card shadow text-dark mb-4">
+        <img src="{{ song.image }}" class="card-img mt-3 mx-auto" style="width: 150px;">
+        <div class="card-body">
+          <h5 class="card-title">{{ song.name }}</h5>
+          <p class="card-subtitle text-muted">{{ song.artist.name }}</p>
+          <p class="card-text"><span class="badge badge-secondary">{{ song.duration }} s</span></p>
+          <div class="btn-group mx-1" role="group">
+            <button type="button" class="btn btn-outline-success" title="Vote up"><i class="far fa-thumbs-up"></i></button>
+            <button type="button" class="btn btn-outline-danger" title="Vote down"><i class="far fa-thumbs-down"></i></button>
+          </div>
+          <button type="button" class="btn btn-outline-secondary mx-1" title="Comment"><i class="far fa-comment"></i></button>
+          <button type="button" class="btn btn-outline-primary mx-1" title="Add to playlist"><i class="fas fa-list"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p style="white-space: pre-line;">{{ song.lyrics }}</p>
+    </div>
+  </div>
+</div>
