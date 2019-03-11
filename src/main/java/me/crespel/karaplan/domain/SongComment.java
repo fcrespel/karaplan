@@ -44,6 +44,7 @@ public class SongComment {
 	@Column(name = "COMMENT")
 	private String comment;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
 	@JsonIgnoreProperties({"votes", "comments", "playlists"})

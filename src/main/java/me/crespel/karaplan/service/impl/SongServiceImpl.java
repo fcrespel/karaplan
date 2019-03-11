@@ -115,6 +115,10 @@ public class SongServiceImpl implements SongService {
 
 	@Override
 	public SongComment addComment(Song song, User user, String comment) {
+		if (song.getId() == null) {
+			song = songRepo.save(song);
+		}
+
 		SongComment songComment = new SongComment()
 				.setSong(song)
 				.setUser(user)
@@ -124,7 +128,11 @@ public class SongServiceImpl implements SongService {
 
 	@Override
 	public SongVote vote(Song song, User user, int score) {
-		SongVote songVote = songVoteRepo.findBySongAndUser(song, user).orElseGet(() -> new SongVote().setSong(song).setUser(user));
+		if (song.getId() == null) {
+			song = songRepo.save(song);
+		}
+
+		SongVote songVote = songVoteRepo.findBySongAndUser(song, user).orElseGet(() -> new SongVote()).setSong(song).setUser(user);
 		if (score == 0) {
 			if (songVote.getId() != null) {
 				songVoteRepo.delete(songVote);

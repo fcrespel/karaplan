@@ -44,6 +44,7 @@ public class SongVote {
 	@Column(name = "SCORE")
 	private Integer score;
 
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
 	@JsonIgnoreProperties({"votes", "comments", "playlists"})
