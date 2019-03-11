@@ -1,2 +1,30 @@
 <h1>Songs</h1>
-<p>TODO</p>
+
+<div class="row my-3">
+  <div class="col">
+    <form>
+      <div class="input-group">
+        <input type="text" class="form-control" name="searchField" [(ngModel)]="searchField" placeholder="Song or artist name">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-outline-secondary" (click)="search(searchField)"><i class="fas fa-search"></i> Search</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<ul class="list-group">
+  <li class="list-group-item d-flex align-items-center" *ngFor="let song of songs">
+    <div class="col-auto"><img src="{{ song.image }}" style="width: 50px;"></div>
+    <div class="col">{{ song.name }}<br><small  class="text-mute">{{ song.artist.name }}</small></div>
+    <div class="col-auto">{{ song.duration }} s</div>
+    <div class="col-auto">
+      <div class="btn-group mx-1" role="group">
+        <button type="button" class="btn btn-outline-success" title="Comment"><i class="far fa-thumbs-up"></i></button>
+        <button type="button" class="btn btn-outline-danger" title="Comment"><i class="far fa-thumbs-down"></i></button>
+      </div>
+      <button type="button" class="btn btn-outline-secondary mx-1" title="Comment"><i class="far fa-comment"></i></button>
+      <button type="button" class="btn btn-outline-primary mx-1" title="Add to playlist"><i class="fas fa-plus-circle"></i></button>
+    </div>
+  </li>
+</ul>

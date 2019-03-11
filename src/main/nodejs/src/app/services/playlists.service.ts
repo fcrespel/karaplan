@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
 
@@ -18,8 +18,8 @@ export class PlaylistsService {
   }
 
   createPlaylist(name: string): Observable<Playlist> {
-    const url = `${this.playlistsUrl}?name=${name}`
-    return this.http.post<Playlist>(url, null);
+    let params = new HttpParams().set('name', name);
+    return this.http.post<Playlist>(this.playlistsUrl, null, {params: params});
   }
 
   getPlaylist(id: number): Observable<Playlist> {

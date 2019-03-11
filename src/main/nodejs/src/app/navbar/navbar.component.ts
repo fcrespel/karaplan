@@ -9,8 +9,8 @@ import { User } from '../models/user';
 })
 export class NavbarComponent implements OnInit {
 
-  public navbarOpen: boolean = false;
-  public user: User = null;
+  navbarOpen: boolean = false;
+  user: User = null;
 
   constructor(
     private accountService: AccountService
@@ -19,7 +19,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit() {
     this.accountService.getPrincipal().subscribe(principal => {
       this.user = principal.user;
-    })
+    });
   }
 
 }

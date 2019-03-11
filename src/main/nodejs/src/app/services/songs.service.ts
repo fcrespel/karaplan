@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Song } from '../models/song';
 import { SongComment } from '../models/song-comment';
@@ -20,8 +20,9 @@ export class SongsService {
   }
 
   search(query: string): Observable<Song[]> {
-    const url = `${this.songsUrl}/search?query=${query}`;
-    return this.http.get<Song[]>(url);
+    const url = `${this.songsUrl}/search`;
+    let params = new HttpParams().set('query', query);
+    return this.http.get<Song[]>(url, {params: params});
   }
 
   getSongByCatalogId(catalogId: number): Observable<Song> {
@@ -40,7 +41,8 @@ export class SongsService {
   }
 
   voteSongByCatalogId(catalogId: number, score: number): Observable<SongVote> {
-    const url = `${this.songsUrl}/${catalogId}/vote?score=${score}`;
-    return this.http.post<SongVote>(url, null);
+    const url = `${this.songsUrl}/${catalogId}/vote`;
+    let params = new HttpParams().set('score', score.toString());
+    return this.http.post<SongVote>(url, null, {params: params});
   }
 }
