@@ -57,4 +57,4 @@ publish:
     - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
   script:
     - docker build -t ${DOCKER_REPO}/${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG} target/docker-build
-    - docker push ${ARTIFACTORY_HOST_DEV}/${IMAGE_NAME}:${CI_COMMIT_REF_SLUG}
+    - docker push ${DOCKER_REPO}/${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG}
