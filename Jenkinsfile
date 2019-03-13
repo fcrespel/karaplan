@@ -26,12 +26,12 @@ pipeline {
     }
     stage('Build image') {
       steps {
-        sh "./mvnw ${params.mvn_build_opts} dockerfile:build"
+        sh "./mvnw ${params.mvn_build_opts} -Ddocker.image.tag=${BRANCH_NAME} dockerfile:build"
       }
     }
     stage('Push image') {
       steps {
-        sh "./mvnw ${params.mvn_build_opts} dockerfile:push"
+        sh "./mvnw ${params.mvn_build_opts} -Ddocker.image.tag=${BRANCH_NAME} dockerfile:push"
       }
     }
   }

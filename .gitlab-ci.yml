@@ -1,0 +1,60 @@
+variables:
+  MVN_ENV_OPTS: '-Xms64m -Xmx256m -Dmaven.repo.local=.mvn/repository'
+  MVN_BUILD_OPTS: '-Dfrontend-build -Ddocker-build'
+  MVN_GOALS: 'clean verify'
+  DOCKER_USERNAME: toComplete
+  DOCKER_PASSWORD: toComplete
+  DOCKER_REPO: fcrespel
+  DOCKER_IMAGE: karaplan
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - publish
+
+build:
+  stage: build
+  image: maven:3.5.3-jdk-8
+  cache:
+    key: ${CI_PROJECT_PATH_SLUG}
+    paths:
+      - .mvn/repository
+  variables:
+    MAVEN_OPTS: ${MVN_ENV_OPTS}
+  script:
+    - mvn ${MVN_BUILD_OPTS} ${MVN_GOALS} -DskipTests
+  artifacts:
+    paths:
+      - target
+    expire_in: 1h
+
+test:
+  stage: test
+  image: maven:3.5.3-jdk-8
+  dependencies:
+    - build
+  cache:
+    key: ${CI_PROJECT_PATH_SLUG}
+    paths:
+      - .mvn/repository
+  variables:
+    MAVEN_OPTS: ${MVN_ENV_OPTS}
+  script:
+    - mvn ${MVN_BUILD_OPTS} test
+  artifacts:
+    reports:
+      junit: target/surefire-reports/*.xml
+
+publish:
+  stage: publish
+  image: docker
+  dependencies:
+    - build
+  before_script:
+    - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+  script:
+    - docker build -t ${DOCKER_REPO}/${DOCKER_IMAGE}:${CI_COMMIT_REF_SLUG} target/docker-build
+    - docker push ${ARTIFACTORY_HOST_DEV}/${IMAGE_NAME}:${CI_COMMIT_REF_SLUG}
