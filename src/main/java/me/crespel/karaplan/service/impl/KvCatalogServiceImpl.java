@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -51,6 +52,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	@Cacheable("kvCatalogCache")
 	public CatalogArtist getArtist(long artistId) {
 		try {
 			Map<String, Object> params = new HashMap<>();
@@ -74,6 +76,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	@Cacheable("kvCatalogCache")
 	public CatalogSong getSong(long songId) {
 		try {
 			Map<String, Object> params = new HashMap<>();
@@ -97,6 +100,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	@Cacheable("kvCatalogCache")
 	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
 		try {
 			Map<String, Object> params = new HashMap<>();

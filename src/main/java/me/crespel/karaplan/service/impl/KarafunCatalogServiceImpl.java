@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -49,6 +50,7 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	@Cacheable("karafunCatalogCache")
 	public CatalogSong getSong(long songId) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
@@ -65,6 +67,7 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	@Cacheable("karafunCatalogCache")
 	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())

@@ -1,5 +1,6 @@
 package me.crespel.karaplan.model;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -12,7 +13,9 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString(of = {"id", "name", "artist"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CatalogSong {
+public class CatalogSong implements Serializable {
+
+	private static final long serialVersionUID = -5760200424184672471L;
 
 	private Long id;
 	private String name;
