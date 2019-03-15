@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { SongsService } from '../services/songs.service';
 import { Song } from '../models/song';
 
@@ -9,20 +12,25 @@ import { Song } from '../models/song';
 })
 export class SongsComponent implements OnInit {
 
-  searchField: string;
-  songs: Song[] = [];
+  query: string;
+  songs$: Observable<Song[]>;
 
   constructor(
+    private route: ActivatedRoute,
+    private router: Router,
     private songsService: SongsService
   ) { }
 
   ngOnInit() {
+    this.songs$ = this.route.queryParamMap.pipe(
+      switchMap((params: ParamMap) => 
+        this.songsService.search(this.query = params.get('query'))
+      )
+    );
   }
 
   search(query: string) {
-    this.songsService.search(query).subscribe(songs => {
-      this.songs = songs;
-    });
+    this.router.navigate(['songs'], { queryParams: { query: query} });
   }
 
   voteUp(song: Song) {

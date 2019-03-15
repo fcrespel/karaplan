@@ -2,7 +2,12 @@
 @import url('https://use.fontawesome.com/releases/v5.7.2/css/all.css');
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 
+html {
+	height: 100%;
+}
+
 body {
+	min-height: 100%;
 	font-family: 'Raleway', sans-serif;
 	background-image: linear-gradient(141.27841068346947deg, #1d0032, #210038 3.1%, #240039 3.1%, #2a003d 6%, #2d003e 6%, #3a0046 9.9%, #cc577a 59.1%, #ca587a 59.1%,#7b222b);
 	background-size: 100%;

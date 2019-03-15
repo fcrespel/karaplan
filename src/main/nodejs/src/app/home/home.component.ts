@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AccountService } from '../services/account.service';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  user: User = null;
+
+  constructor(
+    private accountService: AccountService
+  ) { }
 
   ngOnInit() {
+    this.accountService.getPrincipal().subscribe(principal => {
+      this.user = principal.user;
+    });
   }
 
 }

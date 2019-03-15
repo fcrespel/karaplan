@@ -5,14 +5,14 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="!navbarOpen">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="user">
         <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active">Songs</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="user">
         <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active">Playlists</a>
       </li>
     </ul>
-    <span class="navbar-text mx-3" *ngIf="user">{{ user.fullName }}</span>
+    <span class="navbar-text mr-3" *ngIf="user">{{ user.fullName }}</span>
     <a class="btn btn-outline-light" href="login" *ngIf="user == null">Login</a>
     <a class="btn btn-outline-light" href="logout" *ngIf="user">Logout</a>
   </div>
