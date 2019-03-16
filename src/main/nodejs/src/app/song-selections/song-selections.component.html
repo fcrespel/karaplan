@@ -1,0 +1,7 @@
+<div class="row justify-content-start no-gutters text-center" *ngIf="selections">
+  <div class="col-auto" *ngFor="let selection of selections">
+    <a href="#" routerLink="/songs" [queryParams]="{ query: selection.id }" queryParamsHandling="merge">
+      <img src="{{ selection.img }}" title="{{ selection.name }}" class="rounded shadow-sm m-2" style="max-width: 150px;">
+    </a>
+  </div>
+</div>

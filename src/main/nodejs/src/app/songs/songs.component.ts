@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, empty } from 'rxjs';
+import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { SongsService } from '../services/songs.service';
 import { Song } from '../models/song';
+import { CatalogSelection } from '../models/catalog-selection';
 
 @Component({
   selector: 'app-songs',
@@ -12,8 +13,10 @@ import { Song } from '../models/song';
 })
 export class SongsComponent implements OnInit {
 
+  type: string;
   query: string;
   songs$: Observable<Song[]>;
+  selections$: Observable<CatalogSelection[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -22,22 +25,25 @@ export class SongsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.songs$ = this.route.queryParamMap.pipe(
-      switchMap((params: ParamMap) => 
-        this.songsService.search(this.query = params.get('query'))
-      )
-    );
+    this.route.queryParamMap.subscribe(params => {
+      this.type = params.get('type') || 'query';
+      this.query = params.get('query') || '';
+      if (this.type == 'query' || this.query) {
+        this.songs$ = this.songsService.search(this.type, this.query);
+        this.selections$ = empty();
+      } else {
+        this.songs$ = empty();
+        this.selections$ = this.songsService.getSelections(this.type);
+      }
+    });
   }
 
-  search(query: string) {
-    this.router.navigate(['songs'], { queryParams: { query: query} });
+  onSearch(query: string) {
+    this.router.navigate(['/songs'], { queryParams: { query: query } });
   }
 
-  voteUp(song: Song) {
-    this.songsService.voteSongByCatalogId(song.catalogId, 1);
+  onTabChange($event: NgbTabChangeEvent) {
+    this.router.navigate(['/songs'], { queryParams: { type: $event.nextId } });
   }
 
-  voteDown(song: Song) {
-    this.songsService.voteSongByCatalogId(song.catalogId, -1);
-  }
 }

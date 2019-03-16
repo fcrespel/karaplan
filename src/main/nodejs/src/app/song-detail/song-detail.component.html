@@ -4,15 +4,10 @@
       <div class="card shadow text-dark mb-4">
         <img src="{{ song.image }}" class="card-img mt-3 mx-auto" style="width: 150px;">
         <div class="card-body">
-          <h5 class="card-title">{{ song.name }}</h5>
-          <p class="card-subtitle text-muted">{{ song.artist.name }}</p>
+          <h5 class="card-title mb-1">{{ song.name }}</h5>
+          <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
           <p class="card-text"><span class="badge badge-secondary">{{ song.duration }} s</span></p>
-          <div class="btn-group mx-1" role="group">
-            <button type="button" class="btn btn-outline-success" title="Vote up"><i class="far fa-thumbs-up"></i></button>
-            <button type="button" class="btn btn-outline-danger" title="Vote down"><i class="far fa-thumbs-down"></i></button>
-          </div>
-          <button type="button" class="btn btn-outline-secondary mx-1" title="Comment"><i class="far fa-comment"></i></button>
-          <button type="button" class="btn btn-outline-primary mx-1" title="Add to playlist"><i class="fas fa-list"></i></button>
+          <app-song-actions [song]="song"></app-song-actions>
         </div>
       </div>
     </div>

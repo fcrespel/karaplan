@@ -14,6 +14,10 @@ body {
 	background-attachment: fixed;
 }
 
+h1 {
+	margin-bottom: 1rem;
+}
+
 .bg-pink {
 	background-color: #db2c78;
 }
@@ -31,4 +35,13 @@ body {
 
 .navbar-brand {
 	font-weight: bold;
+}
+
+.nav-pills .nav-link {
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-pills .nav-link.active {
+	background-color: #db2c78;
+	box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
 }

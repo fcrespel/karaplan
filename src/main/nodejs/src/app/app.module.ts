@@ -9,7 +9,10 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { SongsComponent } from './songs/songs.component';
+import { SongListComponent } from './song-list/song-list.component';
+import { SongSelectionsComponent } from './song-selections/song-selections.component';
 import { SongDetailComponent } from './song-detail/song-detail.component';
+import { SongActionsComponent } from './song-actions/song-actions.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 
 @NgModule({
@@ -18,7 +21,10 @@ import { PlaylistsComponent } from './playlists/playlists.component';
     NavbarComponent,
     HomeComponent,
     SongsComponent,
+    SongListComponent,
+    SongSelectionsComponent,
     SongDetailComponent,
+    SongActionsComponent,
     PlaylistsComponent
   ],
   imports: [

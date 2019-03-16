@@ -1,29 +1,58 @@
 <h1>Songs</h1>
 
-<div class="row my-3">
-  <div class="col">
-    <form (ngSubmit)="search(query)">
-      <div class="input-group shadow">
-        <input type="text" class="form-control" name="query" [(ngModel)]="query" placeholder="Song or artist name">
-        <div class="input-group-append">
-          <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
+<ngb-tabset type="pills" [activeId]="type" (tabChange)="onTabChange($event)">
+  <ngb-tab id="query">
+    <ng-template ngbTabTitle><i class="fas fa-search"></i> Search</ng-template>
+    <ng-template ngbTabContent class="my-3">
+      <div class="row my-3">
+        <div class="col">
+          <form (ngSubmit)="onSearch(query)">
+            <div class="input-group shadow">
+              <input type="text" class="form-control" name="query" [(ngModel)]="query" placeholder="Song or artist name">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-    </form>
-  </div>
-</div>
-
-<div class="list-group shadow">
-  <a href="#" [routerLink]="[song.catalogId]" *ngFor="let song of songs$ | async as songs" class="list-group-item list-group-item-action d-flex align-items-center no-gutters px-3 py-2">
-    <div class="col-auto"><img src="{{ song.image }}" class="card-img" style="width: 50px;"></div>
-    <div class="col px-3">{{ song.name }}<br><small class="text-muted">{{ song.artist.name }}</small></div>
-    <div class="col-auto">
-      <div class="btn-group mx-1" role="group">
-        <button type="button" class="btn btn-outline-success" (click)="voteUp(song)" title="Vote up"><i class="far fa-thumbs-up"></i></button>
-        <button type="button" class="btn btn-outline-danger" (click)="voteDown(song)" title="Vote down"><i class="far fa-thumbs-down"></i></button>
+      <app-song-list [songs]="songs$ | async"></app-song-list>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="theme">
+    <ng-template ngbTabTitle><i class="fas fa-music"></i> Playlists</ng-template>
+    <ng-template ngbTabContent>
+      <div class="my-3">
+        <app-song-selections [selections]="selections$ | async"></app-song-selections>
+        <app-song-list [songs]="songs$ | async"></app-song-list>
       </div>
-      <button type="button" class="btn btn-outline-secondary mx-1" title="Comment"><i class="far fa-comment"></i></button>
-      <button type="button" class="btn btn-outline-primary mx-1" title="Add to playlist"><i class="fas fa-list"></i></button>
-    </div>
-  </a>
-</div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="styles">
+    <ng-template ngbTabTitle><i class="fas fa-guitar"></i> Genres</ng-template>
+    <ng-template ngbTabContent>
+      <div class="my-3">
+        <app-song-selections [selections]="selections$ | async"></app-song-selections>
+        <app-song-list [songs]="songs$ | async"></app-song-list>
+      </div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="top">
+    <ng-template ngbTabTitle><i class="fas fa-trophy"></i> Top</ng-template>
+    <ng-template ngbTabContent>
+      <div class="my-3">
+        <app-song-selections [selections]="selections$ | async"></app-song-selections>
+        <app-song-list [songs]="songs$ | async"></app-song-list>
+      </div>
+    </ng-template>
+  </ngb-tab>
+  <ngb-tab id="news">
+    <ng-template ngbTabTitle><i class="fas fa-calendar-alt"></i> New releases</ng-template>
+    <ng-template ngbTabContent>
+      <div class="my-3">
+        <app-song-selections [selections]="selections$ | async"></app-song-selections>
+        <app-song-list [songs]="songs$ | async"></app-song-list>
+      </div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>
