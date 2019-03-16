@@ -23,6 +23,9 @@ import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
 import me.crespel.karaplan.domain.SongVote;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.CatalogSelection;
+import me.crespel.karaplan.model.CatalogSelectionType;
+import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.service.SongService;
 
@@ -41,9 +44,15 @@ public class SongController {
 	}
 
 	@GetMapping("/search")
-	@ApiOperation("Search songs in the catalog")
-	public Set<Song> search(@RequestParam String query, @PageableDefault Pageable pageable) {
-		return songService.search(query, pageable);
+	@ApiOperation("Search songs in the catalog by type")
+	public Set<Song> search(@RequestParam CatalogSongListType type, @RequestParam String query, @PageableDefault Pageable pageable) {
+		return songService.search(type, query, pageable);
+	}
+
+	@GetMapping("/selections")
+	@ApiOperation("Get song selections by type")
+	public Set<CatalogSelection> getSelections(@RequestParam CatalogSelectionType type) {
+		return songService.getSelections(type);
 	}
 
 	@GetMapping("/{catalogId}")

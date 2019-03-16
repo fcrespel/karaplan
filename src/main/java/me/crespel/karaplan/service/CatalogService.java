@@ -1,8 +1,11 @@
 package me.crespel.karaplan.service;
 
 import me.crespel.karaplan.model.CatalogArtist;
+import me.crespel.karaplan.model.CatalogSelectionList;
+import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
+import me.crespel.karaplan.model.CatalogSongListType;
 
 public interface CatalogService {
 
@@ -10,6 +13,8 @@ public interface CatalogService {
 
 	CatalogSong getSong(long songId);
 
-	CatalogSongList getSongList(String filter, Integer limit, Long offset);
+	CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset);
+
+	CatalogSelectionList getSelectionList(CatalogSelectionType type);
 
 }

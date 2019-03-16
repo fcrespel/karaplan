@@ -9,7 +9,6 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import me.crespel.karaplan.domain.User;
 
@@ -52,7 +51,6 @@ public class OidcUserWrapper implements OidcUser {
 		return delegate.getIdToken();
 	}
 
-	@JsonIgnoreProperties({ "votes", "comments" })
 	public User getUser() {
 		return user;
 	}

@@ -22,8 +22,11 @@ import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
 import me.crespel.karaplan.domain.SongVote;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.CatalogSelection;
+import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
+import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.repository.SongCommentRepo;
 import me.crespel.karaplan.repository.SongRepo;
 import me.crespel.karaplan.repository.SongVoteRepo;
@@ -81,10 +84,10 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
-	public Set<Song> search(String query, Pageable pageable) {
+	public Set<Song> search(CatalogSongListType type, String query, Pageable pageable) {
 		Set<Song> resultSongs = Sets.newLinkedHashSet();
 
-		CatalogSongList catalogSongList = catalogService.getSongList(query, pageable.getPageSize(), pageable.getOffset());
+		CatalogSongList catalogSongList = catalogService.getSongList(type, query, pageable.getPageSize(), pageable.getOffset());
 		if (catalogSongList.getSongs() != null) {
 			// Convert catalog songs
 			Set<Song> catalogSongs = catalogSongList.getSongs().stream()
@@ -106,6 +109,11 @@ public class SongServiceImpl implements SongService {
 					.values());
 		}
 		return resultSongs;
+	}
+
+	@Override
+	public Set<CatalogSelection> getSelections(CatalogSelectionType type) {
+		return Sets.newLinkedHashSet(catalogService.getSelectionList(type).getSelections());
 	}
 
 	@Override

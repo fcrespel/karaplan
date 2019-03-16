@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Sets;
 
@@ -49,12 +50,12 @@ public class User {
 	@Column(name = "EMAIL")
 	private String email;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	@JsonIgnoreProperties("user")
 	private Set<SongVote> votes = Sets.newLinkedHashSet();
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	@JsonIgnoreProperties("user")
 	private Set<SongComment> comments = Sets.newLinkedHashSet();
 
 }

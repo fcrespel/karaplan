@@ -1,8 +1,7 @@
 package me.crespel.karaplan.service.impl;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.crespel.karaplan.config.KvConfig.KvProperties;
 import me.crespel.karaplan.model.CatalogArtist;
+import me.crespel.karaplan.model.CatalogSelectionList;
+import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
+import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.model.kv.KvArtist;
 import me.crespel.karaplan.model.kv.KvArtistResponse;
@@ -55,13 +57,10 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Cacheable("kvCatalogCache")
 	public CatalogArtist getArtist(long artistId) {
 		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("id", artistId);
-
-			KvQuery query = new KvQuery()
+			KvQuery<KvQuery.ArtistGet> query = new KvQuery<KvQuery.ArtistGet>()
 					.setAffiliateId(properties.getAffiliateId())
 					.setFunction("get")
-					.setParameters(params);
+					.setParameters(new KvQuery.ArtistGet().setId(artistId));
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
 					.path("/artist/")
@@ -79,13 +78,10 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Cacheable("kvCatalogCache")
 	public CatalogSong getSong(long songId) {
 		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("id", songId);
-
-			KvQuery query = new KvQuery()
+			KvQuery<KvQuery.SongGet> query = new KvQuery<KvQuery.SongGet>()
 					.setAffiliateId(properties.getAffiliateId())
 					.setFunction("get")
-					.setParameters(params);
+					.setParameters(new KvQuery.SongGet().setId(songId));
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
 					.path("/song/")
@@ -101,32 +97,44 @@ public class KvCatalogServiceImpl implements CatalogService {
 
 	@Override
 	@Cacheable("kvCatalogCache")
-	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
+	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
 		try {
-			Map<String, Object> params = new HashMap<>();
-			params.put("query", filter);
-			if (limit != null) {
-				params.put("limit", limit);
+			String path;
+			KvQuery<?> query;
+			switch (type) {
+			case query:
+				path = "/search/";
+				query = new KvQuery<KvQuery.SearchSong>()
+						.setAffiliateId(properties.getAffiliateId())
+						.setFunction("song")
+						.setParameters(new KvQuery.SearchSong().setQuery(filter).setLimit(limit).setOffset(offset));
+				break;
+			case artist:
+				path = "/song/";
+				query = new KvQuery<KvQuery.SongList>()
+						.setAffiliateId(properties.getAffiliateId())
+						.setFunction("list")
+						.setParameters(new KvQuery.SongList().setArtistId(Arrays.asList(Long.valueOf(filter))).setLimit(limit).setOffset(offset));
+				break;
+			default:
+				throw new UnsupportedOperationException("Unsupported song list type '" + type + "'");
 			}
-			if (offset != null) {
-				params.put("offset", offset);
-			}
-
-			KvQuery query = new KvQuery()
-					.setAffiliateId(properties.getAffiliateId())
-					.setFunction("song")
-					.setParameters(params);
 
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
-					.path("/search/")
+					.path(path)
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
 			KvSongList response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongList.class);
-			return conversionService.convert(response, CatalogSongList.class);
+			return conversionService.convert(response, CatalogSongList.class).setType(type);
 
 		} catch (JsonProcessingException | RestClientException e) {
 			throw new TechnicalException(e);
 		}
+	}
+
+	@Override
+	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
+		throw new UnsupportedOperationException();
 	}
 
 	public class KvToCatalogArtistConverter implements Converter<KvArtist, CatalogArtist> {

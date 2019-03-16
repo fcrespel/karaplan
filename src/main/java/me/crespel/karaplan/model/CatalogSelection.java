@@ -1,23 +1,23 @@
 package me.crespel.karaplan.model;
 
 import java.io.Serializable;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.Data;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
+@ToString(of = {"id", "name"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CatalogSongList implements Serializable {
+public class CatalogSelection implements Serializable {
 
-	private static final long serialVersionUID = -2300354696486480068L;
+	private static final long serialVersionUID = -2595089354908324339L;
 
-	private CatalogSongListType type;
-	private Long count;
-	private Long total;
-	private Set<CatalogSong> songs;
+	private Long id;
+	private String name;
+	private String img;
 
 }

@@ -1,13 +1,17 @@
 package me.crespel.karaplan.service.impl;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -15,11 +19,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import me.crespel.karaplan.config.KarafunConfig.KarafunProperties;
 import me.crespel.karaplan.model.CatalogArtist;
+import me.crespel.karaplan.model.CatalogSelectionType;
+import me.crespel.karaplan.model.CatalogSelection;
+import me.crespel.karaplan.model.CatalogSelectionList;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
+import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.CatalogStyle;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.model.karafun.KarafunArtist;
+import me.crespel.karaplan.model.karafun.KarafunSelection;
 import me.crespel.karaplan.model.karafun.KarafunSong;
 import me.crespel.karaplan.model.karafun.KarafunSongList;
 import me.crespel.karaplan.model.karafun.KarafunStyle;
@@ -42,6 +51,7 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 		conversionService.addConverter(new KarafunToCatalogStyleConverter());
 		conversionService.addConverter(new KarafunToCatalogSongConverter());
 		conversionService.addConverter(new KarafunToCatalogSongListConverter());
+		conversionService.addConverter(new KarafunToCatalogPlaylistConverter());
 	}
 
 	@Override
@@ -68,12 +78,27 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 	@Override
 	@Cacheable("karafunCatalogCache")
-	public CatalogSongList getSongList(String filter, Integer limit, Long offset) {
+	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
 					.path(Integer.toString(properties.getRemoteId()))
-					.queryParam("type", "song_list")
-					.queryParam("filter", "sc_" + filter);
+					.queryParam("type", "song_list");
+			switch (type) {
+			case query:
+				builder = builder.queryParam("filter", "sc_" + filter);
+				break;
+			case artist:
+				builder = builder.queryParam("filter", "ar_" + filter);
+				break;
+			case styles:
+				builder = builder.queryParam("filter", "st_" + filter);
+				break;
+			case theme:
+			case top:
+			case news:
+				builder = builder.queryParam("filter", "pl_" + filter);
+				break;
+			}
 			if (limit != null) {
 				builder = builder.queryParam("limit", limit);
 			}
@@ -82,7 +107,25 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 			}
 
 			KarafunSongList songList = restTemplate.getForObject(builder.build().encode().toUri(), KarafunSongList.class);
-			return conversionService.convert(songList, CatalogSongList.class);
+			return conversionService.convert(songList, CatalogSongList.class).setType(type);
+
+		} catch (RestClientException e) {
+			throw new TechnicalException(e);
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Cacheable("karafunCatalogCache")
+	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+					.path(Integer.toString(properties.getRemoteId()))
+					.queryParam("type", type.toString());
+
+			List<KarafunSelection> karafunSelectionList = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, null, new ParameterizedTypeReference<List<KarafunSelection>>() {}).getBody();
+			List<CatalogSelection> catalogSelectionList = (List<CatalogSelection>) conversionService.convert(karafunSelectionList, TypeDescriptor.forObject(karafunSelectionList), TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(CatalogSelection.class)));
+			return new CatalogSelectionList().setType(type).setSelections(catalogSelectionList);
 
 		} catch (RestClientException e) {
 			throw new TechnicalException(e);
@@ -148,6 +191,18 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 						.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
 			return target;
+		}
+
+	}
+
+	public class KarafunToCatalogPlaylistConverter implements Converter<KarafunSelection, CatalogSelection> {
+
+		@Override
+		public CatalogSelection convert(KarafunSelection source) {
+			return new CatalogSelection()
+					.setId(source.getId())
+					.setName(source.getName())
+					.setImg(source.getImg());
 		}
 
 	}
