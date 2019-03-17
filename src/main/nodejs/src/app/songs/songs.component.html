@@ -1,58 +1,43 @@
 <h1>Songs</h1>
 
-<ngb-tabset type="pills" [activeId]="type" (tabChange)="onTabChange($event)">
-  <ngb-tab id="query">
-    <ng-template ngbTabTitle><i class="fas fa-search"></i> Search</ng-template>
-    <ng-template ngbTabContent class="my-3">
-      <div class="row my-3">
-        <div class="col">
-          <form (ngSubmit)="onSearch(query)">
-            <div class="input-group shadow">
-              <input type="text" class="form-control" name="query" [(ngModel)]="query" placeholder="Song or artist name">
-              <div class="input-group-append">
-                <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
-              </div>
-            </div>
-          </form>
+<!-- Navigation pills -->
+<ul class="nav nav-pills my-3">
+  <li class="nav-item">
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'query' }" [class.active]="type == 'query'"><i class="fas fa-search"></i> Search</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'theme' }" [class.active]="type == 'theme'"><i class="fas fa-music"></i> Selections</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'styles' }" [class.active]="type == 'styles'"><i class="fas fa-guitar"></i> Genres</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'top' }" [class.active]="type == 'top'"><i class="fas fa-trophy"></i> Top</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="type == 'news'"><i class="fas fa-calendar-alt"></i> New releases</a>
+  </li>
+</ul>
+
+<!-- Search bar -->
+<div class="row my-3" *ngIf="type == 'query'">
+  <div class="col">
+    <form (ngSubmit)="onSearch(query)">
+      <div class="input-group shadow">
+        <input type="text" class="form-control" name="query" [(ngModel)]="query" placeholder="Song or artist name">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
         </div>
       </div>
-      <app-song-list [songs]="songs$ | async"></app-song-list>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab id="theme">
-    <ng-template ngbTabTitle><i class="fas fa-music"></i> Playlists</ng-template>
-    <ng-template ngbTabContent>
-      <div class="my-3">
-        <app-song-selections [selections]="selections$ | async"></app-song-selections>
-        <app-song-list [songs]="songs$ | async"></app-song-list>
-      </div>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab id="styles">
-    <ng-template ngbTabTitle><i class="fas fa-guitar"></i> Genres</ng-template>
-    <ng-template ngbTabContent>
-      <div class="my-3">
-        <app-song-selections [selections]="selections$ | async"></app-song-selections>
-        <app-song-list [songs]="songs$ | async"></app-song-list>
-      </div>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab id="top">
-    <ng-template ngbTabTitle><i class="fas fa-trophy"></i> Top</ng-template>
-    <ng-template ngbTabContent>
-      <div class="my-3">
-        <app-song-selections [selections]="selections$ | async"></app-song-selections>
-        <app-song-list [songs]="songs$ | async"></app-song-list>
-      </div>
-    </ng-template>
-  </ngb-tab>
-  <ngb-tab id="news">
-    <ng-template ngbTabTitle><i class="fas fa-calendar-alt"></i> New releases</ng-template>
-    <ng-template ngbTabContent>
-      <div class="my-3">
-        <app-song-selections [selections]="selections$ | async"></app-song-selections>
-        <app-song-list [songs]="songs$ | async"></app-song-list>
-      </div>
-    </ng-template>
-  </ngb-tab>
-</ngb-tabset>
+    </form>
+  </div>
+</div>
+
+<!-- Selections -->
+<app-song-selections [selections]="selections"></app-song-selections>
+
+<!-- Songs -->
+<app-song-list [songs]="songs"></app-song-list>
+<div class="text-center" *ngIf="hasMoreSongs">
+  <button type="button" (click)="loadMoreSongs()" class="btn btn-outline-light my-3">Load more ...</button>
+</div>

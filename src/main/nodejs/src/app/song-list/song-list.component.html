@@ -5,7 +5,7 @@
     </div>
     <div class="col px-3">
       <p class="m-0"><a href="#" [routerLink]="['/songs', song.catalogId]" class="text-reset">{{ song.name }}</a></p>
-      <p class="m-0"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
+      <p class="m-0"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" (click)="$event.stopPropagation()" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
     </div>
     <div class="col-auto d-none d-sm-block">
       <app-song-actions [song]="song"></app-song-actions>

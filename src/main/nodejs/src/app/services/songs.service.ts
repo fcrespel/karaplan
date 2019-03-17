@@ -10,6 +10,7 @@ import { CatalogSelection } from '../models/catalog-selection';
   providedIn: 'root'
 })
 export class SongsService {
+
   private songsUrl = 'api/v1/songs';
 
   constructor(
@@ -46,14 +47,25 @@ export class SongsService {
     return this.http.post<Song>(url, null);
   }
 
-  commentSongByCatalogId(catalogId: number, comment: string): Observable<SongComment> {
-    const url = `${this.songsUrl}/${catalogId}/comment`;
-    return this.http.post<SongComment>(url, comment);
-  }
-
-  voteSongByCatalogId(catalogId: number, score: number): Observable<SongVote> {
+  voteSongByCatalogId(catalogId: number, score: number): Observable<Song> {
     const url = `${this.songsUrl}/${catalogId}/vote`;
     let params = new HttpParams().set('score', ''+score);
-    return this.http.post<SongVote>(url, null, {params: params});
+    return this.http.post<Song>(url, null, {params: params});
   }
+
+  commentSongByCatalogId(catalogId: number, comment: string): Observable<Song> {
+    const url = `${this.songsUrl}/${catalogId}/comment`;
+    return this.http.post<Song>(url, comment);
+  }
+
+  addSongToPlaylistByCatalogId(catalogId: number, playlistId: number): Observable<Song> {
+    const url = `${this.songsUrl}/${catalogId}/playlist/${playlistId}`;
+    return this.http.post<Song>(url, null);
+  }
+
+  removeSongFromPlaylistByCatalogId(catalogId: number, playlistId: number): Observable<Song> {
+    const url = `${this.songsUrl}/${catalogId}/playlist/${playlistId}`;
+    return this.http.delete<Song>(url);
+  }
+
 }

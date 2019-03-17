@@ -1,6 +1,52 @@
+<!-- Votes -->
 <div class="btn-group mx-1" role="group">
-  <button type="button" class="btn btn-outline-success" (click)="voteUp($event, song)" title="Vote up"><i class="far fa-thumbs-up"></i></button>
-  <button type="button" class="btn btn-outline-danger" (click)="voteDown($event, song)" title="Vote down"><i class="far fa-thumbs-down"></i></button>
+  <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" title="Vote up">
+    <i class="far fa-thumbs-up"></i>
+    <span class="badge badge-success ml-1" *ngIf="song.scoreUp">{{ song.scoreUp }}</span>
+  </button>
+  <button type="button" class="btn btn-outline-danger" (click)="$event.stopPropagation(); voteDown()" title="Vote down">
+    <i class="far fa-thumbs-down"></i>
+    <span class="badge badge-danger ml-1" *ngIf="song.scoreDown">{{ song.scoreDown }}</span>
+  </button>
 </div>
-<button type="button" class="btn btn-outline-secondary mx-1" title="Comment"><i class="far fa-comment"></i></button>
-<button type="button" class="btn btn-outline-primary mx-1" title="Add to playlist"><i class="fas fa-list"></i></button>
+
+<!-- Comments -->
+<div ngbDropdown autoClose="outside" placement="bottom" container="body" class="d-inline-block">
+  <button type="button" class="btn btn-outline-secondary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
+    <i class="far fa-comment"></i>
+    <span class="badge badge-secondary ml-1" *ngIf="song.comments">{{ song.comments.length }}</span>
+  </button>
+  <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
+    <form (ngSubmit)="addComment(commentText)" class="mx-3 my-2 text-right">
+      <div class="form-group mb-2">
+        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" rows="1" cols="100" placeholder="Your comments"></textarea>
+      </div>
+      <button type="submit" class="btn btn-sm btn-pink">Add comment</button>
+    </form>
+    <ng-container *ngFor="let comment of song.comments">
+      <div class="dropdown-divider"></div>
+      <div class="d-flex mx-3 mt-2 mb-0 justify-content-between">
+        <small class="text-muted">{{ comment.user.firstName }}</small>
+        <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
+      </div>
+      <p class="mx-3 mt-0 mb-2 comment-text">{{ comment.comment }}</p>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Playlists -->
+<div ngbDropdown autoClose="outside" placement="bottom" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()">
+  <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Add to playlist">
+    <i class="fas fa-list"></i>
+    <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlists.length }}</span>
+  </button>
+  <div class="dropdown-menu shadow" ngbDropdownMenu>
+    <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists" (click)="togglePlaylist(playlist)">
+      <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
+      <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
+      {{ playlist.name }}
+    </button>
+    <div class="dropdown-divider" *ngIf="playlists && playlists.length > 0"></div>
+    <button type="button" class="dropdown-item" ngbDropdownItem>New playlist ...</button>
+  </div>
+</div>

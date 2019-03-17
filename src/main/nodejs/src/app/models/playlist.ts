@@ -9,4 +9,6 @@ export class Playlist {
   createdBy: User;
   updatedDate: Date;
   updatedBy: User;
+
+  isSelected: boolean;
 }
