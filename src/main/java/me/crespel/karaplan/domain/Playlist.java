@@ -3,6 +3,7 @@ package me.crespel.karaplan.domain;
 import java.util.Calendar;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -50,8 +51,9 @@ public class Playlist {
 	@Column(name = "NAME")
 	private String name;
 
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "playlist_song", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_SONG", nullable = false) })
+	@JsonIgnoreProperties("playlists")
 	private Set<Song> songs = Sets.newLinkedHashSet();
 
 	@CreatedDate
