@@ -27,13 +27,13 @@ export class PlaylistsService {
     return this.http.get<Playlist>(url);
   }
 
-  addSongByCatalogId(id: number, catalogId: number): Observable<Playlist> {
-    const url = `${this.playlistsUrl}/${id}/song/${catalogId}`
+  addSongByCatalogId(playlistId: number, catalogId: number): Observable<Playlist> {
+    const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.post<Playlist>(url, null);
   }
 
-  removeSongByCatalogId(id: number, catalogId: number): Observable<Playlist> {
-    const url = `${this.playlistsUrl}/${id}/song/${catalogId}`
+  removeSongByCatalogId(playlistId: number, catalogId: number): Observable<Playlist> {
+    const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.delete<Playlist>(url);
   }
 }

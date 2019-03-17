@@ -1,2 +1,35 @@
 <h1>Playlists</h1>
-<p>Coming soon ...</p>
+
+<div class="row">
+  <div class="col-md-4 col-lg-3">
+    <div class="list-group shadow">
+      <a href="#" routerLink="/playlists" class="list-group-item list-group-item-action" [class.active]="!playlist">
+        <i class="fas fa-plus mr-1"></i>
+        New playlist
+      </a>
+      <a href="#" *ngFor="let p of playlists" [routerLink]="['/playlists', { id: p.id }]" class="list-group-item list-group-item-action" [class.active]="playlist && p.id == playlist.id">
+        <i class="fas fa-list mr-1"></i>
+        {{ p.name }}
+      </a>
+    </div>
+  </div>
+  <div class="col-md-8 col-lg-9">
+    <ng-container *ngIf="!playlist">
+      <form (ngSubmit)="createPlaylist(playlistName)">
+        <div class="input-group shadow">
+          <input type="text" class="form-control" name="playlistName" [(ngModel)]="playlistName" placeholder="Playlist name">
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-pink"><i class="fas fa-plus"></i> Create</button>
+          </div>
+        </div>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="playlist">
+      <app-song-list [songs]="playlist.songs" [showPlaylists]="false" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
+      <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
+        <p>No song has been added to this playlist yet.</p>
+        <a href="#" routerLink="/songs" class="btn btn-pink shadow">Find songs</a>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

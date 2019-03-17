@@ -1,5 +1,5 @@
 <!-- Votes -->
-<div class="btn-group mx-1" role="group">
+<div class="btn-group mx-1" role="group" *ngIf="showVotes">
   <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" title="Vote up">
     <i class="far fa-thumbs-up"></i>
     <span class="badge badge-success ml-1" *ngIf="song.scoreUp">{{ song.scoreUp }}</span>
@@ -11,7 +11,7 @@
 </div>
 
 <!-- Comments -->
-<div ngbDropdown autoClose="outside" placement="bottom" container="body" class="d-inline-block">
+<div ngbDropdown autoClose="outside" placement="bottom" container="body" class="d-inline-block" *ngIf="showComments">
   <button type="button" class="btn btn-outline-secondary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
     <i class="far fa-comment"></i>
     <span class="badge badge-secondary ml-1" *ngIf="song.comments">{{ song.comments.length }}</span>
@@ -19,7 +19,7 @@
   <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
     <form (ngSubmit)="addComment(commentText)" class="mx-3 my-2 text-right">
       <div class="form-group mb-2">
-        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" rows="1" cols="100" placeholder="Your comments"></textarea>
+        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" rows="1" cols="100" placeholder="Your comment ..."></textarea>
       </div>
       <button type="submit" class="btn btn-sm btn-pink">Add comment</button>
     </form>
@@ -35,7 +35,7 @@
 </div>
 
 <!-- Playlists -->
-<div ngbDropdown autoClose="outside" placement="bottom" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()">
+<div ngbDropdown autoClose="outside" placement="bottom" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
   <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Add to playlist">
     <i class="fas fa-list"></i>
     <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlists.length }}</span>
@@ -47,6 +47,6 @@
       {{ playlist.name }}
     </button>
     <div class="dropdown-divider" *ngIf="playlists && playlists.length > 0"></div>
-    <button type="button" class="dropdown-item" ngbDropdownItem>New playlist ...</button>
+    <a class="dropdown-item" href="#" routerLink="/playlists"><i class="fas fa-plus mr-1"></i> New playlist</a>
   </div>
 </div>

@@ -12,6 +12,9 @@ import { PlaylistsService } from '../services/playlists.service';
 export class SongActionsComponent implements OnInit {
 
   @Input() song: Song;
+  @Input() showVotes: boolean = true;
+  @Input() showComments: boolean = true;
+  @Input() showPlaylists: boolean = true;
   playlists: Playlist[] = null;
   commentText: string;
 

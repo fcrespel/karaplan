@@ -10,6 +10,9 @@ import { Song } from '../models/song';
 export class SongListComponent implements OnInit {
 
   @Input() songs: Song[];
+  @Input() showVotes: boolean = true;
+  @Input() showComments: boolean = true;
+  @Input() showPlaylists: boolean = true;
 
   constructor(
     private router: Router

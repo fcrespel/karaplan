@@ -8,7 +8,7 @@
       <p class="m-0"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" (click)="$event.stopPropagation()" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
     </div>
     <div class="col-auto d-none d-sm-block">
-      <app-song-actions [song]="song"></app-song-actions>
+      <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists"></app-song-actions>
     </div>
   </li>
 </ul>

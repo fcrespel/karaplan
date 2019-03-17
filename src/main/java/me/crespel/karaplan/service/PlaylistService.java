@@ -16,6 +16,8 @@ public interface PlaylistService {
 
 	Optional<Playlist> findById(Long id);
 
+	Optional<Playlist> findById(Long id, boolean includeSongs);
+
 	Playlist save(Playlist playlist);
 
 	Playlist addSong(Playlist playlist, Song song);

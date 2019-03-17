@@ -32,11 +32,16 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id) {
+		return findById(id, false);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Playlist> findById(Long id, boolean includeSongs) {
 		Optional<Playlist> playlist = playlistRepo.findById(id);
-		if (playlist.isPresent()) {
-			playlist.get().getSongs(); // Force load
+		if (playlist.isPresent() && includeSongs) {
+			playlist.get().getSongs().size(); // Force eager load
 		}
 		return playlist;
 	}

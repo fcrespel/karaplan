@@ -49,3 +49,13 @@ h1 {
 	background-color: #db2c78;
 	box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075);
 }
+
+.dropdown-item.active,
+.dropdown-item:active {
+	background-color: #db2c78;
+}
+
+.list-group-item.active {
+	background-color: #db2c78;
+	border-color: #db2c78;
+}

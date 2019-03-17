@@ -51,13 +51,13 @@ public class PlaylistController {
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist by id")
 	public Playlist getPlaylist(@PathVariable Long playlistId) {
-		return playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
+		return playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
 	}
 
 	@PostMapping("/{playlistId}/song/{catalogId}")
 	@ApiOperation("Add a song to a playlist by catalog id")
 	public Playlist addSongByCatalogId(@PathVariable Long playlistId, @PathVariable Long catalogId) {
-		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.addSong(playlist, song);
 	}
@@ -65,7 +65,7 @@ public class PlaylistController {
 	@DeleteMapping("/{playlistId}/song/{catalogId}")
 	@ApiOperation("Remove a song from a playlist by catalog id")
 	public Playlist removeSongByCatalogId(@PathVariable Long playlistId, @PathVariable Long catalogId) {
-		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.removeSong(playlist, song);
 	}

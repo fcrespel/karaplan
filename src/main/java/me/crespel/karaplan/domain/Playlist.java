@@ -52,7 +52,6 @@ public class Playlist {
 
 	@ManyToMany
 	@JoinTable(name = "playlist_song", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_SONG", nullable = false) })
-	@JsonIgnoreProperties("playlists")
 	private Set<Song> songs = Sets.newLinkedHashSet();
 
 	@CreatedDate
