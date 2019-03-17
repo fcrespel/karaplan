@@ -8,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,14 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
-import me.crespel.karaplan.domain.SongComment;
-import me.crespel.karaplan.domain.SongVote;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.exception.BusinessException;
+import me.crespel.karaplan.service.PlaylistService;
 import me.crespel.karaplan.service.SongService;
 
 @RestController
@@ -36,6 +37,9 @@ public class SongController {
 
 	@Autowired
 	protected SongService songService;
+
+	@Autowired
+	protected PlaylistService playlistService;
 
 	@GetMapping
 	@ApiOperation("Get all songs")
@@ -69,19 +73,36 @@ public class SongController {
 		return songService.save(song);
 	}
 
+	@PostMapping("/{catalogId}/vote")
+	@ApiOperation("Vote for a song by catalog id")
+	public Song voteSongByCatalogId(@PathVariable Long catalogId, @RequestParam(defaultValue = "0") int score, @AuthenticationPrincipal(expression = "user") User user) {
+		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		return songService.vote(song, user, score);
+	}
+
 	@PostMapping("/{catalogId}/comment")
-	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Add a comment to a song by catalog id")
-	public SongComment commentSongByCatalogId(@PathVariable Long catalogId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
+	public Song commentSongByCatalogId(@PathVariable Long catalogId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.addComment(song, user, comment);
 	}
 
-	@PostMapping("/{catalogId}/vote")
-	@ApiOperation("Vote for a song by catalog id")
-	public SongVote voteSongByCatalogId(@PathVariable Long catalogId, @RequestParam(defaultValue = "0") int score, @AuthenticationPrincipal(expression = "user") User user) {
+	@PostMapping("/{catalogId}/playlist/{playlistId}")
+	@ApiOperation("Add a song to a playlist by catalog id")
+	public Song addSongToPlaylistByCatalogId(@PathVariable Long catalogId, @PathVariable Long playlistId) {
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		return songService.vote(song, user, score);
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		playlistService.addSong(playlist, song);
+		return song;
+	}
+
+	@DeleteMapping("/{catalogId}/playlist/{playlistId}")
+	@ApiOperation("Remove a song from a playlist by catalog id")
+	public Song removeSongFromPlaylistByCatalogId(@PathVariable Long catalogId, @PathVariable Long playlistId) {
+		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		playlistService.removeSong(playlist, song);
+		return song;
 	}
 
 }

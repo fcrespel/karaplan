@@ -6,8 +6,6 @@ import java.util.Set;
 import org.springframework.data.domain.Pageable;
 
 import me.crespel.karaplan.domain.Song;
-import me.crespel.karaplan.domain.SongComment;
-import me.crespel.karaplan.domain.SongVote;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionType;
@@ -29,8 +27,8 @@ public interface SongService {
 
 	Song save(Song song);
 
-	SongComment addComment(Song song, User user, String comment);
+	Song vote(Song song, User user, int score);
 
-	SongVote vote(Song song, User user, int score);
+	Song addComment(Song song, User user, String comment);
 
 }

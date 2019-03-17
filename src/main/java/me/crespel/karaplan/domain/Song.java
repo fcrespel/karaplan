@@ -2,11 +2,13 @@ package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,11 +16,13 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.SortComparator;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -72,15 +76,19 @@ public class Song {
 	@JsonIgnoreProperties("songs")
 	private Artist artist;
 
-	@OneToMany(mappedBy = "song", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "song", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("song")
-	private Set<SongVote> votes = Sets.newLinkedHashSet();
+	@SortComparator(SongVote.OrderByIdDescComparator.class)
+	@OrderBy("id DESC")
+	private SortedSet<SongVote> votes = Sets.newTreeSet(SongVote.orderByIdDescComparator);
 
-	@OneToMany(mappedBy = "song", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "song", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("song")
-	private Set<SongComment> comments = Sets.newLinkedHashSet();
+	@SortComparator(SongComment.OrderByIdDescComparator.class)
+	@OrderBy("id DESC")
+	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
 
-	@ManyToMany(mappedBy = "songs")
+	@ManyToMany(mappedBy = "songs", fetch = FetchType.EAGER)
 	@JsonIgnoreProperties("songs")
 	private Set<Playlist> playlists = Sets.newLinkedHashSet();
 
@@ -108,7 +116,23 @@ public class Song {
 		if (votes != null) {
 			return votes.stream().mapToInt(SongVote::getScore).sum();
 		} else {
-			return null;
+			return 0;
+		}
+	}
+
+	public Integer getScoreUp() {
+		if (votes != null) {
+			return votes.stream().mapToInt(SongVote::getScore).filter(score -> score > 0).sum();
+		} else {
+			return 0;
+		}
+	}
+
+	public Integer getScoreDown() {
+		if (votes != null) {
+			return Math.abs(votes.stream().mapToInt(SongVote::getScore).filter(score -> score < 0).sum());
+		} else {
+			return 0;
 		}
 	}
 

@@ -1,6 +1,7 @@
 package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
+import java.util.Comparator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,6 +20,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,7 +36,7 @@ import lombok.experimental.Accessors;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "song_comment")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SongComment {
+public class SongComment implements Comparable<SongComment> {
 
 	@Id
 	@GeneratedValue
@@ -60,5 +63,23 @@ public class SongComment {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
 	private Calendar createdDate;
+
+	@Override
+	public int compareTo(SongComment o) {
+		return orderByIdDescComparator.compare(this, o);
+	}
+
+	public static Comparator<SongComment> orderByIdDescComparator = new OrderByIdDescComparator();
+
+	public static class OrderByIdDescComparator implements Comparator<SongComment> {
+
+		@Override
+		public int compare(SongComment o1, SongComment o2) {
+			return ComparisonChain.start()
+					.compare(o1.id, o2.id, Ordering.natural().reverse().nullsFirst())
+					.result();
+		}
+
+	}
 
 }

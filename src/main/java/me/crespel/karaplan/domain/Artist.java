@@ -6,10 +6,10 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -49,8 +49,9 @@ public class Artist {
 	@Column(name = "NAME")
 	private String name;
 
-	@OneToMany(mappedBy = "artist", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "artist")
 	@JsonIgnoreProperties("artist")
+	@OrderBy("name ASC")
 	private Set<Song> songs = Sets.newLinkedHashSet();
 
 	@CreatedDate

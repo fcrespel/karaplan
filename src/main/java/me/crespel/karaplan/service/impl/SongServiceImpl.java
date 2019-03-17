@@ -15,6 +15,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
 
@@ -27,7 +28,6 @@ import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
-import me.crespel.karaplan.repository.SongCommentRepo;
 import me.crespel.karaplan.repository.SongRepo;
 import me.crespel.karaplan.repository.SongVoteRepo;
 import me.crespel.karaplan.service.ArtistService;
@@ -39,9 +39,6 @@ public class SongServiceImpl implements SongService {
 
 	@Autowired
 	protected SongRepo songRepo;
-
-	@Autowired
-	protected SongCommentRepo songCommentRepo;
 
 	@Autowired
 	protected SongVoteRepo songVoteRepo;
@@ -117,39 +114,41 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
+	@Transactional
 	public Song save(Song song) {
 		return songRepo.save(song);
 	}
 
 	@Override
-	public SongComment addComment(Song song, User user, String comment) {
-		if (song.getId() == null) {
-			song = songRepo.save(song);
-		}
-
-		SongComment songComment = new SongComment()
-				.setSong(song)
-				.setUser(user)
-				.setComment(comment);
-		return songCommentRepo.save(songComment);
-	}
-
-	@Override
-	public SongVote vote(Song song, User user, int score) {
+	@Transactional
+	public Song vote(Song song, User user, int score) {
 		if (song.getId() == null) {
 			song = songRepo.save(song);
 		}
 
 		SongVote songVote = songVoteRepo.findBySongAndUser(song, user).orElseGet(() -> new SongVote()).setSong(song).setUser(user);
-		if (score == 0) {
-			if (songVote.getId() != null) {
-				songVoteRepo.delete(songVote);
-			}
-			return songVote;
-		} else {
-			songVote.setScore(score > 0 ? 1 : -1);
-			return songVoteRepo.save(songVote);
+		if (songVote.getId() != null) {
+			song.getVotes().remove(songVote);
 		}
+		if (score != 0) {
+			songVote.setScore(score > 0 ? 1 : -1);
+			song.getVotes().add(songVote);
+		}
+		return songRepo.save(song);
+	}
+
+	@Override
+	@Transactional
+	public Song addComment(Song song, User user, String comment) {
+		if (song.getId() == null) {
+			song = songRepo.save(song);
+		}
+
+		song.getComments().add(new SongComment()
+				.setSong(song)
+				.setUser(user)
+				.setComment(comment));
+		return songRepo.save(song);
 	}
 
 	public class CatalogSongToSongConverter implements Converter<CatalogSong, Song> {

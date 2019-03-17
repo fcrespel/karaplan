@@ -1,17 +1,18 @@
 package me.crespel.karaplan.domain;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.SortComparator;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Sets;
 
@@ -50,12 +51,16 @@ public class User {
 	@Column(name = "EMAIL")
 	private String email;
 
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private Set<SongVote> votes = Sets.newLinkedHashSet();
+	@OneToMany(mappedBy = "user")
+	@JsonIgnoreProperties("user")
+	@SortComparator(SongVote.OrderByIdDescComparator.class)
+	@OrderBy("id DESC")
+	private SortedSet<SongVote> votes = Sets.newTreeSet(SongVote.orderByIdDescComparator);
 
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-	private Set<SongComment> comments = Sets.newLinkedHashSet();
+	@OneToMany(mappedBy = "user")
+	@JsonIgnoreProperties("user")
+	@SortComparator(SongComment.OrderByIdDescComparator.class)
+	@OrderBy("id DESC")
+	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
 
 }

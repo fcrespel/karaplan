@@ -48,28 +48,26 @@ public class PlaylistController {
 		return playlistService.save(new Playlist().setName(name));
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist by id")
-	public Playlist getPlaylist(@PathVariable Long id) {
-		return playlistService.findById(id).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
+	public Playlist getPlaylist(@PathVariable Long playlistId) {
+		return playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
 	}
 
-	@PostMapping("/{id}/song/{catalogId}")
+	@PostMapping("/{playlistId}/song/{catalogId}")
 	@ApiOperation("Add a song to a playlist by catalog id")
-	public Playlist addSongById(@PathVariable Long id, @PathVariable Long catalogId) {
-		Playlist playlist = playlistService.findById(id).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
+	public Playlist addSongByCatalogId(@PathVariable Long playlistId, @PathVariable Long catalogId) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		playlist.getSongs().add(song);
-		return playlistService.save(playlist);
+		return playlistService.addSong(playlist, song);
 	}
 
-	@DeleteMapping("/{id}/song/{catalogId}")
+	@DeleteMapping("/{playlistId}/song/{catalogId}")
 	@ApiOperation("Remove a song from a playlist by catalog id")
-	public Playlist removeSongById(@PathVariable Long id, @PathVariable Long catalogId) {
-		Playlist playlist = playlistService.findById(id).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
+	public Playlist removeSongByCatalogId(@PathVariable Long playlistId, @PathVariable Long catalogId) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		playlist.getSongs().remove(song);
-		return playlistService.save(playlist);
+		return playlistService.removeSong(playlist, song);
 	}
 
 }

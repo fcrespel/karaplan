@@ -9,6 +9,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
 
@@ -59,6 +60,7 @@ public class ArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
+	@Transactional
 	public Artist save(Artist artist) {
 		return artistRepo.save(artist);
 	}

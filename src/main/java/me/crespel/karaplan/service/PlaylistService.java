@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.domain.Pageable;
 
 import me.crespel.karaplan.domain.Playlist;
+import me.crespel.karaplan.domain.Song;
 
 public interface PlaylistService {
 
@@ -16,5 +17,9 @@ public interface PlaylistService {
 	Optional<Playlist> findById(Long id);
 
 	Playlist save(Playlist playlist);
+
+	Playlist addSong(Playlist playlist, Song song);
+
+	Playlist removeSong(Playlist playlist, Song song);
 
 }

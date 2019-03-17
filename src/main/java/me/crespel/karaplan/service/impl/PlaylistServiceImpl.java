@@ -6,10 +6,12 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Playlist;
+import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.repository.PlaylistRepo;
 import me.crespel.karaplan.service.PlaylistService;
 
@@ -30,12 +32,34 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id) {
-		return playlistRepo.findById(id);
+		Optional<Playlist> playlist = playlistRepo.findById(id);
+		if (playlist.isPresent()) {
+			playlist.get().getSongs(); // Force load
+		}
+		return playlist;
 	}
 
 	@Override
+	@Transactional
 	public Playlist save(Playlist playlist) {
+		return playlistRepo.save(playlist);
+	}
+
+	@Override
+	@Transactional
+	public Playlist addSong(Playlist playlist, Song song) {
+		playlist.getSongs().add(song);
+		song.getPlaylists().add(playlist);
+		return playlistRepo.save(playlist);
+	}
+
+	@Override
+	@Transactional
+	public Playlist removeSong(Playlist playlist, Song song) {
+		playlist.getSongs().remove(song);
+		song.getPlaylists().remove(playlist);
 		return playlistRepo.save(playlist);
 	}
 
