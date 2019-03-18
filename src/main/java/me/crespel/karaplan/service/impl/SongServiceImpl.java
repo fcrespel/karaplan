@@ -151,6 +151,19 @@ public class SongServiceImpl implements SongService {
 		return songRepo.save(song);
 	}
 
+	@Override
+	@Transactional
+	public Song removeComment(Song song, long commentId) {
+		return removeComment(song, null, commentId);
+	}
+
+	@Override
+	@Transactional
+	public Song removeComment(Song song, User user, long commentId) {
+		song.getComments().removeIf(it -> it.getId() == commentId && (user == null || user.equals(it.getUser())));
+		return songRepo.save(song);
+	}
+
 	public class CatalogSongToSongConverter implements Converter<CatalogSong, Song> {
 
 		@Override

@@ -24,4 +24,6 @@ public interface PlaylistService {
 
 	Playlist removeSong(Playlist playlist, Song song);
 
+	void delete(Long id);
+
 }

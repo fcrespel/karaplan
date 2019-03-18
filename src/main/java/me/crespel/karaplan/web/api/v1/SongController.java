@@ -82,9 +82,16 @@ public class SongController {
 
 	@PostMapping("/{catalogId}/comment")
 	@ApiOperation("Add a comment to a song by catalog id")
-	public Song commentSongByCatalogId(@PathVariable Long catalogId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
+	public Song addCommentToSongByCatalogId(@PathVariable Long catalogId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.addComment(song, user, comment);
+	}
+
+	@DeleteMapping("/{catalogId}/comment/{commentId}")
+	@ApiOperation("Remove a comment from a song by catalog id")
+	public Song removeCommentFromSongByCatalogId(@PathVariable Long catalogId, @PathVariable Long commentId, @AuthenticationPrincipal(expression = "user") User user) {
+		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		return songService.removeComment(song, user, commentId);
 	}
 
 	@PostMapping("/{catalogId}/playlist/{playlistId}")

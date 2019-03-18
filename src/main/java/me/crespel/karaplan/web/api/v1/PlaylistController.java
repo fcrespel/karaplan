@@ -51,7 +51,14 @@ public class PlaylistController {
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist by id")
 	public Playlist getPlaylist(@PathVariable Long playlistId) {
-		return playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID")); 
+		return playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	}
+
+	@DeleteMapping("/{playlistId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation("Delete a playlist by id")
+	public void deletePlaylist(@PathVariable Long playlistId) {
+		playlistService.delete(playlistId);
 	}
 
 	@PostMapping("/{playlistId}/song/{catalogId}")

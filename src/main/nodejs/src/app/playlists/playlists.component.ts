@@ -46,4 +46,13 @@ export class PlaylistsComponent implements OnInit {
     })
   }
 
+  deletePlaylist(playlist: Playlist) {
+    this.playlistsService.deletePlaylist(playlist.id).subscribe(() => {
+      let index = this.playlists.findIndex(p => p.id == playlist.id);
+      if (index > -1) {
+        this.playlists.splice(index, 1);
+      }
+      this.router.navigate(['/playlists']);
+    });
+  }
 }

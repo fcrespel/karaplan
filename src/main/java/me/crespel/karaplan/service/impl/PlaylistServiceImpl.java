@@ -68,4 +68,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return playlistRepo.save(playlist);
 	}
 
+	@Override
+	@Transactional
+	public void delete(Long id) {
+		playlistRepo.deleteById(id);
+	}
+
 }

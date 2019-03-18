@@ -27,6 +27,11 @@ export class PlaylistsService {
     return this.http.get<Playlist>(url);
   }
 
+  deletePlaylist(id: number): Observable<Response> {
+    const url = `${this.playlistsUrl}/${id}`
+    return this.http.delete<Response>(url);
+  }
+
   addSongByCatalogId(playlistId: number, catalogId: number): Observable<Playlist> {
     const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.post<Playlist>(url, null);

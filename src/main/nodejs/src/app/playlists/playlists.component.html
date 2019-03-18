@@ -1,19 +1,22 @@
 <h1>Playlists</h1>
 
 <div class="row">
+  <!-- Master -->
   <div class="col-md-4 col-lg-3">
     <div class="list-group shadow mb-3">
       <a href="#" routerLink="/playlists" class="list-group-item list-group-item-action" [class.active]="!playlist">
         <i class="fas fa-plus mr-1"></i>
         New playlist
       </a>
-      <a href="#" *ngFor="let p of playlists" [routerLink]="['/playlists', { id: p.id }]" class="list-group-item list-group-item-action" [class.active]="playlist && p.id == playlist.id">
+      <a href="#" *ngFor="let p of playlists" [routerLink]="['/playlists', p.id]" class="list-group-item list-group-item-action" [class.active]="playlist && p.id == playlist.id">
         <i class="fas fa-list mr-1"></i>
         {{ p.name }}
       </a>
     </div>
   </div>
+  <!-- Playlist detail -->
   <div class="col-md-8 col-lg-9">
+    <!-- Create playlist -->
     <ng-container *ngIf="!playlist">
       <form (ngSubmit)="createPlaylist(playlistName)">
         <div class="input-group shadow">
@@ -24,11 +27,19 @@
         </div>
       </form>
     </ng-container>
+    <!-- Playlist content -->
     <ng-container *ngIf="playlist">
+      <div class="row justify-content-between mb-2">
+        <div class="col">
+          <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-danger shadow" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
+        </div>
+      </div>
       <app-song-list [songs]="playlist.songs" [showPlaylists]="false" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
       <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
         <p>No song has been added to this playlist yet.</p>
-        <a href="#" routerLink="/songs" class="btn btn-pink shadow">Find songs</a>
       </ng-container>
     </ng-container>
   </div>

@@ -31,4 +31,8 @@ public interface SongService {
 
 	Song addComment(Song song, User user, String comment);
 
+	Song removeComment(Song song, long commentId);
+
+	Song removeComment(Song song, User user, long commentId);
+
 }

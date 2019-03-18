@@ -39,9 +39,15 @@ export class SongActionsComponent implements OnInit {
   }
 
   addComment(comment: string) {
-    this.songsService.commentSongByCatalogId(this.song.catalogId, comment).subscribe(song => {
+    this.songsService.addCommentToSongByCatalogId(this.song.catalogId, comment).subscribe(song => {
       this.song = song;
       this.commentText = '';
+    });
+  }
+
+  removeComment(commentId: number) {
+    this.songsService.removeCommentFromSongByCatalogId(this.song.catalogId, commentId).subscribe(song => {
+      this.song = song;
     });
   }
 

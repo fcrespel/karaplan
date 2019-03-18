@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedBy;
@@ -34,7 +35,7 @@ import lombok.experimental.Accessors;
 @ToString(of = {"id", "score"})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "song_vote")
+@Table(name = "song_vote", uniqueConstraints = @UniqueConstraint(columnNames = {"FK_SONG", "FK_USER"}))
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SongVote implements Comparable<SongVote> {
 

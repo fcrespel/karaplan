@@ -53,9 +53,14 @@ export class SongsService {
     return this.http.post<Song>(url, null, {params: params});
   }
 
-  commentSongByCatalogId(catalogId: number, comment: string): Observable<Song> {
+  addCommentToSongByCatalogId(catalogId: number, comment: string): Observable<Song> {
     const url = `${this.songsUrl}/${catalogId}/comment`;
     return this.http.post<Song>(url, comment);
+  }
+
+  removeCommentFromSongByCatalogId(catalogId: number, commentId: number): Observable<Song> {
+    const url = `${this.songsUrl}/${catalogId}/comment/${commentId}`;
+    return this.http.delete<Song>(url);
   }
 
   addSongToPlaylistByCatalogId(catalogId: number, playlistId: number): Observable<Song> {
