@@ -71,7 +71,7 @@ public class Song {
 	@Column(name = "LYRICS")
 	private String lyrics;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "FK_ARTIST", referencedColumnName = "ID")
 	@JsonIgnoreProperties("songs")
 	private Artist artist;
