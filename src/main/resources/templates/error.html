@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>Karaplan</title>
+	<base th:href="@{/}"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<style type="text/css">
+		@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+		@import url('https://use.fontawesome.com/releases/v5.7.2/css/all.css');
+		@import url('https://fonts.googleapis.com/css?family=Raleway');
+		
+		html {
+			height: 100%;
+		}
+		
+		body {
+			height: 100%;
+			display: flex;
+			font-family: 'Raleway', sans-serif;
+			background-image: linear-gradient(141.27841068346947deg, #1d0032, #210038 3.1%, #240039 3.1%, #2a003d 6%, #2d003e 6%, #3a0046 9.9%, #cc577a 59.1%, #ca587a 59.1%,#7b222b);
+			background-size: 100%;
+			background-attachment: fixed;
+		}
+		
+		.btn-pink {
+			background-color: #db2c78;
+			border-color: #db2c78;
+			color: #fff;
+		}
+		.btn-pink:hover {
+			background-color: #cc577a;
+			border-color: #cc577a;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+<div class="m-auto text-white text-center">
+	<h1>Oops! <i class="fas fa-sad-tear"></i></h1>
+	<p>Something went wrong, please try again.</p>
+	<p>
+		<a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> Go back</a> or
+		<a th:href="@{/}" class="btn btn-pink shadow"><i class="fas fa-home"></i> Go home</a>
+	</p>
+	<p class="mt-5 mb-1"><small>If you'd like to report this error, here is some technical info to mention:</small></p>
+	<p>
+		<small><strong>Error:</strong> <span th:text="${status}"/> <span th:text="${error}"/></small><br/>
+		<small><strong>Message:</strong> <span th:text="${message}"/></small>
+	</p>
+</div>
+</body>
+</html>

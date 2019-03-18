@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import me.crespel.karaplan.security.OidcUserServiceWrapper;
 
@@ -37,6 +39,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
 		return new OidcUserServiceWrapper(new OidcUserService());
+	}
+
+	@Bean
+	public HttpFirewall httpFirewall() {
+		StrictHttpFirewall firewall = new StrictHttpFirewall();
+		firewall.setAllowSemicolon(true);
+		return firewall;
 	}
 
 }
