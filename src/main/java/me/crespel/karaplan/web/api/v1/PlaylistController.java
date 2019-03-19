@@ -3,6 +3,7 @@ package me.crespel.karaplan.web.api.v1;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.model.exception.BusinessException;
+import me.crespel.karaplan.service.ExportService;
 import me.crespel.karaplan.service.PlaylistService;
 import me.crespel.karaplan.service.SongService;
 
@@ -34,6 +36,10 @@ public class PlaylistController {
 
 	@Autowired
 	protected SongService songService;
+
+	@Autowired
+	@Qualifier("karafunExport")
+	protected ExportService karafunExportService;
 
 	@GetMapping
 	@ApiOperation("Get all playlists")
@@ -75,6 +81,14 @@ public class PlaylistController {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.removeSong(playlist, song);
+	}
+
+	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation("Export a playlist to Karafun by remote id")
+	public void exportPlaylistToKarafun(@PathVariable Long playlistId, @PathVariable String remoteId) {
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		karafunExportService.exportPlaylist(playlist, remoteId);
 	}
 
 }

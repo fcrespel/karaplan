@@ -41,4 +41,9 @@ export class PlaylistsService {
     const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.delete<Playlist>(url);
   }
+
+  exportPlaylistToKarafun(playlistId: number, remoteId: string): Observable<Response> {
+    const url = `${this.playlistsUrl}/${playlistId}/export/karafun/${remoteId}`
+    return this.http.post<Response>(url, null);
+  }
 }

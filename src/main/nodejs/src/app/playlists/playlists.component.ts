@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
 import { Playlist } from '../models/playlist';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-playlists',
@@ -17,6 +18,7 @@ export class PlaylistsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private modalService: NgbModal,
     private playlistsService: PlaylistsService
   ) { }
 
@@ -59,6 +61,14 @@ export class PlaylistsComponent implements OnInit {
         this.playlists.splice(index, 1);
       }
       this.router.navigate(['/playlists']);
+    });
+  }
+
+  exportPlaylistToKarafun(playlist: Playlist, modalContent) {
+    this.modalService.open(modalContent).result.then(remoteId => {
+      if (remoteId) {
+        this.playlistsService.exportPlaylistToKarafun(playlist.id, remoteId).subscribe(response => {});
+      }
     });
   }
 }

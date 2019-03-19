@@ -20,3 +20,6 @@ server:
   port: 8080
   compression:
     enabled: true
+logging:
+  level:
+    me.crespel.karaplan: debug
