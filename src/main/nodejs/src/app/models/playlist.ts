@@ -11,4 +11,5 @@ export class Playlist {
   updatedBy: User;
 
   isSelected: boolean;
+  duration: number;
 }

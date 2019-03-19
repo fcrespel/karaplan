@@ -36,12 +36,18 @@ export class PlaylistsComponent implements OnInit {
   loadPlaylist(playlistId: number) {
     this.playlistsService.getPlaylist(playlistId).subscribe(playlist => {
       this.playlist = playlist;
+      if (this.playlist.songs) {
+        this.playlist.duration = this.playlist.songs.reduce((d, song) => d + song.duration, 0);
+      } else {
+        this.playlist.duration = 0;
+      }
     });
   }
 
   createPlaylist(name: string) {
     this.playlistsService.createPlaylist(name).subscribe(playlist => {
       this.playlist = playlist;
+      this.playlist.duration = 0;
       this.playlists.push(playlist);
     })
   }

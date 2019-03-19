@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
+import { User } from '../models/user';
 import { Song } from '../models/song';
 import { Playlist } from '../models/playlist';
 import { PlaylistsService } from '../services/playlists.service';
@@ -15,15 +17,21 @@ export class SongActionsComponent implements OnInit {
   @Input() showVotes: boolean = true;
   @Input() showComments: boolean = true;
   @Input() showPlaylists: boolean = true;
+
+  user: User = null;
   playlists: Playlist[] = null;
   commentText: string;
 
   constructor(
+    private accountService: AccountService,
     private songsService: SongsService,
     private playlistsService: PlaylistsService
   ) { }
 
   ngOnInit() {
+    this.accountService.getPrincipal().subscribe(principal => {
+      this.user = principal.user;
+    });
   }
 
   voteUp() {

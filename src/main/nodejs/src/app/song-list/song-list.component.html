@@ -7,7 +7,10 @@
       <p class="m-0"><a href="#" [routerLink]="['/songs', song.catalogId]" class="text-reset">{{ song.name }}</a></p>
       <p class="m-0"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" (click)="$event.stopPropagation()" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
     </div>
-    <div class="col-auto d-none d-sm-block">
+    <div class="col-auto" *ngIf="showDuration && song.duration">
+      <span class="badge badge-secondary">{{ song.duration }} s</span>
+    </div>
+    <div class="col-auto d-none d-sm-block ml-2">
       <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists"></app-song-actions>
     </div>
   </li>

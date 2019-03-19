@@ -32,12 +32,13 @@
       <div class="row justify-content-between mb-2">
         <div class="col">
           <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
+          <span class="mx-3" *ngIf="playlist.duration">Duration: {{ playlist.duration }} s</span>
         </div>
         <div class="col-auto">
           <button type="button" class="btn btn-danger shadow" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
         </div>
       </div>
-      <app-song-list [songs]="playlist.songs" [showPlaylists]="false" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
+      <app-song-list [songs]="playlist.songs" [showDuration]="true" [showPlaylists]="false" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
       <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
         <p>No song has been added to this playlist yet.</p>
       </ng-container>
