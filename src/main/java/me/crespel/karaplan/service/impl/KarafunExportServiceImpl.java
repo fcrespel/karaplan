@@ -41,7 +41,7 @@ public class KarafunExportServiceImpl implements ExportService {
 			Set<Long> songIds = playlist.getSongs().stream().map(it -> it.getCatalogId()).collect(Collectors.toSet());
 			try {
 				Socket socket = buildSocket(target);
-				socket.on(Socket.EVENT_CONNECT, new ConnectEventListener(socket, target, new AuthenticateAckListener(socket, songIds)))
+				socket.on(Socket.EVENT_CONNECT, new ConnectEventListener(socket, target))
 						.on(Socket.EVENT_CONNECT_ERROR, new LoggingListener(Socket.EVENT_CONNECT_ERROR))
 						.on(Socket.EVENT_CONNECT_TIMEOUT, new LoggingListener(Socket.EVENT_CONNECT_ERROR))
 						.on(Socket.EVENT_ERROR, new ErrorEventListener(socket))
@@ -50,7 +50,7 @@ public class KarafunExportServiceImpl implements ExportService {
 						.on(EVENT_PERMISSIONS, new LoggingListener(EVENT_PERMISSIONS))
 						.on(EVENT_PREFERENCES, new LoggingListener(EVENT_PREFERENCES))
 						.on(EVENT_STATUS, new LoggingListener(EVENT_STATUS))
-						.on(EVENT_QUEUE, new LoggingListener(EVENT_QUEUE));
+						.on(EVENT_QUEUE, new QueueEventListener(socket, songIds));
 				log.debug("Connecting to Karafun Remote {}", target);
 				socket.connect();
 			} catch (Exception e) {
@@ -85,7 +85,7 @@ public class KarafunExportServiceImpl implements ExportService {
 		try {
 			JSONObject obj = new JSONObject();
 			obj.put("songId", songId);
-			obj.put("post", 9999);
+			obj.put("pos", 99999);
 			obj.put("singer", "");
 			return obj;
 		} catch (JSONException e) {
@@ -107,36 +107,40 @@ public class KarafunExportServiceImpl implements ExportService {
 
 	@AllArgsConstructor
 	public class LoggingListener implements Emitter.Listener {
-
 		private final String eventName;
 
 		@Override
 		public void call(Object... args) {
 			logReceivedEvent(eventName, args);
 		}
+	}
 
+	@AllArgsConstructor
+	public class LoggingAck implements Ack {
+		private final String eventName;
+
+		@Override
+		public void call(Object... args) {
+			logReceivedAck(eventName, args);
+		}
 	}
 
 	@AllArgsConstructor
 	public class ConnectEventListener implements Emitter.Listener {
-
 		private final Socket socket;
 		private final String remoteId;
-		private final Ack authenticateListener;
 
 		@Override
 		public void call(Object... args) {
 			logReceivedEvent(Socket.EVENT_CONNECT, args);
 			JSONObject eventData = buildAuthenticateEvent(remoteId);
 			logSendEvent(EVENT_AUTHENTICATE, eventData);
-			socket.emit(EVENT_AUTHENTICATE, eventData, authenticateListener);
+			socket.emit(EVENT_AUTHENTICATE, eventData, new LoggingAck(EVENT_AUTHENTICATE));
 		}
-
 	}
 
 	@AllArgsConstructor
 	public class ErrorEventListener implements Emitter.Listener {
-
 		private final Socket socket;
 
 		@Override
@@ -144,18 +148,16 @@ public class KarafunExportServiceImpl implements ExportService {
 			logReceivedEvent(Socket.EVENT_ERROR, args);
 			socket.disconnect();
 		}
-
 	}
 
 	@AllArgsConstructor
-	public class AuthenticateAckListener implements Ack {
-
+	public class QueueEventListener implements Emitter.Listener {
 		private final Socket socket;
 		private final Collection<Long> songIds;
 
 		@Override
 		public void call(Object... args) {
-			logReceivedAck(EVENT_AUTHENTICATE, args);
+			logReceivedEvent(EVENT_QUEUE, args);
 			for (Long songId : songIds) {
 				if (songId != null) {
 					JSONObject eventData = buildQueueAddEvent(songId);
@@ -166,7 +168,6 @@ public class KarafunExportServiceImpl implements ExportService {
 			log.debug("Disconnecting from Karafun session");
 			socket.disconnect();
 		}
-
 	}
 
 }
