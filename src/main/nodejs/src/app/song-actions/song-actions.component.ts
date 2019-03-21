@@ -5,6 +5,7 @@ import { User } from '../models/user';
 import { Song } from '../models/song';
 import { Playlist } from '../models/playlist';
 import { PlaylistsService } from '../services/playlists.service';
+import { SongVote } from '../models/song-vote';
 
 @Component({
   selector: 'app-song-actions',
@@ -20,6 +21,9 @@ export class SongActionsComponent implements OnInit {
 
   user: User = null;
   playlists: Playlist[] = null;
+  vote: SongVote;
+  voteUpUsers: string;
+  voteDownUsers: string;
   commentText: string;
 
   constructor(
@@ -31,44 +35,60 @@ export class SongActionsComponent implements OnInit {
   ngOnInit() {
     this.accountService.getPrincipal().subscribe(principal => {
       this.user = principal.user;
+      this.updateSong(this.song);
     });
   }
 
+  updateSong(song: Song) {
+    this.song = song;
+    if (this.user && song.votes) {
+      this.vote = song.votes.find(vote => vote.user.id == this.user.id);
+      this.voteUpUsers = song.votes.filter(vote => vote.score > 0).map(vote => vote.user.displayName).join(', ');
+      this.voteDownUsers = song.votes.filter(vote => vote.score < 0).map(vote => vote.user.displayName).join(', ');
+    } else {
+      this.vote = undefined;
+      this.voteUpUsers = undefined;
+      this.voteDownUsers = undefined;
+    }
+  }
+
   voteUp() {
-    this.songsService.voteSongByCatalogId(this.song.catalogId, 1).subscribe(song => {
-      this.song = song;
+    let score = (this.vote && this.vote.score) == 1 ? 0 : 1;
+    this.songsService.voteSongByCatalogId(this.song.catalogId, score).subscribe(song => {
+      this.updateSong(song);
     });
   }
 
   voteDown() {
-    this.songsService.voteSongByCatalogId(this.song.catalogId, -1).subscribe(song => {
-      this.song = song;
+    let score = (this.vote && this.vote.score) == -1 ? 0 : -1;
+    this.songsService.voteSongByCatalogId(this.song.catalogId, score).subscribe(song => {
+      this.updateSong(song);
     });
   }
 
   addComment(comment: string) {
     this.songsService.addCommentToSongByCatalogId(this.song.catalogId, comment).subscribe(song => {
-      this.song = song;
+      this.updateSong(song);
       this.commentText = '';
     });
   }
 
   removeComment(commentId: number) {
     this.songsService.removeCommentFromSongByCatalogId(this.song.catalogId, commentId).subscribe(song => {
-      this.song = song;
+      this.updateSong(song);
     });
   }
 
   addToPlaylist(playlist: Playlist) {
     this.songsService.addSongToPlaylistByCatalogId(this.song.catalogId, playlist.id).subscribe(song => {
-      this.song = song;
+      this.updateSong(song);
       playlist.isSelected = true;
     });
   }
 
   removeFromPlaylist(playlist: Playlist) {
     this.songsService.removeSongFromPlaylistByCatalogId(this.song.catalogId, playlist.id).subscribe(song => {
-      this.song = song;
+      this.updateSong(song);
       playlist.isSelected = false;
     });
   }

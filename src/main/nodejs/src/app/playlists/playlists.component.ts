@@ -14,6 +14,7 @@ export class PlaylistsComponent implements OnInit {
   playlists: Playlist[] = [];
   playlist: Playlist;
   playlistName: string;
+  karafunRemoteId: string;
 
   constructor(
     private route: ActivatedRoute,
