@@ -6,6 +6,8 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
+import com.google.common.base.Strings;
+
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.service.UserService;
 
@@ -33,6 +35,17 @@ public class OidcUserServiceWrapper implements OAuth2UserService<OidcUserRequest
 				.setLastName(oidcUser.getFamilyName())
 				.setFullName(oidcUser.getFullName())
 				.setEmail(oidcUser.getEmail());
+		if (Strings.isNullOrEmpty(user.getDisplayName())) {
+			if (!Strings.isNullOrEmpty(oidcUser.getGivenName()) && !Strings.isNullOrEmpty(oidcUser.getFamilyName())) {
+				user.setDisplayName(oidcUser.getGivenName() + " " + oidcUser.getFamilyName().charAt(0) + ".");
+			} else if (!Strings.isNullOrEmpty(oidcUser.getFullName())) {
+				user.setDisplayName(oidcUser.getFullName());
+			} else if (!Strings.isNullOrEmpty(oidcUser.getPreferredUsername())) {
+				user.setDisplayName(oidcUser.getPreferredUsername());
+			} else {
+				user.setDisplayName(oidcUser.getSubject());
+			}
+		}
 		return userService.save(user);
 	}
 

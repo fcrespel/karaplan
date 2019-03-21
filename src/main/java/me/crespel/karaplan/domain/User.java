@@ -39,6 +39,10 @@ public class User {
 	@Column(name = "USERNAME", unique = true)
 	private String username;
 
+	@NotNull
+	@Column(name = "DISPLAYNAME")
+	private String displayName;
+
 	@Column(name = "FIRSTNAME")
 	private String firstName;
 

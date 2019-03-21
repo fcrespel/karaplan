@@ -12,8 +12,16 @@
         <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active">Playlists</a>
       </li>
     </ul>
-    <span class="navbar-text mr-3" *ngIf="user">{{ user.fullName }}</span>
+    <ul class="navbar-nav" *ngIf="user">
+      <li class="nav-item" ngbDropdown placement="bottom-right">
+        <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
+        <div class="dropdown-menu shadow" ngbDropdownMenu>
+          <a class="dropdown-item" href="#"><i class="fas fa-user mr-1"></i> Profile</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+        </div>
+      </li>
+    </ul>
     <a class="btn btn-outline-light" href="login" *ngIf="user == null">Login</a>
-    <a class="btn btn-outline-light" href="logout" *ngIf="user">Logout</a>
   </div>
 </nav>
