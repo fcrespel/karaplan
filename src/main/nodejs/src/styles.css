@@ -22,8 +22,27 @@ h1 {
 	margin-bottom: 1rem;
 }
 
+a {
+	color: #db2c78;
+}
+a:hover {
+	color: #cc577a;
+}
+
+.bg-white-50 {
+	background-color: rgba(255,255,255,.5) !important;
+}
+
+.border-white-50 {
+	border-color: rgba(255,255,255,.5) !important;
+}
+
 .bg-pink {
 	background-color: #db2c78;
+}
+
+.border-pink {
+	border-color: #db2c78;
 }
 
 .btn-pink {

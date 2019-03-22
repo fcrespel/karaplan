@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { share } from 'rxjs/operators';
 import { Principal } from '../models/principal';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +22,10 @@ export class AccountService {
       this.principal$ = this.http.get<Principal>(url).pipe(share());
     }
     return this.principal$;
+  }
+
+  updateUser(user: User): Observable<User> {
+    const url = `${this.accountUrl}/user`;
+    return this.http.post<User>(url, user);
   }
 }

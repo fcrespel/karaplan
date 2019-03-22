@@ -1,0 +1,34 @@
+<h1>User Profile</h1>
+
+<p>Your user profile is linked to your <a href="https://accounts.google.com">Google Account</a>. You may choose a different display name to use here.</p>
+<form *ngIf="user" (ngSubmit)="updateUser(user)">
+  <div class="form-group row">
+    <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control shadow-sm" id="displayName" name="displayName" [(ngModel)]="user.displayName" required>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="firstName" class="col-sm-2 col-form-label">First name</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control shadow-sm bg-white-50 border-white-50" id="firstName" name="firstName" [(ngModel)]="user.firstName" readonly>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="lastName" class="col-sm-2 col-form-label">Last name</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control shadow-sm bg-white-50 border-white-50" id="lastName" name="lastName" [(ngModel)]="user.lastName" readonly>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="email" class="col-sm-2 col-form-label">Email address</label>
+    <div class="col-sm-6">
+      <input type="email" class="form-control shadow-sm bg-white-50 border-white-50" id="email" name="email" [(ngModel)]="user.email" readonly>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-6 offset-md-2">
+      <button type="submit" class="btn btn-pink shadow" readonly>Save</button>
+    </div>
+  </div>
+</form>
