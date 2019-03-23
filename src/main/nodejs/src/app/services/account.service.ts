@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { share } from 'rxjs/operators';
+import { shareReplay } from 'rxjs/operators';
 import { Principal } from '../models/principal';
 import { User } from '../models/user';
 
@@ -16,10 +16,12 @@ export class AccountService {
     private http: HttpClient
   ) { }
 
-  getPrincipal(): Observable<Principal> {
-    if (this.principal$ == null) {
-      const url = `${this.accountUrl}/principal`;
-      this.principal$ = this.http.get<Principal>(url).pipe(share());
+  getPrincipal(cache: boolean = true): Observable<Principal> {
+    const url = `${this.accountUrl}/principal`;
+    if (!cache) {
+      return this.http.get<Principal>(url);
+    } else if (this.principal$ == null) {
+      this.principal$ = this.http.get<Principal>(url).pipe(shareReplay(1));
     }
     return this.principal$;
   }

@@ -1,0 +1,45 @@
+<!-- Toolbar -->
+<div class="row justify-content-between mb-2">
+  <div class="col">
+    <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
+    <span class="mx-3" *ngIf="playlist.duration">Duration: {{ playlist.duration }} s</span>
+  </div>
+  <div class="col-auto">
+    <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
+      <button class="btn btn-light shadow" ngbDropdownToggle>Export ...</button>
+      <div class="dropdown-menu shadow" ngbDropdownMenu>
+        <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafun(playlist, karafunExportModal)">Karafun Remote</button>
+      </div>
+    </div>
+    <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
+  </div>
+</div>
+
+<!-- Song list -->
+<app-song-list [songs]="playlist.songs" [showDuration]="true" [showPlaylists]="false" [showRemove]="true" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
+<ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
+  <p>No song has been added to this playlist yet.</p>
+</ng-container>
+
+<!-- Karafun Remote export modal -->
+<ng-template #karafunExportModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Export to Karafun Remote</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #karafunExportForm="ngForm">
+      <div class="form-group">
+        <label for="karafunRemoteId">Remote ID</label>
+        <div class="input-group">
+          <input type="number" class="form-control" id="karafunRemoteId" name="karafunRemoteId" [(ngModel)]="karafunRemoteId" #karafunRemoteIdField="ngModel" [class.is-invalid]="karafunRemoteIdField.dirty && karafunRemoteIdField.invalid" required>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-pink" [disabled]="!karafunExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to Karafun</button>
+  </div>
+</ng-template>

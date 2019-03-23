@@ -17,18 +17,18 @@
     <span class="badge badge-secondary ml-1" *ngIf="song.comments">{{ song.comments.length }}</span>
   </button>
   <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
-    <form (ngSubmit)="addComment(commentText)" class="mx-3 my-2 text-right">
+    <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="mx-3 my-2 text-right">
       <div class="form-group mb-2">
-        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" rows="1" cols="100" placeholder="Your comment ..."></textarea>
+        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" cols="100" placeholder="Your comment ..." required></textarea>
       </div>
-      <button type="submit" class="btn btn-sm btn-pink">Add comment</button>
+      <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
     </form>
-    <ng-container *ngFor="let comment of song.comments">
+    <ng-container *ngFor="let comment of song.comments; trackBy: trackByCommentId">
       <div class="dropdown-divider"></div>
       <div class="d-flex mx-3 mt-2 mb-0 align-items-center justify-content-between">
         <small class="text-muted flex-grow-1">{{ comment.user.displayName }}</small>
         <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
-        <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment.id)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+        <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
       </div>
       <p class="mx-3 mt-0 mb-2 comment-text">{{ comment.comment }}</p>
     </ng-container>
@@ -42,7 +42,7 @@
     <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlists.length }}</span>
   </button>
   <div class="dropdown-menu shadow" ngbDropdownMenu>
-    <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists" (click)="togglePlaylist(playlist)">
+    <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists; trackBy: trackByPlaylistId" (click)="togglePlaylist(playlist)">
       <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
       <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
       {{ playlist.name }}
@@ -51,3 +51,8 @@
     <a class="dropdown-item" href="#" routerLink="/playlists"><i class="fas fa-plus mr-1"></i> New playlist</a>
   </div>
 </div>
+
+<!-- Remove -->
+<button type="button" class="btn btn-outline-danger mx-1" title="Remove song" (click)="$event.stopPropagation(); songRemoved.emit(song)" *ngIf="showRemove">
+  <i class="far fa-trash-alt"></i>
+</button>

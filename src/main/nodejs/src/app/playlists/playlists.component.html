@@ -1,14 +1,14 @@
 <h1>Playlists</h1>
 
 <div class="row">
-  <!-- Master -->
+  <!-- Playlist list -->
   <div class="col-md-4 col-lg-3">
     <div class="list-group shadow mb-3">
       <a href="#" routerLink="/playlists" class="list-group-item list-group-item-action" [class.active]="!playlist">
         <i class="fas fa-plus mr-1"></i>
         New playlist
       </a>
-      <a href="#" *ngFor="let p of playlists" [routerLink]="['/playlists', p.id]" class="list-group-item list-group-item-action" [class.active]="playlist && p.id == playlist.id">
+      <a href="#" *ngFor="let p of playlists; trackBy: trackByPlaylistId" [routerLink]="['/playlists', p.id]" class="list-group-item list-group-item-action" [class.active]="playlist && p.id == playlist.id">
         <i class="fas fa-list mr-1"></i>
         {{ p.name }}
       </a>
@@ -18,58 +18,16 @@
   <div class="col-md-8 col-lg-9">
     <!-- Create playlist -->
     <ng-container *ngIf="!playlist">
-      <form (ngSubmit)="createPlaylist(playlistName)">
+      <form #playlistCreateForm="ngForm" (ngSubmit)="createPlaylist(playlistName)">
         <div class="input-group shadow">
-          <input type="text" class="form-control" name="playlistName" [(ngModel)]="playlistName" placeholder="Playlist name">
+          <input type="text" class="form-control" name="playlistName" [(ngModel)]="playlistName" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" placeholder="Playlist name" required>
           <div class="input-group-append">
-            <button type="submit" class="btn btn-pink"><i class="fas fa-plus"></i> Create</button>
+            <button type="submit" class="btn btn-pink" [disabled]="!playlistCreateForm.form.valid"><i class="fas fa-plus"></i> Create</button>
           </div>
         </div>
       </form>
     </ng-container>
-    <!-- Playlist content -->
-    <ng-container *ngIf="playlist">
-      <div class="row justify-content-between mb-2">
-        <div class="col">
-          <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
-          <span class="mx-3" *ngIf="playlist.duration">Duration: {{ playlist.duration }} s</span>
-        </div>
-        <div class="col-auto">
-          <div ngbDropdown placement="bottom" class="d-inline-block mx-1">
-            <button class="btn btn-light shadow" ngbDropdownToggle>Export ...</button>
-            <div class="dropdown-menu shadow" ngbDropdownMenu>
-              <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafun(playlist, karafunExportModal)">Karafun Remote</button>
-            </div>
-          </div>
-          <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
-        </div>
-      </div>
-      <app-song-list [songs]="playlist.songs" [showDuration]="true" [showPlaylists]="false" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
-      <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
-        <p>No song has been added to this playlist yet.</p>
-      </ng-container>
-    </ng-container>
+    <!-- Show playlist -->
+    <app-playlist-detail [playlist]="playlist" (delete)="deletePlaylist($event)" *ngIf="playlist"></app-playlist-detail>
   </div>
 </div>
-
-<ng-template #karafunExportModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Export to Karafun Remote</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <form #karafunExportForm="ngForm">
-      <div class="form-group">
-        <label for="karafunRemoteId">Remote ID</label>
-        <div class="input-group">
-          <input type="number" class="form-control" id="karafunRemoteId" name="karafunRemoteId" [(ngModel)]="karafunRemoteId" required>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-pink" [disabled]="!karafunExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to Karafun</button>
-  </div>
-</ng-template>

@@ -1,11 +1,11 @@
 <h1>User Profile</h1>
 
 <p>Your user profile is linked to your <a href="https://accounts.google.com">Google Account</a>. You may choose a different display name to use here.</p>
-<form *ngIf="user" (ngSubmit)="updateUser(user)">
+<form #userProfileForm="ngForm" *ngIf="user" (ngSubmit)="updateUser(user)">
   <div class="form-group row">
     <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
     <div class="col-sm-6">
-      <input type="text" class="form-control shadow-sm" id="displayName" name="displayName" [(ngModel)]="user.displayName" required>
+      <input type="text" class="form-control shadow-sm" id="displayName" name="displayName" [(ngModel)]="user.displayName" #displayNameField="ngModel" [class.is-invalid]="displayNameField.dirty && displayNameField.invalid" required>
     </div>
   </div>
   <div class="form-group row">
@@ -28,7 +28,7 @@
   </div>
   <div class="form-group row">
     <div class="col-sm-6 offset-md-2">
-      <button type="submit" class="btn btn-pink shadow" readonly>Save</button>
+      <button type="submit" class="btn btn-pink shadow" [disabled]="!userProfileForm.form.valid">Save</button>
     </div>
   </div>
 </form>

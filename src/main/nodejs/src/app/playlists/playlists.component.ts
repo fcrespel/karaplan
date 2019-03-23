@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
 import { Playlist } from '../models/playlist';
 
@@ -14,12 +13,10 @@ export class PlaylistsComponent implements OnInit {
   playlists: Playlist[] = [];
   playlist: Playlist;
   playlistName: string;
-  karafunRemoteId: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NgbModal,
     private playlistsService: PlaylistsService
   ) { }
 
@@ -47,29 +44,20 @@ export class PlaylistsComponent implements OnInit {
     });
   }
 
+  trackByPlaylistId(index: number, playlist: Playlist): number {
+    return playlist.id;
+  }
+
   createPlaylist(name: string) {
     this.playlistsService.createPlaylist(name).subscribe(playlist => {
-      this.playlist = playlist;
-      this.playlist.duration = 0;
-      this.playlists.push(playlist);
+      this.router.navigate(['/playlists', playlist.id]);
     })
   }
 
   deletePlaylist(playlist: Playlist) {
     this.playlistsService.deletePlaylist(playlist.id).subscribe(() => {
-      let index = this.playlists.findIndex(p => p.id == playlist.id);
-      if (index > -1) {
-        this.playlists.splice(index, 1);
-      }
       this.router.navigate(['/playlists']);
     });
   }
 
-  exportPlaylistToKarafun(playlist: Playlist, modalContent) {
-    this.modalService.open(modalContent).result.then(remoteId => {
-      if (remoteId) {
-        this.playlistsService.exportPlaylistToKarafun(playlist.id, remoteId).subscribe(response => {});
-      }
-    });
-  }
 }

@@ -14,12 +14,17 @@ export class SongListComponent implements OnInit {
   @Input() showVotes: boolean = true;
   @Input() showComments: boolean = true;
   @Input() showPlaylists: boolean = true;
+  @Input() showRemove: boolean = false;
 
   constructor(
     private router: Router
   ) { }
 
   ngOnInit() {
+  }
+
+  trackBySongId(index: number, song: Song): number {
+    return song.id;
   }
 
   gotoSong(song: Song) {

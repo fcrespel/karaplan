@@ -14,6 +14,7 @@ import { SongSelectionsComponent } from './song-selections/song-selections.compo
 import { SongDetailComponent } from './song-detail/song-detail.component';
 import { SongActionsComponent } from './song-actions/song-actions.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
+import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
@@ -27,6 +28,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     SongDetailComponent,
     SongActionsComponent,
     PlaylistsComponent,
+    PlaylistDetailComponent,
     UserProfileComponent
   ],
   imports: [

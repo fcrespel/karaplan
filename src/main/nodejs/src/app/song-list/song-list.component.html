@@ -1,5 +1,5 @@
 <ul class="list-group shadow" *ngIf="songs">
-  <li *ngFor="let song of songs" (click)="gotoSong(song)" class="list-group-item list-group-item-action d-flex align-items-center no-gutters px-3 py-2">
+  <li *ngFor="let song of songs; trackBy: trackBySongId" (click)="gotoSong(song)" class="list-group-item list-group-item-action d-flex align-items-center no-gutters px-3 py-2">
     <div class="col-auto">
       <img src="{{ song.image }}" class="rounded" style="width: 50px;">
     </div>
@@ -11,7 +11,7 @@
       <span class="badge badge-secondary">{{ song.duration }} s</span>
     </div>
     <div class="col-auto d-none d-sm-block ml-2">
-      <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists"></app-song-actions>
+      <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists" [showRemove]="showRemove"></app-song-actions>
     </div>
   </li>
 </ul>

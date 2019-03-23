@@ -16,7 +16,7 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.accountService.getPrincipal().subscribe(principal => {
+    this.accountService.getPrincipal(false).subscribe(principal => {
       this.user = principal.user;
     });
   }

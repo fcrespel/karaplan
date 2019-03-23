@@ -38,6 +38,6 @@
 
 <!-- Songs -->
 <app-song-list [songs]="songs"></app-song-list>
-<div class="text-center" *ngIf="hasMoreSongs">
-  <button type="button" (click)="loadMoreSongs()" class="btn btn-outline-light my-3">Load more ...</button>
+<div class="text-center my-3" *ngIf="hasMoreSongs">
+  <button type="button" (click)="loadMoreSongs()" class="btn btn-lg btn-outline-light w-50">Load more ...</button>
 </div>
