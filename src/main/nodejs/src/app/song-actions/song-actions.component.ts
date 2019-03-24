@@ -138,7 +138,7 @@ export class SongActionsComponent implements OnInit {
 
   onPlaylistOpen() {
     if (this.playlists == null) {
-      this.playlistsService.getPlaylists().subscribe(playlists => {
+      this.playlistsService.getPlaylists(0, 10, 'name').subscribe(playlists => {
         playlists.forEach(playlist => {
           playlist.isSelected = (this.song.playlists && this.song.playlists.findIndex(songPlaylist => songPlaylist.id == playlist.id) >= 0);
         });

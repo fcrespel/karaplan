@@ -28,7 +28,7 @@ export class PlaylistsComponent implements OnInit {
         this.playlist = null;
       }
     });
-    this.playlistsService.getPlaylists().subscribe(playlists => {
+    this.playlistsService.getPlaylists(0, 100, 'name').subscribe(playlists => {
       this.playlists = playlists;
     });
   }
