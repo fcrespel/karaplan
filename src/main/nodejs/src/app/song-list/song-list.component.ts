@@ -33,8 +33,8 @@ export class SongListComponent implements OnInit {
   ngOnInit() {
   }
 
-  trackBySongId(index: number, song: Song): number {
-    return song.id;
+  trackBySongCatalogId(index: number, song: Song): number {
+    return song.catalogId;
   }
 
   gotoSong(song: Song) {
