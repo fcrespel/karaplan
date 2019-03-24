@@ -11,11 +11,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CatalogSelectionList implements Serializable {
+public class CatalogSongFileList implements Serializable {
 
-	private static final long serialVersionUID = 1162630846837382774L;
+	private static final long serialVersionUID = -5664455045281211629L;
 
-	private CatalogSelectionType type;
-	private Set<CatalogSelection> selections;
+	private Long length;
+	private Set<CatalogSongFile> songFiles;
 
 }

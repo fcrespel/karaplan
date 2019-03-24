@@ -55,29 +55,30 @@ public class PlaylistController {
 	}
 
 	@GetMapping("/{playlistId}")
-	@ApiOperation("Get a playlist by id")
+	@ApiOperation("Get a playlist")
 	public Playlist getPlaylist(@PathVariable Long playlistId) {
 		return playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 	}
 
 	@DeleteMapping("/{playlistId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation("Delete a playlist by id")
+	@ApiOperation("Delete a playlist")
 	public void deletePlaylist(@PathVariable Long playlistId) {
-		playlistService.delete(playlistId);
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		playlistService.delete(playlist);
 	}
 
 	@PostMapping("/{playlistId}/song/{catalogId}")
-	@ApiOperation("Add a song to a playlist by catalog id")
-	public Playlist addSongByCatalogId(@PathVariable Long playlistId, @PathVariable Long catalogId) {
+	@ApiOperation("Add a song to a playlist")
+	public Playlist addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.addSong(playlist, song);
 	}
 
 	@DeleteMapping("/{playlistId}/song/{catalogId}")
-	@ApiOperation("Remove a song from a playlist by catalog id")
-	public Playlist removeSongByCatalogId(@PathVariable Long playlistId, @PathVariable Long catalogId) {
+	@ApiOperation("Remove a song from a playlist")
+	public Playlist removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.removeSong(playlist, song);
@@ -85,7 +86,7 @@ public class PlaylistController {
 
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation("Export a playlist to Karafun by remote id")
+	@ApiOperation("Export a playlist to Karafun Remote")
 	public void exportPlaylistToKarafun(@PathVariable Long playlistId, @PathVariable String remoteId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunExportService.exportPlaylist(playlist, remoteId);

@@ -22,6 +22,8 @@ import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSelectionList;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
+import me.crespel.karaplan.model.CatalogSongFile;
+import me.crespel.karaplan.model.CatalogSongFileList;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.exception.TechnicalException;
@@ -29,6 +31,8 @@ import me.crespel.karaplan.model.kv.KvArtist;
 import me.crespel.karaplan.model.kv.KvArtistResponse;
 import me.crespel.karaplan.model.kv.KvQuery;
 import me.crespel.karaplan.model.kv.KvSong;
+import me.crespel.karaplan.model.kv.KvSongFile;
+import me.crespel.karaplan.model.kv.KvSongFileList;
 import me.crespel.karaplan.model.kv.KvSongList;
 import me.crespel.karaplan.model.kv.KvSongResponse;
 import me.crespel.karaplan.service.CatalogService;
@@ -51,6 +55,8 @@ public class KvCatalogServiceImpl implements CatalogService {
 		conversionService.addConverter(new KvToCatalogArtistConverter());
 		conversionService.addConverter(new KvToCatalogSongConverter());
 		conversionService.addConverter(new KvToCatalogSongListConverter());
+		conversionService.addConverter(new KvToCatalogSongFileConverter());
+		conversionService.addConverter(new KvToCatalogSongFileListConverter());
 	}
 
 	@Override
@@ -133,6 +139,27 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	@Cacheable("kvCatalogCache")
+	public CatalogSongFileList getSongFileList(long songId) {
+		try {
+			KvQuery<KvQuery.SongFileList> query = new KvQuery<KvQuery.SongFileList>()
+					.setAffiliateId(properties.getAffiliateId())
+					.setFunction("list")
+					.setParameters(new KvQuery.SongFileList().setSongId(songId));
+
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+					.path("/songfile/")
+					.queryParam("query", jsonMapper.writeValueAsString(query));
+
+			KvSongFileList response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongFileList.class);
+			return conversionService.convert(response, CatalogSongFileList.class);
+
+		} catch (JsonProcessingException | RestClientException e) {
+			throw new TechnicalException(e);
+		}
+	}
+
+	@Override
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
 		throw new UnsupportedOperationException();
 	}
@@ -171,6 +198,37 @@ public class KvCatalogServiceImpl implements CatalogService {
 			if (source.getSongs() != null) {
 				target.setSongs(source.getSongs().stream()
 						.map(it -> conversionService.convert(it, CatalogSong.class))
+						.collect(Collectors.toCollection(LinkedHashSet::new)));
+			}
+			return target;
+		}
+
+	}
+
+	public class KvToCatalogSongFileConverter implements Converter<KvSongFile, CatalogSongFile> {
+
+		@Override
+		public CatalogSongFile convert(KvSongFile source) {
+			return new CatalogSongFile()
+					.setId(source.getId())
+					.setSongId(source.getSongId())
+					.setArtistId(source.getArtistId())
+					.setPreviewUrl(source.getPreviewUrl())
+					.setFormat(source.getFormat())
+					.setTrackType(source.getTrackType());
+		}
+
+	}
+
+	public class KvToCatalogSongFileListConverter implements Converter<KvSongFileList, CatalogSongFileList> {
+
+		@Override
+		public CatalogSongFileList convert(KvSongFileList source) {
+			CatalogSongFileList target = new CatalogSongFileList()
+					.setLength(source.getLength());
+			if (source.getSongfiles() != null) {
+				target.setSongFiles(source.getSongfiles().stream()
+						.map(it -> conversionService.convert(it, CatalogSongFile.class))
 						.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
 			return target;

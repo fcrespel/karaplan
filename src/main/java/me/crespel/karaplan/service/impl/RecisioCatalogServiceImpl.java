@@ -9,6 +9,7 @@ import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSelectionList;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
+import me.crespel.karaplan.model.CatalogSongFileList;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.service.CatalogService;
@@ -44,6 +45,11 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 		default:
 			return karafunCatalog.getSongList(type, filter, limit, offset);
 		}
+	}
+
+	@Override
+	public CatalogSongFileList getSongFileList(long songId) {
+		return kvCatalog.getSongFileList(songId);
 	}
 
 	@Override

@@ -23,8 +23,6 @@ import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
 import me.crespel.karaplan.domain.SongVote;
 import me.crespel.karaplan.domain.User;
-import me.crespel.karaplan.model.CatalogSelection;
-import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
@@ -106,11 +104,6 @@ public class SongServiceImpl implements SongService {
 					.values());
 		}
 		return resultSongs;
-	}
-
-	@Override
-	public Set<CatalogSelection> getSelections(CatalogSelectionType type) {
-		return Sets.newLinkedHashSet(catalogService.getSelectionList(type).getSelections());
 	}
 
 	@Override

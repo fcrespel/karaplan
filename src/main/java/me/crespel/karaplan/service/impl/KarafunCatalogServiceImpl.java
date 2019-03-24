@@ -17,12 +17,15 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.google.common.collect.Sets;
+
 import me.crespel.karaplan.config.KarafunConfig.KarafunProperties;
 import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionList;
 import me.crespel.karaplan.model.CatalogSong;
+import me.crespel.karaplan.model.CatalogSongFileList;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.CatalogStyle;
@@ -115,6 +118,11 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	public CatalogSongFileList getSongFileList(long songId) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	@Cacheable("karafunCatalogCache")
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
@@ -125,7 +133,7 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 
 			List<KarafunSelection> karafunSelectionList = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, null, new ParameterizedTypeReference<List<KarafunSelection>>() {}).getBody();
 			List<CatalogSelection> catalogSelectionList = (List<CatalogSelection>) conversionService.convert(karafunSelectionList, TypeDescriptor.forObject(karafunSelectionList), TypeDescriptor.collection(List.class, TypeDescriptor.valueOf(CatalogSelection.class)));
-			return new CatalogSelectionList().setType(type).setSelections(catalogSelectionList);
+			return new CatalogSelectionList().setType(type).setSelections(Sets.newLinkedHashSet(catalogSelectionList));
 
 		} catch (RestClientException e) {
 			throw new TechnicalException(e);

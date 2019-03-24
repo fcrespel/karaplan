@@ -44,6 +44,12 @@ public class KvQuery<T> {
 
 	@Data
 	@Accessors(chain = true)
+	public static class SongFileList {
+		private Long songId;
+	}
+
+	@Data
+	@Accessors(chain = true)
 	public static class SearchSong {
 		private String query;
 		private Integer limit;

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.security.OidcUserWrapper;
 import me.crespel.karaplan.service.UserService;
 import springfox.documentation.annotations.ApiIgnore;
@@ -37,12 +38,26 @@ public class AccountController {
 		return oidcUser;
 	}
 
+	@GetMapping("/user")
+	@ApiOperation("Get the authenticated user")
+	public User getUser(@ApiIgnore @AuthenticationPrincipal OidcUserWrapper oidcUser) {
+		if (oidcUser != null) {
+			return oidcUser.getUser();
+		} else {
+			return null;
+		}
+	}
+
 	@PostMapping("/user")
 	@ApiOperation("Update the authenticated user")
 	public User updateUser(@RequestBody User user, @ApiIgnore @AuthenticationPrincipal OidcUserWrapper oidcUser) {
-		User userToUpdate = oidcUser.getUser();
-		userToUpdate.setDisplayName(user.getDisplayName());
-		return userService.save(userToUpdate);
+		if (oidcUser != null) {
+			User userToUpdate = oidcUser.getUser();
+			userToUpdate.setDisplayName(user.getDisplayName());
+			return userService.save(userToUpdate);
+		} else {
+			throw new BusinessException("Authentication is required");
+		}
 	}
 
 }

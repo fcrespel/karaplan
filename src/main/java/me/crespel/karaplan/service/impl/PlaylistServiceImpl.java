@@ -70,8 +70,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
-	public void delete(Long id) {
-		playlistRepo.deleteById(id);
+	public void delete(Playlist playlist) {
+		playlistRepo.delete(playlist);
 	}
 
 }
