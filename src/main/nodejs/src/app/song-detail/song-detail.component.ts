@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
+import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
+import { User } from '../models/user';
 import { Song } from '../models/song';
+import { SongComment } from '../models/song-comment';
+import { CatalogSongFile } from '../models/catalog-song-file';
 
 @Component({
   selector: 'app-song-detail',
@@ -12,20 +16,92 @@ import { Song } from '../models/song';
 })
 export class SongDetailComponent implements OnInit {
 
-  song$: Observable<Song>;
+  user: User = null;
+  song: Song = null;
+  songFiles: CatalogSongFile[] = [];
+  tab: string = 'lyrics';
+  commentText: string;
+
+  trackTypeLabels = {
+    'nbv': 'Instrumental',
+    'nbv-gm': 'Instrumental + backing vocals',
+    'nbv-ld': 'Cover version',
+    'wmv': 'Karaoke video',
+    'mp4': 'Karaoke video',
+    'cdg': 'Karaoke CDG file',
+    'kfn': 'KaraFun format',
+    'ngt': 'No guitar',
+    'ngt-voc': 'No guitar + vocals',
+    'ngt-gt-voc': 'Guitar + vocals',
+    'gt': 'Guitar only',
+    'ndr': 'No drums',
+    'ndr-voc': 'No drums + vocals',
+    'ndr-dr-voc': 'Drums + vocals',
+    'dr': 'Drums only',
+    'nba': 'No bass',
+    'nba-voc': 'No bass + vocals',
+    'nba-ba-voc': 'Bass + vocals',
+    'ba': 'Bass only',
+    'npi': 'No piano',
+    'npi-voc': 'No piano + vocals',
+    'npi-pi-voc': 'Piano + vocals',
+    'pi': 'Piano only',
+  }
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
+    private accountService: AccountService,
     private songsService: SongsService
   ) { }
 
   ngOnInit() {
-    this.song$ = this.route.paramMap.pipe(
+    this.accountService.getUser().subscribe(user => {
+      this.user = user;
+    });
+    this.route.paramMap.pipe(
       switchMap((params: ParamMap) => 
-        this.songsService.getSongByCatalogId(+params.get('catalogId'))
+        this.songsService.getSong(+params.get('catalogId'))
       )
-    );
+    ).subscribe(song => {
+      this.song = song;
+      this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
+        this.songFiles = songFiles;
+      });
+    });
+  }
+
+  switchTab($event: Event, tab: string) {
+    $event.preventDefault();
+    this.tab = tab;
+  }
+
+  trackByCommentId(index: number, comment: SongComment): number {
+    return comment.id;
+  }
+
+  trackBySongFileId(index: number, songFile: CatalogSongFile): number {
+    return songFile.id;
+  }
+
+  addComment(comment: string, commentForm: NgForm) {
+    this.songsService.addCommentToSong(this.song.catalogId, comment).subscribe(song => {
+      commentForm.reset();
+      this.song = song;
+    });
+  }
+
+  removeComment(comment: SongComment) {
+    this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
+      this.song = song;
+    });
+  }
+
+  getSongFileTrackTypeLabel(songFile: CatalogSongFile): string {
+    if (songFile.trackType in this.trackTypeLabels) {
+      return this.trackTypeLabels[songFile.trackType];
+    } else {
+      return 'Unknown';
+    }
   }
 
 }

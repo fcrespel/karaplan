@@ -11,6 +11,7 @@ import { User } from '../models/user';
 export class AccountService {
   private accountUrl = 'api/v1/account';
   private principal$ = null;
+  private user$ = null;
 
   constructor(
     private http: HttpClient
@@ -24,6 +25,16 @@ export class AccountService {
       this.principal$ = this.http.get<Principal>(url).pipe(shareReplay(1));
     }
     return this.principal$;
+  }
+
+  getUser(cache: boolean = true): Observable<User> {
+    const url = `${this.accountUrl}/user`;
+    if (!cache) {
+      return this.http.get<User>(url);
+    } else if (this.user$ == null) {
+      this.user$ = this.http.get<User>(url).pipe(shareReplay(1));
+    }
+    return this.user$;
   }
 
   updateUser(user: User): Observable<User> {

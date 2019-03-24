@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
 import { Playlist } from '../models/playlist';
+import { Song } from '../models/song';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -24,6 +25,17 @@ export class PlaylistDetailComponent implements OnInit {
 
   deletePlaylist(playlist: Playlist) {
     this.delete.emit(playlist);
+  }
+
+  onSongRemoved(song: Song) {
+    this.playlistsService.removeSongFromPlaylist(this.playlist.id, song.catalogId).subscribe(playlist => {
+      this.playlist = playlist;
+      if (this.playlist.songs) {
+        this.playlist.duration = this.playlist.songs.reduce((d, song) => d + song.duration, 0);
+      } else {
+        this.playlist.duration = 0;
+      }
+    });
   }
 
   exportPlaylistToKarafun(playlist: Playlist, modalContent) {

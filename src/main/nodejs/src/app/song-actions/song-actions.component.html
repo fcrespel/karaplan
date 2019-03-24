@@ -19,7 +19,7 @@
   <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
     <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="mx-3 my-2 text-right">
       <div class="form-group mb-2">
-        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" cols="100" placeholder="Your comment ..." required></textarea>
+        <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" placeholder="Your comment ..." required></textarea>
       </div>
       <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
     </form>

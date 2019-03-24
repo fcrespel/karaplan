@@ -16,6 +16,7 @@ import { SongActionsComponent } from './song-actions/song-actions.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { DurationPipe } from './pipes/duration.pipe';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     SongActionsComponent,
     PlaylistsComponent,
     PlaylistDetailComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    DurationPipe
   ],
   imports: [
     BrowserModule,

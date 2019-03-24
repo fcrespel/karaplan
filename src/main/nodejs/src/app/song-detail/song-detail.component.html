@@ -1,20 +1,95 @@
-<div *ngIf="song$ | async as song" class="text-center">
-  <div class="row justify-content-center">
+<div *ngIf="song">
+  <!-- Song info -->
+  <div class="row justify-content-center text-center">
     <div class="col-auto">
-      <div class="card shadow text-dark mb-4">
+      <div class="card shadow text-dark">
         <img src="{{ song.image }}" class="card-img mt-3 mx-auto" style="width: 150px;">
         <div class="card-body">
           <h5 class="card-title mb-1">{{ song.name }}</h5>
           <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
-          <p class="card-text"><span class="badge badge-secondary">{{ song.duration }} s</span></p>
-          <app-song-actions [song]="song"></app-song-actions>
+          <p class="card-text"><span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span></p>
+          <app-song-actions [song]="song" [showComments]="false"></app-song-actions>
         </div>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col">
-      <p style="white-space: pre-line;">{{ song.lyrics }}</p>
+
+  <!-- Navigation pills -->
+  <ul class="nav nav-pills justify-content-center my-3">
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="switchTab($event, 'lyrics')" [class.active]="tab == 'lyrics'">
+        <i class="fas fa-microphone-alt"></i> Lyrics
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="switchTab($event, 'comments')" [class.active]="tab == 'comments'">
+        <i class="fas fa-comments"></i> Comments
+        <span class="badge badge-light ml-1" *ngIf="song.comments">{{ song.comments.length }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="switchTab($event, 'files')" [class.active]="tab == 'files'">
+        <i class="fas fa-headphones"></i> Files
+        <span class="badge badge-light ml-1" *ngIf="songFiles">{{ songFiles.length }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- Lyrics-->
+  <div class="row" *ngIf="tab == 'lyrics'">
+    <div class="col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text text-center text-dark" style="white-space: pre-line;">{{ song.lyrics }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments -->
+  <div class="row" *ngIf="tab == 'comments'">
+    <div class="col-md-6 offset-md-3">
+      <ul class="list-group shadow">
+        <li class="list-group-item px-3 py-2">
+          <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="text-right">
+            <div class="form-group mb-2">
+              <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" placeholder="Your comment ..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
+          </form>
+        </li>
+        <li *ngFor="let comment of song.comments; trackBy: trackByCommentId" class="list-group-item px-3 py-2">
+          <div class="d-flex align-items-center justify-content-between">
+            <small class="text-muted flex-grow-1">{{ comment.user.displayName }}</small>
+            <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
+            <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+          </div>
+          <p class="mb-2 comment-text text-dark">{{ comment.comment }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Files -->
+  <div class="row" *ngIf="tab == 'files'">
+    <div class="col-md-6 offset-md-3">
+      <ul class="list-group shadow">
+        <li class="list-group-item d-flex justify-content-between align-items-center no-gutters px-3 py-2" *ngFor="let songFile of songFiles; trackBy: trackBySongFileId">
+          <div class="col">
+            <p class="m-0 text-dark">{{ getSongFileTrackTypeLabel(songFile) }}</p>
+          </div>
+          <div class="col-auto">
+            <small class="badge badge-secondary">
+              <i class="fas fa-volume-up" *ngIf="songFile.format == 'mp3'"></i>
+              <i class="fas fa-film" *ngIf="songFile.format == 'wmv' || songFile.format == 'mp4'"></i>
+              <i class="fas fa-archive" *ngIf="songFile.format == 'zip'"></i>
+              <i class="fas fa-microphone-alt" *ngIf="songFile.format == 'kfn' || songFile.format == 'cdg'"></i>
+              {{ songFile.format }}
+            </small>
+            <a href="{{ songFile.previewUrl }}" class="btn btn-sm btn-pink ml-2"><i class="far fa-arrow-alt-circle-down"></i> Preview</a>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </div>

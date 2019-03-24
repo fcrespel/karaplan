@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { NgbTabChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 import { SongsService } from '../services/songs.service';
 import { Song } from '../models/song';
 import { CatalogSelection } from '../models/catalog-selection';
@@ -33,7 +32,7 @@ export class SongsComponent implements OnInit {
       this.page = 0;
       this.hasMoreSongs = false;
       if (this.type == 'query' || this.query) {
-        this.songsService.search(this.type, this.query).subscribe(songs => {
+        this.songsService.searchSongs(this.type, this.query).subscribe(songs => {
           this.songs = songs;
           this.hasMoreSongs = songs.length == this.limit;
         });
@@ -51,13 +50,9 @@ export class SongsComponent implements OnInit {
     this.router.navigate(['/songs'], { queryParams: { query: query } });
   }
 
-  onTabChange($event: NgbTabChangeEvent) {
-    this.router.navigate(['/songs'], { queryParams: { type: $event.nextId } });
-  }
-
   loadMoreSongs() {
     if (this.hasMoreSongs && (this.type == 'query' || this.query)) {
-      this.songsService.search(this.type, this.query, ++this.page).subscribe(songs => {
+      this.songsService.searchSongs(this.type, this.query, ++this.page).subscribe(songs => {
         songs.forEach(song => this.songs.push(song));
         this.hasMoreSongs = songs.length == this.limit;
       });

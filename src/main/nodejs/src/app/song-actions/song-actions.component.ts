@@ -44,8 +44,8 @@ export class SongActionsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.accountService.getPrincipal().subscribe(principal => {
-      this.user = principal.user;
+    this.accountService.getUser().subscribe(user => {
+      this.user = user;
       this.updateSong(this.song);
     });
   }
@@ -73,7 +73,7 @@ export class SongActionsComponent implements OnInit {
 
   voteUp() {
     let score = (this.vote && this.vote.score) == 1 ? 0 : 1;
-    this.songsService.voteSongByCatalogId(this.song.catalogId, score).subscribe(song => {
+    this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
       let previousVote = this.vote;
       this.updateSong(song);
       if (score != 0) {
@@ -86,7 +86,7 @@ export class SongActionsComponent implements OnInit {
 
   voteDown() {
     let score = (this.vote && this.vote.score) == -1 ? 0 : -1;
-    this.songsService.voteSongByCatalogId(this.song.catalogId, score).subscribe(song => {
+    this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
       let previousVote = this.vote;
       this.updateSong(song);
       if (score != 0) {
@@ -98,7 +98,7 @@ export class SongActionsComponent implements OnInit {
   }
 
   addComment(comment: string, commentForm: NgForm) {
-    this.songsService.addCommentToSongByCatalogId(this.song.catalogId, comment).subscribe(song => {
+    this.songsService.addCommentToSong(this.song.catalogId, comment).subscribe(song => {
       commentForm.reset();
       this.updateSong(song);
       this.commentAdded.emit(song.comments.find(comment => comment.user.id == this.user.id));
@@ -106,14 +106,14 @@ export class SongActionsComponent implements OnInit {
   }
 
   removeComment(comment: SongComment) {
-    this.songsService.removeCommentFromSongByCatalogId(this.song.catalogId, comment.id).subscribe(song => {
+    this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
       this.updateSong(song);
       this.commentRemoved.emit(comment);
     });
   }
 
   addToPlaylist(playlist: Playlist) {
-    this.songsService.addSongToPlaylistByCatalogId(this.song.catalogId, playlist.id).subscribe(song => {
+    this.songsService.addSongToPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
       this.updateSong(song);
       playlist.isSelected = true;
       this.playlistAdded.emit(new PlaylistSong(playlist, song));
@@ -121,7 +121,7 @@ export class SongActionsComponent implements OnInit {
   }
 
   removeFromPlaylist(playlist: Playlist) {
-    this.songsService.removeSongFromPlaylistByCatalogId(this.song.catalogId, playlist.id).subscribe(song => {
+    this.songsService.removeSongFromPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
       this.updateSong(song);
       playlist.isSelected = false;
       this.playlistRemoved.emit(new PlaylistSong(playlist, song));

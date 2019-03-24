@@ -32,12 +32,12 @@ export class PlaylistsService {
     return this.http.delete<Response>(url);
   }
 
-  addSongByCatalogId(playlistId: number, catalogId: number): Observable<Playlist> {
+  addSongToPlaylist(playlistId: number, catalogId: number): Observable<Playlist> {
     const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.post<Playlist>(url, null);
   }
 
-  removeSongByCatalogId(playlistId: number, catalogId: number): Observable<Playlist> {
+  removeSongFromPlaylist(playlistId: number, catalogId: number): Observable<Playlist> {
     const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.delete<Playlist>(url);
   }

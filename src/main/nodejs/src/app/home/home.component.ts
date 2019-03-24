@@ -16,8 +16,8 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.accountService.getPrincipal().subscribe(principal => {
-      this.user = principal.user;
+    this.accountService.getUser().subscribe(user => {
+      this.user = user;
     });
   }
 
