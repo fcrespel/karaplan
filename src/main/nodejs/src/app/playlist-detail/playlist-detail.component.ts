@@ -30,18 +30,13 @@ export class PlaylistDetailComponent implements OnInit {
   onSongRemoved(song: Song) {
     this.playlistsService.removeSongFromPlaylist(this.playlist.id, song.catalogId).subscribe(playlist => {
       this.playlist = playlist;
-      if (this.playlist.songs) {
-        this.playlist.duration = this.playlist.songs.reduce((d, song) => d + song.duration, 0);
-      } else {
-        this.playlist.duration = 0;
-      }
     });
   }
 
-  exportPlaylistToKarafun(playlist: Playlist, modalContent) {
+  exportPlaylistToKarafunRemote(playlist: Playlist, modalContent) {
     this.modalService.open(modalContent).result.then(remoteId => {
       if (remoteId) {
-        this.playlistsService.exportPlaylistToKarafun(playlist.id, remoteId).subscribe(response => {});
+        this.playlistsService.exportPlaylistToKarafunRemote(playlist.id, remoteId).subscribe(response => {});
       }
     });
   }

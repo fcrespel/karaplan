@@ -109,6 +109,7 @@ public class SongServiceImpl implements SongService {
 	@Override
 	@Transactional
 	public Song save(Song song) {
+		song.updateStats();
 		return songRepo.save(song);
 	}
 
@@ -127,7 +128,7 @@ public class SongServiceImpl implements SongService {
 			songVote.setScore(score > 0 ? 1 : -1);
 			song.getVotes().add(songVote);
 		}
-		return songRepo.save(song);
+		return save(song);
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public class SongServiceImpl implements SongService {
 				.setSong(song)
 				.setUser(user)
 				.setComment(comment));
-		return songRepo.save(song);
+		return save(song);
 	}
 
 	@Override
@@ -154,7 +155,7 @@ public class SongServiceImpl implements SongService {
 	@Transactional
 	public Song removeComment(Song song, User user, long commentId) {
 		song.getComments().removeIf(it -> it.getId() == commentId && (user == null || user.equals(it.getUser())));
-		return songRepo.save(song);
+		return save(song);
 	}
 
 	public class CatalogSongToSongConverter implements Converter<CatalogSong, Song> {

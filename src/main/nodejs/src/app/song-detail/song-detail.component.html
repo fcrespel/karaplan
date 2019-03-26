@@ -24,7 +24,12 @@
     <li class="nav-item">
       <a class="nav-link" href="#" (click)="switchTab($event, 'comments')" [class.active]="tab == 'comments'">
         <i class="fas fa-comments"></i> Comments
-        <span class="badge badge-light ml-1" *ngIf="song.comments">{{ song.comments.length }}</span>
+        <span class="badge badge-light ml-1" *ngIf="song.comments">{{ song.commentsCount }}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" (click)="switchTab($event, 'related')" [class.active]="tab == 'related'">
+        <i class="fas fa-music"></i> Suggestions
       </a>
     </li>
     <li class="nav-item">
@@ -35,9 +40,9 @@
     </li>
   </ul>
 
-  <!-- Lyrics-->
+  <!-- Lyrics -->
   <div class="row" *ngIf="tab == 'lyrics'">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <div class="card">
         <div class="card-body">
           <p class="card-text text-center text-dark" style="white-space: pre-line;">{{ song.lyrics }}</p>
@@ -48,12 +53,12 @@
 
   <!-- Comments -->
   <div class="row" *ngIf="tab == 'comments'">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <ul class="list-group shadow">
         <li class="list-group-item px-3 py-2">
           <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="text-right">
             <div class="form-group mb-2">
-              <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" placeholder="Your comment ..." required></textarea>
+              <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="2" placeholder="Your comment ..." required></textarea>
             </div>
             <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
           </form>
@@ -70,9 +75,19 @@
     </div>
   </div>
 
+  <!-- Related songs -->
+  <div class="row" *ngIf="tab == 'related'">
+    <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+      <app-song-list [songs]="relatedSongs"></app-song-list>
+      <div class="text-center my-3" *ngIf="hasMoreRelatedSongs">
+        <button type="button" (click)="loadMoreRelatedSongs()" class="btn btn-lg btn-outline-light w-50">Load more ...</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Files -->
   <div class="row" *ngIf="tab == 'files'">
-    <div class="col-md-6 offset-md-3">
+    <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
       <ul class="list-group shadow">
         <li class="list-group-item d-flex justify-content-between align-items-center no-gutters px-3 py-2" *ngFor="let songFile of songFiles; trackBy: trackBySongFileId">
           <div class="col">

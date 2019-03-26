@@ -19,6 +19,10 @@ export class SongDetailComponent implements OnInit {
   user: User = null;
   song: Song = null;
   songFiles: CatalogSongFile[] = [];
+  relatedSongs: Song[] = [];
+  relatedSongsPage: number = 0;
+  relatedSongsLimit: number = 10;
+  hasMoreRelatedSongs: boolean = false;
   tab: string = 'lyrics';
   commentText: string;
 
@@ -67,6 +71,12 @@ export class SongDetailComponent implements OnInit {
       this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
         this.songFiles = songFiles;
       });
+      this.relatedSongsPage = 0;
+      this.hasMoreRelatedSongs = false;
+      this.songsService.searchSongs('artist', ''+song.artist.catalogId).subscribe(songs => {
+        this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);
+        this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
+      })
     });
   }
 
@@ -94,6 +104,15 @@ export class SongDetailComponent implements OnInit {
     this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
       this.song = song;
     });
+  }
+
+  loadMoreRelatedSongs() {
+    if (this.hasMoreRelatedSongs) {
+      this.songsService.searchSongs('artist', ''+this.song.artist.catalogId, ++this.relatedSongsPage).subscribe(songs => {
+        songs.filter(song => song.catalogId != this.song.catalogId).forEach(song => this.relatedSongs.push(song));
+        this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
+      });
+    }
   }
 
   getSongFileTrackTypeLabel(songFile: CatalogSongFile): string {

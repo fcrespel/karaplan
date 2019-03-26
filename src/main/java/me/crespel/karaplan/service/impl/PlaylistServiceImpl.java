@@ -49,6 +49,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional
 	public Playlist save(Playlist playlist) {
+		playlist.updateStats();
 		return playlistRepo.save(playlist);
 	}
 
@@ -57,7 +58,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Playlist addSong(Playlist playlist, Song song) {
 		playlist.getSongs().add(song);
 		song.getPlaylists().add(playlist);
-		return playlistRepo.save(playlist);
+		song.updateStats();
+		return save(playlist);
 	}
 
 	@Override
@@ -65,7 +67,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Playlist removeSong(Playlist playlist, Song song) {
 		playlist.getSongs().remove(song);
 		song.getPlaylists().remove(playlist);
-		return playlistRepo.save(playlist);
+		song.updateStats();
+		return save(playlist);
 	}
 
 	@Override

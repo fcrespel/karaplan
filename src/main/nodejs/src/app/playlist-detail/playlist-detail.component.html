@@ -8,7 +8,7 @@
     <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
       <button class="btn btn-light shadow" ngbDropdownToggle>Export</button>
       <div class="dropdown-menu shadow" ngbDropdownMenu>
-        <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafun(playlist, karafunExportModal)">Karafun Remote</button>
+        <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)">Karafun Remote</button>
       </div>
     </div>
     <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
@@ -22,7 +22,7 @@
 </ng-container>
 
 <!-- Karafun Remote export modal -->
-<ng-template #karafunExportModal let-modal>
+<ng-template #karafunRemoteExportModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Export to Karafun Remote</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
@@ -40,6 +40,6 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-pink" [disabled]="!karafunExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to Karafun</button>
+    <button type="button" class="btn btn-pink" [disabled]="!karafunExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to Karafun Remote</button>
   </div>
 </ng-template>

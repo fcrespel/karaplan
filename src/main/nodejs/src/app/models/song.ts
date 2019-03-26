@@ -12,14 +12,16 @@ export class Song {
   image: string;
   lyrics: string;
   artist: Artist;
+  score: number;
+  scoreUp: number;
+  scoreDown: number;
   votes: SongVote[];
+  commentsCount: number;
   comments: SongComment[];
+  playlistsCount: number;
   playlists: Playlist[];
   createdDate: Date;
   createdBy: User;
   updatedDate: Date;
   updatedBy: User;
-  score: number;
-  scoreUp: number;
-  scoreDown: number;
 }

@@ -22,8 +22,8 @@ import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.ExportService;
 
 @Slf4j
-@Service("karafunExport")
-public class KarafunExportServiceImpl implements ExportService {
+@Service("karafunRemoteExport")
+public class KarafunRemoteExportServiceImpl implements ExportService {
 
 	public static final String EVENT_AUTHENTICATE = "authenticate";
 	public static final String EVENT_PERMISSIONS = "permissions";

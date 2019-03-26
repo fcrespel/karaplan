@@ -76,17 +76,32 @@ public class Song {
 	@JsonIgnoreProperties("songs")
 	private Artist artist;
 
+	@Column(name = "SCORE")
+	private Integer score;
+
+	@Column(name = "SCORE_UP")
+	private Integer scoreUp;
+
+	@Column(name = "SCORE_DOWN")
+	private Integer scoreDown;
+
 	@OneToMany(mappedBy = "song", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("song")
 	@SortComparator(SongVote.OrderByIdDescComparator.class)
 	@OrderBy("id DESC")
 	private SortedSet<SongVote> votes = Sets.newTreeSet(SongVote.orderByIdDescComparator);
 
+	@Column(name = "COMMENTS_COUNT")
+	private Integer commentsCount;
+
 	@OneToMany(mappedBy = "song", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("song")
 	@SortComparator(SongComment.OrderByIdDescComparator.class)
 	@OrderBy("id DESC")
 	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
+
+	@Column(name = "PLAYLISTS_COUNT")
+	private Integer playlistsCount;
 
 	@ManyToMany(mappedBy = "songs", fetch = FetchType.EAGER)
 	@JsonIgnoreProperties("songs")
@@ -112,28 +127,12 @@ public class Song {
 	@JoinColumn(name = "FK_USER_UPDATED", referencedColumnName = "ID")
 	private User updatedBy;
 
-	public Integer getScore() {
-		if (votes != null) {
-			return votes.stream().mapToInt(SongVote::getScore).sum();
-		} else {
-			return 0;
-		}
-	}
-
-	public Integer getScoreUp() {
-		if (votes != null) {
-			return votes.stream().mapToInt(SongVote::getScore).filter(score -> score > 0).sum();
-		} else {
-			return 0;
-		}
-	}
-
-	public Integer getScoreDown() {
-		if (votes != null) {
-			return Math.abs(votes.stream().mapToInt(SongVote::getScore).filter(score -> score < 0).sum());
-		} else {
-			return 0;
-		}
+	public void updateStats() {
+		this.score = (votes != null) ? votes.stream().mapToInt(SongVote::getScore).sum() : 0;
+		this.scoreUp = (votes != null) ? votes.stream().mapToInt(SongVote::getScore).filter(score -> score > 0).sum() : 0;
+		this.scoreDown = (votes != null) ? Math.abs(votes.stream().mapToInt(SongVote::getScore).filter(score -> score < 0).sum()) : 0;
+		this.commentsCount = (comments != null) ? comments.size() : 0;
+		this.playlistsCount = (playlists != null) ? playlists.size() : 0;
 	}
 
 }

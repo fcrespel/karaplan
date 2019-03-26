@@ -14,7 +14,7 @@
 <div ngbDropdown autoClose="outside" placement="bottom bottom-right" container="body" class="d-inline-block" *ngIf="showComments">
   <button type="button" class="btn btn-outline-secondary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
     <i class="far fa-comment"></i>
-    <span class="badge badge-secondary ml-1" *ngIf="song.comments">{{ song.comments.length }}</span>
+    <span class="badge badge-secondary ml-1" *ngIf="song.commentsCount">{{ song.commentsCount }}</span>
   </button>
   <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
     <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="mx-3 my-2 text-right">
@@ -39,7 +39,7 @@
 <div ngbDropdown autoClose="outside" placement="bottom-left bottom bottom-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
   <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Add to playlist">
     <i class="fas fa-list"></i>
-    <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlists.length }}</span>
+    <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlistsCount }}</span>
   </button>
   <div class="dropdown-menu shadow" ngbDropdownMenu>
     <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists; trackBy: trackByPlaylistId" (click)="togglePlaylist(playlist)">

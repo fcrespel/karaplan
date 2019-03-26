@@ -51,10 +51,16 @@ public class Playlist {
 	@Column(name = "NAME")
 	private String name;
 
+	@Column(name = "SONGS_COUNT")
+	private Integer songsCount;
+
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "playlist_song", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_SONG", nullable = false) })
 	@JsonIgnoreProperties("playlists")
 	private Set<Song> songs = Sets.newLinkedHashSet();
+
+	@Column(name = "DURATION")
+	private Long duration;
 
 	@CreatedDate
 	@Temporal(TemporalType.TIMESTAMP)
@@ -75,5 +81,10 @@ public class Playlist {
 	@ManyToOne
 	@JoinColumn(name = "FK_USER_UPDATED", referencedColumnName = "ID")
 	private User updatedBy;
+
+	public void updateStats() {
+		this.songsCount = (songs != null) ? songs.size() : 0;
+		this.duration = (songs != null)  ? songs.stream().mapToLong(Song::getDuration).sum() : 0;
+	}
 
 }

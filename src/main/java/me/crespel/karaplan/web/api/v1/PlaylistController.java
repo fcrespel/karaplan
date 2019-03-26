@@ -38,8 +38,8 @@ public class PlaylistController {
 	protected SongService songService;
 
 	@Autowired
-	@Qualifier("karafunExport")
-	protected ExportService karafunExportService;
+	@Qualifier("karafunRemoteExport")
+	protected ExportService karafunRemoteExportService;
 
 	@GetMapping
 	@ApiOperation("Get all playlists")
@@ -87,9 +87,9 @@ public class PlaylistController {
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Export a playlist to Karafun Remote")
-	public void exportPlaylistToKarafun(@PathVariable Long playlistId, @PathVariable String remoteId) {
+	public void exportPlaylistToKarafunRemote(@PathVariable Long playlistId, @PathVariable String remoteId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
-		karafunExportService.exportPlaylist(playlist, remoteId);
+		karafunRemoteExportService.exportPlaylist(playlist, remoteId);
 	}
 
 }

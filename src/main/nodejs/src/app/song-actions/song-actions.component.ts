@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
@@ -15,7 +15,7 @@ import { PlaylistSong } from '../models/playlist-song';
   templateUrl: './song-actions.component.html',
   styleUrls: ['./song-actions.component.css']
 })
-export class SongActionsComponent implements OnInit {
+export class SongActionsComponent implements OnInit, OnChanges {
 
   @Input() song: Song;
   @Input() showVotes: boolean = true;
@@ -46,16 +46,24 @@ export class SongActionsComponent implements OnInit {
   ngOnInit() {
     this.accountService.getUser().subscribe(user => {
       this.user = user;
-      this.updateSong(this.song);
+      this.updateSong();
     });
   }
 
-  updateSong(song: Song) {
-    this.song = song;
-    if (this.user && song.votes) {
-      this.vote = song.votes.find(vote => vote.user.id == this.user.id);
-      this.voteUpUsers = song.votes.filter(vote => vote.score > 0).map(vote => vote.user.displayName).join(', ');
-      this.voteDownUsers = song.votes.filter(vote => vote.score < 0).map(vote => vote.user.displayName).join(', ');
+  ngOnChanges(changes: SimpleChanges) {
+    if ('song' in changes) {
+      this.updateSong(changes['song'].currentValue);
+    }
+  }
+
+  updateSong(song?: Song) {
+    if (song !== undefined) {
+      this.song = song;
+    }
+    if (this.user && this.song && this.song.votes) {
+      this.vote = this.song.votes.find(vote => vote.user.id == this.user.id);
+      this.voteUpUsers = this.song.votes.filter(vote => vote.score > 0).map(vote => vote.user.displayName).join(', ');
+      this.voteDownUsers = this.song.votes.filter(vote => vote.score < 0).map(vote => vote.user.displayName).join(', ');
     } else {
       this.vote = undefined;
       this.voteUpUsers = undefined;
@@ -139,10 +147,20 @@ export class SongActionsComponent implements OnInit {
   onPlaylistOpen() {
     if (this.playlists == null) {
       this.playlistsService.getPlaylists(0, 10, 'name').subscribe(playlists => {
-        playlists.forEach(playlist => {
-          playlist.isSelected = (this.song.playlists && this.song.playlists.findIndex(songPlaylist => songPlaylist.id == playlist.id) >= 0);
-        });
-        this.playlists = playlists;
+        this.updatePlaylists(playlists);
+      });
+    } else {
+      this.updatePlaylists();
+    }
+  }
+
+  updatePlaylists(playlists?: Playlist[]) {
+    if (playlists !== undefined) {
+      this.playlists = playlists;
+    }
+    if (this.playlists) {
+      this.playlists.forEach(playlist => {
+        playlist.isSelected = (this.song && this.song.playlists && this.song.playlists.findIndex(songPlaylist => songPlaylist.id == playlist.id) >= 0);
       });
     }
   }
