@@ -14,6 +14,7 @@ export class PlaylistDetailComponent implements OnInit {
   @Input() playlist: Playlist;
   @Output() delete = new EventEmitter<Playlist>();
   karafunRemoteId: string;
+  karafunBarId: string;
 
   constructor(
     private modalService: NgbModal,
@@ -37,6 +38,14 @@ export class PlaylistDetailComponent implements OnInit {
     this.modalService.open(modalContent).result.then(remoteId => {
       if (remoteId) {
         this.playlistsService.exportPlaylistToKarafunRemote(playlist.id, remoteId).subscribe(response => {});
+      }
+    });
+  }
+
+  exportPlaylistToKarafunBar(playlist: Playlist, modalContent) {
+    this.modalService.open(modalContent).result.then(bookingId => {
+      if (bookingId) {
+        this.playlistsService.exportPlaylistToKarafunBar(playlist.id, bookingId).subscribe(response => {});
       }
     });
   }

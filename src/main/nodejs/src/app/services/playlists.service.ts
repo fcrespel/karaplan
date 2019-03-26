@@ -50,4 +50,9 @@ export class PlaylistsService {
     const url = `${this.playlistsUrl}/${playlistId}/export/karafun/${remoteId}`
     return this.http.post<Response>(url, null);
   }
+
+  exportPlaylistToKarafunBar(playlistId: number, bookingId: string): Observable<Response> {
+    const url = `${this.playlistsUrl}/${playlistId}/export/karafunbar/${bookingId}`
+    return this.http.post<Response>(url, null);
+  }
 }

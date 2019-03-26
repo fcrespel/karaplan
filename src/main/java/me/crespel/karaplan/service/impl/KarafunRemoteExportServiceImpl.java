@@ -16,7 +16,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.crespel.karaplan.config.KarafunConfig.KarafunProperties;
+import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.ExportService;
@@ -33,7 +33,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	public static final String EVENT_QUEUE_ADD = "queueAdd";
 
 	@Autowired
-	protected KarafunProperties karafunProperties;
+	protected KarafunRemoteProperties properties;
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
@@ -64,7 +64,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 		opts.forceNew = true;
 		opts.reconnection = false;
 		opts.query = "remote=kf" + remoteId;
-		return IO.socket(karafunProperties.getEndpoint(), opts);
+		return IO.socket(properties.getEndpoint(), opts);
 	}
 
 	protected JSONObject buildAuthenticateEvent(String remoteId) {

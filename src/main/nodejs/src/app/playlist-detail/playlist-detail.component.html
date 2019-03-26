@@ -9,6 +9,7 @@
       <button class="btn btn-light shadow" ngbDropdownToggle>Export</button>
       <div class="dropdown-menu shadow" ngbDropdownMenu>
         <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)">Karafun Remote</button>
+        <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)">Karafun Bar</button>
       </div>
     </div>
     <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
@@ -30,7 +31,7 @@
     </button>
   </div>
   <div class="modal-body">
-    <form #karafunExportForm="ngForm">
+    <form #karafunRemoteExportForm="ngForm">
       <div class="form-group">
         <label for="karafunRemoteId">Remote ID</label>
         <div class="input-group">
@@ -40,6 +41,29 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-pink" [disabled]="!karafunExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to Karafun Remote</button>
+    <button type="button" class="btn btn-pink" [disabled]="!karafunRemoteExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to Karafun Remote</button>
+  </div>
+</ng-template>
+
+<!-- Karafun Bar export modal -->
+<ng-template #karafunBarExportModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Export to Karafun Bar</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #karafunBarExportForm="ngForm">
+      <div class="form-group">
+        <label for="karafunBarId">Booking ID</label>
+        <div class="input-group">
+          <input type="text" class="form-control" id="karafunBarId" name="karafunBarId" [(ngModel)]="karafunBarId" #karafunBarIdField="ngModel" [class.is-invalid]="karafunBarIdField.dirty && karafunBarIdField.invalid" required>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-pink" [disabled]="!karafunBarExportForm.form.valid" (click)="modal.close(karafunBarId)">Export to Karafun Bar</button>
   </div>
 </ng-template>

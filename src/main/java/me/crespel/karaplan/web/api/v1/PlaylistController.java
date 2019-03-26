@@ -41,6 +41,10 @@ public class PlaylistController {
 	@Qualifier("karafunRemoteExport")
 	protected ExportService karafunRemoteExportService;
 
+	@Autowired
+	@Qualifier("karafunBarExport")
+	protected ExportService karafunBarExportService;
+
 	@GetMapping
 	@ApiOperation("Get all playlists")
 	public Set<Playlist> getPlaylists(@PageableDefault Pageable pageable) {
@@ -90,6 +94,14 @@ public class PlaylistController {
 	public void exportPlaylistToKarafunRemote(@PathVariable Long playlistId, @PathVariable String remoteId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunRemoteExportService.exportPlaylist(playlist, remoteId);
+	}
+
+	@PostMapping("/{playlistId}/export/karafunbar/{bookingId}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation("Export a playlist to Karafun Bar")
+	public void exportPlaylistToKarafunBar(@PathVariable Long playlistId, @PathVariable String bookingId) {
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		karafunBarExportService.exportPlaylist(playlist, bookingId);
 	}
 
 }

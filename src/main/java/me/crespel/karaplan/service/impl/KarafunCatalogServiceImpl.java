@@ -19,7 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.collect.Sets;
 
-import me.crespel.karaplan.config.KarafunConfig.KarafunProperties;
+import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSelection;
@@ -41,7 +41,7 @@ import me.crespel.karaplan.service.CatalogService;
 public class KarafunCatalogServiceImpl implements CatalogService {
 
 	@Autowired
-	private KarafunProperties properties;
+	private KarafunRemoteProperties properties;
 
 	@Autowired
 	private RestTemplate restTemplate;

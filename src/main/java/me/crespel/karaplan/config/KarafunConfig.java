@@ -10,15 +10,26 @@ import lombok.Data;
 public class KarafunConfig {
 
 	@Bean
-	public KarafunProperties karafunProperties() {
-		return new KarafunProperties();
+	public KarafunRemoteProperties karafunRemoteProperties() {
+		return new KarafunRemoteProperties();
+	}
+
+	@Bean
+	public KarafunBarProperties karafunBarProperties() {
+		return new KarafunBarProperties();
 	}
 
 	@Data
-	@ConfigurationProperties("karaplan.karafun")
-	public static class KarafunProperties {
+	@ConfigurationProperties("karaplan.karafun.remote")
+	public static class KarafunRemoteProperties {
 		private String endpoint = "https://www.karafun.fr";
 		private Integer remoteId = 123456;
+	}
+
+	@Data
+	@ConfigurationProperties("karaplan.karafun.bar")
+	public static class KarafunBarProperties {
+		private String endpoint = "https://www.karafunbar.com/fr/lille/book";
 	}
 
 }
