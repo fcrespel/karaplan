@@ -1,0 +1,3 @@
+<ngb-alert *ngFor="let message of alertService.messages" [type]="message.severity" (close)="onClose(message)">
+  <strong>{{ message.title }}:</strong> {{ message.text }}
+</ngb-alert>

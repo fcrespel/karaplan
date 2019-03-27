@@ -17,7 +17,7 @@
 </div>
 
 <!-- Song list -->
-<app-song-list [songs]="playlist.songs" [showDuration]="true" [showPlaylists]="false" [showRemove]="true" (songRemoved)="onSongRemoved($event)" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
+<app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="true" (playlistRemoved)="onPlaylistRemoved($event)" (songRemoved)="onSongRemoved($event)" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
 <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
   <p>No song has been added to this playlist yet.</p>
 </ng-container>

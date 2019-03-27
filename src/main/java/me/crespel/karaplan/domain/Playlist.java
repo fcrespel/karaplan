@@ -56,7 +56,6 @@ public class Playlist {
 
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "playlist_song", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_SONG", nullable = false) })
-	@JsonIgnoreProperties("playlists")
 	private Set<Song> songs = Sets.newLinkedHashSet();
 
 	@Column(name = "DURATION")

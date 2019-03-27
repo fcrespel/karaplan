@@ -1,12 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AlertComponent } from './alert/alert.component';
 import { HomeComponent } from './home/home.component';
 import { SongsComponent } from './songs/songs.component';
 import { SongListComponent } from './song-list/song-list.component';
@@ -17,11 +18,13 @@ import { PlaylistsComponent } from './playlists/playlists.component';
 import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { DurationPipe } from './pipes/duration.pipe';
+import { HttpErrorInterceptor } from './http-error.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
+    AlertComponent,
     HomeComponent,
     SongsComponent,
     SongListComponent,
@@ -40,7 +43,9 @@ import { DurationPipe } from './pipes/duration.pipe';
     NgbModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

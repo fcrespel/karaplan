@@ -9,6 +9,8 @@ spring:
     default-property-inclusion: non-empty
   jpa:
     generateDdl: true
+    properties:
+      hibernate.globally_quoted_identifiers: true
   security:
     oauth2:
       client:
