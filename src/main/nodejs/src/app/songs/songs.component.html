@@ -3,19 +3,29 @@
 <!-- Navigation pills -->
 <ul class="nav nav-pills my-3">
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'query' }" [class.active]="type == 'query'"><i class="fas fa-search"></i> Search</a>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'query' }" [class.active]="type == 'query'" title="Search">
+      <i class="fas fa-search"></i><span class="d-sm-inline" [class.d-none]="type != 'query'"> Search</span>
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'theme' }" [class.active]="type == 'theme'"><i class="fas fa-music"></i> Selections</a>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'theme' }" [class.active]="type == 'theme'" title="Selections">
+      <i class="fas fa-music"></i><span class="d-sm-inline" [class.d-none]="type != 'theme'"> Selections</span>
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'styles' }" [class.active]="type == 'styles'"><i class="fas fa-guitar"></i> Genres</a>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'styles' }" [class.active]="type == 'styles'" title="Genres">
+      <i class="fas fa-guitar"></i><span class=" d-sm-inline" [class.d-none]="type != 'styles'"> Genres</span>
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'top' }" [class.active]="type == 'top'"><i class="fas fa-trophy"></i> Top</a>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'top' }" [class.active]="type == 'top'" title="Top">
+      <i class="fas fa-trophy"></i><span class="d-sm-inline" [class.d-none]="type != 'top'"> Top</span>
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="type == 'news'"><i class="fas fa-calendar-alt"></i> New releases</a>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="type == 'news'" title="New releases">
+      <i class="fas fa-calendar-alt"></i><span class="d-sm-inline" [class.d-none]="type != 'news'"> New releases</span>
+    </a>
   </li>
 </ul>
 

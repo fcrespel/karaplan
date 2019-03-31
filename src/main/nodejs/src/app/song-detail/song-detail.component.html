@@ -17,24 +17,24 @@
   <!-- Navigation pills -->
   <ul class="nav nav-pills justify-content-center my-3">
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="switchTab($event, 'lyrics')" [class.active]="tab == 'lyrics'">
-        <i class="fas fa-microphone-alt"></i> Lyrics
+      <a class="nav-link" href="#" (click)="switchTab($event, 'lyrics')" [class.active]="tab == 'lyrics'" title="Lyrics">
+        <i class="fas fa-microphone-alt"></i><span class="d-sm-inline" [class.d-none]="tab != 'lyrics'"> Lyrics</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="switchTab($event, 'comments')" [class.active]="tab == 'comments'">
-        <i class="fas fa-comments"></i> Comments
+      <a class="nav-link" href="#" (click)="switchTab($event, 'comments')" [class.active]="tab == 'comments'" title="Comments">
+        <i class="fas fa-comments"></i><span class="d-sm-inline" [class.d-none]="tab != 'comments'"> Comments</span>
         <span class="badge badge-light ml-1" *ngIf="song.comments">{{ song.commentsCount }}</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="switchTab($event, 'related')" [class.active]="tab == 'related'">
-        <i class="fas fa-music"></i> Suggestions
+      <a class="nav-link" href="#" (click)="switchTab($event, 'related')" [class.active]="tab == 'related'" title="Suggestions">
+        <i class="fas fa-music"></i><span class="d-sm-inline" [class.d-none]="tab != 'related'"> Suggestions</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="switchTab($event, 'files')" [class.active]="tab == 'files'">
-        <i class="fas fa-headphones"></i> Files
+      <a class="nav-link" href="#" (click)="switchTab($event, 'files')" [class.active]="tab == 'files'" title="Files">
+        <i class="fas fa-headphones"></i><span class="d-sm-inline" [class.d-none]="tab != 'files'"> Files</span>
         <span class="badge badge-light ml-1" *ngIf="songFiles">{{ songFiles.length }}</span>
       </a>
     </li>

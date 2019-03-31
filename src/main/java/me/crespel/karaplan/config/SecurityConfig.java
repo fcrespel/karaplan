@@ -8,9 +8,11 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import me.crespel.karaplan.security.OidcUserServiceWrapper;
 
@@ -22,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.antMatchers("/", "/home").permitAll()
-				.antMatchers("/**/*.css", "/**/*.js", "/**/*.js.map", "/webjars/**").permitAll()
+				.antMatchers("/favicon.ico", "/**/*.css", "/**/*.js", "/**/*.js.map", "/webjars/**").permitAll()
 				.antMatchers("/api/", "/swagger-ui.html", "/v*/api-docs/**", "/swagger-resources/**", "/csrf").permitAll()
 				.antMatchers("/api/v1/account/**").permitAll()
 				.antMatchers("/actuator/health", "/actuator/info").permitAll()
@@ -33,7 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				.and()
 			.oauth2Login()
-				.userInfoEndpoint().oidcUserService(oidcUserService());
+				.userInfoEndpoint()
+					.oidcUserService(oidcUserService())
+					.and()
+				.and()
+			.exceptionHandling()
+				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**"));
 	}
 
 	@Bean

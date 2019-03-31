@@ -22,6 +22,9 @@ server:
   port: 8080
   compression:
     enabled: true
+  servlet:
+    session:
+      timeout: 12h
 logging:
   level:
     me.crespel.karaplan: debug
