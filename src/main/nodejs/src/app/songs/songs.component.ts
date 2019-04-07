@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SongsService } from '../services/songs.service';
 import { Song } from '../models/song';
 import { CatalogSelection } from '../models/catalog-selection';
+import { switchMap, map } from 'rxjs/operators';
+import { of, concat } from 'rxjs';
 
 @Component({
   selector: 'app-songs',
@@ -11,13 +13,7 @@ import { CatalogSelection } from '../models/catalog-selection';
 })
 export class SongsComponent implements OnInit {
 
-  type: string = 'query';
-  query: string = '';
-  page: number = 0;
-  limit: number = 10;
-  hasMoreSongs: boolean = false;
-  songs: Song[] = [];
-  selections: CatalogSelection[] = [];
+  queryContext: QueryContext = new QueryContext();
 
   constructor(
     private route: ActivatedRoute,
@@ -26,23 +22,25 @@ export class SongsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe(params => {
-      this.type = params.get('type') || 'query';
-      this.query = params.get('query') || '';
-      this.page = 0;
-      this.hasMoreSongs = false;
-      if (this.type == 'query' || this.query) {
-        this.songsService.searchSongs(this.type, this.query).subscribe(songs => {
-          this.songs = songs;
-          this.hasMoreSongs = songs.length == this.limit;
-        });
-        this.selections = [];
+    this.route.queryParamMap.pipe(switchMap(params => {
+      let type = params.get('type') || 'query';
+      let query = params.get('query') || '';
+      if (type == 'query' || query) {
+        return concat(of(new QueryContext(type, query, true)), this.songsService.searchSongs(type, query).pipe(map(songs => {
+          let result = new QueryContext(type, query);
+          result.songs = songs;
+          result.hasMoreSongs = songs && songs.length == result.songsLimit;
+          return result;
+        })));
       } else {
-        this.songs = [];
-        this.songsService.getSelections(this.type).subscribe(selections => {
-          this.selections = selections;
-        });
+        return concat(of(new QueryContext(type, query, true)), this.songsService.getSelections(type).pipe(map(selections => {
+          let result = new QueryContext(type, query);
+          result.selections = selections;
+          return result;
+        })));
       }
+    })).subscribe(result => {
+      this.queryContext = result;
     });
   }
 
@@ -51,12 +49,30 @@ export class SongsComponent implements OnInit {
   }
 
   loadMoreSongs() {
-    if (this.hasMoreSongs && (this.type == 'query' || this.query)) {
-      this.songsService.searchSongs(this.type, this.query, ++this.page).subscribe(songs => {
-        songs.forEach(song => this.songs.push(song));
-        this.hasMoreSongs = songs.length == this.limit;
+    let queryContext = this.queryContext;
+    if (queryContext.hasMoreSongs && (queryContext.type == 'query' || queryContext.query)) {
+      queryContext.hasMoreSongsLoading = true;
+      this.songsService.searchSongs(queryContext.type, queryContext.query, ++queryContext.songsPage).subscribe(songs => {
+        songs.forEach(song => queryContext.songs.push(song));
+        queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
+        queryContext.hasMoreSongsLoading = false;
       });
     }
   }
 
+}
+
+class QueryContext {
+  songs: Song[] = [];
+  songsPage: number = 0;
+  songsLimit: number = 10;
+  hasMoreSongs: boolean = false;
+  hasMoreSongsLoading: boolean = false;
+  selections: CatalogSelection[];
+
+  constructor(
+    public type: string = 'query',
+    public query: string = '',
+    public loading: boolean = false
+  ) { }
 }

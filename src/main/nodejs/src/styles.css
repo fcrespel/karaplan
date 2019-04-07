@@ -79,3 +79,13 @@ a:hover {
 	background-color: #db2c78;
 	border-color: #db2c78;
 }
+
+.spinner-border-md {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.spinner-border-lg {
+	width: 3rem;
+	height: 3rem;
+}
