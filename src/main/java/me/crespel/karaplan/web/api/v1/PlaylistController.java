@@ -1,5 +1,6 @@
 package me.crespel.karaplan.web.api.v1;
 
+import java.security.Principal;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,18 +51,30 @@ public class PlaylistController {
 	public Set<Playlist> getPlaylists(@PageableDefault Pageable pageable) {
 		return playlistService.findAll(pageable);
 	}
+	
+	@GetMapping("/authorized")
+	@ApiOperation("Get all authorized playlists")
+	public Set<Playlist> getAuthorizedPlaylists(@PageableDefault Pageable pageable, Principal user) {
+		return playlistService.getAuthorizedPlaylists(pageable, user.getName());
+	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Create a playlist")
-	public Playlist createPlaylist(@RequestParam String name) {
-		return playlistService.save(new Playlist().setName(name));
+	public Playlist createPlaylist(@RequestParam String name, @RequestParam(required = false, defaultValue = "false") boolean restricted, Principal user) {
+		return playlistService.createPlaylist(name, user.getName(), restricted);
 	}
 
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist")
 	public Playlist getPlaylist(@PathVariable Long playlistId) {
 		return playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	}
+	
+	@GetMapping("/{playlistId}/unlock")
+	@ApiOperation("Get a playlist")
+	public void addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, Principal user) {
+		playlistService.addUserToPlaylist(playlistId, accessKey, user.getName());
 	}
 
 	@DeleteMapping("/{playlistId}")

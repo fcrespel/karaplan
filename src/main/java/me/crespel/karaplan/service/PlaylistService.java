@@ -17,6 +17,8 @@ public interface PlaylistService {
 	Optional<Playlist> findById(Long id);
 
 	Optional<Playlist> findById(Long id, boolean includeSongs);
+	
+	Playlist createPlaylist(String name, String username, boolean restricted);
 
 	Playlist save(Playlist playlist);
 
@@ -25,5 +27,9 @@ public interface PlaylistService {
 	Playlist removeSong(Playlist playlist, Song song);
 
 	void delete(Playlist playlist);
+	
+	void addUserToPlaylist(Long id, String accessKey, String username);
+
+	Set<Playlist> getAuthorizedPlaylists(Pageable pageable, String username);
 
 }

@@ -1,7 +1,9 @@
+import { AccountService } from './../services/account.service';
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PlaylistsService } from '../services/playlists.service';
 import { Playlist } from '../models/playlist';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-playlists',
@@ -13,11 +15,13 @@ export class PlaylistsComponent implements OnInit {
   playlists: Playlist[] = [];
   playlist: Playlist;
   playlistName: string;
+  restrictedPlaylist: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private playlistsService: PlaylistsService
+    private playlistsService: PlaylistsService,
+    private accountService: AccountService
   ) { }
 
   ngOnInit() {
@@ -33,9 +37,23 @@ export class PlaylistsComponent implements OnInit {
     });
   }
 
+  canEdit(): void {
+    if (!this.playlist.restricted) {
+      this.playlist.readOnly = false;
+    } else if (!!this.playlist.authorizedUsers) {
+      this.accountService.getUser()
+      .subscribe((user: User) => {
+        this.playlist.readOnly = this.playlist.authorizedUsers.findIndex(record => record.id === user.id) < 0;
+      });
+    } else {
+      this.playlist.readOnly = true;
+    }
+  }
+
   loadPlaylist(playlistId: number) {
     this.playlistsService.getPlaylist(playlistId).subscribe(playlist => {
       this.playlist = playlist;
+      this.canEdit();
     });
   }
 
@@ -43,10 +61,10 @@ export class PlaylistsComponent implements OnInit {
     return playlist.id;
   }
 
-  createPlaylist(name: string) {
-    this.playlistsService.createPlaylist(name).subscribe(playlist => {
+  createPlaylist(name: string, restrictedPlaylist: boolean) {
+    this.playlistsService.createPlaylist(name, restrictedPlaylist).subscribe(playlist => {
       this.router.navigate(['/playlists', playlist.id]);
-    })
+    });
   }
 
   deletePlaylist(playlist: Playlist) {

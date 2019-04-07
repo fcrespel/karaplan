@@ -21,8 +21,23 @@ export class PlaylistsService {
     return this.http.get<Playlist[]>(this.playlistsUrl, {params: params});
   }
 
-  createPlaylist(name: string): Observable<Playlist> {
-    let params = new HttpParams().set('name', name);
+  getAuthorizedPlaylists(page: number = 0, size: number = 10, sort: string = ''): Observable<Playlist[]> {
+    let params = new HttpParams()
+      .set('page', ''+page)
+      .set('size', ''+size)
+      .set('sort', sort);
+    return this.http.get<Playlist[]>(`${this.playlistsUrl}/authorized`, {params: params});
+  }
+
+  unlockPlaylist(id: number, accessKey: string): Observable<Response> {
+    let params = new HttpParams()
+      .set('accessKey', accessKey);
+    const url = `${this.playlistsUrl}/${id}/unlock`;
+    return this.http.get<Response>(url, {params: params});
+  }
+
+  createPlaylist(name: string, restrictedPlaylist: boolean): Observable<Playlist> {
+    let params = new HttpParams().set('name', name).set('restricted', restrictedPlaylist ? 'true' : 'false');
     return this.http.post<Playlist>(this.playlistsUrl, null, {params: params});
   }
 

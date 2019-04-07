@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -50,6 +51,12 @@ public class Playlist {
 	@NotNull
 	@Column(name = "NAME")
 	private String name;
+	
+	@Column(name = "RESTRICTED")
+	private Boolean restricted;
+	
+	@Column(name = "ACCESS_KEY")
+	private String accessKey;
 
 	@Column(name = "SONGS_COUNT")
 	private Integer songsCount;
@@ -58,6 +65,9 @@ public class Playlist {
 	@JoinTable(name = "playlist_song", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_SONG", nullable = false) })
 	private Set<Song> songs = Sets.newLinkedHashSet();
 
+	@ManyToMany(cascade=CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<User> authorizedUsers;
+	
 	@Column(name = "DURATION")
 	private Long duration;
 

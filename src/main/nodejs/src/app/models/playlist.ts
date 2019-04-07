@@ -12,4 +12,8 @@ export class Playlist {
   updatedDate: Date;
   updatedBy: User;
   isSelected: boolean;
+  restricted: boolean;
+  accessKey: string;
+  authorizedUsers: User[];
+  readOnly: boolean;
 }

@@ -1,4 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AccountService } from './../services/account.service';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
 import { AlertService } from '../services/alert.service';
@@ -6,6 +8,7 @@ import { Playlist } from '../models/playlist';
 import { Song } from '../models/song';
 import { PlaylistSong } from '../models/playlist-song';
 import { AlertMessage } from '../models/alert-message';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -18,14 +21,25 @@ export class PlaylistDetailComponent implements OnInit {
   @Output() delete = new EventEmitter<Playlist>();
   karafunRemoteId: string;
   karafunBarId: string;
+  accessId: string;
+  shareUrl: string;
 
   constructor(
     private modalService: NgbModal,
     private playlistsService: PlaylistsService,
+    private route: ActivatedRoute,
     private alertService: AlertService
   ) { }
 
   ngOnInit() {
+    this.route.queryParamMap.subscribe(params => {
+      this.accessId = params.get('accessId');
+      if (!!this.accessId) {
+        this.playlistsService.unlockPlaylist(this.playlist.id, this.accessId).subscribe((data: any) => {
+          this.playlist.readOnly = false;
+        });
+      }
+    });
   }
 
   deletePlaylist(playlist: Playlist) {
@@ -33,7 +47,7 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   onPlaylistRemoved(playlistSong: PlaylistSong) {
-    if (playlistSong.playlist.id == this.playlist.id) {
+    if (playlistSong.playlist.id === this.playlist.id) {
       this.playlistsService.getPlaylist(this.playlist.id).subscribe(playlist => {
         this.playlist = playlist;
       });
@@ -73,5 +87,31 @@ export class PlaylistDetailComponent implements OnInit {
       }
     });
   }
+
+  openShareModal(shareModalContent) {
+    this.shareUrl = `${document.location.href}?accessId=${this.playlist.accessKey}`;
+    this.modalService.open(shareModalContent, { size: 'lg' });
+  }
+
+  unlockPlaylist(accessIdInputForm: NgForm) {
+    this.playlistsService.unlockPlaylist(this.playlist.id, this.accessId).subscribe((data: any) => {
+      this.playlist.readOnly = false;
+      accessIdInputForm.reset();
+    });
+  }
+
+  copyToClipboard(text) {
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = text;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    }
 
 }

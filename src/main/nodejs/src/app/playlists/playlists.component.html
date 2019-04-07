@@ -18,12 +18,16 @@
   <div class="col-lg-9">
     <!-- Create playlist -->
     <ng-container *ngIf="!playlist">
-      <form #playlistCreateForm="ngForm" (ngSubmit)="createPlaylist(playlistName)">
+      <form #playlistCreateForm="ngForm" (ngSubmit)="createPlaylist(playlistName, restrictedPlaylist)">
         <div class="input-group shadow">
           <input type="text" class="form-control" name="playlistName" [(ngModel)]="playlistName" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" placeholder="Playlist name" required>
           <div class="input-group-append">
             <button type="submit" class="btn btn-pink" [disabled]="!playlistCreateForm.form.valid"><i class="fas fa-plus"></i> Create</button>
           </div>
+        </div>
+        <div class="custom-control custom-switch mt-3">
+          <input type="checkbox" class="form-control custom-control-input" (oncolor)="success" name="restrictedPlaylist" [(ngModel)]="restrictedPlaylist" #restrictedPlaylistField="ngModel" id="restrictedToggle">
+          <label class="custom-control-label" for="restrictedToggle">Restricted playlist</label>
         </div>
       </form>
     </ng-container>
