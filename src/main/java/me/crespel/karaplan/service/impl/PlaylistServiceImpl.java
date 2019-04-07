@@ -1,6 +1,5 @@
 package me.crespel.karaplan.service.impl;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -15,6 +14,7 @@ import com.google.common.collect.Sets;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.repository.PlaylistRepo;
 import me.crespel.karaplan.repository.UserRepo;
 import me.crespel.karaplan.service.PlaylistService;
@@ -24,7 +24,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Autowired
 	protected UserRepo userRepo;
-	
+
 	@Autowired
 	protected PlaylistRepo playlistRepo;
 
@@ -36,6 +36,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	public Set<Playlist> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(playlistRepo.findAll(pageable));
+	}
+
+	@Override
+	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
+		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrAuthorizedUsersId(false, user.getId()));
 	}
 
 	@Override
@@ -51,6 +56,17 @@ public class PlaylistServiceImpl implements PlaylistService {
 			playlist.get().getSongs().size(); // Force eager load
 		}
 		return playlist;
+	}
+
+	@Override
+	@Transactional
+	public Playlist create(String name, User user, boolean restricted) {
+		Playlist playlist = new Playlist().setName(name).setRestricted(restricted);
+		if (restricted) {
+			playlist.setAccessKey(UUID.randomUUID().toString());
+			playlist.getAuthorizedUsers().add(user);
+		}
+		return playlistRepo.save(playlist);
 	}
 
 	@Override
@@ -80,61 +96,24 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
+	public Playlist addUser(Playlist playlist, User user, String accessKey) {
+		if (playlist.getRestricted() && playlist.getAccessKey() != null) {
+			if (playlist.getAccessKey().equals(accessKey)) {
+				if (!playlist.getAuthorizedUsers().contains(user)) {
+					playlist.getAuthorizedUsers().add(user);
+					return playlistRepo.save(playlist);
+				}
+			} else {
+				throw new BusinessException("Invalid playlist access key");
+			}
+		}
+		return playlist;
+	}
+
+	@Override
+	@Transactional
 	public void delete(Playlist playlist) {
 		playlistRepo.delete(playlist);
-	}
-
-	@Override
-	public Playlist createPlaylist(String name, String username, boolean restricted) {
-		Playlist playlist = new Playlist().setName(name).setRestricted(restricted);
-		if(restricted) {
-			playlist.setAccessKey(UUID.randomUUID().toString());
-			Optional<User> user = userRepo.findByUsername(username);
-			if(user.isPresent()) {
-				Set<User> newAuthorizedSet = null;
-				if(playlist.getAuthorizedUsers() != null) {
-					newAuthorizedSet = new HashSet<User>(playlist.getAuthorizedUsers());
-				} else {
-					newAuthorizedSet = new HashSet<User>();
-				}
-				newAuthorizedSet.add(user.get());
-				playlist.setAuthorizedUsers(newAuthorizedSet);
-			}
-		}
-		return playlistRepo.save(playlist);
-	}
-
-	@Override
-	public void addUserToPlaylist(Long id, String accessKey, String username) {
-		Optional<Playlist> playlist = findById(id);
-		if(playlist.isPresent()) {
-			Playlist p = playlist.get();
-			if(p.getRestricted() && p.getAccessKey() != null && p.getAccessKey().equals(accessKey)) {
-				Optional<User> user = userRepo.findByUsername(username);
-				if(user.isPresent()) {
-					Set<User> newAuthorizedSet = null;
-					if(p.getAuthorizedUsers() != null) {
-						newAuthorizedSet = new HashSet<User>(p.getAuthorizedUsers());
-					} else {
-						newAuthorizedSet = new HashSet<User>();
-					}
-					if(!newAuthorizedSet.contains(user.get())) {
-						newAuthorizedSet.add(user.get());
-						p.setAuthorizedUsers(newAuthorizedSet);
-						playlistRepo.save(p);						
-					}
-				}
-			}
-		}
-	}
-
-	@Override
-	public Set<Playlist> getAuthorizedPlaylists(Pageable pageable, String username) {
-		Optional<User> user = userRepo.findByUsername(username);
-		if(user.isPresent()) {
-			return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrAuthorizedUsersId(false, user.get().getId()));
-		}
-		return Sets.newLinkedHashSet(playlistRepo.findAllByRestricted(false));
 	}
 
 }

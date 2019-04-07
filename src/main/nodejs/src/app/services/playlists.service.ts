@@ -29,15 +29,8 @@ export class PlaylistsService {
     return this.http.get<Playlist[]>(`${this.playlistsUrl}/authorized`, {params: params});
   }
 
-  unlockPlaylist(id: number, accessKey: string): Observable<Response> {
-    let params = new HttpParams()
-      .set('accessKey', accessKey);
-    const url = `${this.playlistsUrl}/${id}/unlock`;
-    return this.http.get<Response>(url, {params: params});
-  }
-
-  createPlaylist(name: string, restrictedPlaylist: boolean): Observable<Playlist> {
-    let params = new HttpParams().set('name', name).set('restricted', restrictedPlaylist ? 'true' : 'false');
+  createPlaylist(name: string, restricted: boolean): Observable<Playlist> {
+    let params = new HttpParams().set('name', name).set('restricted', restricted ? 'true' : 'false');
     return this.http.post<Playlist>(this.playlistsUrl, null, {params: params});
   }
 
@@ -59,6 +52,12 @@ export class PlaylistsService {
   removeSongFromPlaylist(playlistId: number, catalogId: number): Observable<Playlist> {
     const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.delete<Playlist>(url);
+  }
+
+  joinPlaylist(playlistId: number, accessKey: string): Observable<Playlist> {
+    let params = new HttpParams().set('accessKey', accessKey);
+    const url = `${this.playlistsUrl}/${playlistId}/join`;
+    return this.http.post<Playlist>(url, null, {params: params});
   }
 
   exportPlaylistToKarafunRemote(playlistId: number, remoteId: string): Observable<Response> {

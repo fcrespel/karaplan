@@ -1,14 +1,14 @@
 <!-- Toolbar -->
-<ng-container  *ngIf="!playlist.readOnly; else accessIdInput">
+<ng-container *ngIf="!playlist.readOnly; else accessKeyInput">
   <div class="row no-gutters justify-content-between align-items-center mb-2">
     <div class="col">
       <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
     </div>
     <div class="col-auto">
       <span class="badge badge-light mx-2" *ngIf="playlist.duration" title="Duration">{{ playlist.duration | duration }}</span>
+      <button *ngIf="playlist.restricted" type="button" class="btn btn-light shadow mx-1" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i> Share</button>
       <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
-        <button *ngIf="playlist.restricted" type="button" class="btn btn-light shadow mr-1" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i> Share</button>
-        <button class="btn btn-light shadow" ngbDropdownToggle>Export</button>
+        <button class="btn btn-light shadow" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i> Export</button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)">Karafun Remote</button>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)">Karafun Bar</button>
@@ -18,22 +18,25 @@
     </div>
   </div>
 </ng-container>
+
 <!-- Song list -->
 <app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" (playlistRemoved)="onPlaylistRemoved($event)" (songRemoved)="onSongRemoved($event)" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
 <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
   <p>No song has been added to this playlist yet.</p>
 </ng-container>
 
-<ng-template #accessIdInput>
-  <h4>This playlist is on read-only. Enter the access code if you want to edit.</h4>
-  <form #accessIdInputForm="ngForm" (ngSubmit)="unlockPlaylist(accessIdInputForm)">
-      <div class="form-group">
-          <label for="acessId">Access ID</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="accessId" name="accessId" [(ngModel)]="accessId" #accessIdField="ngModel" [class.is-invalid]="accessIdField.dirty && accessIdField.invalid" required>
-            <button type="submit" class="btn btn-pink" [disabled]="!accessIdInputForm.form.valid">Access Playlist</button>
-          </div>
+<!-- Access key input form -->
+<ng-template #accessKeyInput>
+  <p><i class="fas fa-lock"></i> This playlist is restricted. Please enter the access key if you want to edit it.</p>
+  <form #accessKeyInputForm="ngForm" (ngSubmit)="unlockPlaylist(accessKeyInputForm)">
+    <div class="form-group">
+      <div class="input-group shadow">
+        <input type="text" class="form-control"  id="accessKey" name="accessKey" [(ngModel)]="accessKey" #accessKeyField="ngModel" [class.is-invalid]="accessKeyField.dirty && accessKeyField.invalid" placeholder="Access Key" required>
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-pink" [disabled]="!accessKeyInputForm.form.valid"><i class="fas fa-lock-open"></i> Unlock</button>
         </div>
+      </div>
+    </div>
   </form>
 </ng-template>
 
@@ -83,9 +86,10 @@
   </div>
 </ng-template>
 
+<!-- Share modal -->
 <ng-template #shareModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Share this id with your friends</h4>
+    <h4 class="modal-title" id="modal-basic-title">Share this playlist with your friends</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -93,15 +97,24 @@
   <div class="modal-body">
     <div class="form-group">
       <label for="shareUrl">Share URL</label>
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl">
-        <button type="button" class="btn btn-light shadow" (click)="copyToClipboard(shareUrl)"><i class="fas fa-copy"></i></button>
-      </div>
-      <label for="accessKey">Access Key only</label>
       <div class="input-group">
-        <input type="text" class="form-control" readonly id="accessKey" name="accessKey" [(ngModel)]="playlist.accessKey">
-        <button type="button" class="btn btn-light shadow" (click)="copyToClipboard(playlist.accessKey)"><i class="fas fa-copy"></i></button>
+        <input type="text" class="form-control" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
+        <div class="input-group-append">
+          <button type="button" class="btn btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+        </div>
       </div>
     </div>
+    <div class="form-group">
+      <label for="accessKey">Access Key</label>
+      <div class="input-group">
+        <input type="text" class="form-control" readonly id="accessKey" name="accessKey" [(ngModel)]="playlist.accessKey" #accessKeyField>
+        <div class="input-group-append">
+          <button type="button" class="btn btn-outline-secondary" (click)="copyToClipboard(accessKeyField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.dismiss()">Close</button>
   </div>
 </ng-template>

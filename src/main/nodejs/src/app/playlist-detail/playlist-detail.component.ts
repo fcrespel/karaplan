@@ -1,6 +1,6 @@
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AccountService } from './../services/account.service';
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
 import { AlertService } from '../services/alert.service';
@@ -8,7 +8,6 @@ import { Playlist } from '../models/playlist';
 import { Song } from '../models/song';
 import { PlaylistSong } from '../models/playlist-song';
 import { AlertMessage } from '../models/alert-message';
-import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-playlist-detail',
@@ -18,25 +17,27 @@ import { NgForm } from '@angular/forms';
 export class PlaylistDetailComponent implements OnInit {
 
   @Input() playlist: Playlist;
+  @Output() playlistChange = new EventEmitter<Playlist>();
   @Output() delete = new EventEmitter<Playlist>();
   karafunRemoteId: string;
   karafunBarId: string;
-  accessId: string;
+  accessKey: string;
   shareUrl: string;
 
   constructor(
+    private route: ActivatedRoute,
     private modalService: NgbModal,
     private playlistsService: PlaylistsService,
-    private route: ActivatedRoute,
     private alertService: AlertService
   ) { }
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
-      this.accessId = params.get('accessId');
-      if (!!this.accessId) {
-        this.playlistsService.unlockPlaylist(this.playlist.id, this.accessId).subscribe((data: any) => {
-          this.playlist.readOnly = false;
+      this.accessKey = params.get('accessKey');
+      if (this.accessKey) {
+        this.playlistsService.joinPlaylist(this.playlist.id, this.accessKey).subscribe(playlist => {
+          this.playlist = playlist;
+          this.playlistChange.emit(this.playlist);
         });
       }
     });
@@ -50,6 +51,7 @@ export class PlaylistDetailComponent implements OnInit {
     if (playlistSong.playlist.id === this.playlist.id) {
       this.playlistsService.getPlaylist(this.playlist.id).subscribe(playlist => {
         this.playlist = playlist;
+        this.playlistChange.emit(this.playlist);
       });
     }
   }
@@ -57,6 +59,7 @@ export class PlaylistDetailComponent implements OnInit {
   onSongRemoved(song: Song) {
     this.playlistsService.removeSongFromPlaylist(this.playlist.id, song.catalogId).subscribe(playlist => {
       this.playlist = playlist;
+      this.playlistChange.emit(this.playlist);
     });
   }
 
@@ -71,7 +74,7 @@ export class PlaylistDetailComponent implements OnInit {
           this.alertService.addMessage(message);
         });
       }
-    });
+    }, reason => {});
   }
 
   exportPlaylistToKarafunBar(playlist: Playlist, modalContent) {
@@ -85,33 +88,26 @@ export class PlaylistDetailComponent implements OnInit {
           this.alertService.addMessage(message);
         });
       }
-    });
+    }, reason => {});
   }
 
   openShareModal(shareModalContent) {
-    this.shareUrl = `${document.location.href}?accessId=${this.playlist.accessKey}`;
+    this.shareUrl = `${document.location.href}?accessKey=${this.playlist.accessKey}`;
     this.modalService.open(shareModalContent, { size: 'lg' });
   }
 
-  unlockPlaylist(accessIdInputForm: NgForm) {
-    this.playlistsService.unlockPlaylist(this.playlist.id, this.accessId).subscribe((data: any) => {
-      this.playlist.readOnly = false;
-      accessIdInputForm.reset();
+  unlockPlaylist(accessKeyInputForm: NgForm) {
+    this.playlistsService.joinPlaylist(this.playlist.id, this.accessKey).subscribe(playlist => {
+      this.playlist = playlist;
+      this.playlistChange.emit(this.playlist);
+      accessKeyInputForm.reset();
     });
   }
 
-  copyToClipboard(text) {
-    let selBox = document.createElement('textarea');
-    selBox.style.position = 'fixed';
-    selBox.style.left = '0';
-    selBox.style.top = '0';
-    selBox.style.opacity = '0';
-    selBox.value = text;
-    document.body.appendChild(selBox);
-    selBox.focus();
-    selBox.select();
+  copyToClipboard(field: HTMLInputElement) {
+    field.focus();
+    field.select();
     document.execCommand('copy');
-    document.body.removeChild(selBox);
-    }
+  }
 
 }
