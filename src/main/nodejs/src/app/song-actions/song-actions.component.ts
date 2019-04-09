@@ -36,6 +36,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   voteUpUsers: string;
   voteDownUsers: string;
   commentText: string;
+  loading: boolean = false;
 
   constructor(
     private accountService: AccountService,
@@ -69,6 +70,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       this.voteUpUsers = undefined;
       this.voteDownUsers = undefined;
     }
+    this.loading = false;
   }
 
   trackByCommentId(index: number, comment: SongComment): number {
@@ -81,6 +83,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
 
   voteUp() {
     let score = (this.vote && this.vote.score) == 1 ? 0 : 1;
+    this.loading = true;
     this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
       let previousVote = this.vote;
       this.updateSong(song);
@@ -94,6 +97,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
 
   voteDown() {
     let score = (this.vote && this.vote.score) == -1 ? 0 : -1;
+    this.loading = true;
     this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
       let previousVote = this.vote;
       this.updateSong(song);
@@ -106,6 +110,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   }
 
   addComment(comment: string, commentForm: NgForm) {
+    this.loading = true;
     this.songsService.addCommentToSong(this.song.catalogId, comment).subscribe(song => {
       commentForm.reset();
       this.updateSong(song);
@@ -114,6 +119,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   }
 
   removeComment(comment: SongComment) {
+    this.loading = true;
     this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
       this.updateSong(song);
       this.commentRemoved.emit(comment);
@@ -121,6 +127,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   }
 
   addToPlaylist(playlist: Playlist) {
+    this.loading = true;
     this.songsService.addSongToPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
       this.updateSong(song);
       playlist.isSelected = true;
@@ -129,6 +136,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   }
 
   removeFromPlaylist(playlist: Playlist) {
+    this.loading = true;
     this.songsService.removeSongFromPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
       this.updateSong(song);
       playlist.isSelected = false;

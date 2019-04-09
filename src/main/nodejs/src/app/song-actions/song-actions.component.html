@@ -1,10 +1,17 @@
+<!-- Loading indicator -->
+<div class="d-inline-block mx-1 text-secondary" *ngIf="loading">
+  <div class="spinner-border spinner-border-sm" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+
 <!-- Votes -->
 <div class="btn-group mx-1" role="group" *ngIf="showVotes">
-  <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" title="Vote up" placement="top" ngbTooltip="{{voteUpUsers}}">
+  <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" [disabled]="loading" title="Vote up" placement="top" ngbTooltip="{{voteUpUsers}}">
     <i class="fa-thumbs-up" [class.far]="vote?.score != 1" [class.fas]="vote?.score == 1"></i>
     <span class="badge badge-success ml-1" *ngIf="song.scoreUp">{{ song.scoreUp }}</span>
   </button>
-  <button type="button" class="btn btn-outline-danger" (click)="$event.stopPropagation(); voteDown()" title="Vote down" placement="top" ngbTooltip="{{voteDownUsers}}">
+  <button type="button" class="btn btn-outline-danger" (click)="$event.stopPropagation(); voteDown()" [disabled]="loading" title="Vote down" placement="top" ngbTooltip="{{voteDownUsers}}">
     <i class="fa-thumbs-down" [class.far]="vote?.score != -1" [class.fas]="vote?.score == -1"></i>
     <span class="badge badge-danger ml-1" *ngIf="song.scoreDown">{{ song.scoreDown }}</span>
   </button>
@@ -21,14 +28,14 @@
       <div class="form-group mb-2">
         <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" placeholder="Your comment ..." required></textarea>
       </div>
-      <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
+      <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid || loading">Add comment</button>
     </form>
     <ng-container *ngFor="let comment of song.comments; trackBy: trackByCommentId">
       <div class="dropdown-divider"></div>
       <div class="d-flex mx-3 mt-2 mb-0 align-items-center justify-content-between">
         <small class="text-muted flex-grow-1">{{ comment.user.displayName }}</small>
         <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
-        <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+        <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment)" [disabled]="loading" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
       </div>
       <p class="mx-3 mt-0 mb-2 comment-text">{{ comment.comment }}</p>
     </ng-container>
@@ -37,18 +44,22 @@
 
 <!-- Playlists -->
 <div ngbDropdown autoClose="outside" placement="bottom-left bottom bottom-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
-  <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Add to playlist">
+  <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle [disabled]="loading" title="Add to playlist">
     <i class="fas fa-list"></i>
     <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlistsCount }}</span>
   </button>
   <div class="dropdown-menu shadow" ngbDropdownMenu>
+    <button type="button" class="dropdown-item" ngbDropdownItem *ngIf="!playlists">
+      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      Loading ...
+    </button>
     <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists; trackBy: trackByPlaylistId" (click)="togglePlaylist(playlist)">
       <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
       <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
       {{ playlist.name }}
     </button>
-    <div class="dropdown-divider" *ngIf="playlists && playlists.length > 0"></div>
-    <a class="dropdown-item" href="#" routerLink="/playlists"><i class="fas fa-plus mr-1"></i> New playlist</a>
+    <div class="dropdown-divider" *ngIf="!playlists || playlists.length > 0"></div>
+    <a class="dropdown-item" ngbDropdownItem href="#" routerLink="/playlists"><i class="fas fa-plus mr-1"></i> New playlist</a>
   </div>
 </div>
 
