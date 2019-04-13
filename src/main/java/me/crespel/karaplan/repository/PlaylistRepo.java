@@ -8,6 +8,6 @@ public interface PlaylistRepo extends JpaRepository<Playlist, Long> {
 
 	Iterable<Playlist> findAllByRestricted(boolean restricted);
 
-	Iterable<Playlist> findAllByRestrictedOrAuthorizedUsersId(boolean restricted, Long userId);
+	Iterable<Playlist> findAllByRestrictedOrMembersId(boolean restricted, Long userId);
 
 }

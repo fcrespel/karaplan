@@ -46,9 +46,9 @@ export class PlaylistsComponent implements OnInit {
     if (playlist) {
       if (!playlist.restricted) {
         playlist.readOnly = false;
-      } else if (playlist.authorizedUsers) {
+      } else if (playlist.members) {
         this.accountService.getUser().subscribe(user => {
-          playlist.readOnly = playlist.authorizedUsers.findIndex(record => record.id === user.id) < 0;
+          playlist.readOnly = playlist.members.findIndex(record => record.id === user.id) < 0;
         });
       } else {
         playlist.readOnly = true;

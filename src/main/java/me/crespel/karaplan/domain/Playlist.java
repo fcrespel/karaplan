@@ -60,7 +60,7 @@ public class Playlist {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "playlist_user", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_USER", nullable = false) })
-	private Set<User> authorizedUsers = Sets.newLinkedHashSet();
+	private Set<User> members = Sets.newLinkedHashSet();
 
 	@Column(name = "SONGS_COUNT")
 	private Integer songsCount;

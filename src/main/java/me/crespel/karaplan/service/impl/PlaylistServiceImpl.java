@@ -40,7 +40,17 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
-		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrAuthorizedUsersId(false, user.getId()));
+		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId()));
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Playlist> getPlaylist(Long id, boolean includeSongs, User user) {
+		Optional<Playlist> playlist = findById(id, includeSongs);
+		if (!isMember(user, playlist.get())) {
+			playlist.get().setAccessKey(null);
+		}
+		return playlist;
 	}
 
 	@Override
@@ -64,7 +74,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		Playlist playlist = new Playlist().setName(name).setRestricted(restricted);
 		if (restricted) {
 			playlist.setAccessKey(UUID.randomUUID().toString());
-			playlist.getAuthorizedUsers().add(user);
+			playlist.getMembers().add(user);
 		}
 		return playlistRepo.save(playlist);
 	}
@@ -78,7 +88,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
-	public Playlist addSong(Playlist playlist, Song song) {
+	public Playlist addSong(Playlist playlist, Song song, User user) {
+		if (!isMember(user, playlist)) {
+			return playlist;
+		}
 		playlist.getSongs().add(song);
 		song.getPlaylists().add(playlist);
 		song.updateStats();
@@ -87,7 +100,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
-	public Playlist removeSong(Playlist playlist, Song song) {
+	public Playlist removeSong(Playlist playlist, Song song, User user) {
+		if (!isMember(user, playlist)) {
+			return playlist;
+		}
 		playlist.getSongs().remove(song);
 		song.getPlaylists().remove(playlist);
 		song.updateStats();
@@ -99,8 +115,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Playlist addUser(Playlist playlist, User user, String accessKey) {
 		if (playlist.getRestricted() && playlist.getAccessKey() != null) {
 			if (playlist.getAccessKey().equals(accessKey)) {
-				if (!playlist.getAuthorizedUsers().contains(user)) {
-					playlist.getAuthorizedUsers().add(user);
+				if (!playlist.getMembers().contains(user)) {
+					playlist.getMembers().add(user);
 					return playlistRepo.save(playlist);
 				}
 			} else {
@@ -112,8 +128,19 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
-	public void delete(Playlist playlist) {
+	public void delete(Playlist playlist, User user) {
+		if (!isMember(user, playlist)) {
+			return;
+		}
 		playlistRepo.delete(playlist);
+	}
+
+	@Override
+	public boolean isMember(User user, Playlist playlist) {
+		if(!playlist.getRestricted()) {
+			return true;
+		}
+		return playlist != null &&user != null && playlist.getMembers() != null && playlist.getMembers().contains(user);
 	}
 
 }

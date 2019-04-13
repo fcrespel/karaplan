@@ -6,7 +6,7 @@ export class Playlist {
   name: string;
   restricted: boolean;
   accessKey: string;
-  authorizedUsers: User[];
+  members: User[];
   songsCount: number;
   songs: Song[];
   duration: number;

@@ -16,6 +16,8 @@ public interface PlaylistService {
 	Set<Playlist> findAll(Pageable pageable);
 
 	Set<Playlist> findAllAuthorized(Pageable pageable, User user);
+	
+	Optional<Playlist> getPlaylist(Long id, boolean includeSongs, User user);
 
 	Optional<Playlist> findById(Long id);
 
@@ -25,12 +27,14 @@ public interface PlaylistService {
 
 	Playlist save(Playlist playlist);
 
-	Playlist addSong(Playlist playlist, Song song);
+	Playlist addSong(Playlist playlist, Song song, User user);
 
-	Playlist removeSong(Playlist playlist, Song song);
+	Playlist removeSong(Playlist playlist, Song song, User user);
 
 	Playlist addUser(Playlist playlist, User user, String accessKey);
 
-	void delete(Playlist playlist);
+	void delete(Playlist playlist, User user);
+	
+	boolean isMember(User user, Playlist playlist);
 
 }

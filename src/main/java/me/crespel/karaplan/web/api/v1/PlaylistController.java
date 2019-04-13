@@ -69,32 +69,32 @@ public class PlaylistController {
 
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist")
-	public Playlist getPlaylist(@PathVariable Long playlistId) {
-		return playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	public Playlist getPlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return playlistService.getPlaylist(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 	}
 
 	@DeleteMapping("/{playlistId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Delete a playlist")
-	public void deletePlaylist(@PathVariable Long playlistId) {
+	public void deletePlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
-		playlistService.delete(playlist);
+		playlistService.delete(playlist, user);
 	}
 
 	@PostMapping("/{playlistId}/song/{catalogId}")
 	@ApiOperation("Add a song to a playlist")
-	public Playlist addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId) {
+	public Playlist addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		return playlistService.addSong(playlist, song);
+		return playlistService.addSong(playlist, song, user);
 	}
 
 	@DeleteMapping("/{playlistId}/song/{catalogId}")
 	@ApiOperation("Remove a song from a playlist")
-	public Playlist removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId) {
+	public Playlist removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
-		return playlistService.removeSong(playlist, song);
+		return playlistService.removeSong(playlist, song, user);
 	}
 
 	@PostMapping("/{playlistId}/join")
