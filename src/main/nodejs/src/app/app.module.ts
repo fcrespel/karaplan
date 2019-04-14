@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './alert/alert.component';
 import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
 import { SongsComponent } from './songs/songs.component';
 import { SongListComponent } from './song-list/song-list.component';
 import { SongSelectionsComponent } from './song-selections/song-selections.component';
@@ -26,6 +27,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     NavbarComponent,
     AlertComponent,
     HomeComponent,
+    LoginComponent,
     SongsComponent,
     SongListComponent,
     SongSelectionsComponent,
