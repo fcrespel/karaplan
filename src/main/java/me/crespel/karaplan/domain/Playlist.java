@@ -26,6 +26,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.collect.Sets;
 
 import lombok.Data;
@@ -55,6 +57,7 @@ public class Playlist {
 	@Column(name = "RESTRICTED")
 	private Boolean restricted;
 
+	@JsonProperty(access = Access.READ_ONLY)
 	@Column(name = "ACCESS_KEY")
 	private String accessKey;
 

@@ -1,8 +1,10 @@
 package me.crespel.karaplan.service.impl;
 
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -39,18 +41,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
+	public Set<Playlist> findAll(Pageable pageable, User user) {
+		return playlistRepo.findAll(pageable).stream()
+				.map(playlist -> {
+					if (!isMember(user, playlist)) {
+						playlist.setAccessKey(null);
+					}
+					return playlist;
+				})
+				.collect(Collectors.toCollection(LinkedHashSet::new));
+	}
+
+	@Override
 	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
 		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId()));
-	}
-	
-	@Override
-	@Transactional(readOnly = true)
-	public Optional<Playlist> getPlaylist(Long id, boolean includeSongs, User user) {
-		Optional<Playlist> playlist = findById(id, includeSongs);
-		if (!isMember(user, playlist.get())) {
-			playlist.get().setAccessKey(null);
-		}
-		return playlist;
 	}
 
 	@Override
@@ -61,9 +65,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id, boolean includeSongs) {
+		return findById(id, includeSongs, null);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Playlist> findById(Long id, boolean includeSongs, User user) {
 		Optional<Playlist> playlist = playlistRepo.findById(id);
-		if (playlist.isPresent() && includeSongs) {
-			playlist.get().getSongs().size(); // Force eager load
+		if (playlist.isPresent()) {
+			if (includeSongs) {
+				playlist.get().getSongs().size(); // Force eager load
+			}
+			if (!isMember(user, playlist.get())) {
+				playlist.get().setAccessKey(null);
+			}
 		}
 		return playlist;
 	}
@@ -90,7 +105,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Transactional
 	public Playlist addSong(Playlist playlist, Song song, User user) {
 		if (!isMember(user, playlist)) {
-			return playlist;
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
 		playlist.getSongs().add(song);
 		song.getPlaylists().add(playlist);
@@ -102,7 +117,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Transactional
 	public Playlist removeSong(Playlist playlist, Song song, User user) {
 		if (!isMember(user, playlist)) {
-			return playlist;
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
 		playlist.getSongs().remove(song);
 		song.getPlaylists().remove(playlist);
@@ -130,17 +145,22 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Transactional
 	public void delete(Playlist playlist, User user) {
 		if (!isMember(user, playlist)) {
-			return;
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
 		playlistRepo.delete(playlist);
 	}
 
 	@Override
 	public boolean isMember(User user, Playlist playlist) {
-		if(!playlist.getRestricted()) {
+		if (playlist == null) {
+			return false;
+		} else if (user == null) {
 			return true;
+		} else if (!playlist.getRestricted()) {
+			return true;
+		} else {
+			return playlist.getMembers() != null && playlist.getMembers().contains(user);
 		}
-		return playlist != null &&user != null && playlist.getMembers() != null && playlist.getMembers().contains(user);
 	}
 
 }

@@ -50,8 +50,8 @@ public class PlaylistController {
 
 	@GetMapping
 	@ApiOperation("Get all playlists")
-	public Set<Playlist> getPlaylists(@PageableDefault Pageable pageable) {
-		return playlistService.findAll(pageable);
+	public Set<Playlist> getPlaylists(@PageableDefault Pageable pageable, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return playlistService.findAll(pageable, user);
 	}
 
 	@GetMapping("/authorized")
@@ -70,7 +70,7 @@ public class PlaylistController {
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist")
 	public Playlist getPlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		return playlistService.getPlaylist(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.findById(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 	}
 
 	@DeleteMapping("/{playlistId}")
