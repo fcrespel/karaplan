@@ -6,4 +6,8 @@ import me.crespel.karaplan.domain.Playlist;
 
 public interface PlaylistRepo extends JpaRepository<Playlist, Long> {
 
+	Iterable<Playlist> findAllByRestricted(boolean restricted);
+
+	Iterable<Playlist> findAllByRestrictedOrMembersId(boolean restricted, Long userId);
+
 }

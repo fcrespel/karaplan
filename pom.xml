@@ -128,17 +128,21 @@
 			<groupId>io.socket</groupId>
 			<artifactId>socket.io-client</artifactId>
 		</dependency>
-		
+
 		<!-- Databases -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
-		
+
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

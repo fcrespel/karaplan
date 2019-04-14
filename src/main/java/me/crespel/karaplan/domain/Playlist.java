@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -25,6 +26,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.google.common.collect.Sets;
 
 import lombok.Data;
@@ -50,6 +53,17 @@ public class Playlist {
 	@NotNull
 	@Column(name = "NAME")
 	private String name;
+
+	@Column(name = "RESTRICTED")
+	private Boolean restricted;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	@Column(name = "ACCESS_KEY")
+	private String accessKey;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "playlist_user", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_USER", nullable = false) })
+	private Set<User> members = Sets.newLinkedHashSet();
 
 	@Column(name = "SONGS_COUNT")
 	private Integer songsCount;

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
@@ -154,7 +154,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
 
   onPlaylistOpen() {
     if (this.playlists == null) {
-      this.playlistsService.getPlaylists(0, 10, 'name').subscribe(playlists => {
+      this.playlistsService.getAuthorizedPlaylists(0, 10, 'name').subscribe(playlists => {
         this.updatePlaylists(playlists);
       });
     } else {

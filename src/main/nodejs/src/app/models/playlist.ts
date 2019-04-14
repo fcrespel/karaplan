@@ -4,6 +4,9 @@ import { User } from './user';
 export class Playlist {
   id: number;
   name: string;
+  restricted: boolean;
+  accessKey: string;
+  members: User[];
   songsCount: number;
   songs: Song[];
   duration: number;
@@ -12,4 +15,5 @@ export class Playlist {
   updatedDate: Date;
   updatedBy: User;
   isSelected: boolean;
+  readOnly: boolean;
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
+import me.crespel.karaplan.domain.User;
 
 public interface PlaylistService {
 
@@ -14,16 +15,28 @@ public interface PlaylistService {
 
 	Set<Playlist> findAll(Pageable pageable);
 
+	Set<Playlist> findAll(Pageable pageable, User user);
+
+	Set<Playlist> findAllAuthorized(Pageable pageable, User user);
+
 	Optional<Playlist> findById(Long id);
 
 	Optional<Playlist> findById(Long id, boolean includeSongs);
 
+	Optional<Playlist> findById(Long id, boolean includeSongs, User user);
+
+	Playlist create(String name, User user, boolean restricted);
+
 	Playlist save(Playlist playlist);
 
-	Playlist addSong(Playlist playlist, Song song);
+	Playlist addSong(Playlist playlist, Song song, User user);
 
-	Playlist removeSong(Playlist playlist, Song song);
+	Playlist removeSong(Playlist playlist, Song song, User user);
 
-	void delete(Playlist playlist);
+	Playlist addUser(Playlist playlist, User user, String accessKey);
+
+	void delete(Playlist playlist, User user);
+
+	boolean isMember(User user, Playlist playlist);
 
 }

@@ -1,26 +1,44 @@
 <!-- Toolbar -->
-<div class="row no-gutters justify-content-between align-items-center mb-2">
-  <div class="col">
-    <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
-  </div>
-  <div class="col-auto">
-    <span class="badge badge-light mx-2" *ngIf="playlist.duration" title="Duration">{{ playlist.duration | duration }}</span>
-    <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
-      <button class="btn btn-light shadow" ngbDropdownToggle>Export</button>
-      <div class="dropdown-menu shadow" ngbDropdownMenu>
-        <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)">Karafun Remote</button>
-        <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)">Karafun Bar</button>
-      </div>
+<ng-container *ngIf="!playlist.readOnly; else accessKeyInput">
+  <div class="row no-gutters justify-content-between align-items-center mb-2">
+    <div class="col">
+      <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
     </div>
-    <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
+    <div class="col-auto">
+      <span class="badge badge-light mx-2" *ngIf="playlist.duration" title="Duration">{{ playlist.duration | duration }}</span>
+      <button *ngIf="playlist.restricted" type="button" class="btn btn-light shadow mx-1" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i> Share</button>
+      <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
+        <button class="btn btn-light shadow" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i> Export</button>
+        <div class="dropdown-menu shadow" ngbDropdownMenu>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)">Karafun Remote</button>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)">Karafun Bar</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
+    </div>
   </div>
-</div>
+</ng-container>
 
 <!-- Song list -->
-<app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="true" (playlistRemoved)="onPlaylistRemoved($event)" (songRemoved)="onSongRemoved($event)" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
+<app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" (playlistRemoved)="onPlaylistRemoved($event)" (songRemoved)="onSongRemoved($event)" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
 <ng-container *ngIf="!playlist.songs || playlist.songs.length == 0">
   <p>No song has been added to this playlist yet.</p>
 </ng-container>
+
+<!-- Access key input form -->
+<ng-template #accessKeyInput>
+  <p><i class="fas fa-lock"></i> This playlist is restricted. Please enter the access key if you want to edit it.</p>
+  <form #accessKeyInputForm="ngForm" (ngSubmit)="unlockPlaylist(accessKeyInputForm)">
+    <div class="form-group">
+      <div class="input-group shadow">
+        <input type="text" class="form-control"  id="accessKey" name="accessKey" [(ngModel)]="accessKey" #accessKeyField="ngModel" [class.is-invalid]="accessKeyField.dirty && accessKeyField.invalid" placeholder="Access Key" required>
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-pink" [disabled]="!accessKeyInputForm.form.valid"><i class="fas fa-lock-open"></i> Unlock</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
 
 <!-- Karafun Remote export modal -->
 <ng-template #karafunRemoteExportModal let-modal>
@@ -65,5 +83,38 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-pink" [disabled]="!karafunBarExportForm.form.valid" (click)="modal.close(karafunBarId)">Export to Karafun Bar</button>
+  </div>
+</ng-template>
+
+<!-- Share modal -->
+<ng-template #shareModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Share this playlist with your friends</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="shareUrl">Share URL</label>
+      <div class="input-group">
+        <input type="text" class="form-control" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
+        <div class="input-group-append">
+          <button type="button" class="btn btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="accessKey">Access Key</label>
+      <div class="input-group">
+        <input type="text" class="form-control" readonly id="accessKey" name="accessKey" [(ngModel)]="playlist.accessKey" #accessKeyField>
+        <div class="input-group-append">
+          <button type="button" class="btn btn-outline-secondary" (click)="copyToClipboard(accessKeyField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.dismiss()">Close</button>
   </div>
 </ng-template>

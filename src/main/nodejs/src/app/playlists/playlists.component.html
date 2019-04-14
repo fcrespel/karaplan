@@ -9,8 +9,24 @@
         New playlist
       </a>
       <a href="#" *ngFor="let p of playlists; trackBy: trackByPlaylistId" [routerLink]="['/playlists', p.id]" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" [class.active]="playlist && p.id == playlist.id">
-        <span><i class="fas fa-list mr-1"></i> {{ p.name }}</span>
-        <span class="badge badge-secondary" title="Songs count">{{ p.songsCount }}</span>
+        <ng-container *ngIf="!playlist || playlist.id != p.id">
+            <span>
+              <i class="fas fa-list mr-1" *ngIf="!p.restricted"></i>
+              <i class="fas fa-lock mr-1" *ngIf="p.restricted && p.readOnly"></i>
+              <i class="fas fa-lock-open mr-1" *ngIf="p.restricted && !p.readOnly"></i>
+              {{ p.name }}
+            </span>
+            <span class="badge badge-secondary" title="Songs count">{{ p.songsCount }}</span>
+        </ng-container>
+        <ng-container *ngIf="playlist && playlist.id == p.id">
+            <span>
+              <i class="fas fa-list mr-1" *ngIf="!playlist.restricted"></i>
+              <i class="fas fa-lock mr-1" *ngIf="playlist.restricted && playlist.readOnly"></i>
+              <i class="fas fa-lock-open mr-1" *ngIf="playlist.restricted && !playlist.readOnly"></i>
+              {{ p.name }}
+            </span>
+            <span class="badge badge-light" title="Songs count">{{ playlist.songsCount }}</span>
+        </ng-container>
       </a>
     </div>
   </div>
@@ -18,16 +34,20 @@
   <div class="col-lg-9">
     <!-- Create playlist -->
     <ng-container *ngIf="!playlist">
-      <form #playlistCreateForm="ngForm" (ngSubmit)="createPlaylist(playlistName)">
+      <form #playlistCreateForm="ngForm" (ngSubmit)="createPlaylist(playlistName, restrictedPlaylist)">
         <div class="input-group shadow">
           <input type="text" class="form-control" name="playlistName" [(ngModel)]="playlistName" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" placeholder="Playlist name" required>
           <div class="input-group-append">
             <button type="submit" class="btn btn-pink" [disabled]="!playlistCreateForm.form.valid"><i class="fas fa-plus"></i> Create</button>
           </div>
         </div>
+        <div class="custom-control custom-switch mt-3">
+          <input type="checkbox" class="form-control custom-control-input" name="restrictedPlaylist" [(ngModel)]="restrictedPlaylist" #restrictedPlaylistField="ngModel" id="restrictedToggle">
+          <label class="custom-control-label" for="restrictedToggle">Restricted playlist</label>
+        </div>
       </form>
     </ng-container>
     <!-- Show playlist -->
-    <app-playlist-detail [playlist]="playlist" (delete)="deletePlaylist($event)" *ngIf="playlist"></app-playlist-detail>
+    <app-playlist-detail [(playlist)]="playlist" (delete)="deletePlaylist($event)" *ngIf="playlist"></app-playlist-detail>
   </div>
 </div>
