@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Location } from "@angular/common";
+import { Router } from '@angular/router';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { AlertMessage } from './models/alert-message';
 export class HttpErrorInterceptor implements HttpInterceptor {
 
   constructor(
-    private location: Location,
+    private router: Router,
     private alertService: AlertService
   ) { }
 
@@ -18,7 +18,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status == 401) {
-          window.location.assign(this.location.prepareExternalUrl('/login'));
+          this.router.navigate(['/login']);
         } else {
           let message = new AlertMessage();
           message.severity = 'danger';

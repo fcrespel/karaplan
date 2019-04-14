@@ -16,12 +16,61 @@
       <li class="nav-item" ngbDropdown placement="bottom-right">
         <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
-          <a class="dropdown-item" href="#" routerLink="/user/profile"><i class="fas fa-user mr-1"></i> Profile</a>
+          <a class="dropdown-item" href="#" routerLink="/user/profile">
+            <i class="fas fa-user mr-1"></i> Profile
+          </a>
+          <a class="dropdown-item" href="#" (click)="$event.preventDefault(); openAboutModal(aboutModal)">
+            <i class="fas fa-info-circle mr-1"></i> About
+          </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="logout"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+          <a class="dropdown-item" href="logout" (click)="$event.preventDefault(); logoutForm.submit()">
+            <i class="fas fa-sign-out-alt mr-1"></i> Logout
+          </a>
         </div>
       </li>
     </ul>
-    <a class="btn btn-outline-light" href="login" *ngIf="user == null">Login</a>
+    <a class="btn btn-outline-light" href="login" routerLink="/login" *ngIf="!user">Login</a>
   </div>
 </nav>
+
+<!-- Hidden logout form -->
+<form #logoutForm name="logoutForm" action="logout" method="POST" class="hidden">
+  <input type="hidden" name="_csrf" [(ngModel)]="xsrfToken" />
+</form>
+
+<!-- About modal -->
+<ng-template #aboutModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">About Karaplan</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>Karaplan</strong> is a Karaoke Planner web application with song search, ratings, comments, playlists and more.</p>
+    <ul>
+      <li>Version: <span title="{{ actuatorInfo?.git?.branch }} {{ actuatorInfo?.git?.commit.id }}">{{ actuatorInfo?.build?.version }} ({{ actuatorInfo?.build?.time | date:'yyyy-MM-dd HH:mm' }})</span></li>
+      <li>Source code: <a href="https://github.com/fcrespel/karaplan">https://github.com/fcrespel/karaplan</a></li>
+      <li>License: <a href="https://opensource.org/licenses/MIT">MIT License</a></li>
+    </ul>
+    <h5>Terms of use</h5>
+    <p class="pl-4"><strong>Karaplan</strong> is provided "as is" with no warranty of any kind, express or implied. Please refer to the license terms for more information.</p>
+    <h5>Privacy</h5>
+    <p class="pl-4">
+      By using <strong>Karaplan</strong> as a hosted service, you agree to share your basic profile information (first name, last name, display name, email address) with the service provider.
+      This information will solely be used for the proper operation of the service, and will not be shared with any third-party.
+    </p>
+    <p class="pl-4">You may delete your profile and any associated content created by you on your profile page.</p>
+    <h5>Disclaimer</h5>
+    <p class="pl-4">
+      <strong>Karaplan</strong> makes use of the <a href="https://www.recisio.com">Recisio</a> song catalog, the 
+      <a href="https://www.karafun.com">KaraFun</a>,
+      <a href="https://www.karafunbar.com">KaraFun Bar</a> and
+      <a href="https://www.karaoke-version.com">Karaoke Version</a> APIs on a fair use basis.
+      It is not affiliated in any way with Recisio or its subsidiaries. All trademarks are the property of their respective owner.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.dismiss()">Close</button>
+  </div>
+</ng-template>

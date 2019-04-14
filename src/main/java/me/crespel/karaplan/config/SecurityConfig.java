@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				.and()
 			.oauth2Login()
+				.loginPage("/login")
 				.userInfoEndpoint()
 					.oidcUserService(oidcUserService())
 					.and()

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CookieService } from 'ngx-cookie-service';
+import { ActuatorService } from '../services/actuator.service';
 import { AccountService } from '../services/account.service';
+import { ActuatorInfo } from '../models/actuator-info';
 import { User } from '../models/user';
 
 @Component({
@@ -10,16 +14,25 @@ import { User } from '../models/user';
 export class NavbarComponent implements OnInit {
 
   navbarOpen: boolean = false;
-  user: User = null;
+  xsrfToken: string;
+  actuatorInfo: ActuatorInfo;
+  user: User;
 
   constructor(
+    private cookieService: CookieService,
+    private modalService: NgbModal,
+    private actuatorService: ActuatorService,
     private accountService: AccountService
   ) { }
 
   ngOnInit() {
-    this.accountService.getUser().subscribe(user => {
-      this.user = user;
-    });
+    this.xsrfToken = this.cookieService.get('XSRF-TOKEN');
+    this.actuatorService.getInfo().subscribe(actuatorInfo => this.actuatorInfo = actuatorInfo);
+    this.accountService.getUser().subscribe(user => this.user = user);
+  }
+
+  openAboutModal(aboutModalContent) {
+    this.modalService.open(aboutModalContent, { size: 'lg' });
   }
 
 }
