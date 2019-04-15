@@ -32,6 +32,13 @@ export class SongsComponent implements OnInit {
           result.hasMoreSongs = songs && songs.length == result.songsLimit;
           return result;
         })));
+      } else if (type == 'votes') {
+        return concat(of(new QueryContext(type, query, true)), this.songsService.getSongs(0, this.queryContext.songsLimit, 'score,desc').pipe(map(songs => {
+          let result = new QueryContext(type, query);
+          result.songs = songs;
+          result.hasMoreSongs = songs && songs.length == result.songsLimit;
+          return result;
+        })));
       } else {
         return concat(of(new QueryContext(type, query, true)), this.songsService.getSelections(type).pipe(map(selections => {
           let result = new QueryContext(type, query);

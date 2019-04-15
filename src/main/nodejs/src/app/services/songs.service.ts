@@ -15,8 +15,12 @@ export class SongsService {
     private http: HttpClient
   ) { }
 
-  getSongs(): Observable<Song[]> {
-    return this.http.get<Song[]>(this.songsUrl);
+  getSongs(page: number = 0, size: number = 10, sort: string = ''): Observable<Song[]> {
+    let params = new HttpParams()
+      .set('page', ''+page)
+      .set('size', ''+size)
+      .set('sort', sort);
+    return this.http.get<Song[]>(this.songsUrl, {params: params});
   }
 
   searchSongs(type: string, query: string, page: number = 0, limit: number = 10): Observable<Song[]> {

@@ -24,7 +24,12 @@
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="queryContext.type == 'news'" title="New releases">
-      <i class="fas fa-calendar-alt"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'news'"> New releases</span>
+      <i class="fas fa-calendar-alt"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'news'"> New</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'votes' }" [class.active]="queryContext.type == 'votes'" title="Most voted">
+      <i class="fas fa-thumbs-up"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'votes'"> Votes</span>
     </a>
   </li>
 </ul>
