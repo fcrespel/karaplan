@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import me.crespel.karaplan.config.KarafunConfig.KarafunBarProperties;
 import me.crespel.karaplan.domain.Playlist;
-import me.crespel.karaplan.domain.Song;
+import me.crespel.karaplan.domain.PlaylistSong;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.model.karafun.KarafunSong;
 import me.crespel.karaplan.service.ExportService;
@@ -72,10 +72,10 @@ public class KarafunBarExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected List<SongAndSinger> buildSongList(Set<Song> songs) {
+	protected List<SongAndSinger> buildSongList(Set<PlaylistSong> playlistSongs) {
 		List<SongAndSinger> list = Lists.newArrayList();
-		for (Song song : songs) {
-			list.add(new SongAndSinger(song.getCatalogId(), ""));
+		for (PlaylistSong playlistSong : playlistSongs) {
+			list.add(new SongAndSinger(playlistSong.getSong().getCatalogId(), ""));
 		}
 		return list;
 	}

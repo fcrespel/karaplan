@@ -1,7 +1,7 @@
 import { Artist } from './artist';
 import { SongVote } from './song-vote';
 import { SongComment } from './song-comment';
-import { Playlist } from './playlist';
+import { PlaylistSong } from './playlist-song';
 import { User } from './user';
 
 export class Song {
@@ -19,7 +19,7 @@ export class Song {
   commentsCount: number;
   comments: SongComment[];
   playlistsCount: number;
-  playlists: Playlist[];
+  playlists: PlaylistSong[];
   createdDate: Date;
   createdBy: User;
   updatedDate: Date;

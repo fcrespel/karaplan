@@ -1,7 +1,7 @@
 package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
-import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,12 +9,12 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.SortComparator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -51,8 +51,8 @@ public class Artist {
 
 	@OneToMany(mappedBy = "artist")
 	@JsonIgnoreProperties("artist")
-	@OrderBy("name ASC")
-	private Set<Song> songs = Sets.newLinkedHashSet();
+	@SortComparator(Song.OrderByNameComparator.class)
+	private SortedSet<Song> songs = Sets.newTreeSet(Song.orderByNameComparator);
 
 	@CreatedDate
 	@Temporal(TemporalType.TIMESTAMP)

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Playlist;
+import me.crespel.karaplan.domain.PlaylistSong;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.exception.BusinessException;
@@ -54,7 +55,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
-		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId()));
+		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId(), pageable));
 	}
 
 	@Override
@@ -107,8 +108,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
-		playlist.getSongs().add(song);
-		song.getPlaylists().add(playlist);
+		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song);
+		playlist.getSongs().add(playlistSong);
+		song.getPlaylists().add(playlistSong);
 		song.updateStats();
 		return save(playlist);
 	}
@@ -119,8 +121,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
-		playlist.getSongs().remove(song);
-		song.getPlaylists().remove(playlist);
+		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song);
+		playlist.getSongs().remove(playlistSong);
+		song.getPlaylists().remove(playlistSong);
 		song.updateStats();
 		return save(playlist);
 	}

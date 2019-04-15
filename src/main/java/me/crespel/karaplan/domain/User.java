@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -58,13 +57,11 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	@JsonIgnoreProperties("user")
 	@SortComparator(SongVote.OrderByIdDescComparator.class)
-	@OrderBy("id DESC")
 	private SortedSet<SongVote> votes = Sets.newTreeSet(SongVote.orderByIdDescComparator);
 
 	@OneToMany(mappedBy = "user")
 	@JsonIgnoreProperties("user")
 	@SortComparator(SongComment.OrderByIdDescComparator.class)
-	@OrderBy("id DESC")
 	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
 
 }
