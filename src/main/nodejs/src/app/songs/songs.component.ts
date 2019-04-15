@@ -57,13 +57,22 @@ export class SongsComponent implements OnInit {
 
   loadMoreSongs() {
     let queryContext = this.queryContext;
-    if (queryContext.hasMoreSongs && (queryContext.type == 'query' || queryContext.query)) {
-      queryContext.hasMoreSongsLoading = true;
-      this.songsService.searchSongs(queryContext.type, queryContext.query, ++queryContext.songsPage).subscribe(songs => {
-        songs.forEach(song => queryContext.songs.push(song));
-        queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
-        queryContext.hasMoreSongsLoading = false;
-      });
+    if (queryContext.hasMoreSongs) {
+      if (queryContext.type == 'query' || queryContext.query) {
+        queryContext.hasMoreSongsLoading = true;
+        this.songsService.searchSongs(queryContext.type, queryContext.query, ++queryContext.songsPage).subscribe(songs => {
+          songs.forEach(song => queryContext.songs.push(song));
+          queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
+          queryContext.hasMoreSongsLoading = false;
+        });
+      } else if (queryContext.type == 'votes') {
+        queryContext.hasMoreSongsLoading = true;
+        this.songsService.getSongs(++queryContext.songsPage, queryContext.songsLimit, 'score,desc').subscribe(songs => {
+          songs.forEach(song => queryContext.songs.push(song));
+          queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
+          queryContext.hasMoreSongsLoading = false;
+        });
+      }
     }
   }
 
