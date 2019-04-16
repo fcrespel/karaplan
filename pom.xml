@@ -35,6 +35,7 @@
 		<frontend-maven-build.version>1.6</frontend-maven-build.version>
 
 		<!-- Dependency properties -->
+		<commons-csv.version>1.6</commons-csv.version>
 		<guava.version>27.0.1-jre</guava.version>
 		<node.version>v8.11.3</node.version>
 		<npm.version>6.3.0</npm.version>
@@ -107,6 +108,10 @@
 
 		<!-- Utilities -->
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-csv</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
 		</dependency>
@@ -158,6 +163,11 @@
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-csv</artifactId>
+				<version>${commons-csv.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
