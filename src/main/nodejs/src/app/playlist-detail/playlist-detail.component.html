@@ -24,6 +24,7 @@
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)">Karafun Remote</button>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(karafunBarExportModal)">Karafun Bar</button>
+          <a href="api/v1/playlists/{{playlist.id}}/export/csv" class="dropdown-item" ngbDropdownItem>CSV file</a>
         </div>
       </div>
       <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist()"><i class="fas fa-trash-alt"></i> Delete</button>

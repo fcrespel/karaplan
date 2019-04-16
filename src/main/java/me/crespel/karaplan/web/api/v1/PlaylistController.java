@@ -1,13 +1,20 @@
 package me.crespel.karaplan.web.api.v1;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +33,7 @@ import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.PlaylistSortDirection;
 import me.crespel.karaplan.model.PlaylistSortType;
 import me.crespel.karaplan.model.exception.BusinessException;
+import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.ExportService;
 import me.crespel.karaplan.service.PlaylistService;
 import me.crespel.karaplan.service.SongService;
@@ -49,6 +57,10 @@ public class PlaylistController {
 	@Autowired
 	@Qualifier("karafunBarExport")
 	protected ExportService karafunBarExportService;
+
+	@Autowired
+	@Qualifier("csvExport")
+	protected ExportService csvExportService;
 
 	@GetMapping
 	@ApiOperation("Get all playlists")
@@ -127,6 +139,30 @@ public class PlaylistController {
 	public void exportPlaylistToKarafunBar(@PathVariable Long playlistId, @PathVariable String bookingId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunBarExportService.exportPlaylist(playlist, bookingId);
+	}
+
+	@GetMapping("/{playlistId}/export/csv")
+	@ApiOperation("Export a playlist to a CSV file")
+	public ResponseEntity<Resource> exportPlaylistToKarafunBar(@PathVariable Long playlistId) {
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		File csvFile = null;
+		try {
+			csvFile = File.createTempFile("karaplan", ".csv");
+			csvExportService.exportPlaylist(playlist, csvFile.getAbsolutePath());
+			Resource resource = new ByteArrayResource(Files.readAllBytes(csvFile.toPath()));
+			String csvFileName = playlist.getName().replace("\"", "");
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Playlist " + csvFileName + ".csv\"")
+					.contentType(MediaType.TEXT_PLAIN)
+					.contentLength(csvFile.length())
+					.body(resource);
+		} catch (IOException e) {
+			throw new TechnicalException(e);
+		} finally {
+			if (csvFile != null) {
+				csvFile.delete();
+			}
+		}
 	}
 
 }
