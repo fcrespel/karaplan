@@ -1,4 +1,4 @@
-import { Song } from './song';
+import { PlaylistSong } from './playlist-song';
 import { User } from './user';
 
 export class Playlist {
@@ -8,7 +8,7 @@ export class Playlist {
   accessKey: string;
   members: User[];
   songsCount: number;
-  songs: Song[];
+  songs: PlaylistSong[];
   duration: number;
   createdDate: Date;
   createdBy: User;

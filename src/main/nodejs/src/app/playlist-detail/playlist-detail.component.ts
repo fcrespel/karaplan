@@ -43,8 +43,8 @@ export class PlaylistDetailComponent implements OnInit {
     });
   }
 
-  deletePlaylist(playlist: Playlist) {
-    this.delete.emit(playlist);
+  deletePlaylist() {
+    this.delete.emit(this.playlist);
   }
 
   onPlaylistRemoved(playlistSong: PlaylistSong) {
@@ -63,10 +63,17 @@ export class PlaylistDetailComponent implements OnInit {
     });
   }
 
-  exportPlaylistToKarafunRemote(playlist: Playlist, modalContent) {
+  sortPlaylist(sortType: string, sortDirection: string) {
+    this.playlistsService.sortPlaylist(this.playlist.id, sortType, sortDirection).subscribe(playlist => {
+      this.playlist = playlist;
+      this.playlistChange.emit(this.playlist);
+    });
+  }
+
+  exportPlaylistToKarafunRemote(modalContent) {
     this.modalService.open(modalContent).result.then(remoteId => {
       if (remoteId) {
-        this.playlistsService.exportPlaylistToKarafunRemote(playlist.id, remoteId).subscribe(response => {
+        this.playlistsService.exportPlaylistToKarafunRemote(this.playlist.id, remoteId).subscribe(response => {
           let message = new AlertMessage();
           message.severity = 'success';
           message.title = 'Success';
@@ -77,10 +84,10 @@ export class PlaylistDetailComponent implements OnInit {
     }, reason => {});
   }
 
-  exportPlaylistToKarafunBar(playlist: Playlist, modalContent) {
+  exportPlaylistToKarafunBar(modalContent) {
     this.modalService.open(modalContent).result.then(bookingId => {
       if (bookingId) {
-        this.playlistsService.exportPlaylistToKarafunBar(playlist.id, bookingId).subscribe(response => {
+        this.playlistsService.exportPlaylistToKarafunBar(this.playlist.id, bookingId).subscribe(response => {
           let message = new AlertMessage();
           message.severity = 'success';
           message.title = 'Success';

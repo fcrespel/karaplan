@@ -38,7 +38,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
-			Set<Long> songIds = playlist.getSongs().stream().map(it -> it.getCatalogId()).collect(Collectors.toSet());
+			Set<Long> songIds = playlist.getSongs().stream().map(it -> it.getSong().getCatalogId()).collect(Collectors.toSet());
 			try {
 				Socket socket = buildSocket(target);
 				socket.on(Socket.EVENT_CONNECT, new ConnectEventListener(socket, target))

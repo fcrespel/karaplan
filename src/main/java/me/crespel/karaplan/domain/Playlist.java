@@ -1,7 +1,9 @@
 package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,11 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.SortComparator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -28,6 +32,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import lombok.Data;
@@ -37,13 +43,13 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = "songs")
-@ToString(of = {"id", "name"})
+@EqualsAndHashCode(exclude = { "members", "songs", "createdDate", "createdBy", "updatedDate", "updatedBy" })
+@ToString(of = { "id", "name" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "playlist")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Playlist {
+public class Playlist implements Comparable<Playlist> {
 
 	@Id
 	@GeneratedValue
@@ -68,9 +74,10 @@ public class Playlist {
 	@Column(name = "SONGS_COUNT")
 	private Integer songsCount;
 
-	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinTable(name = "playlist_song", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_SONG", nullable = false) })
-	private Set<Song> songs = Sets.newLinkedHashSet();
+	@OneToMany(mappedBy = "key.playlist", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("playlist")
+	@SortComparator(PlaylistSong.OrderByPlaylistAndPositionAndSongComparator.class)
+	private SortedSet<PlaylistSong> songs = Sets.newTreeSet(PlaylistSong.orderByPlaylistAndPositionAndSongComparator);
 
 	@Column(name = "DURATION")
 	private Long duration;
@@ -97,7 +104,39 @@ public class Playlist {
 
 	public void updateStats() {
 		this.songsCount = (songs != null) ? songs.size() : 0;
-		this.duration = (songs != null)  ? songs.stream().mapToLong(Song::getDuration).sum() : 0;
+		this.duration = (songs != null) ? songs.stream().mapToLong(ps -> ps.getSong().getDuration()).sum() : 0;
+	}
+
+	@Override
+	public int compareTo(Playlist o) {
+		return orderByNameComparator.compare(this, o);
+	}
+
+	public static Comparator<Playlist> orderByIdComparator = new OrderByIdComparator();
+
+	public static class OrderByIdComparator implements Comparator<Playlist> {
+
+		@Override
+		public int compare(Playlist o1, Playlist o2) {
+			return ComparisonChain.start()
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
+					.result();
+		}
+
+	}
+
+	public static Comparator<Playlist> orderByNameComparator = new OrderByNameComparator();
+
+	public static class OrderByNameComparator implements Comparator<Playlist> {
+
+		@Override
+		public int compare(Playlist o1, Playlist o2) {
+			return ComparisonChain.start()
+					.compare(o1.name, o2.name, Ordering.natural().nullsLast())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
+					.result();
+		}
+
 	}
 
 }

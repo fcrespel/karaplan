@@ -23,6 +23,8 @@ import io.swagger.annotations.ApiOperation;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.PlaylistSortDirection;
+import me.crespel.karaplan.model.PlaylistSortType;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.service.ExportService;
 import me.crespel.karaplan.service.PlaylistService;
@@ -102,6 +104,13 @@ public class PlaylistController {
 	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.addUser(playlist, user, accessKey);
+	}
+
+	@PostMapping("/{playlistId}/sort")
+	@ApiOperation("Sort a playlist's songs according to a type and direction")
+	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.sort(playlist, sortType, sortDirection, user);
 	}
 
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")

@@ -46,6 +46,11 @@ a:hover {
 	border-color: #db2c78;
 }
 
+.badge-pink {
+	background-color: #db2c78;
+	color: #fff;
+}
+
 .btn-pink {
 	background-color: #db2c78;
 	border-color: #db2c78;

@@ -1,6 +1,8 @@
 package me.crespel.karaplan.service.impl;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -11,13 +13,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Playlist;
+import me.crespel.karaplan.domain.PlaylistSong;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.PlaylistSortDirection;
+import me.crespel.karaplan.model.PlaylistSortType;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.repository.PlaylistRepo;
+import me.crespel.karaplan.repository.SongRepo;
 import me.crespel.karaplan.repository.UserRepo;
 import me.crespel.karaplan.service.PlaylistService;
 
@@ -29,6 +36,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Autowired
 	protected PlaylistRepo playlistRepo;
+
+	@Autowired
+	protected SongRepo songRepo;
 
 	@Override
 	public Set<Playlist> findAll() {
@@ -54,7 +64,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
-		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId()));
+		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId(), pageable));
 	}
 
 	@Override
@@ -107,8 +117,12 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
-		playlist.getSongs().add(song);
-		song.getPlaylists().add(playlist);
+		if (song.getId() == null) {
+			song = songRepo.save(song);
+		}
+		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song);
+		playlist.getSongs().add(playlistSong);
+		song.getPlaylists().add(playlistSong);
 		song.updateStats();
 		return save(playlist);
 	}
@@ -119,8 +133,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
-		playlist.getSongs().remove(song);
-		song.getPlaylists().remove(playlist);
+		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song);
+		playlist.getSongs().remove(playlistSong);
+		song.getPlaylists().remove(playlistSong);
 		song.updateStats();
 		return save(playlist);
 	}
@@ -139,6 +154,41 @@ public class PlaylistServiceImpl implements PlaylistService {
 			}
 		}
 		return playlist;
+	}
+
+	@Override
+	public Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user) {
+		if (!isMember(user, playlist)) {
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		}
+
+		// Sort songs
+		List<PlaylistSong> sortedSongs = Lists.newArrayList(playlist.getSongs());
+		switch (sortType) {
+		case alpha:
+			Collections.sort(sortedSongs, PlaylistSong.orderBySongNameComparator);
+			break;
+		case score:
+			Collections.sort(sortedSongs, PlaylistSong.orderBySongScoreComparator);
+			break;
+		case random:
+			Collections.shuffle(sortedSongs);
+			break;
+		default:
+			throw new BusinessException("Invalid sort type " + sortType);
+		}
+
+		// Reverse order if necessary
+		if (sortDirection == PlaylistSortDirection.desc) {
+			Collections.reverse(sortedSongs);
+		}
+
+		// Assign new position
+		for (int pos = 0; pos < sortedSongs.size(); pos++) {
+			sortedSongs.get(pos).setPosition(pos + 1);
+		}
+
+		return save(playlist);
 	}
 
 	@Override

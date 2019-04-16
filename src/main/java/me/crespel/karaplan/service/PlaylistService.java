@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
+import me.crespel.karaplan.model.PlaylistSortDirection;
+import me.crespel.karaplan.model.PlaylistSortType;
 
 public interface PlaylistService {
 
@@ -34,6 +36,8 @@ public interface PlaylistService {
 	Playlist removeSong(Playlist playlist, Song song, User user);
 
 	Playlist addUser(Playlist playlist, User user, String accessKey);
+
+	Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user);
 
 	void delete(Playlist playlist, User user);
 

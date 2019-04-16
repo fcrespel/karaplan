@@ -1,7 +1,7 @@
 package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
-import java.util.Set;
+import java.util.Comparator;
 import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
@@ -13,10 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +29,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import lombok.Data;
@@ -40,13 +40,13 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = {"artist", "votes", "comments", "playlists"})
-@ToString(of = {"id", "name"})
+@EqualsAndHashCode(exclude = { "artist", "votes", "comments", "playlists", "createdDate", "createdBy", "updatedDate", "updatedBy" })
+@ToString(of = { "id", "name" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "song")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Song {
+public class Song implements Comparable<Song> {
 
 	@Id
 	@GeneratedValue
@@ -88,7 +88,6 @@ public class Song {
 	@OneToMany(mappedBy = "song", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("song")
 	@SortComparator(SongVote.OrderByIdDescComparator.class)
-	@OrderBy("id DESC")
 	private SortedSet<SongVote> votes = Sets.newTreeSet(SongVote.orderByIdDescComparator);
 
 	@Column(name = "COMMENTS_COUNT")
@@ -97,15 +96,15 @@ public class Song {
 	@OneToMany(mappedBy = "song", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnoreProperties("song")
 	@SortComparator(SongComment.OrderByIdDescComparator.class)
-	@OrderBy("id DESC")
 	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
 
 	@Column(name = "PLAYLISTS_COUNT")
 	private Integer playlistsCount;
 
-	@ManyToMany(mappedBy = "songs", fetch = FetchType.EAGER)
-	@JsonIgnoreProperties("songs")
-	private Set<Playlist> playlists = Sets.newLinkedHashSet();
+	@OneToMany(mappedBy = "key.song", fetch = FetchType.EAGER) // Association is managed from the Playlist side
+	@JsonIgnoreProperties("song")
+	@SortComparator(PlaylistSong.OrderByPlaylistAndPositionAndSongComparator.class)
+	private SortedSet<PlaylistSong> playlists = Sets.newTreeSet(PlaylistSong.orderByPlaylistAndPositionAndSongComparator);
 
 	@CreatedDate
 	@Temporal(TemporalType.TIMESTAMP)
@@ -133,6 +132,38 @@ public class Song {
 		this.scoreDown = (votes != null) ? Math.abs(votes.stream().mapToInt(SongVote::getScore).filter(score -> score < 0).sum()) : 0;
 		this.commentsCount = (comments != null) ? comments.size() : 0;
 		this.playlistsCount = (playlists != null) ? playlists.size() : 0;
+	}
+
+	@Override
+	public int compareTo(Song o) {
+		return orderByNameComparator.compare(this, o);
+	}
+
+	public static Comparator<Song> orderByIdComparator = new OrderByIdComparator();
+
+	public static class OrderByIdComparator implements Comparator<Song> {
+
+		@Override
+		public int compare(Song o1, Song o2) {
+			return ComparisonChain.start()
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
+					.result();
+		}
+
+	}
+
+	public static Comparator<Song> orderByNameComparator = new OrderByNameComparator();
+
+	public static class OrderByNameComparator implements Comparator<Song> {
+
+		@Override
+		public int compare(Song o1, Song o2) {
+			return ComparisonChain.start()
+					.compare(o1.name, o2.name, Ordering.natural().nullsLast())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
+					.result();
+		}
+
 	}
 
 }

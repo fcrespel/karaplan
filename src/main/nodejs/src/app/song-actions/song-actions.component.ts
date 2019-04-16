@@ -168,7 +168,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     }
     if (this.playlists) {
       this.playlists.forEach(playlist => {
-        playlist.isSelected = (this.song && this.song.playlists && this.song.playlists.findIndex(songPlaylist => songPlaylist.id == playlist.id) >= 0);
+        playlist.isSelected = (this.song && this.song.playlists && this.song.playlists.findIndex(playlistSong => playlistSong.playlist.id == playlist.id) >= 0);
       });
     }
   }
