@@ -49,7 +49,7 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 	private PlaylistSongKey key = new PlaylistSongKey();
 
 	@Column(name = "POSITION")
-	private Long position;
+	private Integer position;
 
 	@CreatedDate
 	@Temporal(TemporalType.TIMESTAMP)
@@ -109,9 +109,37 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 		@Override
 		public int compare(PlaylistSong o1, PlaylistSong o2) {
 			return ComparisonChain.start()
-					.compare(o1.key.playlist, o2.key.playlist, Ordering.natural().nullsFirst())
-					.compare(o1.position, o2.position, Ordering.natural().nullsFirst())
-					.compare(o1.key.song, o2.key.song, Ordering.natural().nullsFirst())
+					.compare(o1.key.playlist, o2.key.playlist, Ordering.natural().nullsLast())
+					.compare(o1.position, o2.position, Ordering.natural().nullsLast())
+					.compare(o1.key.song, o2.key.song, Ordering.natural().nullsLast())
+					.result();
+		}
+
+	}
+
+	public static Comparator<PlaylistSong> orderBySongNameComparator = new OrderBySongNameComparator();
+
+	public static class OrderBySongNameComparator implements Comparator<PlaylistSong> {
+
+		@Override
+		public int compare(PlaylistSong o1, PlaylistSong o2) {
+			return ComparisonChain.start()
+					.compare(o1.key.song.getName(), o2.key.song.getName(), Ordering.natural().nullsLast())
+					.compare(o1.key.song.getId(), o2.key.song.getId(), Ordering.natural().nullsLast())
+					.result();
+		}
+
+	}
+
+	public static Comparator<PlaylistSong> orderBySongScoreComparator = new OrderBySongScoreComparator();
+
+	public static class OrderBySongScoreComparator implements Comparator<PlaylistSong> {
+
+		@Override
+		public int compare(PlaylistSong o1, PlaylistSong o2) {
+			return ComparisonChain.start()
+					.compare(o1.key.song.getScore(), o2.key.song.getScore(), Ordering.natural().nullsLast())
+					.compare(o1.key.song.getId(), o2.key.song.getId(), Ordering.natural().nullsLast())
 					.result();
 		}
 
@@ -130,7 +158,7 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 		private Playlist playlist;
 
 		@NotNull
-		@ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+		@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 		@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
 		private Song song;
 

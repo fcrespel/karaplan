@@ -60,6 +60,14 @@ export class PlaylistsService {
     return this.http.post<Playlist>(url, null, {params: params});
   }
 
+  sortPlaylist(playlistId: number, sortType: string, sortDirection: string = 'asc'): Observable<Playlist> {
+    let params = new HttpParams()
+      .set('sortType', sortType)
+      .set('sortDirection', sortDirection);
+    const url = `${this.playlistsUrl}/${playlistId}/sort`;
+    return this.http.post<Playlist>(url, null, {params: params});
+  }
+
   exportPlaylistToKarafunRemote(playlistId: number, remoteId: string): Observable<Response> {
     const url = `${this.playlistsUrl}/${playlistId}/export/karafun/${remoteId}`
     return this.http.post<Response>(url, null);

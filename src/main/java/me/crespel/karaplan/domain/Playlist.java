@@ -43,8 +43,8 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = "songs")
-@ToString(of = {"id", "name"})
+@EqualsAndHashCode(exclude = { "members", "songs", "createdDate", "createdBy", "updatedDate", "updatedBy" })
+@ToString(of = { "id", "name" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "playlist")
@@ -104,7 +104,7 @@ public class Playlist implements Comparable<Playlist> {
 
 	public void updateStats() {
 		this.songsCount = (songs != null) ? songs.size() : 0;
-		this.duration = (songs != null)  ? songs.stream().mapToLong(ps -> ps.getSong().getDuration()).sum() : 0;
+		this.duration = (songs != null) ? songs.stream().mapToLong(ps -> ps.getSong().getDuration()).sum() : 0;
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class Playlist implements Comparable<Playlist> {
 		@Override
 		public int compare(Playlist o1, Playlist o2) {
 			return ComparisonChain.start()
-					.compare(o1.id, o2.id, Ordering.natural().nullsFirst())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
 					.result();
 		}
 
@@ -132,8 +132,8 @@ public class Playlist implements Comparable<Playlist> {
 		@Override
 		public int compare(Playlist o1, Playlist o2) {
 			return ComparisonChain.start()
-					.compare(o1.name, o2.name, Ordering.natural().nullsFirst())
-					.compare(o1.id, o2.id, Ordering.natural().nullsFirst())
+					.compare(o1.name, o2.name, Ordering.natural().nullsLast())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
 					.result();
 		}
 

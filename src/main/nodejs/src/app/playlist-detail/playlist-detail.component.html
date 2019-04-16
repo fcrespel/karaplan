@@ -8,13 +8,25 @@
       <span class="badge badge-light mx-2" *ngIf="playlist.duration" title="Duration">{{ playlist.duration | duration }}</span>
       <button *ngIf="playlist.restricted" type="button" class="btn btn-light shadow mx-1" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i> Share</button>
       <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
-        <button class="btn btn-light shadow" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i> Export</button>
+        <button class="btn btn-light shadow" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i> Sort</button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)">Karafun Remote</button>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)">Karafun Bar</button>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'asc')"><i class="fas fa-sort-alpha-down mr-1"></i> By name, ascending</button>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'desc')"><i class="fas fa-sort-alpha-up mr-1"></i> By name, descending</button>
+          <div class="dropdown-divider"></div>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('score', 'asc')"><i class="fas fa-sort-numeric-down mr-1"></i> By votes, ascending</button>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('score', 'desc')"><i class="fas fa-sort-numeric-up mr-1"></i> By votes, descending</button>
+          <div class="dropdown-divider"></div>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('random')"><i class="fas fa-random mr-1"></i> Random</button>
         </div>
       </div>
-      <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist(playlist)"><i class="fas fa-trash-alt"></i> Delete</button>
+      <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
+        <button class="btn btn-light shadow" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i> Export</button>
+        <div class="dropdown-menu shadow" ngbDropdownMenu>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)">Karafun Remote</button>
+          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(karafunBarExportModal)">Karafun Bar</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger shadow ml-1" (click)="deletePlaylist()"><i class="fas fa-trash-alt"></i> Delete</button>
     </div>
   </div>
 </ng-container>

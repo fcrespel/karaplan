@@ -31,11 +31,11 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = {"song", "user"})
-@ToString(of = {"id", "score"})
+@EqualsAndHashCode(exclude = { "song", "user", "createdDate" })
+@ToString(of = { "id", "score" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "song_vote", uniqueConstraints = @UniqueConstraint(columnNames = {"FK_SONG", "FK_USER"}))
+@Table(name = "song_vote", uniqueConstraints = @UniqueConstraint(columnNames = { "FK_SONG", "FK_USER" }))
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SongVote implements Comparable<SongVote> {
 
@@ -51,13 +51,13 @@ public class SongVote implements Comparable<SongVote> {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
-	@JsonIgnoreProperties({"votes", "comments", "playlists"})
+	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
 	private Song song;
 
 	@CreatedBy
 	@ManyToOne
 	@JoinColumn(name = "FK_USER", referencedColumnName = "ID")
-	@JsonIgnoreProperties({"votes", "comments", "playlists"})
+	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
 	private User user;
 
 	@CreatedDate

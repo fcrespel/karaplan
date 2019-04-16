@@ -1,6 +1,7 @@
 package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.SortedSet;
 
 import javax.persistence.Column;
@@ -20,6 +21,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 import lombok.Data;
@@ -29,13 +32,13 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = "songs")
-@ToString(of = {"id", "name"})
+@EqualsAndHashCode(exclude = { "songs", "createdDate", "updatedDate" })
+@ToString(of = { "id", "name" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "artist")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Artist {
+public class Artist implements Comparable<Artist> {
 
 	@Id
 	@GeneratedValue
@@ -63,5 +66,37 @@ public class Artist {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
 	private Calendar updatedDate;
+
+	@Override
+	public int compareTo(Artist o) {
+		return orderByNameComparator.compare(this, o);
+	}
+
+	public static Comparator<Artist> orderByIdComparator = new OrderByIdComparator();
+
+	public static class OrderByIdComparator implements Comparator<Artist> {
+
+		@Override
+		public int compare(Artist o1, Artist o2) {
+			return ComparisonChain.start()
+					.compare(o1.id, o2.id)
+					.result();
+		}
+
+	}
+
+	public static Comparator<Artist> orderByNameComparator = new OrderByNameComparator();
+
+	public static class OrderByNameComparator implements Comparator<Artist> {
+
+		@Override
+		public int compare(Artist o1, Artist o2) {
+			return ComparisonChain.start()
+					.compare(o1.name, o2.name, Ordering.natural().nullsLast())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
+					.result();
+		}
+
+	}
 
 }

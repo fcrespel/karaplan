@@ -40,8 +40,8 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = {"artist", "votes", "comments", "playlists"})
-@ToString(of = {"id", "name"})
+@EqualsAndHashCode(exclude = { "artist", "votes", "comments", "playlists", "createdDate", "createdBy", "updatedDate", "updatedBy" })
+@ToString(of = { "id", "name" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "song")
@@ -146,7 +146,7 @@ public class Song implements Comparable<Song> {
 		@Override
 		public int compare(Song o1, Song o2) {
 			return ComparisonChain.start()
-					.compare(o1.id, o2.id, Ordering.natural().nullsFirst())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
 					.result();
 		}
 
@@ -159,8 +159,8 @@ public class Song implements Comparable<Song> {
 		@Override
 		public int compare(Song o1, Song o2) {
 			return ComparisonChain.start()
-					.compare(o1.name, o2.name, Ordering.natural().nullsFirst())
-					.compare(o1.id, o2.id, Ordering.natural().nullsFirst())
+					.compare(o1.name, o2.name, Ordering.natural().nullsLast())
+					.compare(o1.id, o2.id, Ordering.natural().nullsLast())
 					.result();
 		}
 

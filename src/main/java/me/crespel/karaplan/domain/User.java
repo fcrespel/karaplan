@@ -22,8 +22,8 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = {"votes", "comments"})
-@ToString(of = {"id", "username"})
+@EqualsAndHashCode(exclude = { "votes", "comments" })
+@ToString(of = { "id", "username", "displayName" })
 @Entity
 @Table(name = "user")
 @JsonIgnoreProperties(ignoreUnknown = true)

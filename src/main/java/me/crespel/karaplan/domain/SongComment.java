@@ -30,8 +30,8 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = {"song", "user"})
-@ToString(of = {"id", "comment"})
+@EqualsAndHashCode(exclude = { "song", "user", "createdDate" })
+@ToString(of = { "id", "comment" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "song_comment")
@@ -50,13 +50,13 @@ public class SongComment implements Comparable<SongComment> {
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
-	@JsonIgnoreProperties({"votes", "comments", "playlists"})
+	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
 	private Song song;
 
 	@CreatedBy
 	@ManyToOne
 	@JoinColumn(name = "FK_USER", referencedColumnName = "ID")
-	@JsonIgnoreProperties({"votes", "comments", "playlists"})
+	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
 	private User user;
 
 	@CreatedDate
