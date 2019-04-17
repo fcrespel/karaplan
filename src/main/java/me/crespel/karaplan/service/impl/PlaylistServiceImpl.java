@@ -1,5 +1,6 @@
 package me.crespel.karaplan.service.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -117,10 +118,20 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
+
+		// Import song if necessary 
 		if (song.getId() == null) {
 			song = songRepo.save(song);
 		}
-		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song);
+
+		// Calculate new position
+		Integer position = playlist.getSongs().last().getPosition();
+		if (position != null) {
+			position += 1;
+		}
+
+		// Add song
+		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song).setPosition(position);
 		playlist.getSongs().add(playlistSong);
 		song.getPlaylists().add(playlistSong);
 		song.updateStats();
@@ -133,10 +144,15 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
+
+		// Find and remove song
 		PlaylistSong playlistSong = new PlaylistSong().setPlaylist(playlist).setSong(song);
-		playlist.getSongs().remove(playlistSong);
-		song.getPlaylists().remove(playlistSong);
+		playlist.getSongs().remove(PlaylistSong.findInStream(playlist.getSongs().stream(), playlistSong));
+		song.getPlaylists().remove(PlaylistSong.findInStream(song.getPlaylists().stream(), playlistSong));
 		song.updateStats();
+
+		// Assign new positions
+		setSongPositions(playlist.getSongs());
 		return save(playlist);
 	}
 
@@ -183,11 +199,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 			Collections.reverse(sortedSongs);
 		}
 
-		// Assign new position
-		for (int pos = 0; pos < sortedSongs.size(); pos++) {
-			sortedSongs.get(pos).setPosition(pos + 1);
-		}
-
+		// Assign new positions
+		setSongPositions(sortedSongs);
 		return save(playlist);
 	}
 
@@ -210,6 +223,13 @@ public class PlaylistServiceImpl implements PlaylistService {
 			return true;
 		} else {
 			return playlist.getMembers() != null && playlist.getMembers().contains(user);
+		}
+	}
+
+	protected void setSongPositions(Collection<PlaylistSong> playlistSongs) {
+		int pos = 1;
+		for (PlaylistSong playlistSong : playlistSongs) {
+			playlistSong.setPosition(pos++);
 		}
 	}
 

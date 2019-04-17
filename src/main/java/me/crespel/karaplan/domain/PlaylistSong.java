@@ -3,6 +3,7 @@ package me.crespel.karaplan.domain;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,7 +37,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = { "createdDate", "createdBy", "updatedDate", "updatedBy" })
+@EqualsAndHashCode(of = "key")
 @ToString(of = { "key", "position" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -84,7 +85,6 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 		return this;
 	}
 
-	@JsonIgnoreProperties({ "votes", "comments" })
 	public Song getSong() {
 		return key != null ? key.getSong() : null;
 	}
@@ -145,6 +145,10 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 
 	}
 
+	public static PlaylistSong findInStream(Stream<PlaylistSong> stream, PlaylistSong playlistSong) {
+		return stream.filter(ps -> ps.getSong().getId() == playlistSong.getSong().getId() && ps.getPlaylist().getId() == playlistSong.getPlaylist().getId()).findFirst().orElse(null);
+	}
+
 	@Data
 	@Accessors(chain = true)
 	@Embeddable
@@ -153,12 +157,12 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 		private static final long serialVersionUID = -8046574858747808108L;
 
 		@NotNull
-		@ManyToOne(fetch = FetchType.EAGER)
+		@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 		@JoinColumn(name = "FK_PLAYLIST", referencedColumnName = "ID")
 		private Playlist playlist;
 
 		@NotNull
-		@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+		@ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE })
 		@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
 		private Song song;
 

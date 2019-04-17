@@ -33,12 +33,20 @@ export class SongListComponent implements OnInit {
   ngOnInit() {
   }
 
-  trackBySongCatalogId(index: number, song: Song): number {
-    return song.catalogId;
+  trackBySongCatalogId(index: number, song: Song | PlaylistSong): number {
+    if ('song' in song) {
+      return song.song.catalogId;
+    } else {
+      return song.catalogId;
+    }
   }
 
-  gotoSong(song: Song) {
-    this.router.navigate(['/songs', song.catalogId]);
+  gotoSong(song: Song | PlaylistSong) {
+    if ('song' in song) {
+      this.router.navigate(['/songs', song.song.catalogId]);
+    } else {
+      this.router.navigate(['/songs', song.catalogId]);
+    }
   }
 
 }

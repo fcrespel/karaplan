@@ -101,7 +101,7 @@ public class Song implements Comparable<Song> {
 	@Column(name = "PLAYLISTS_COUNT")
 	private Integer playlistsCount;
 
-	@OneToMany(mappedBy = "key.song", fetch = FetchType.EAGER) // Association is managed from the Playlist side
+	@OneToMany(mappedBy = "key.song", fetch = FetchType.EAGER, orphanRemoval = true) // Association is managed from the Playlist side
 	@JsonIgnoreProperties("song")
 	@SortComparator(PlaylistSong.OrderByPlaylistAndPositionAndSongComparator.class)
 	private SortedSet<PlaylistSong> playlists = Sets.newTreeSet(PlaylistSong.orderByPlaylistAndPositionAndSongComparator);
