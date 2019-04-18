@@ -125,7 +125,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 
 		// Calculate new position
-		Integer position = playlist.getSongs().last().getPosition();
+		Integer position = playlist.getSongs().isEmpty() ? 0 : playlist.getSongs().last().getPosition();
 		if (position != null) {
 			position += 1;
 		}
