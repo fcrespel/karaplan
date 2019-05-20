@@ -31,7 +31,7 @@
 		<docker.image.tag>${project.version}</docker.image.tag>
 
 		<!-- Plugin properties -->
-		<dockerfile-plugin.version>1.4.11</dockerfile-plugin.version>
+		<dockerfile-plugin.version>1.4.10</dockerfile-plugin.version>
 		<frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
 
 		<!-- Dependency properties -->
