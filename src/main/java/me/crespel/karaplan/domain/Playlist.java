@@ -63,6 +63,9 @@ public class Playlist implements Comparable<Playlist> {
 	@Column(name = "RESTRICTED")
 	private Boolean restricted;
 
+	@Column(name = "READ_ONLY")
+	private Boolean readOnly;
+
 	@JsonProperty(access = Access.READ_ONLY)
 	@Column(name = "ACCESS_KEY")
 	private String accessKey;

@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { switchMap } from 'rxjs/operators';
 import { PlaylistsService } from '../services/playlists.service';
 import { AlertService } from '../services/alert.service';
 import { Playlist } from '../models/playlist';
@@ -16,9 +17,7 @@ import { AlertMessage } from '../models/alert-message';
 })
 export class PlaylistDetailComponent implements OnInit {
 
-  @Input() playlist: Playlist;
-  @Output() playlistChange = new EventEmitter<Playlist>();
-  @Output() delete = new EventEmitter<Playlist>();
+  playlist: Playlist = null;
   karafunRemoteId: string;
   karafunBarId: string;
   accessKey: string;
@@ -26,32 +25,34 @@ export class PlaylistDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private modalService: NgbModal,
     private playlistsService: PlaylistsService,
     private alertService: AlertService
   ) { }
 
   ngOnInit() {
-    this.route.queryParamMap.subscribe(params => {
-      this.accessKey = params.get('accessKey');
-      if (this.accessKey) {
-        this.playlistsService.joinPlaylist(this.playlist.id, this.accessKey).subscribe(playlist => {
-          this.playlist = playlist;
-          this.playlistChange.emit(this.playlist);
-        });
+    this.route.paramMap.pipe(switchMap(params => {
+      if (this.route.snapshot.queryParamMap.has('accessKey')) {
+        return this.playlistsService.joinPlaylist(+params.get('id'), this.route.snapshot.queryParamMap.get('accessKey'));
+      } else {
+        return this.playlistsService.getPlaylist(+params.get('id'));
       }
+    })).subscribe(playlist => {
+      this.playlist = playlist;
     });
   }
 
   deletePlaylist() {
-    this.delete.emit(this.playlist);
+    this.playlistsService.deletePlaylist(this.playlist.id).subscribe(response => {
+      this.router.navigate(['/playlists']);
+    });
   }
 
   onPlaylistRemoved(playlistSong: PlaylistSong) {
     if (playlistSong.playlist.id === this.playlist.id) {
       this.playlistsService.getPlaylist(this.playlist.id).subscribe(playlist => {
         this.playlist = playlist;
-        this.playlistChange.emit(this.playlist);
       });
     }
   }
@@ -59,14 +60,12 @@ export class PlaylistDetailComponent implements OnInit {
   onSongRemoved(song: Song) {
     this.playlistsService.removeSongFromPlaylist(this.playlist.id, song.catalogId).subscribe(playlist => {
       this.playlist = playlist;
-      this.playlistChange.emit(this.playlist);
     });
   }
 
   sortPlaylist(sortType: string, sortDirection: string) {
     this.playlistsService.sortPlaylist(this.playlist.id, sortType, sortDirection).subscribe(playlist => {
       this.playlist = playlist;
-      this.playlistChange.emit(this.playlist);
     });
   }
 
@@ -103,12 +102,13 @@ export class PlaylistDetailComponent implements OnInit {
     this.modalService.open(shareModalContent, { size: 'lg' });
   }
 
-  unlockPlaylist(accessKeyInputForm: NgForm) {
-    this.playlistsService.joinPlaylist(this.playlist.id, this.accessKey).subscribe(playlist => {
-      this.playlist = playlist;
-      this.playlistChange.emit(this.playlist);
-      accessKeyInputForm.reset();
-    });
+  openUnlockModal(unlockModalContent) {
+    this.accessKey = "";
+    this.modalService.open(unlockModalContent).result.then((accessKey: string) => {
+      this.playlistsService.joinPlaylist(this.playlist.id, accessKey).subscribe(playlist => {
+        this.playlist = playlist;
+      });
+    }, reason => {});
   }
 
   copyToClipboard(field: HTMLInputElement) {

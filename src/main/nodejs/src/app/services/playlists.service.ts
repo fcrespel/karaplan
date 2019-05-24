@@ -39,6 +39,11 @@ export class PlaylistsService {
     return this.http.get<Playlist>(url);
   }
 
+  savePlaylist(playlist: Playlist): Observable<Playlist> {
+    const url = `${this.playlistsUrl}/${playlist.id}`
+    return this.http.put<Playlist>(url, playlist);
+  }
+
   deletePlaylist(id: number): Observable<Response> {
     const url = `${this.playlistsUrl}/${id}`
     return this.http.delete<Response>(url);

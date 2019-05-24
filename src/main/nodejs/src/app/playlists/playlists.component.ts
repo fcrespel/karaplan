@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { AccountService } from './../services/account.service';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
 import { Playlist } from '../models/playlist';
 
@@ -13,62 +11,54 @@ import { Playlist } from '../models/playlist';
 })
 export class PlaylistsComponent implements OnInit {
 
-  playlists: Playlist[] = [];
-  playlist: Playlist;
-  playlistName: string;
-  restrictedPlaylist: boolean;
+  playlists: Playlist[] = null;
+  currentPlaylist: Playlist;
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
-    private playlistsService: PlaylistsService,
-    private accountService: AccountService
+    private modalService: NgbModal,
+    private playlistsService: PlaylistsService
   ) { }
 
   ngOnInit() {
-    this.route.paramMap.pipe(switchMap(params => {
-      if (params.has('id')) {
-        return this.playlistsService.getPlaylist(+params.get('id'));
-      } else {
-        return of(null);
-      }
-    })).subscribe(playlist => {
-      this.playlist = playlist;
-      this.updatePlaylist(playlist);
-    });
-    this.playlistsService.getPlaylists(0, 100, 'name').subscribe(playlists => {
-      playlists.forEach(playlist => this.updatePlaylist(playlist));
-      this.playlists = playlists;
-    });
+    this.refreshPlaylists();
   }
 
-  updatePlaylist(playlist: Playlist) {
-    if (playlist) {
-      if (!playlist.restricted) {
-        playlist.readOnly = false;
-      } else if (playlist.members) {
-        this.accountService.getUser().subscribe(user => {
-          playlist.readOnly = playlist.members.findIndex(record => record.id === user.id) < 0;
-        });
-      } else {
-        playlist.readOnly = true;
-      }
-    }
+  refreshPlaylists() {
+    this.playlistsService.getPlaylists(0, 100, 'name').subscribe(playlists => {
+      this.playlists = playlists;
+    });
   }
 
   trackByPlaylistId(index: number, playlist: Playlist): number {
     return playlist.id;
   }
 
-  createPlaylist(name: string, restricted: boolean) {
-    this.playlistsService.createPlaylist(name, restricted).subscribe(playlist => {
-      this.router.navigate(['/playlists', playlist.id]);
-    });
+  gotoPlaylist(playlist) {
+    this.router.navigate(['/playlists', playlist.id]);
+  }
+
+  createPlaylist(modalContent) {
+    this.currentPlaylist = new Playlist();
+    this.modalService.open(modalContent).result.then((result: Playlist) => {
+      this.playlistsService.createPlaylist(result.name, result.restricted).subscribe(playlist => {
+        this.gotoPlaylist(playlist);
+      });
+    }, reason => {});
+  }
+
+  editPlaylist(modalContent, playlist: Playlist) {
+    this.currentPlaylist = Object.assign({}, playlist);
+    this.modalService.open(modalContent).result.then((result: Playlist) => {
+      this.playlistsService.savePlaylist(result).subscribe(playlist => {
+        this.refreshPlaylists();
+      });
+    }, reason => {});
   }
 
   deletePlaylist(playlist: Playlist) {
-    this.playlistsService.deletePlaylist(playlist.id).subscribe(() => {
-      this.router.navigate(['/playlists']);
+    this.playlistsService.deletePlaylist(playlist.id).subscribe(response => {
+      this.refreshPlaylists();
     });
   }
 

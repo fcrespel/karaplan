@@ -56,7 +56,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 		return playlistRepo.findAll(pageable).stream()
 				.map(playlist -> {
 					if (!isMember(user, playlist)) {
-						playlist.setAccessKey(null);
+						playlist.setAccessKey(null).setReadOnly(true);
+					}
+					if (playlist.getReadOnly() == null) {
+						playlist.setReadOnly(false);
 					}
 					return playlist;
 				})
@@ -65,7 +68,14 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
-		return Sets.newLinkedHashSet(playlistRepo.findAllByRestrictedOrMembersId(false, user.getId(), pageable));
+		return playlistRepo.findAllByRestrictedOrMembersId(false, user.getId(), pageable).stream()
+				.map(playlist -> {
+					if (playlist.getReadOnly() == null) {
+						playlist.setReadOnly(false);
+					}
+					return playlist;
+				})
+				.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	@Override
@@ -88,7 +98,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 				playlist.get().getSongs().size(); // Force eager load
 			}
 			if (!isMember(user, playlist.get())) {
-				playlist.get().setAccessKey(null);
+				playlist.get().setAccessKey(null).setReadOnly(true);
+			}
+			if (playlist.get().getReadOnly() == null) {
+				playlist.get().setReadOnly(false);
 			}
 		}
 		return playlist;
@@ -97,19 +110,43 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional
 	public Playlist create(String name, User user, boolean restricted) {
-		Playlist playlist = new Playlist().setName(name).setRestricted(restricted);
-		if (restricted) {
-			playlist.setAccessKey(UUID.randomUUID().toString());
-			playlist.getMembers().add(user);
-		}
+		Playlist playlist = new Playlist()
+				.setName(name)
+				.setRestricted(restricted)
+				.setReadOnly(false)
+				.setAccessKey(UUID.randomUUID().toString());
+		playlist.getMembers().add(user);
 		return playlistRepo.save(playlist);
 	}
 
 	@Override
 	@Transactional
 	public Playlist save(Playlist playlist) {
+		if (playlist.getReadOnly() == null) {
+			playlist.setReadOnly(false);
+		}
+		if (playlist.getAccessKey() == null) {
+			playlist.setAccessKey(UUID.randomUUID().toString());
+		}
 		playlist.updateStats();
 		return playlistRepo.save(playlist);
+	}
+
+	@Override
+	@Transactional
+	public Playlist save(Playlist playlist, User user) {
+		if (!isMember(user, playlist)) {
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		}
+		if (user != null) {
+			if (playlist.getMembers() == null) {
+				playlist.setMembers(Sets.newLinkedHashSet());
+			}
+			if (playlist.getMembers().isEmpty()) {
+				playlist.getMembers().add(user);
+			}
+		}
+		return save(playlist);
 	}
 
 	@Override
@@ -135,7 +172,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		playlist.getSongs().add(playlistSong);
 		song.getPlaylists().add(playlistSong);
 		song.updateStats();
-		return save(playlist);
+		return save(playlist, user);
 	}
 
 	@Override
@@ -153,7 +190,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		// Assign new positions
 		setSongPositions(playlist.getSongs());
-		return save(playlist);
+		return save(playlist, user);
 	}
 
 	@Override
@@ -201,7 +238,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 		// Assign new positions
 		setSongPositions(sortedSongs);
-		return save(playlist);
+		return save(playlist, user);
 	}
 
 	@Override
@@ -209,6 +246,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public void delete(Playlist playlist, User user) {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		}
+		for (PlaylistSong playlistSong : playlist.getSongs()) {
+			playlistSong.getSong().getPlaylists().remove(playlistSong);
+			playlistSong.getSong().updateStats();
 		}
 		playlistRepo.delete(playlist);
 	}

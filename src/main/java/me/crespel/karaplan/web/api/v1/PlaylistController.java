@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -85,6 +87,15 @@ public class PlaylistController {
 	@ApiOperation("Get a playlist")
 	public Playlist getPlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		return playlistService.findById(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	}
+
+	@PutMapping("/{playlistId}")
+	@ApiOperation("Save a playlist")
+	public Playlist savePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlistToSave = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"))
+				.setName(playlist.getName())
+				.setRestricted(playlist.getRestricted());
+		return playlistService.save(playlistToSave, user);
 	}
 
 	@DeleteMapping("/{playlistId}")

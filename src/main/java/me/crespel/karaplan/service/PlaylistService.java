@@ -31,6 +31,8 @@ public interface PlaylistService {
 
 	Playlist save(Playlist playlist);
 
+	Playlist save(Playlist playlist, User user);
+
 	Playlist addSong(Playlist playlist, Song song, User user);
 
 	Playlist removeSong(Playlist playlist, Song song, User user);
