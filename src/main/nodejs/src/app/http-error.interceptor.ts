@@ -22,9 +22,15 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         } else {
           let message = new AlertMessage();
           message.severity = 'danger';
-          message.title = 'HTTP error';
-          message.code = error.status;
-          message.text = error.message;
+          if (error.error && error.error.message) {
+            message.title = error.error.error ? error.error.error : 'Error';
+            message.code = error.error.status;
+            message.text = error.error.message;
+          } else {
+            message.title = 'HTTP Error';
+            message.code = error.status;
+            message.text = error.message;
+          }
           this.alertService.addMessage(message);
           return throwError(error);
         }
