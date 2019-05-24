@@ -6,30 +6,30 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="!navbarOpen">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" *ngIf="user">
-        <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active">Songs</a>
+        <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active" (click)="navbarOpen = false">Songs</a>
       </li>
       <li class="nav-item" *ngIf="user">
-        <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active">Playlists</a>
+        <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active" (click)="navbarOpen = false">Playlists</a>
       </li>
     </ul>
     <ul class="navbar-nav" *ngIf="user">
       <li class="nav-item" ngbDropdown placement="bottom-right">
         <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
-          <a class="dropdown-item" href="#" routerLink="/user/profile">
+          <a class="dropdown-item" href="#" routerLink="/user/profile" (click)="navbarOpen = false">
             <i class="fas fa-user mr-1"></i> Profile
           </a>
-          <a class="dropdown-item" href="#" (click)="$event.preventDefault(); openAboutModal(aboutModal)">
+          <a class="dropdown-item" href="#" (click)="$event.preventDefault(); navbarOpen = false; openAboutModal(aboutModal)">
             <i class="fas fa-info-circle mr-1"></i> About
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="logout" (click)="$event.preventDefault(); logoutForm.submit()">
+          <a class="dropdown-item" href="logout" (click)="$event.preventDefault(); navbarOpen = false; logoutForm.submit()">
             <i class="fas fa-sign-out-alt mr-1"></i> Logout
           </a>
         </div>
       </li>
     </ul>
-    <a class="btn btn-outline-light" href="login" routerLink="/login" *ngIf="!user">Login</a>
+    <a class="btn btn-outline-light" href="login" routerLink="/login" (click)="navbarOpen = false" *ngIf="!user">Login</a>
   </div>
 </nav>
 
