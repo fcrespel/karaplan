@@ -7,17 +7,35 @@
         {
             "type": "java",
             "request": "launch",
-            "name": "KaraplanApplication",
-            "mainClass": "me.crespel.karaplan.KaraplanApplication",
-            "projectName": "karaplan"
-        },
-        {
-            "type": "java",
-            "request": "launch",
-            "name": "KaraplanApplication (local)",
+            "name": "Backend Server",
             "mainClass": "me.crespel.karaplan.KaraplanApplication",
             "projectName": "karaplan",
             "vmArgs": "-Dspring.profiles.active=local"
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Frontend Server",
+            "cwd": "${workspaceFolder}/src/main/nodejs",
+            "program": "${workspaceFolder}/src/main/nodejs/node_modules/@angular/cli/bin/ng",
+            "args": [
+                "serve"
+            ]
+        },
+        {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Frontend Browser (Firefox)",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/src/main/nodejs"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Frontend Browser (Chrome)",
+            "url": "http://localhost:4200",
+            "webRoot": "${workspaceFolder}/src/main/nodejs"
+        },
     ]
 }
