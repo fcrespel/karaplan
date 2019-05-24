@@ -37,9 +37,9 @@
 <!-- Search bar -->
 <div class="row my-3" *ngIf="queryContext.type == 'query'">
   <div class="col">
-    <form (ngSubmit)="onSearch(queryContext.query)">
+    <form (ngSubmit)="onSearch(queryField)">
       <div class="input-group shadow">
-        <input type="text" class="form-control" name="query" [(ngModel)]="queryContext.query" placeholder="Song or artist name">
+        <input type="text" class="form-control" name="query" [(ngModel)]="queryField" placeholder="Song or artist name">
         <div class="input-group-append">
           <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
         </div>

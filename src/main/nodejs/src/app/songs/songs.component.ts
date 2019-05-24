@@ -14,6 +14,7 @@ import { of, concat } from 'rxjs';
 export class SongsComponent implements OnInit {
 
   queryContext: QueryContext = new QueryContext();
+  queryField: string = "";
 
   constructor(
     private route: ActivatedRoute,
