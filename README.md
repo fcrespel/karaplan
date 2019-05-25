@@ -28,10 +28,15 @@ The backend will then be available at [http://localhost:8080](http://localhost:8
 
 Local frontend development uses a NodeJS server listening on port 4200 with live reload support.
 
-You may launch the frontend as a NodeJS server with the following command, from the `src/main/nodejs` directory:
+First install dependencies with NPM, from the `src/main/nodejs` directory:
 
     npm install
+
+You may launch the frontend as a NodeJS server with the following command, from the `src/main/nodejs` directory:
+
     ng serve
+
+An appropriate launch configuration is already included for VS Code.
 
 The frontend will then be available at [http://localhost:4200](http://localhost:4200)
 
@@ -47,7 +52,7 @@ A Docker image tagged `fcrespel/karaplan:latest` will then be created.
 
 To run the application as a Docker container, execute the following command:
 
-    docker run -d --name karaplan -p 8080 fcrespel/karaplan:latest
+    docker run -d --name karaplan -p 8080:8080 fcrespel/karaplan:latest
 
 The application will then be available at [http://localhost:8080](http://localhost:8080)
 
