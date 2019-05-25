@@ -70,7 +70,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	protected JSONObject buildAuthenticateEvent(String remoteId) {
 		try {
 			JSONObject obj = new JSONObject();
-			obj.put("login", "Karaplan");
+			obj.put("login", "KaraPlan");
 			obj.put("channel", remoteId);
 			obj.put("role", "participant");
 			obj.put("app", "karafun");

@@ -1,6 +1,7 @@
 @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
 @import url('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
 @import url('https://fonts.googleapis.com/css?family=Raleway');
+@import url("https://use.typekit.net/cty8gcd.css");
 
 html {
 	height: 100%;
@@ -28,6 +29,12 @@ a {
 }
 a:hover {
 	color: #cc577a;
+}
+
+.logo {
+	font-family: cooper-black-std, sans-serif;
+	font-weight: 400 !important;
+	font-style: normal !important;
 }
 
 .bg-white-50 {

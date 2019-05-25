@@ -2,19 +2,19 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="utf-8">
-	<title>Karaplan</title>
+	<title>KaraPlan</title>
 	<base th:href="@{/}"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" type="image/x-icon" href="favicon.ico">
 	<style type="text/css">
 		@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
-		@import url('https://use.fontawesome.com/releases/v5.7.2/css/all.css');
+		@import url('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
 		@import url('https://fonts.googleapis.com/css?family=Raleway');
-		
+		@import url("https://use.typekit.net/cty8gcd.css");
+
 		html {
 			height: 100%;
 		}
-		
 		body {
 			height: 100%;
 			display: flex;
@@ -23,10 +23,14 @@
 			background-size: 100%;
 			background-attachment: fixed;
 		}
-		
+		.logo {
+			font-family: cooper-black-std, sans-serif;
+			font-weight: 400 !important;
+			font-style: normal !important;
+		}
 		.btn-pink {
-			background-color: #db2c78;
-			border-color: #db2c78;
+			background-color: #d5177a;
+			border-color: #d5177a;
 			color: #fff;
 		}
 		.btn-pink:hover {
@@ -38,7 +42,8 @@
 </head>
 <body>
 <div class="m-auto text-white text-center">
-	<h1>Oops! <i class="fas fa-sad-tear"></i></h1>
+	<h1 class="display-4 logo mb-5">KaraPlan</h1>
+	<h2>Oops! <i class="fas fa-sad-tear"></i></h2>
 	<p>Something went wrong, please try again.</p>
 	<p>
 		<a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> Go back</a> or

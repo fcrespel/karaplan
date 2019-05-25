@@ -44,7 +44,7 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title("Karaplan REST API")
+				.title("KaraPlan REST API")
 				.description("All operations are exposed as JSON and require an OAuth 2.0 Access Token granted by the configured OAuth Authorization Server.")
 				.version("1.0")
 				.build();

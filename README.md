@@ -2,9 +2,9 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/fcrespel/karaplan.svg)](https://hub.docker.com/r/fcrespel/karaplan)
 [![License](https://img.shields.io/github/license/fcrespel/karaplan.svg)](https://opensource.org/licenses/MIT)
 
-# Karaplan
+# KaraPlan
 
-**Karaplan** is a Karaoke Planner web application with song search, ratings, comments, playlists and more.
+**KaraPlan** is a Karaoke Planner web application with song search, ratings, comments, playlists and more.
 
 ## Developing
 
@@ -61,8 +61,8 @@ All configuration values may be overridden with environment variables (as suppor
 
 ## Legal notice
 
-**Karaplan** is licensed under the open-source [MIT License](https://opensource.org/licenses/MIT).
+**KaraPlan** is licensed under the open-source [MIT License](https://opensource.org/licenses/MIT).
 
-**Karaplan** is provided "as is" with no warranty of any kind, express or implied. Please refer to the license terms for more information.
+**KaraPlan** is provided "as is" with no warranty of any kind, express or implied. Please refer to the license terms for more information.
 
-**Karaplan** makes use of the [Recisio](https://www.recisio.com) song catalog, the [KaraFun](https://www.karafun.com), [KaraFun Bar](https://www.karafunbar.com) and [Karaoke Version](https://www.karaoke-version.com) APIs on a fair use basis. It is not affiliated in any way with Recisio or its subsidiaries. All trademarks are the property of their respective owner.
+**KaraPlan** makes use of the [Recisio](https://www.recisio.com) song catalog, the [KaraFun](https://www.karafun.com), [KaraFun Bar](https://www.karafunbar.com) and [Karaoke Version](https://www.karaoke-version.com) APIs on a fair use basis. It is not affiliated in any way with Recisio or its subsidiaries. All trademarks are the property of their respective owner.
