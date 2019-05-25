@@ -1,0 +1,14 @@
+.bg-home {
+  background-image: url(../../assets/bg-home.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.text-shadow-10 {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow-20 {
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
