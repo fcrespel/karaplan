@@ -23,7 +23,7 @@ export class SongDetailComponent implements OnInit {
   relatedSongsPage: number = 0;
   relatedSongsLimit: number = 10;
   hasMoreRelatedSongs: boolean = false;
-  tab: string = 'lyrics';
+  tab: string = 'info';
   commentText: string;
 
   trackTypeLabels = {

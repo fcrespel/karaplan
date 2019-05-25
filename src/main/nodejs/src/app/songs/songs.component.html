@@ -4,32 +4,32 @@
 <ul class="nav nav-pills my-3">
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'query' }" [class.active]="queryContext.type == 'query'" title="Search">
-      <i class="fas fa-search"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'query'"> Search</span>
+      <i class="fas fa-search"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'query'"> Search</span>
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'theme' }" [class.active]="queryContext.type == 'theme'" title="Selections">
-      <i class="fas fa-music"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'theme'"> Selections</span>
+      <i class="fas fa-music"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'theme'"> Selections</span>
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'styles' }" [class.active]="queryContext.type == 'styles'" title="Genres">
-      <i class="fas fa-guitar"></i><span class=" d-sm-inline" [class.d-none]="queryContext.type != 'styles'"> Genres</span>
+      <i class="fas fa-guitar"></i><span class=" d-md-inline" [class.d-none]="queryContext.type != 'styles'"> Genres</span>
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'top' }" [class.active]="queryContext.type == 'top'" title="Top">
-      <i class="fas fa-trophy"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'top'"> Top</span>
+      <i class="fas fa-trophy"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'top'"> Top</span>
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="queryContext.type == 'news'" title="New releases">
-      <i class="fas fa-calendar-alt"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'news'"> New</span>
+      <i class="fas fa-calendar-alt"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'news'"> New</span>
     </a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'votes' }" [class.active]="queryContext.type == 'votes'" title="Most voted">
-      <i class="fas fa-thumbs-up"></i><span class="d-sm-inline" [class.d-none]="queryContext.type != 'votes'"> Votes</span>
+      <i class="fas fa-thumbs-up"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'votes'"> Votes</span>
     </a>
   </li>
 </ul>
