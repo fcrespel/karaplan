@@ -20,7 +20,7 @@
             {{ p.name }}
           </p>
         </div>
-        <div class="col-auto">
+        <div class="col-auto d-none d-sm-block">
           <span class="badge badge-pink mx-1" *ngIf="p.songsCount" title="Songs count">{{ p.songsCount }} song{{ p.songsCount > 1 ? 's' : '' }}</span>
           <span class="badge badge-secondary mx-1" *ngIf="p.duration" title="Duration">{{ p.duration | duration }}</span>
         </div>

@@ -1,22 +1,23 @@
-<h1>Playlist {{ playlist?.name }}</h1>
+<p class="small mb-0"><a href="#" routerLink="/playlists" class="text-light">Playlists</a> //</p>
+<h1>{{ playlist?.name || '...' }}</h1>
 
 <!-- Toolbar -->
 <ng-container *ngIf="playlist">
   <div class="row no-gutters justify-content-between align-items-center my-3">
     <div class="col" *ngIf="!playlist.readOnly">
-      <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i> Find songs</a>
+      <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i><span class="d-sm-none"> Songs</span><span class="d-none d-sm-inline"> Find songs</span></a>
     </div>
     <div class="col" *ngIf="playlist.restricted && playlist.readOnly">
       <button type="button" class="btn btn-light shadow" title="Unlock playlist" (click)="openUnlockModal(unlockModal)"><i class="fas fa-lock-open"></i> Unlock</button>
     </div>
-    <div class="col-auto">
+    <div class="col-auto d-none d-sm-block">
       <span class="badge badge-light mx-1" *ngIf="playlist.songsCount" title="Songs count">{{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
       <span class="badge badge-light mx-1" *ngIf="playlist.duration" title="Total duration">{{ playlist.duration | duration }}</span>
     </div>
     <div class="col-auto ml-2">
-      <button *ngIf="playlist.restricted && !playlist.readOnly" type="button" class="btn btn-light shadow mx-1" title="Share playlist" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i><span class="d-none d-sm-inline"> Share</span></button>
+      <button *ngIf="playlist.restricted && !playlist.readOnly" type="button" class="btn btn-light shadow mx-1" title="Share playlist" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i><span class="d-none d-md-inline"> Share</span></button>
       <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1" *ngIf="!playlist.readOnly">
-        <button class="btn btn-light shadow" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i><span class="d-none d-sm-inline"> Sort</span></button>
+        <button class="btn btn-light shadow" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i><span class="d-none d-md-inline"> Sort</span></button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'asc')"><i class="fas fa-sort-alpha-down mr-1"></i> By name, ascending</button>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'desc')"><i class="fas fa-sort-alpha-up mr-1"></i> By name, descending</button>
@@ -28,7 +29,7 @@
         </div>
       </div>
       <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
-        <button class="btn btn-light shadow" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i><span class="d-none d-sm-inline"> Export</span></button>
+        <button class="btn btn-light shadow" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i><span class="d-none d-md-inline"> Export</span></button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Remote</button>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(karafunBarExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Bar</button>
