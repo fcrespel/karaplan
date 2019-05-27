@@ -1,59 +1,65 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-	<meta charset="utf-8">
-	<title>KaraPlan</title>
-	<base th:href="@{/}"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" type="image/x-icon" href="favicon.ico">
-	<style type="text/css">
-		@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
-		@import url('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
-		@import url('https://fonts.googleapis.com/css?family=Raleway');
-		@import url("https://use.typekit.net/cty8gcd.css");
+  <meta charset="utf-8">
+  <title>KaraPlan</title>
+  <base th:href="@{/}"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="mask-icon" href="safari-pinned-tab.svg" color="#d5177a">
+  <meta name="msapplication-TileColor" content="#603cba">
+  <meta name="theme-color" content="#d5177a">
+  <style type="text/css">
+    @import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+    @import url('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
+    @import url('https://fonts.googleapis.com/css?family=Raleway');
+    @import url("https://use.typekit.net/cty8gcd.css");
 
-		html {
-			height: 100%;
-		}
-		body {
-			height: 100%;
-			display: flex;
-			font-family: 'Raleway', sans-serif;
-			background-image: linear-gradient(141.27841068346947deg, #1d0032, #210038 3.1%, #240039 3.1%, #2a003d 6%, #2d003e 6%, #3a0046 9.9%, #cc577a 59.1%, #ca587a 59.1%,#7b222b);
-			background-size: 100%;
-			background-attachment: fixed;
-		}
-		.logo {
-			font-family: cooper-black-std, sans-serif;
-			font-weight: 400 !important;
-			font-style: normal !important;
-		}
-		.btn-pink {
-			background-color: #d5177a;
-			border-color: #d5177a;
-			color: #fff;
-		}
-		.btn-pink:hover {
-			background-color: #cc577a;
-			border-color: #cc577a;
-			color: #fff;
-		}
-	</style>
+    html {
+      height: 100%;
+    }
+    body {
+      height: 100%;
+      display: flex;
+      font-family: 'Raleway', sans-serif;
+      background-image: linear-gradient(141.27841068346947deg, #1d0032, #210038 3.1%, #240039 3.1%, #2a003d 6%, #2d003e 6%, #3a0046 9.9%, #cc577a 59.1%, #ca587a 59.1%,#7b222b);
+      background-size: 100%;
+      background-attachment: fixed;
+    }
+    .logo {
+      font-family: cooper-black-std, sans-serif;
+      font-weight: 400 !important;
+      font-style: normal !important;
+    }
+    .btn-pink {
+      background-color: #d5177a;
+      border-color: #d5177a;
+      color: #fff;
+    }
+    .btn-pink:hover {
+      background-color: #cc577a;
+      border-color: #cc577a;
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
 <div class="m-auto text-white text-center">
-	<h1 class="display-4 logo mb-5">KaraPlan</h1>
-	<h2>Oops! <i class="fas fa-sad-tear"></i></h2>
-	<p>Something went wrong, please try again.</p>
-	<p>
-		<a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> Go back</a> or
-		<a th:href="@{/}" class="btn btn-pink shadow"><i class="fas fa-home"></i> Go home</a>
-	</p>
-	<p class="mt-5 mb-1"><small>If you'd like to report this error, here is some technical info to mention:</small></p>
-	<p>
-		<small><strong>Error:</strong> <span th:text="${status}"/> <span th:text="${error}"/></small><br/>
-		<small><strong>Message:</strong> <span th:text="${message}"/></small>
-	</p>
+  <h1 class="display-4 logo mb-5">KaraPlan</h1>
+  <h2>Oops! <i class="fas fa-sad-tear"></i></h2>
+  <p>Something went wrong, please try again.</p>
+  <p>
+    <a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> Go back</a> or
+    <a th:href="@{/}" class="btn btn-pink shadow"><i class="fas fa-home"></i> Go home</a>
+  </p>
+  <p class="mt-5 mb-1"><small>If you'd like to report this error, here is some technical info to mention:</small></p>
+  <p>
+    <small><strong>Error:</strong> <span th:text="${status}"/> <span th:text="${error}"/></small><br/>
+    <small><strong>Message:</strong> <span th:text="${message}"/></small>
+  </p>
 </div>
 </body>
 </html>
