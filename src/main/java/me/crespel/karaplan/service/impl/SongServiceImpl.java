@@ -22,15 +22,18 @@ import com.google.common.collect.Sets;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
 import me.crespel.karaplan.domain.SongVote;
+import me.crespel.karaplan.domain.Style;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
+import me.crespel.karaplan.model.CatalogStyle;
 import me.crespel.karaplan.repository.SongRepo;
 import me.crespel.karaplan.repository.SongVoteRepo;
 import me.crespel.karaplan.service.ArtistService;
 import me.crespel.karaplan.service.CatalogService;
 import me.crespel.karaplan.service.SongService;
+import me.crespel.karaplan.service.StyleService;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -47,11 +50,15 @@ public class SongServiceImpl implements SongService {
 	@Autowired
 	protected ArtistService artistService;
 
+	@Autowired
+	protected StyleService styleService;
+
 	protected final ConfigurableConversionService conversionService;
 
 	public SongServiceImpl() {
 		conversionService = new DefaultConversionService();
 		conversionService.addConverter(new CatalogSongToSongConverter());
+		conversionService.addConverter(new CatalogStyleToStyleConverter());
 	}
 
 	@Override
@@ -162,13 +169,33 @@ public class SongServiceImpl implements SongService {
 
 		@Override
 		public Song convert(CatalogSong source) {
-			return new Song()
+			Song song = new Song()
 					.setCatalogId(source.getId())
 					.setName(source.getName())
 					.setDuration(source.getDuration())
+					.setYear(source.getYear())
 					.setImage(source.getImg())
 					.setLyrics(source.getLyrics())
+					.setRights(source.getRights())
 					.setArtist(artistService.findByCatalogId(source.getArtist().getId()).orElse(null));
+			if (source.getStyles() != null) {
+				song.setStyles(source.getStyles().stream()
+						.map(it -> styleService.findByCatalogId(it.getId()).orElse(conversionService.convert(it, Style.class)))
+						.collect(Collectors.toCollection(LinkedHashSet::new)));
+			}
+			return song;
+		}
+
+	}
+
+	public class CatalogStyleToStyleConverter implements Converter<CatalogStyle, Style> {
+
+		@Override
+		public Style convert(CatalogStyle source) {
+			return new Style()
+					.setCatalogId(source.getId())
+					.setName(source.getName())
+					.setImage(source.getImg());
 		}
 
 	}

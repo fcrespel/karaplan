@@ -2,6 +2,7 @@ package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Set;
 import java.util.SortedSet;
 
 import javax.persistence.CascadeType;
@@ -12,7 +13,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,9 +25,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SortComparator;
 import org.hibernate.annotations.Type;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -40,7 +41,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = { "artist", "votes", "comments", "playlists", "createdDate", "createdBy", "updatedDate", "updatedBy" })
+@EqualsAndHashCode(exclude = { "artist", "styles", "votes", "comments", "playlists", "createdDate", "updatedDate" })
 @ToString(of = { "id", "name" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -63,6 +64,9 @@ public class Song implements Comparable<Song> {
 	@Column(name = "DURATION")
 	private Long duration;
 
+	@Column(name = "YEAR")
+	private Integer year;
+
 	@Column(name = "IMAGE")
 	private String image;
 
@@ -71,10 +75,18 @@ public class Song implements Comparable<Song> {
 	@Column(name = "LYRICS")
 	private String lyrics;
 
+	@Lob
+	@Column(name = "RIGHTS")
+	private String rights;
+
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "FK_ARTIST", referencedColumnName = "ID")
 	@JsonIgnoreProperties("songs")
 	private Artist artist;
+
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinTable(name = "song_style", joinColumns = @JoinColumn(name = "FK_SONG", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "FK_STYLE", referencedColumnName = "ID"))
+	private Set<Style> styles;
 
 	@Column(name = "SCORE")
 	private Integer score;
@@ -111,20 +123,10 @@ public class Song implements Comparable<Song> {
 	@Column(name = "CREATED_DATE")
 	private Calendar createdDate;
 
-	@CreatedBy
-	@ManyToOne
-	@JoinColumn(name = "FK_USER_CREATED", referencedColumnName = "ID")
-	private User createdBy;
-
 	@LastModifiedDate
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
 	private Calendar updatedDate;
-
-	@LastModifiedBy
-	@ManyToOne
-	@JoinColumn(name = "FK_USER_UPDATED", referencedColumnName = "ID")
-	private User updatedBy;
 
 	public void updateStats() {
 		this.score = (votes != null) ? votes.stream().mapToInt(SongVote::getScore).sum() : 0;

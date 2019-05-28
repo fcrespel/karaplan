@@ -48,7 +48,10 @@
             <div class="col">
               <h5 class="card-title mb-1">{{ song.name }}</h5>
               <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
-              <p><span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span></p>
+              <p>
+                <span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span>
+                <a href="#" class="badge badge-primary ml-1" title="Style" *ngFor="let style of song.styles" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
+              </p>
               <app-song-actions [song]="song" [showComments]="false"></app-song-actions>
             </div>
           </div>
@@ -63,6 +66,7 @@
       <div class="card">
         <div class="card-body text-dark text-center">
           <p class="card-text" style="white-space: pre-line;">{{ song.lyrics }}</p>
+          <p class="card-text text-muted small">{{ song.rights }}</p>
         </div>
       </div>
     </div>

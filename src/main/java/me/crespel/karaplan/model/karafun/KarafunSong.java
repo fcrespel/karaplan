@@ -18,7 +18,7 @@ public class KarafunSong {
 	private String name;
 	private KarafunArtist artist;
 	private Long duration;
-	private Long year;
+	private Integer year;
 	private List<KarafunStyle> styles;
 	private String img;
 	private String lyrics;

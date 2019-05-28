@@ -21,7 +21,7 @@ public class CatalogSong implements Serializable {
 	private String name;
 	private CatalogArtist artist;
 	private Long duration;
-	private Long year;
+	private Integer year;
 	private Set<CatalogStyle> styles;
 	private String img;
 	private String lyrics;
