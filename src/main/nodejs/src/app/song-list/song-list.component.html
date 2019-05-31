@@ -17,8 +17,8 @@
     <p class="m-0"><a href="#" [routerLink]="['/songs', song.catalogId]" class="text-reset">{{ song.name }}</a></p>
     <p class="m-0"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" (click)="$event.stopPropagation()" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
   </div>
-  <div class="col-auto" *ngIf="playlistSong?.createdBy">
-    <span class="badge text-dark" ngbTooltip="Added by {{ playlistSong.createdBy.displayName }} on {{ playlistSong.createdDate | date:'short' }}" placement="top" container="body"><i class="fas fa-info-circle"></i></span>
+  <div class="col-auto d-none d-sm-block" *ngIf="playlistSong?.createdBy">
+    <span class="badge text-dark" ngbTooltip="Added by {{ playlistSong.createdBy.displayName }} on {{ playlistSong.createdDate | date:'short' }}" placement="top top-left top-right auto" container="body"><i class="fas fa-info-circle"></i></span>
   </div>
   <div class="col-auto" *ngIf="showDuration && song.duration">
     <span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span>

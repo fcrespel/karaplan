@@ -16,7 +16,7 @@
     </div>
     <div class="col-auto ml-2">
       <button *ngIf="playlist.restricted && !playlist.readOnly" type="button" class="btn btn-light shadow mx-1" title="Share playlist" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i><span class="d-none d-md-inline"> Share</span></button>
-      <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1" *ngIf="!playlist.readOnly">
+      <div ngbDropdown placement="bottom-left bottom bottom-right" class="d-inline-block mx-1" *ngIf="!playlist.readOnly">
         <button class="btn btn-light shadow" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i><span class="d-none d-md-inline"> Sort</span></button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'asc')"><i class="fas fa-sort-alpha-down mr-1"></i> By name, ascending</button>
@@ -28,7 +28,7 @@
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('random')"><i class="fas fa-random mr-1"></i> Random</button>
         </div>
       </div>
-      <div ngbDropdown placement="bottom-left" class="d-inline-block mx-1">
+      <div ngbDropdown placement="bottom-left bottom bottom-right" class="d-inline-block mx-1">
         <button class="btn btn-light shadow" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i><span class="d-none d-md-inline"> Export</span></button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Remote</button>

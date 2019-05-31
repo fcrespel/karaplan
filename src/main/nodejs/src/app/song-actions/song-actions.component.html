@@ -7,18 +7,18 @@
 
 <!-- Votes -->
 <div class="btn-group mx-1" role="group" *ngIf="showVotes">
-  <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" [disabled]="loading" title="Vote up" placement="top" ngbTooltip="{{voteUpUsers}}">
+  <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" [disabled]="loading" title="Vote up" placement="top top-left top-right auto" ngbTooltip="{{voteUpUsers}}">
     <i class="fa-thumbs-up" [class.far]="vote?.score != 1" [class.fas]="vote?.score == 1"></i>
     <span class="badge badge-success ml-1" *ngIf="song.scoreUp">{{ song.scoreUp }}</span>
   </button>
-  <button type="button" class="btn btn-outline-danger" (click)="$event.stopPropagation(); voteDown()" [disabled]="loading" title="Vote down" placement="top" ngbTooltip="{{voteDownUsers}}">
+  <button type="button" class="btn btn-outline-danger" (click)="$event.stopPropagation(); voteDown()" [disabled]="loading" title="Vote down" placement="top top-left top-right auto" ngbTooltip="{{voteDownUsers}}">
     <i class="fa-thumbs-down" [class.far]="vote?.score != -1" [class.fas]="vote?.score == -1"></i>
     <span class="badge badge-danger ml-1" *ngIf="song.scoreDown">{{ song.scoreDown }}</span>
   </button>
 </div>
 
 <!-- Comments -->
-<div ngbDropdown autoClose="outside" placement="bottom bottom-right" container="body" class="d-inline-block" *ngIf="showComments">
+<div ngbDropdown [autoClose]="false" placement="bottom bottom-right" container="body" class="d-inline-block" *ngIf="showComments">
   <button type="button" class="btn btn-outline-secondary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
     <i class="far fa-comment"></i>
     <span class="badge badge-secondary ml-1" *ngIf="song.commentsCount">{{ song.commentsCount }}</span>
@@ -43,7 +43,7 @@
 </div>
 
 <!-- Playlists -->
-<div ngbDropdown autoClose="outside" placement="bottom-left bottom bottom-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
+<div ngbDropdown [autoClose]="false" placement="bottom-left bottom bottom-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
   <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle [disabled]="loading" title="Add to playlist">
     <i class="fas fa-list"></i>
     <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlistsCount }}</span>

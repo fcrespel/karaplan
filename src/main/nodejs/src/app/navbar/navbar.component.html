@@ -13,7 +13,7 @@
       </li>
     </ul>
     <ul class="navbar-nav" *ngIf="user">
-      <li class="nav-item" ngbDropdown placement="bottom-right">
+      <li class="nav-item" ngbDropdown placement="bottom-right" [display]="navbarOpen ? 'static' : 'dynamic'">
         <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
           <a class="dropdown-item" href="#" routerLink="/user/profile" (click)="navbarOpen = false">
