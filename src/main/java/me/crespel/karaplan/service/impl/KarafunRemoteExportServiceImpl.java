@@ -81,11 +81,11 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected JSONObject buildQueueAddEvent(Long songId) {
+	protected JSONObject buildQueueAddEvent(Long songId, Integer position) {
 		try {
 			JSONObject obj = new JSONObject();
 			obj.put("songId", songId);
-			obj.put("pos", 99999);
+			obj.put("pos", position != null ? position : 99999);
 			obj.put("singer", "");
 			return obj;
 		} catch (JSONException e) {
@@ -158,9 +158,10 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 		@Override
 		public void call(Object... args) {
 			logReceivedEvent(EVENT_QUEUE, args);
+			int position = 1;
 			for (Long songId : songIds) {
 				if (songId != null) {
-					JSONObject eventData = buildQueueAddEvent(songId);
+					JSONObject eventData = buildQueueAddEvent(songId, position++);
 					logSendEvent(EVENT_QUEUE_ADD, eventData);
 					socket.emit(EVENT_QUEUE_ADD, eventData);
 				}
