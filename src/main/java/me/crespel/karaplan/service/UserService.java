@@ -15,7 +15,7 @@ public interface UserService {
 
 	Optional<User> findById(Long id);
 
-	Optional<User> findByUsername(String username);
+	Optional<User> findByProviderAndUsername(String provider, String username);
 
 	User save(User user);
 

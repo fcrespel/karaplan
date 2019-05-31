@@ -1,16 +1,23 @@
 package me.crespel.karaplan.domain;
 
+import java.util.Calendar;
 import java.util.SortedSet;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SortComparator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Sets;
@@ -25,6 +32,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(exclude = { "votes", "comments" })
 @ToString(of = { "id", "username", "displayName" })
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "user")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class User {
@@ -35,7 +43,11 @@ public class User {
 	private Long id;
 
 	@NotNull
-	@Column(name = "USERNAME", unique = true)
+	@Column(name = "PROVIDER")
+	private String provider;
+
+	@NotNull
+	@Column(name = "USERNAME")
 	private String username;
 
 	@NotNull
@@ -54,6 +66,9 @@ public class User {
 	@Column(name = "EMAIL")
 	private String email;
 
+	@Column(name = "LOCALE")
+	private String locale;
+
 	@OneToMany(mappedBy = "user")
 	@JsonIgnoreProperties("user")
 	@SortComparator(SongVote.OrderByIdDescComparator.class)
@@ -63,5 +78,15 @@ public class User {
 	@JsonIgnoreProperties("user")
 	@SortComparator(SongComment.OrderByIdDescComparator.class)
 	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
+
+	@CreatedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CREATED_DATE")
+	private Calendar createdDate;
+
+	@LastModifiedDate
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "UPDATED_DATE")
+	private Calendar updatedDate;
 
 }

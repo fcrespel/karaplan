@@ -8,6 +8,6 @@ import me.crespel.karaplan.domain.User;
 
 public interface UserRepo extends JpaRepository<User, Long> {
 
-	Optional<User> findByUsername(String username);
+	Optional<User> findByProviderAndUsername(String provider, String username);
 
 }

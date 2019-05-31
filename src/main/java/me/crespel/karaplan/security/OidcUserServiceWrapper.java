@@ -25,16 +25,18 @@ public class OidcUserServiceWrapper implements OAuth2UserService<OidcUserRequest
 	@Override
 	public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
 		OidcUser oidcUser = delegate.loadUser(userRequest);
-		User user = syncUser(oidcUser);
+		User user = syncUser(userRequest, oidcUser);
 		return new OidcUserWrapper(oidcUser, user);
 	}
 
-	protected User syncUser(OidcUser oidcUser) {
-		User user = userService.findByUsername(oidcUser.getSubject()).orElse(new User().setUsername(oidcUser.getSubject()))
+	protected User syncUser(OidcUserRequest userRequest, OidcUser oidcUser) {
+		User user = userService.findByProviderAndUsername(userRequest.getClientRegistration().getRegistrationId(), oidcUser.getSubject())
+				.orElse(new User().setProvider(userRequest.getClientRegistration().getRegistrationId()).setUsername(oidcUser.getSubject()))
 				.setFirstName(oidcUser.getGivenName())
 				.setLastName(oidcUser.getFamilyName())
 				.setFullName(oidcUser.getFullName())
-				.setEmail(oidcUser.getEmail());
+				.setEmail(oidcUser.getEmail())
+				.setLocale(oidcUser.getLocale());
 		if (Strings.isNullOrEmpty(user.getDisplayName())) {
 			if (!Strings.isNullOrEmpty(oidcUser.getGivenName()) && !Strings.isNullOrEmpty(oidcUser.getFamilyName())) {
 				user.setDisplayName(oidcUser.getGivenName() + " " + oidcUser.getFamilyName().charAt(0) + ".");
