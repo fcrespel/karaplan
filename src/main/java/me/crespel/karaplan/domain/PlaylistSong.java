@@ -145,6 +145,20 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 
 	}
 
+	public static Comparator<PlaylistSong> orderByCreatedDateComparator = new OrderByCreatedDateComparator();
+
+	public static class OrderByCreatedDateComparator implements Comparator<PlaylistSong> {
+
+		@Override
+		public int compare(PlaylistSong o1, PlaylistSong o2) {
+			return ComparisonChain.start()
+					.compare(o1.getCreatedDate(), o2.getCreatedDate(), Ordering.natural().nullsFirst())
+					.compare(o1.key.song.getId(), o2.key.song.getId(), Ordering.natural().nullsLast())
+					.result();
+		}
+
+	}
+
 	public static PlaylistSong findInStream(Stream<PlaylistSong> stream, PlaylistSong playlistSong) {
 		return stream.filter(ps -> ps.getSong().getId() == playlistSong.getSong().getId() && ps.getPlaylist().getId() == playlistSong.getPlaylist().getId()).findFirst().orElse(null);
 	}

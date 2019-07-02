@@ -224,6 +224,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 		case score:
 			Collections.sort(sortedSongs, PlaylistSong.orderBySongScoreComparator);
 			break;
+		case dateAdded:
+			Collections.sort(sortedSongs, PlaylistSong.orderByCreatedDateComparator);
+			break;
 		case random:
 			Collections.shuffle(sortedSongs);
 			break;
