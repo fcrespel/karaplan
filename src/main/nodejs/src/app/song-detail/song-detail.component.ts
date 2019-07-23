@@ -67,6 +67,7 @@ export class SongDetailComponent implements OnInit {
         this.songsService.getSong(+params.get('catalogId'))
       )
     ).subscribe(song => {
+      this.tab = 'info';
       this.song = song;
       this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
         this.songFiles = songFiles;
