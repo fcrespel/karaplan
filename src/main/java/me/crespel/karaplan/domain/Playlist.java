@@ -60,9 +60,6 @@ public class Playlist implements Comparable<Playlist> {
 	@Column(name = "NAME")
 	private String name;
 
-	@Column(name = "RESTRICTED")
-	private Boolean restricted;
-
 	@Column(name = "READ_ONLY")
 	private Boolean readOnly;
 

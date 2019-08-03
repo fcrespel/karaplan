@@ -7,39 +7,53 @@
     <div class="col" *ngIf="!playlist.readOnly">
       <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i><span class="d-sm-none"> Songs</span><span class="d-none d-sm-inline"> Find songs</span></a>
     </div>
-    <div class="col" *ngIf="playlist.restricted && playlist.readOnly">
-      <button type="button" class="btn btn-light shadow" title="Unlock playlist" (click)="openUnlockModal(unlockModal)"><i class="fas fa-lock-open"></i> Unlock</button>
+    <div class="col" *ngIf="!isMember(user, playlist)">
+      <button type="button" class="btn btn-pink shadow" title="Join playlist" (click)="joinPlaylist()"><i class="fas fa-sign-in-alt"></i> Join<span class="d-none d-sm-inline"> playlist</span></button>
     </div>
     <div class="col-auto d-none d-sm-block">
-      <span class="badge badge-light mx-1" *ngIf="playlist.songsCount" title="Songs count">{{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
-      <span class="badge badge-light mx-1" *ngIf="playlist.duration" title="Total duration">{{ playlist.duration | duration }}</span>
+      <span class="badge badge-light mx-1 d-none d-md-inline" *ngIf="playlist.members" title="Members" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ playlist.members.length }} member{{ playlist.members.length > 1 ? 's' : '' }}</span>
+      <span class="badge badge-light mx-1 d-none d-sm-inline" *ngIf="playlist.songsCount" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
+      <span class="badge badge-light mx-1 d-none d-sm-inline" *ngIf="playlist.duration" title="Total duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
     </div>
     <div class="col-auto ml-2">
-      <button *ngIf="playlist.restricted && !playlist.readOnly" type="button" class="btn btn-light shadow mx-1" title="Share playlist" (click)="openShareModal(shareModal)"><i class="fas fa-share"></i><span class="d-none d-md-inline"> Share</span></button>
-      <div ngbDropdown placement="bottom-left bottom bottom-right" class="d-inline-block mx-1" *ngIf="!playlist.readOnly">
-        <button class="btn btn-light shadow" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i><span class="d-none d-md-inline"> Sort</span></button>
-        <div class="dropdown-menu shadow" ngbDropdownMenu>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'asc')"><i class="fas fa-sort-alpha-down mr-1"></i> By name, ascending</button>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'desc')"><i class="fas fa-sort-alpha-up mr-1"></i> By name, descending</button>
-          <div class="dropdown-divider"></div>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('score', 'asc')"><i class="fas fa-sort-numeric-down mr-1"></i> By votes, ascending</button>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('score', 'desc')"><i class="fas fa-sort-numeric-up mr-1"></i> By votes, descending</button>
-          <div class="dropdown-divider"></div>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('dateAdded', 'asc')"><i class="fas fa-sort-numeric-down mr-1"></i> By date added, ascending</button>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('dateAdded', 'desc')"><i class="fas fa-sort-numeric-up mr-1"></i> By date added, descending</button>
-          <div class="dropdown-divider"></div>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('random')"><i class="fas fa-random mr-1"></i> Random</button>
+      <div class="btn-group shadow mx-1" role="group">
+        <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
+          <button class="btn btn-light" title="Share playlist" ngbDropdownToggle><i class="fas fa-share"></i></button>
+          <div class="dropdown-menu share-menu shadow p-3" ngbDropdownMenu>
+            <p>Share this playlist with your friends by copying this link:</p>
+            <div class="input-group">
+              <input type="text" class="form-control form-control-sm" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
+              <div class="input-group-append">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group" *ngIf="!playlist.readOnly">
+          <button class="btn btn-light" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
+          <div class="dropdown-menu shadow" ngbDropdownMenu>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'asc')"><i class="fas fa-sort-alpha-down mr-1"></i> By name, ascending</button>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'desc')"><i class="fas fa-sort-alpha-up mr-1"></i> By name, descending</button>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('score', 'asc')"><i class="fas fa-sort-numeric-down mr-1"></i> By votes, ascending</button>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('score', 'desc')"><i class="fas fa-sort-numeric-up mr-1"></i> By votes, descending</button>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('dateAdded', 'asc')"><i class="fas fa-sort-numeric-down mr-1"></i> By date added, ascending</button>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('dateAdded', 'desc')"><i class="fas fa-sort-numeric-up mr-1"></i> By date added, descending</button>
+            <div class="dropdown-divider"></div>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('random')"><i class="fas fa-random mr-1"></i> Random</button>
+          </div>
+        </div>
+        <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
+          <button class="btn btn-light" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i></button>
+          <div class="dropdown-menu shadow" ngbDropdownMenu>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Remote</button>
+            <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(karafunBarExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Bar</button>
+            <a href="api/v1/playlists/{{playlist.id}}/export/csv" class="dropdown-item" ngbDropdownItem><i class="fas fa-file-csv mr-1"></i> CSV file</a>
+          </div>
         </div>
       </div>
-      <div ngbDropdown placement="bottom-left bottom bottom-right" class="d-inline-block mx-1">
-        <button class="btn btn-light shadow" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i><span class="d-none d-md-inline"> Export</span></button>
-        <div class="dropdown-menu shadow" ngbDropdownMenu>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Remote</button>
-          <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(karafunBarExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Bar</button>
-          <a href="api/v1/playlists/{{playlist.id}}/export/csv" class="dropdown-item" ngbDropdownItem><i class="fas fa-file-csv mr-1"></i> CSV file</a>
-        </div>
-      </div>
-      <button type="button" class="btn btn-danger shadow ml-1" title="Delete playlist" (click)="deletePlaylist()" *ngIf="!playlist.readOnly"><i class="fas fa-trash-alt"></i><span class="d-none d-md-inline"> Delete</span></button>
+      <button type="button" class="btn btn-danger shadow ml-1" title="Leave playlist" (click)="leavePlaylist()" *ngIf="isMember(user, playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Leave</span></button>
     </div>
   </div>
 </ng-container>
@@ -59,63 +73,6 @@
   </div>
 </ng-template>
 
-<!-- Unlock modal -->
-<ng-template #unlockModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Unlock this playlist</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <p>This playlist is restricted. Please enter the access key below if you want to edit it.</p>
-    <form #unlockForm="ngForm">
-      <div class="form-group">
-        <label for="accessKey">Access Key</label>
-        <div class="input-group">
-          <input type="text" class="form-control" id="accessKey" name="accessKey" [(ngModel)]="accessKey" #accessKeyField="ngModel" [class.is-invalid]="accessKeyField.dirty && accessKeyField.invalid" required>
-        </div>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-pink" [disabled]="!unlockForm.form.valid" (click)="modal.close(accessKey)">Unlock</button>
-  </div>
-</ng-template>
-
-<!-- Share modal -->
-<ng-template #shareModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Share this playlist with your friends</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form-group">
-      <label for="shareUrl">Share URL</label>
-      <div class="input-group">
-        <input type="text" class="form-control" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
-        <div class="input-group-append">
-          <button type="button" class="btn btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="accessKey">Access Key</label>
-      <div class="input-group">
-        <input type="text" class="form-control" readonly id="accessKey" name="accessKey" [(ngModel)]="playlist.accessKey" #accessKeyField>
-        <div class="input-group-append">
-          <button type="button" class="btn btn-outline-secondary" (click)="copyToClipboard(accessKeyField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-light" (click)="modal.dismiss()">Close</button>
-  </div>
-</ng-template>
-
 <!-- Karafun Remote export modal -->
 <ng-template #karafunRemoteExportModal let-modal>
   <div class="modal-header">
@@ -126,12 +83,14 @@
   </div>
   <div class="modal-body">
     <form #karafunRemoteExportForm="ngForm">
+      <p>Enter your <strong>KaraFun Remote</strong> ID below to load the playlist.</p>
       <div class="form-group">
         <label for="karafunRemoteId">Remote ID</label>
         <div class="input-group">
           <input type="number" class="form-control" id="karafunRemoteId" name="karafunRemoteId" [(ngModel)]="karafunRemoteId" #karafunRemoteIdField="ngModel" [class.is-invalid]="karafunRemoteIdField.dirty && karafunRemoteIdField.invalid" required>
         </div>
       </div>
+      <p class="text-muted small">You will find your ID displayed on the screen if this option is enabled on your KaraFun device.</p>
     </form>
   </div>
   <div class="modal-footer">
@@ -149,12 +108,14 @@
   </div>
   <div class="modal-body">
     <form #karafunBarExportForm="ngForm">
+      <p>Enter your <strong>KaraFun Bar</strong> Booking ID below to load the playlist.</p>
       <div class="form-group">
         <label for="karafunBarId">Booking ID</label>
         <div class="input-group">
           <input type="text" class="form-control" id="karafunBarId" name="karafunBarId" [(ngModel)]="karafunBarId" #karafunBarIdField="ngModel" [class.is-invalid]="karafunBarIdField.dirty && karafunBarIdField.invalid" required>
         </div>
       </div>
+      <p class="text-muted small">Example: enter <strong>123456789</strong> if your booking URL is https://www.karafunbar.com/fr/lille/book/<strong>123456789</strong>/</p>
     </form>
   </div>
   <div class="modal-footer">

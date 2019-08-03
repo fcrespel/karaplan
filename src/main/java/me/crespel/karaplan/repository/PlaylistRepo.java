@@ -8,6 +8,6 @@ import me.crespel.karaplan.domain.Playlist;
 
 public interface PlaylistRepo extends JpaRepository<Playlist, Long> {
 
-	Page<Playlist> findAllByRestrictedOrMembersId(boolean restricted, Long userId, Pageable pageable);
+	Page<Playlist> findAllByMembersId(Long userId, Pageable pageable);
 
 }

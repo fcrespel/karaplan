@@ -3,8 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { switchMap } from 'rxjs/operators';
+import { AccountService } from '../services/account.service';
 import { PlaylistsService } from '../services/playlists.service';
 import { AlertService } from '../services/alert.service';
+import { User } from '../models/user';
 import { Playlist } from '../models/playlist';
 import { Song } from '../models/song';
 import { PlaylistSong } from '../models/playlist-song';
@@ -17,34 +19,43 @@ import { AlertMessage } from '../models/alert-message';
 })
 export class PlaylistDetailComponent implements OnInit {
 
+  user: User = null;
   playlist: Playlist = null;
+  playlistMembers: string;
   karafunRemoteId: string;
   karafunBarId: string;
-  accessKey: string;
   shareUrl: string;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private modalService: NgbModal,
+    private accountService: AccountService,
     private playlistsService: PlaylistsService,
     private alertService: AlertService
   ) { }
 
   ngOnInit() {
+    this.accountService.getUser().subscribe(user => {
+      this.user = user;
+    });
     this.route.paramMap.pipe(switchMap(params => {
-      if (this.route.snapshot.queryParamMap.has('accessKey')) {
-        return this.playlistsService.joinPlaylist(+params.get('id'), this.route.snapshot.queryParamMap.get('accessKey'));
-      } else {
-        return this.playlistsService.getPlaylist(+params.get('id'));
-      }
+      return this.playlistsService.getPlaylist(+params.get('id'), this.route.snapshot.queryParamMap.get('accessKey'));
     })).subscribe(playlist => {
+      this.playlist = playlist;
+      this.playlistMembers = playlist.members ? playlist.members.map(user => user.displayName).join(', ') : '';
+      this.shareUrl = `${document.location.href}?accessKey=${playlist.accessKey}`;
+    });
+  }
+
+  joinPlaylist() {
+    this.playlistsService.joinPlaylist(this.playlist.id, this.route.snapshot.queryParamMap.get('accessKey')).subscribe(playlist => {
       this.playlist = playlist;
     });
   }
 
-  deletePlaylist() {
-    this.playlistsService.deletePlaylist(this.playlist.id).subscribe(response => {
+  leavePlaylist() {
+    this.playlistsService.leavePlaylist(this.playlist.id).subscribe(response => {
       this.router.navigate(['/playlists']);
     });
   }
@@ -97,24 +108,14 @@ export class PlaylistDetailComponent implements OnInit {
     }, reason => {});
   }
 
-  openShareModal(shareModalContent) {
-    this.shareUrl = `${document.location.href}?accessKey=${this.playlist.accessKey}`;
-    this.modalService.open(shareModalContent, { size: 'lg' });
-  }
-
-  openUnlockModal(unlockModalContent) {
-    this.accessKey = "";
-    this.modalService.open(unlockModalContent).result.then((accessKey: string) => {
-      this.playlistsService.joinPlaylist(this.playlist.id, accessKey).subscribe(playlist => {
-        this.playlist = playlist;
-      });
-    }, reason => {});
-  }
-
   copyToClipboard(field: HTMLInputElement) {
     field.focus();
     field.select();
     document.execCommand('copy');
+  }
+
+  isMember(user: User, playlist: Playlist) {
+    return user && playlist && playlist.members && playlist.members.findIndex(member => member.id == user.id) >= 0;
   }
 
 }

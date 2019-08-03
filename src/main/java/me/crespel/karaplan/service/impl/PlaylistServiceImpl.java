@@ -53,22 +53,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	public Set<Playlist> findAll(Pageable pageable, User user) {
-		return playlistRepo.findAll(pageable).stream()
-				.map(playlist -> {
-					if (!isMember(user, playlist)) {
-						playlist.setAccessKey(null).setReadOnly(true);
-					}
-					if (playlist.getReadOnly() == null) {
-						playlist.setReadOnly(false);
-					}
-					return playlist;
-				})
-				.collect(Collectors.toCollection(LinkedHashSet::new));
-	}
-
-	@Override
-	public Set<Playlist> findAllAuthorized(Pageable pageable, User user) {
-		return playlistRepo.findAllByRestrictedOrMembersId(false, user.getId(), pageable).stream()
+		return playlistRepo.findAllByMembersId(user.getId(), pageable).stream()
 				.map(playlist -> {
 					if (playlist.getReadOnly() == null) {
 						playlist.setReadOnly(false);
@@ -92,16 +77,29 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id, boolean includeSongs, User user) {
+		return findById(id, includeSongs, null, null);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Playlist> findById(Long id, boolean includeSongs, User user, String accessKey) {
 		Optional<Playlist> playlist = playlistRepo.findById(id);
 		if (playlist.isPresent()) {
+			Playlist p = playlist.get();
+			if (isMember(user, p)) {
+				if (p.getReadOnly() == null) {
+					p.setReadOnly(false);
+				}
+			} else if (accessKey != null) {
+				if (p.getAccessKey() != null && !p.getAccessKey().equals(accessKey)) {
+					throw new BusinessException("Invalid playlist access key");
+				}
+				p.setReadOnly(true);
+			} else {
+				throw new BusinessException("User " + user + " is not a member of playlist " + p);
+			}
 			if (includeSongs) {
-				playlist.get().getSongs().size(); // Force eager load
-			}
-			if (!isMember(user, playlist.get())) {
-				playlist.get().setAccessKey(null).setReadOnly(true);
-			}
-			if (playlist.get().getReadOnly() == null) {
-				playlist.get().setReadOnly(false);
+				p.getSongs().size(); // Force eager load
 			}
 		}
 		return playlist;
@@ -109,14 +107,12 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
-	public Playlist create(String name, User user, boolean restricted) {
-		Playlist playlist = new Playlist()
-				.setName(name)
-				.setRestricted(restricted)
-				.setReadOnly(false)
-				.setAccessKey(UUID.randomUUID().toString());
-		playlist.getMembers().add(user);
-		return playlistRepo.save(playlist);
+	public Playlist create(String name, User user) {
+		Playlist playlist = new Playlist().setName(name);
+		if (user != null) {
+			playlist.getMembers().add(user);
+		}
+		return save(playlist, user);
 	}
 
 	@Override
@@ -138,14 +134,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
-		if (user != null) {
-			if (playlist.getMembers() == null) {
-				playlist.setMembers(Sets.newLinkedHashSet());
-			}
-			if (playlist.getMembers().isEmpty()) {
-				playlist.getMembers().add(user);
-			}
-		}
 		return save(playlist);
 	}
 
@@ -154,6 +142,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Playlist addSong(Playlist playlist, Song song, User user) {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		} else if (Boolean.TRUE.equals(playlist.getReadOnly())) {
+			throw new BusinessException("Playlist " + playlist + " is read-only");
 		}
 
 		// Import song if necessary 
@@ -180,6 +170,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Playlist removeSong(Playlist playlist, Song song, User user) {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		} else if (Boolean.TRUE.equals(playlist.getReadOnly())) {
+			throw new BusinessException("Playlist " + playlist + " is read-only");
 		}
 
 		// Find and remove song
@@ -196,16 +188,29 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional
 	public Playlist addUser(Playlist playlist, User user, String accessKey) {
-		if (playlist.getRestricted() && playlist.getAccessKey() != null) {
-			if (playlist.getAccessKey().equals(accessKey)) {
-				if (!playlist.getMembers().contains(user)) {
-					playlist.getMembers().add(user);
-					return playlistRepo.save(playlist);
-				}
-			} else {
-				throw new BusinessException("Invalid playlist access key");
+		if (playlist.getAccessKey() != null && playlist.getAccessKey().equals(accessKey)) {
+			if (!playlist.getMembers().contains(user)) {
+				playlist.getMembers().add(user);
+				return save(playlist);
 			}
+		} else {
+			throw new BusinessException("Invalid playlist access key");
 		}
+		return playlist;
+	}
+
+	@Override
+	@Transactional
+	public Playlist removeUser(Playlist playlist, User user) {
+		if (!isMember(user, playlist)) {
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		}
+
+		if (playlist.getMembers().contains(user)) {
+			playlist.getMembers().remove(user);
+			return save(playlist);
+		}
+
 		return playlist;
 	}
 
@@ -213,6 +218,8 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user) {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		} else if (Boolean.TRUE.equals(playlist.getReadOnly())) {
+			throw new BusinessException("Playlist " + playlist + " is read-only");
 		}
 
 		// Sort songs
@@ -262,8 +269,6 @@ public class PlaylistServiceImpl implements PlaylistService {
 		if (playlist == null) {
 			return false;
 		} else if (user == null) {
-			return true;
-		} else if (!playlist.getRestricted()) {
 			return true;
 		} else {
 			return playlist.getMembers() != null && playlist.getMembers().contains(user);

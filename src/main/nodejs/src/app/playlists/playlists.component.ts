@@ -41,7 +41,7 @@ export class PlaylistsComponent implements OnInit {
   createPlaylist(modalContent) {
     this.currentPlaylist = new Playlist();
     this.modalService.open(modalContent).result.then((result: Playlist) => {
-      this.playlistsService.createPlaylist(result.name, result.restricted).subscribe(playlist => {
+      this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
         this.gotoPlaylist(playlist);
       });
     }, reason => {});
@@ -56,8 +56,8 @@ export class PlaylistsComponent implements OnInit {
     }, reason => {});
   }
 
-  deletePlaylist(playlist: Playlist) {
-    this.playlistsService.deletePlaylist(playlist.id).subscribe(response => {
+  leavePlaylist(playlist: Playlist) {
+    this.playlistsService.leavePlaylist(playlist.id).subscribe(response => {
       this.refreshPlaylists();
     });
   }

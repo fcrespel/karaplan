@@ -70,23 +70,17 @@ public class PlaylistController {
 		return playlistService.findAll(pageable, user);
 	}
 
-	@GetMapping("/authorized")
-	@ApiOperation("Get all authorized playlists for the current user")
-	public Set<Playlist> getAuthorizedPlaylists(@PageableDefault Pageable pageable, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		return playlistService.findAllAuthorized(pageable, user);
-	}
-
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Create a playlist")
-	public Playlist createPlaylist(@RequestParam String name, @RequestParam(required = false, defaultValue = "false") boolean restricted, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		return playlistService.create(name, user, restricted);
+	public Playlist createPlaylist(@RequestParam String name, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return playlistService.create(name, user);
 	}
 
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist")
-	public Playlist getPlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		return playlistService.findById(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	public Playlist getPlaylist(@PathVariable Long playlistId, @RequestParam(required = false) String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return playlistService.findById(playlistId, true, user, accessKey).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 	}
 
 	@PutMapping("/{playlistId}")
@@ -94,16 +88,22 @@ public class PlaylistController {
 	public Playlist savePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlistToSave = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"))
 				.setName(playlist.getName())
-				.setRestricted(playlist.getRestricted());
+				.setReadOnly(playlist.getReadOnly());
 		return playlistService.save(playlistToSave, user);
 	}
 
-	@DeleteMapping("/{playlistId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation("Delete a playlist")
-	public void deletePlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
-		playlistService.delete(playlist, user);
+	@PostMapping("/{playlistId}/join")
+	@ApiOperation("Add the current user to a playlist with the given access key")
+	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.addUser(playlist, user, accessKey);
+	}
+
+	@PostMapping("/{playlistId}/leave")
+	@ApiOperation("Remove the current user from a playlist")
+	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.removeUser(playlist, user);
 	}
 
 	@PostMapping("/{playlistId}/song/{catalogId}")
@@ -120,13 +120,6 @@ public class PlaylistController {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.removeSong(playlist, song, user);
-	}
-
-	@PostMapping("/{playlistId}/join")
-	@ApiOperation("Add the current user to a playlist with the given access key")
-	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
-		return playlistService.addUser(playlist, user, accessKey);
 	}
 
 	@PostMapping("/{playlistId}/sort")

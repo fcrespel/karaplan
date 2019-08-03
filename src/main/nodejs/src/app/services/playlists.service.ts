@@ -21,22 +21,18 @@ export class PlaylistsService {
     return this.http.get<Playlist[]>(this.playlistsUrl, {params: params});
   }
 
-  getAuthorizedPlaylists(page: number = 0, size: number = 10, sort: string = ''): Observable<Playlist[]> {
-    let params = new HttpParams()
-      .set('page', ''+page)
-      .set('size', ''+size)
-      .set('sort', sort);
-    return this.http.get<Playlist[]>(`${this.playlistsUrl}/authorized`, {params: params});
-  }
-
-  createPlaylist(name: string, restricted: boolean): Observable<Playlist> {
-    let params = new HttpParams().set('name', name).set('restricted', restricted ? 'true' : 'false');
+  createPlaylist(name: string): Observable<Playlist> {
+    let params = new HttpParams().set('name', name);
     return this.http.post<Playlist>(this.playlistsUrl, null, {params: params});
   }
 
-  getPlaylist(id: number): Observable<Playlist> {
-    const url = `${this.playlistsUrl}/${id}`
-    return this.http.get<Playlist>(url);
+  getPlaylist(playlistId: number, accessKey?: string): Observable<Playlist> {
+    let params = new HttpParams();
+    if (accessKey) {
+      params = params.set('accessKey', accessKey);
+    }
+    const url = `${this.playlistsUrl}/${playlistId}`
+    return this.http.get<Playlist>(url, {params: params});
   }
 
   savePlaylist(playlist: Playlist): Observable<Playlist> {
@@ -44,9 +40,15 @@ export class PlaylistsService {
     return this.http.put<Playlist>(url, playlist);
   }
 
-  deletePlaylist(id: number): Observable<Response> {
-    const url = `${this.playlistsUrl}/${id}`
-    return this.http.delete<Response>(url);
+  joinPlaylist(playlistId: number, accessKey: string): Observable<Playlist> {
+    let params = new HttpParams().set('accessKey', accessKey);
+    const url = `${this.playlistsUrl}/${playlistId}/join`;
+    return this.http.post<Playlist>(url, null, {params: params});
+  }
+
+  leavePlaylist(playlistId: number): Observable<Response> {
+    const url = `${this.playlistsUrl}/${playlistId}/leave`;
+    return this.http.post<Response>(url, null);
   }
 
   addSongToPlaylist(playlistId: number, catalogId: number): Observable<Playlist> {
@@ -57,12 +59,6 @@ export class PlaylistsService {
   removeSongFromPlaylist(playlistId: number, catalogId: number): Observable<Playlist> {
     const url = `${this.playlistsUrl}/${playlistId}/song/${catalogId}`
     return this.http.delete<Playlist>(url);
-  }
-
-  joinPlaylist(playlistId: number, accessKey: string): Observable<Playlist> {
-    let params = new HttpParams().set('accessKey', accessKey);
-    const url = `${this.playlistsUrl}/${playlistId}/join`;
-    return this.http.post<Playlist>(url, null, {params: params});
   }
 
   sortPlaylist(playlistId: number, sortType: string, sortDirection: string = 'asc'): Observable<Playlist> {

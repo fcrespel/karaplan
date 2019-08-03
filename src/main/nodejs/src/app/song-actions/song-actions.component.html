@@ -53,7 +53,7 @@
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       Loading ...
     </button>
-    <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists; trackBy: trackByPlaylistId" (click)="togglePlaylist(playlist)">
+    <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists; trackBy: trackByPlaylistId" (click)="togglePlaylist(playlist)" [disabled]="playlist.readOnly">
       <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
       <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
       {{ playlist.name }}

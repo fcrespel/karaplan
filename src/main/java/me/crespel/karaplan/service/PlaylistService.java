@@ -19,15 +19,15 @@ public interface PlaylistService {
 
 	Set<Playlist> findAll(Pageable pageable, User user);
 
-	Set<Playlist> findAllAuthorized(Pageable pageable, User user);
-
 	Optional<Playlist> findById(Long id);
 
 	Optional<Playlist> findById(Long id, boolean includeSongs);
 
 	Optional<Playlist> findById(Long id, boolean includeSongs, User user);
 
-	Playlist create(String name, User user, boolean restricted);
+	Optional<Playlist> findById(Long id, boolean includeSongs, User user, String accessKey);
+
+	Playlist create(String name, User user);
 
 	Playlist save(Playlist playlist);
 
@@ -38,6 +38,8 @@ public interface PlaylistService {
 	Playlist removeSong(Playlist playlist, Song song, User user);
 
 	Playlist addUser(Playlist playlist, User user, String accessKey);
+
+	Playlist removeUser(Playlist playlist, User user);
 
 	Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user);
 
