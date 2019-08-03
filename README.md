@@ -64,6 +64,8 @@ All configuration values may be overridden with environment variables (as suppor
 - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
 - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
 
+See [this Spring Security sample](https://github.com/spring-projects/spring-security/tree/5.1.x/samples/boot/oauth2login) for more information about configuring the OAuth 2.0 provider details.
+
 ## Legal notice
 
 **KaraPlan** is licensed under the open-source [MIT License](https://opensource.org/licenses/MIT).
