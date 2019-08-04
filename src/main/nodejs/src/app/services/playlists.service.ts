@@ -61,6 +61,16 @@ export class PlaylistsService {
     return this.http.delete<Playlist>(url);
   }
 
+  addCommentToPlaylist(playlistId: number, comment: string): Observable<Playlist> {
+    const url = `${this.playlistsUrl}/${playlistId}/comment`;
+    return this.http.post<Playlist>(url, comment);
+  }
+
+  removeCommentFromPlaylist(playlistId: number, commentId: number): Observable<Playlist> {
+    const url = `${this.playlistsUrl}/${playlistId}/comment/${commentId}`;
+    return this.http.delete<Playlist>(url);
+  }
+
   sortPlaylist(playlistId: number, sortType: string, sortDirection: string = 'asc'): Observable<Playlist> {
     let params = new HttpParams()
       .set('sortType', sortType)

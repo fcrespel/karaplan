@@ -30,13 +30,13 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = { "song", "user", "createdDate" })
+@EqualsAndHashCode(exclude = { "playlist", "user", "createdDate" })
 @ToString(of = { "id", "comment" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "song_comment")
+@Table(name = "playlist_comment")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SongComment implements Comparable<SongComment> {
+public class PlaylistComment implements Comparable<PlaylistComment> {
 
 	@Id
 	@GeneratedValue
@@ -49,14 +49,14 @@ public class SongComment implements Comparable<SongComment> {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "FK_SONG", referencedColumnName = "ID")
-	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
-	private Song song;
+	@JoinColumn(name = "FK_PLAYLIST", referencedColumnName = "ID")
+	@JsonIgnoreProperties({ "songs", "comments" })
+	private Playlist playlist;
 
 	@CreatedBy
 	@ManyToOne
 	@JoinColumn(name = "FK_USER", referencedColumnName = "ID")
-	@JsonIgnoreProperties({ "votes", "comments" })
+	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
 	private User user;
 
 	@CreatedDate
@@ -65,21 +65,20 @@ public class SongComment implements Comparable<SongComment> {
 	private Calendar createdDate;
 
 	@Override
-	public int compareTo(SongComment o) {
+	public int compareTo(PlaylistComment o) {
 		return orderByIdDescComparator.compare(this, o);
 	}
 
-	public static Comparator<SongComment> orderByIdDescComparator = new OrderByIdDescComparator();
+	public static Comparator<PlaylistComment> orderByIdDescComparator = new OrderByIdDescComparator();
 
-	public static class OrderByIdDescComparator implements Comparator<SongComment> {
+	public static class OrderByIdDescComparator implements Comparator<PlaylistComment> {
 
 		@Override
-		public int compare(SongComment o1, SongComment o2) {
+		public int compare(PlaylistComment o1, PlaylistComment o2) {
 			return ComparisonChain.start()
 					.compare(o1.id, o2.id, Ordering.natural().reverse().nullsFirst())
 					.result();
 		}
 
 	}
-
 }

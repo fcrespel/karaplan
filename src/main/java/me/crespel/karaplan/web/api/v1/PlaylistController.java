@@ -122,6 +122,20 @@ public class PlaylistController {
 		return playlistService.removeSong(playlist, song, user);
 	}
 
+	@PostMapping("/{playlistId}/comment")
+	@ApiOperation("Add a comment to a playlist")
+	public Playlist addCommentToPlaylist(@PathVariable Long playlistId, @RequestBody String comment, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.addComment(playlist, user, comment);
+	}
+
+	@DeleteMapping("/{playlistId}/comment/{commentId}")
+	@ApiOperation("Remove a comment from a playlist")
+	public Playlist removeCommentFromPlaylist(@PathVariable Long playlistId, @PathVariable Long commentId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.removeComment(playlist, user, commentId);
+	}
+
 	@PostMapping("/{playlistId}/sort")
 	@ApiOperation("Sort a playlist's songs according to a type and direction")
 	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {

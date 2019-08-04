@@ -10,6 +10,7 @@ import { User } from '../models/user';
 import { Playlist } from '../models/playlist';
 import { Song } from '../models/song';
 import { PlaylistSong } from '../models/playlist-song';
+import { PlaylistComment } from '../models/playlist-comment';
 import { AlertMessage } from '../models/alert-message';
 
 @Component({
@@ -22,6 +23,7 @@ export class PlaylistDetailComponent implements OnInit {
   user: User = null;
   playlist: Playlist = null;
   playlistMembers: string;
+  commentText: string;
   karafunRemoteId: string;
   karafunBarId: string;
   shareUrl: string;
@@ -57,6 +59,23 @@ export class PlaylistDetailComponent implements OnInit {
   leavePlaylist() {
     this.playlistsService.leavePlaylist(this.playlist.id).subscribe(response => {
       this.router.navigate(['/playlists']);
+    });
+  }
+
+  addComment(comment: string, commentForm: NgForm) {
+    this.playlistsService.addCommentToPlaylist(this.playlist.id, comment).subscribe(playlist => {
+      commentForm.reset();
+      this.playlist = playlist;
+    });
+  }
+
+  trackByCommentId(index: number, comment: PlaylistComment): number {
+    return comment.id;
+  }
+
+  removeComment(comment: PlaylistComment) {
+    this.playlistsService.removeCommentFromPlaylist(this.playlist.id, comment.id).subscribe(playlist => {
+      this.playlist = playlist;
     });
   }
 

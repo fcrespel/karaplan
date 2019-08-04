@@ -79,6 +79,14 @@ public class Playlist implements Comparable<Playlist> {
 	@SortComparator(PlaylistSong.OrderByPlaylistAndPositionAndSongComparator.class)
 	private SortedSet<PlaylistSong> songs = Sets.newTreeSet(PlaylistSong.orderByPlaylistAndPositionAndSongComparator);
 
+	@Column(name = "COMMENTS_COUNT")
+	private Integer commentsCount;
+
+	@OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnoreProperties("playlist")
+	@SortComparator(PlaylistComment.OrderByIdDescComparator.class)
+	private SortedSet<PlaylistComment> comments = Sets.newTreeSet(PlaylistComment.orderByIdDescComparator);
+
 	@Column(name = "DURATION")
 	private Long duration;
 
@@ -104,6 +112,7 @@ public class Playlist implements Comparable<Playlist> {
 
 	public void updateStats() {
 		this.songsCount = (songs != null) ? songs.size() : 0;
+		this.commentsCount = (comments != null) ? comments.size() : 0;
 		this.duration = (songs != null) ? songs.stream().mapToLong(ps -> ps.getSong().getDuration()).sum() : 0;
 	}
 

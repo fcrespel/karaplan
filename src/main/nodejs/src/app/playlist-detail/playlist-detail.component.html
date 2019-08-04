@@ -17,8 +17,33 @@
     </div>
     <div class="col-auto ml-2">
       <div class="btn-group shadow mx-1" role="group">
+        <!-- Comments -->
+        <div ngbDropdown placement="bottom bottom-left bottom-right" container="body" class="btn-group" [autoClose]="false">
+          <button type="button" class="btn btn-light" title="Comments" ngbDropdownToggle>
+            <i class="far fa-comment"></i>
+            <span class="badge badge-secondary ml-1" *ngIf="playlist.commentsCount">{{ playlist.commentsCount }}</span>
+          </button>
+          <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
+            <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="mx-3 my-2 text-right">
+              <div class="form-group mb-2">
+                <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" placeholder="Your comment ..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
+            </form>
+            <ng-container *ngFor="let comment of playlist.comments; trackBy: trackByCommentId">
+              <div class="dropdown-divider"></div>
+              <div class="d-flex mx-3 mt-2 mb-0 align-items-center justify-content-between">
+                <small class="text-muted flex-grow-1">{{ comment.user.displayName }}</small>
+                <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
+                <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+              </div>
+              <p class="mx-3 mt-0 mb-2 comment-text">{{ comment.comment }}</p>
+            </ng-container>
+          </div>
+        </div>
+        <!-- Share -->
         <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
-          <button class="btn btn-light" title="Share playlist" ngbDropdownToggle><i class="fas fa-share"></i></button>
+          <button type="button" class="btn btn-light" title="Share playlist" ngbDropdownToggle><i class="fas fa-share"></i></button>
           <div class="dropdown-menu share-menu shadow p-3" ngbDropdownMenu>
             <p>Share this playlist with your friends by copying this link:</p>
             <div class="input-group">
@@ -29,8 +54,9 @@
             </div>
           </div>
         </div>
+        <!-- Sort -->
         <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group" *ngIf="!playlist.readOnly">
-          <button class="btn btn-light" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
+          <button type="button" class="btn btn-light" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
           <div class="dropdown-menu shadow" ngbDropdownMenu>
             <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'asc')"><i class="fas fa-sort-alpha-down mr-1"></i> By name, ascending</button>
             <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('alpha', 'desc')"><i class="fas fa-sort-alpha-up mr-1"></i> By name, descending</button>
@@ -44,8 +70,9 @@
             <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist('random')"><i class="fas fa-random mr-1"></i> Random</button>
           </div>
         </div>
+        <!-- Export -->
         <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
-          <button class="btn btn-light" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i></button>
+          <button type="button" class="btn btn-light" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i></button>
           <div class="dropdown-menu shadow" ngbDropdownMenu>
             <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(karafunRemoteExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Remote</button>
             <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(karafunBarExportModal)"><i class="fas fa-microphone-alt mr-1"></i> Karafun Bar</button>

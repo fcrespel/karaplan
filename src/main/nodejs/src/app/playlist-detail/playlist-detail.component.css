@@ -1,3 +1,13 @@
+.comment-menu {
+    min-width: 300px;
+    max-width: 500px;
+}
+
+.comment-text {
+    white-space: pre-line;
+    font-size: 0.875rem;
+}
+
 .share-menu {
     min-width: 400px;
     max-width: 600px;

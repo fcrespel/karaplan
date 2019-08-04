@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Playlist;
+import me.crespel.karaplan.domain.PlaylistComment;
 import me.crespel.karaplan.domain.PlaylistSong;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
@@ -70,19 +71,19 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<Playlist> findById(Long id, boolean includeSongs) {
-		return findById(id, includeSongs, null);
+	public Optional<Playlist> findById(Long id, boolean includeDetails) {
+		return findById(id, includeDetails, null);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<Playlist> findById(Long id, boolean includeSongs, User user) {
-		return findById(id, includeSongs, null, null);
+	public Optional<Playlist> findById(Long id, boolean includeDetails, User user) {
+		return findById(id, includeDetails, null, null);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<Playlist> findById(Long id, boolean includeSongs, User user, String accessKey) {
+	public Optional<Playlist> findById(Long id, boolean includeDetails, User user, String accessKey) {
 		Optional<Playlist> playlist = playlistRepo.findById(id);
 		if (playlist.isPresent()) {
 			Playlist p = playlist.get();
@@ -98,8 +99,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 			} else {
 				throw new BusinessException("User " + user + " is not a member of playlist " + p);
 			}
-			if (includeSongs) {
-				p.getSongs().size(); // Force eager load
+			if (includeDetails) {
+				// Force eager load
+				p.getSongs().size();
+				p.getComments().size();
 			}
 		}
 		return playlist;
@@ -212,6 +215,37 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 
 		return playlist;
+	}
+
+	@Override
+	@Transactional
+	public Playlist addComment(Playlist playlist, User user, String comment) {
+		if (!isMember(user, playlist)) {
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		}
+
+		playlist.getComments().add(new PlaylistComment()
+				.setPlaylist(playlist)
+				.setUser(user)
+				.setComment(comment));
+		return save(playlist);
+	}
+
+	@Override
+	@Transactional
+	public Playlist removeComment(Playlist playlist, long commentId) {
+		return removeComment(playlist, null, commentId);
+	}
+
+	@Override
+	@Transactional
+	public Playlist removeComment(Playlist playlist, User user, long commentId) {
+		if (!isMember(user, playlist)) {
+			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
+		}
+
+		playlist.getComments().removeIf(it -> it.getId() == commentId && (user == null || user.equals(it.getUser())));
+		return save(playlist);
 	}
 
 	@Override

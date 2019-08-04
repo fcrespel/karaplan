@@ -21,11 +21,11 @@ public interface PlaylistService {
 
 	Optional<Playlist> findById(Long id);
 
-	Optional<Playlist> findById(Long id, boolean includeSongs);
+	Optional<Playlist> findById(Long id, boolean includeDetails);
 
-	Optional<Playlist> findById(Long id, boolean includeSongs, User user);
+	Optional<Playlist> findById(Long id, boolean includeDetails, User user);
 
-	Optional<Playlist> findById(Long id, boolean includeSongs, User user, String accessKey);
+	Optional<Playlist> findById(Long id, boolean includeDetails, User user, String accessKey);
 
 	Playlist create(String name, User user);
 
@@ -40,6 +40,12 @@ public interface PlaylistService {
 	Playlist addUser(Playlist playlist, User user, String accessKey);
 
 	Playlist removeUser(Playlist playlist, User user);
+
+	Playlist addComment(Playlist playlist, User user, String comment);
+
+	Playlist removeComment(Playlist playlist, long commentId);
+
+	Playlist removeComment(Playlist playlist, User user, long commentId);
 
 	Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user);
 
