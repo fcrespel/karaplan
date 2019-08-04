@@ -1,22 +1,26 @@
 <p class="small mb-0"><a href="#" routerLink="/playlists" class="text-light">Playlists</a> //</p>
-<h1>{{ playlist?.name || '...' }}</h1>
+<div class="row no-gutters justify-content-between align-items-center">
+  <div class="col">
+    <h1>{{ playlist?.name || '...' }}</h1>
+  </div>
+  <div class="col-auto d-none d-sm-block">
+    <span class="badge badge-light mx-1" *ngIf="playlist.members" title="Members" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ playlist.members.length }} member{{ playlist.members.length > 1 ? 's' : '' }}</span>
+    <span class="badge badge-light mx-1" *ngIf="playlist.songsCount" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
+    <span class="badge badge-light mx-1" *ngIf="playlist.duration" title="Total duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
+  </div>
+</div>
 
 <!-- Toolbar -->
 <ng-container *ngIf="playlist">
-  <div class="row no-gutters justify-content-between align-items-center my-3">
-    <div class="col" *ngIf="!playlist.readOnly">
+  <div class="row no-gutters justify-content-between align-items-center mb-2">
+    <div class="col mb-1" *ngIf="!playlist.readOnly">
       <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i><span class="d-sm-none"> Songs</span><span class="d-none d-sm-inline"> Find songs</span></a>
     </div>
-    <div class="col" *ngIf="!isMember(user, playlist)">
+    <div class="col mb-1" *ngIf="!isMember(user, playlist)">
       <button type="button" class="btn btn-pink shadow" title="Join playlist" (click)="joinPlaylist()"><i class="fas fa-sign-in-alt"></i> Join<span class="d-none d-sm-inline"> playlist</span></button>
     </div>
-    <div class="col-auto d-none d-sm-block">
-      <span class="badge badge-light mx-1 d-none d-md-inline" *ngIf="playlist.members" title="Members" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ playlist.members.length }} member{{ playlist.members.length > 1 ? 's' : '' }}</span>
-      <span class="badge badge-light mx-1 d-none d-sm-inline" *ngIf="playlist.songsCount" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
-      <span class="badge badge-light mx-1 d-none d-sm-inline" *ngIf="playlist.duration" title="Total duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
-    </div>
-    <div class="col-auto ml-2">
-      <div class="btn-group shadow mx-1" role="group">
+    <div class="col-auto mb-1">
+      <div class="btn-group shadow mr-1" role="group">
         <!-- Comments -->
         <div ngbDropdown placement="bottom bottom-left bottom-right" container="body" class="btn-group" [autoClose]="false">
           <button type="button" class="btn btn-light" title="Comments" ngbDropdownToggle>
