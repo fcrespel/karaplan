@@ -1,5 +1,6 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
 import { PlaylistsService } from '../services/playlists.service';
@@ -9,6 +10,7 @@ import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { Playlist } from '../models/playlist';
 import { PlaylistSong } from '../models/playlist-song';
+import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
 
 @Component({
   selector: 'app-song-actions',
@@ -41,7 +43,8 @@ export class SongActionsComponent implements OnInit, OnChanges {
   constructor(
     private accountService: AccountService,
     private songsService: SongsService,
-    private playlistsService: PlaylistsService
+    private playlistsService: PlaylistsService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit() {
@@ -150,6 +153,16 @@ export class SongActionsComponent implements OnInit, OnChanges {
     } else {
       this.addToPlaylist(playlist);
     }
+  }
+
+  createPlaylist() {
+    let modal = this.modalService.open(PlaylistModalComponent);
+    modal.componentInstance.playlist = new Playlist();
+    modal.result.then((result: Playlist) => {
+      this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
+        this.playlists = null;
+      });
+    }, reason => {});
   }
 
   onPlaylistOpen() {

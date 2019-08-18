@@ -3,9 +3,6 @@ import { PlaylistComment } from './playlist-comment';
 import { User } from './user';
 
 export class Playlist {
-  id: number;
-  name: string;
-  readOnly: boolean;
   accessKey: string;
   members: User[];
   songsCount: number;
@@ -18,4 +15,10 @@ export class Playlist {
   updatedDate: Date;
   updatedBy: User;
   isSelected: boolean;
+
+  constructor(
+    public id?: number,
+    public name?: string,
+    public readOnly?: boolean
+  ) { }
 }

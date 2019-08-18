@@ -4,8 +4,9 @@ import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { switchMap } from 'rxjs/operators';
 import { AccountService } from '../services/account.service';
-import { PlaylistsService } from '../services/playlists.service';
 import { AlertService } from '../services/alert.service';
+import { PlaylistsService } from '../services/playlists.service';
+import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
 import { User } from '../models/user';
 import { Playlist } from '../models/playlist';
 import { Song } from '../models/song';
@@ -44,15 +45,21 @@ export class PlaylistDetailComponent implements OnInit {
     this.route.paramMap.pipe(switchMap(params => {
       return this.playlistsService.getPlaylist(+params.get('id'), this.route.snapshot.queryParamMap.get('accessKey'));
     })).subscribe(playlist => {
-      this.playlist = playlist;
-      this.playlistMembers = playlist.members ? playlist.members.map(user => user.displayName).join(', ') : '';
-      this.shareUrl = `${document.location.href}?accessKey=${playlist.accessKey}`;
+      this.updatePlaylist(playlist);
     });
+  }
+
+  updatePlaylist(playlist?: Playlist) {
+    if (playlist !== undefined) {
+      this.playlist = playlist;
+    }
+    this.playlistMembers = this.playlist.members ? this.playlist.members.map(user => user.displayName).join(', ') : '';
+    this.shareUrl = `${document.location.href}?accessKey=${this.playlist.accessKey}`;
   }
 
   joinPlaylist() {
     this.playlistsService.joinPlaylist(this.playlist.id, this.route.snapshot.queryParamMap.get('accessKey')).subscribe(playlist => {
-      this.playlist = playlist;
+      this.updatePlaylist(playlist);
     });
   }
 
@@ -62,10 +69,20 @@ export class PlaylistDetailComponent implements OnInit {
     });
   }
 
+  editPlaylist() {
+    let modal = this.modalService.open(PlaylistModalComponent);
+    modal.componentInstance.playlist = new Playlist(this.playlist.id, this.playlist.name, this.playlist.readOnly);
+    modal.result.then((result: Playlist) => {
+      this.playlistsService.savePlaylist(result).subscribe(playlist => {
+        this.updatePlaylist(playlist);
+      });
+    }, reason => {});
+  }
+
   addComment(comment: string, commentForm: NgForm) {
     this.playlistsService.addCommentToPlaylist(this.playlist.id, comment).subscribe(playlist => {
       commentForm.reset();
-      this.playlist = playlist;
+      this.updatePlaylist(playlist);
     });
   }
 
@@ -75,27 +92,27 @@ export class PlaylistDetailComponent implements OnInit {
 
   removeComment(comment: PlaylistComment) {
     this.playlistsService.removeCommentFromPlaylist(this.playlist.id, comment.id).subscribe(playlist => {
-      this.playlist = playlist;
+      this.updatePlaylist(playlist);
     });
   }
 
   onPlaylistRemoved(playlistSong: PlaylistSong) {
     if (playlistSong.playlist.id === this.playlist.id) {
       this.playlistsService.getPlaylist(this.playlist.id).subscribe(playlist => {
-        this.playlist = playlist;
+        this.updatePlaylist(playlist);
       });
     }
   }
 
   onSongRemoved(song: Song) {
     this.playlistsService.removeSongFromPlaylist(this.playlist.id, song.catalogId).subscribe(playlist => {
-      this.playlist = playlist;
+      this.updatePlaylist(playlist);
     });
   }
 
   sortPlaylist(sortType: string, sortDirection: string) {
     this.playlistsService.sortPlaylist(this.playlist.id, sortType, sortDirection).subscribe(playlist => {
-      this.playlist = playlist;
+      this.updatePlaylist(playlist);
     });
   }
 

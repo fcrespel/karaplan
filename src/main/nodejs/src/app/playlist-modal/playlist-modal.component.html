@@ -1,0 +1,23 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{ playlist.id ? 'Edit' : 'Create' }} playlist</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #playlistEditForm="ngForm">
+    <div class="form-group">
+      <label for="playlistName">Name</label>
+      <input type="text" class="form-control" id="playlistName" name="playlistName" [(ngModel)]="playlist.name" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" placeholder="Playlist name" required>
+    </div>
+    <div class="form-group" *ngIf="playlist.id">
+      <div class="custom-control custom-switch mt-3">
+        <input type="checkbox" class="form-control custom-control-input" id="playlistReadOnly" name="playlistReadOnly" [(ngModel)]="playlist.readOnly" #playlistReadOnlyField="ngModel">
+        <label class="custom-control-label" for="playlistReadOnly">Read-only <i class="small fas fa-info-circle" ngbTooltip="Prevent songs from being added/removed" placement="right" container="body"></i></label>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-pink" [disabled]="!playlistEditForm.form.valid" (click)="activeModal.close(playlist)">{{ playlist.id ? 'Save' : 'Create' }} playlist</button>
+</div>

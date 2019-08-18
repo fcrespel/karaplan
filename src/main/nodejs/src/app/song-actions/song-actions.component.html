@@ -18,7 +18,7 @@
 </div>
 
 <!-- Comments -->
-<div ngbDropdown [autoClose]="false" placement="bottom bottom-right" container="body" class="d-inline-block" *ngIf="showComments">
+<div ngbDropdown placement="bottom-left bottom bottom-right top-left top top-right" container="body" class="d-inline-block" *ngIf="showComments">
   <button type="button" class="btn btn-outline-secondary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
     <i class="far fa-comment"></i>
     <span class="badge badge-secondary ml-1" *ngIf="song.commentsCount">{{ song.commentsCount }}</span>
@@ -43,7 +43,7 @@
 </div>
 
 <!-- Playlists -->
-<div ngbDropdown [autoClose]="false" placement="bottom-left bottom bottom-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
+<div ngbDropdown #playlistDropdown="ngbDropdown" [autoClose]="'outside'" placement="bottom-left bottom bottom-right top-left top top-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()" *ngIf="showPlaylists">
   <button type="button" class="btn btn-outline-primary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle [disabled]="loading" title="Add to playlist">
     <i class="fas fa-list"></i>
     <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlistsCount }}</span>
@@ -59,7 +59,7 @@
       {{ playlist.name }}
     </button>
     <div class="dropdown-divider" *ngIf="!playlists || playlists.length > 0"></div>
-    <a class="dropdown-item" ngbDropdownItem href="#" routerLink="/playlists"><i class="fas fa-plus mr-1"></i> New playlist</a>
+    <button type="button" class="dropdown-item" ngbDropdownItem (click)="playlistDropdown.close(); createPlaylist()"><i class="fas fa-plus mr-1"></i> New playlist</button>
   </div>
 </div>
 

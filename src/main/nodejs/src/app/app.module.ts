@@ -18,6 +18,7 @@ import { SongDetailComponent } from './song-detail/song-detail.component';
 import { SongActionsComponent } from './song-actions/song-actions.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
+import { PlaylistModalComponent } from './playlist-modal/playlist-modal.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { DurationPipe } from './pipes/duration.pipe';
 import { HttpErrorInterceptor } from './http-error.interceptor';
@@ -36,6 +37,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     SongActionsComponent,
     PlaylistsComponent,
     PlaylistDetailComponent,
+    PlaylistModalComponent,
     UserProfileComponent,
     DurationPipe
   ],
@@ -50,6 +52,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [PlaylistModalComponent]
 })
 export class AppModule { }

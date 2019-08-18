@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
+import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
 import { Playlist } from '../models/playlist';
 
 @Component({
@@ -12,7 +13,6 @@ import { Playlist } from '../models/playlist';
 export class PlaylistsComponent implements OnInit {
 
   playlists: Playlist[] = null;
-  currentPlaylist: Playlist;
 
   constructor(
     private router: Router,
@@ -38,18 +38,20 @@ export class PlaylistsComponent implements OnInit {
     this.router.navigate(['/playlists', playlist.id]);
   }
 
-  createPlaylist(modalContent) {
-    this.currentPlaylist = new Playlist();
-    this.modalService.open(modalContent).result.then((result: Playlist) => {
+  createPlaylist() {
+    let modal = this.modalService.open(PlaylistModalComponent);
+    modal.componentInstance.playlist = new Playlist();
+    modal.result.then((result: Playlist) => {
       this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
         this.gotoPlaylist(playlist);
       });
     }, reason => {});
   }
 
-  editPlaylist(modalContent, playlist: Playlist) {
-    this.currentPlaylist = Object.assign({}, playlist);
-    this.modalService.open(modalContent).result.then((result: Playlist) => {
+  editPlaylist(playlist: Playlist) {
+    let modal = this.modalService.open(PlaylistModalComponent);
+    modal.componentInstance.playlist = new Playlist(playlist.id, playlist.name, playlist.readOnly)
+    modal.result.then((result: Playlist) => {
       this.playlistsService.savePlaylist(result).subscribe(playlist => {
         this.refreshPlaylists();
       });

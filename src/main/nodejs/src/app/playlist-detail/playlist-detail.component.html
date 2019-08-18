@@ -20,9 +20,9 @@
       <button type="button" class="btn btn-pink shadow" title="Join playlist" (click)="joinPlaylist()"><i class="fas fa-sign-in-alt"></i> Join<span class="d-none d-sm-inline"> playlist</span></button>
     </div>
     <div class="col-auto mb-1">
-      <div class="btn-group shadow mr-1" role="group">
+      <div class="btn-group shadow" role="group">
         <!-- Comments -->
-        <div ngbDropdown placement="bottom bottom-left bottom-right" container="body" class="btn-group" [autoClose]="false">
+        <div ngbDropdown placement="bottom-left bottom bottom-right" container="body" class="btn-group">
           <button type="button" class="btn btn-light" title="Comments" ngbDropdownToggle>
             <i class="far fa-comment"></i>
             <span class="badge badge-secondary ml-1" *ngIf="playlist.commentsCount">{{ playlist.commentsCount }}</span>
@@ -84,7 +84,8 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-danger shadow ml-1" title="Leave playlist" (click)="leavePlaylist()" *ngIf="isMember(user, playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Leave</span></button>
+      <button type="button" class="btn btn-light shadow ml-2" title="Edit playlist" (click)="editPlaylist()" *ngIf="isMember(user, playlist)"><i class="fas fa-edit"></i></button>
+      <button type="button" class="btn btn-danger shadow ml-2" title="Leave playlist" (click)="leavePlaylist()" *ngIf="isMember(user, playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Leave</span></button>
     </div>
   </div>
 </ng-container>
