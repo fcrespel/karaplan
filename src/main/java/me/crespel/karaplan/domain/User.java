@@ -29,7 +29,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-@EqualsAndHashCode(exclude = { "votes", "comments" })
+@EqualsAndHashCode(exclude = { "votes", "comments", "createdDate", "updatedDate" })
 @ToString(of = { "id", "username", "displayName" })
 @Entity
 @EntityListeners(AuditingEntityListener.class)
