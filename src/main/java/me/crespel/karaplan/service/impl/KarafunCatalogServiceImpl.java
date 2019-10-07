@@ -13,6 +13,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,6 +30,7 @@ import me.crespel.karaplan.model.CatalogSongFileList;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.CatalogStyle;
+import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.model.karafun.KarafunArtist;
 import me.crespel.karaplan.model.karafun.KarafunSelection;
@@ -74,6 +76,10 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 			KarafunSong song = restTemplate.getForObject(builder.build().encode().toUri(), KarafunSong.class);
 			return conversionService.convert(song, CatalogSong.class);
 
+		} catch (HttpClientErrorException.Forbidden e) {
+			throw new BusinessException("This song is not available for Karaoke");
+		} catch (HttpClientErrorException.NotFound e) {
+			throw new BusinessException("This song ID does not exist");
 		} catch (RestClientException e) {
 			throw new TechnicalException(e);
 		}

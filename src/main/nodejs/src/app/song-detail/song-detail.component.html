@@ -1,11 +1,16 @@
-<p class="small mb-0">
-  <a href="#" routerLink="/songs" class="text-light">Songs</a> //
-  <a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-light" *ngIf="song">{{ song.artist.name }}</a> //
-</p>
-<h1>{{ song?.name || '...' }}</h1>
+<!-- Title -->
+<ng-container *ngIf="tab != 'error'">
+  <p class="small mb-0">
+    <a href="#" routerLink="/songs" class="text-light">Songs</a> //
+    <ng-container *ngIf="song && song.artist">
+      <a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-light">{{ song.artist.name }}</a> //
+    </ng-container>
+  </p>
+  <h1>{{ song?.name || '...' }}</h1>
+</ng-container>
 
 <!-- Navigation pills -->
-<ul class="nav nav-pills my-3">
+<ul class="nav nav-pills my-3" *ngIf="tab != 'error'">
   <li class="nav-item">
     <a class="nav-link" href="#" (click)="switchTab($event, 'info')" [class.active]="tab == 'info'" title="Info">
       <i class="fas fa-info-circle"></i><span class="d-md-inline" [class.d-none]="tab != 'info'"> Info</span>
@@ -49,7 +54,8 @@
               <h5 class="card-title mb-1">{{ song.name }}</h5>
               <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
               <p>
-                <span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span>
+                <span class="badge badge-secondary" title="Duration" *ngIf="song.duration">{{ song.duration | duration }}</span>
+                <span class="badge badge-secondary ml-1" title="Year" *ngIf="song.year">{{ song.year }}</span>
                 <a href="#" class="badge badge-primary ml-1" title="Style" *ngFor="let style of song.styles" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
               </p>
               <app-song-actions [song]="song" [showComments]="false"></app-song-actions>
@@ -126,6 +132,18 @@
           </div>
         </li>
       </ul>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="row" *ngIf="tab == 'error'">
+    <div class="col text-center">
+      <h2>Oops! <i class="fas fa-sad-tear"></i></h2>
+      <p>Something went wrong, please try again.</p>
+      <p>
+        <a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> Go back</a> or
+        <a href="#" routerLink="/home" class="btn btn-pink shadow"><i class="fas fa-home"></i> Go home</a>
+      </p>
     </div>
   </div>
 </ng-container>

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
 import { User } from '../models/user';
@@ -64,20 +65,24 @@ export class SongDetailComponent implements OnInit {
     });
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) => 
-        this.songsService.getSong(+params.get('catalogId'))
+        this.songsService.getSong(+params.get('catalogId')).pipe(catchError(err => of(new Song())))
       )
     ).subscribe(song => {
-      this.tab = 'info';
-      this.song = song;
-      this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
-        this.songFiles = songFiles;
-      });
       this.relatedSongsPage = 0;
       this.hasMoreRelatedSongs = false;
-      this.songsService.searchSongs('artist', ''+song.artist.catalogId).subscribe(songs => {
-        this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);
-        this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
-      })
+      this.song = song;
+      if (song.catalogId) {
+        this.tab = 'info';
+        this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
+          this.songFiles = songFiles;
+        });
+        this.songsService.searchSongs('artist', ''+song.artist.catalogId).subscribe(songs => {
+          this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);
+          this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
+        });
+      } else {
+        this.tab = 'error';
+      }
     });
   }
 
