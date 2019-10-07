@@ -32,6 +32,8 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	public static final String EVENT_QUEUE = "queue";
 	public static final String EVENT_QUEUE_ADD = "queueAdd";
 
+	private static final long EVENT_QUEUE_ADD_DELAY = 100;
+
 	@Autowired
 	protected KarafunRemoteProperties properties;
 
@@ -163,6 +165,11 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 					JSONObject eventData = buildQueueAddEvent(songId);
 					logSendEvent(EVENT_QUEUE_ADD, eventData);
 					socket.emit(EVENT_QUEUE_ADD, eventData);
+					try {
+						Thread.sleep(EVENT_QUEUE_ADD_DELAY);
+					} catch (InterruptedException e) {
+						// Ignore
+					}
 				}
 			}
 			log.debug("Disconnecting from Karafun session");
