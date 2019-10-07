@@ -18,7 +18,7 @@
 </div>
 
 <!-- Comments -->
-<div ngbDropdown placement="bottom-left bottom bottom-right top-left top top-right" container="body" class="d-inline-block" *ngIf="showComments">
+<div ngbDropdown placement="bottom-left bottom bottom-right top-left top top-right" container="body" class="d-none d-md-inline-block" *ngIf="showComments">
   <button type="button" class="btn btn-outline-secondary mx-1" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
     <i class="far fa-comment"></i>
     <span class="badge badge-secondary ml-1" *ngIf="song.commentsCount">{{ song.commentsCount }}</span>
