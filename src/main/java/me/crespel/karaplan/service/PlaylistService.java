@@ -25,7 +25,7 @@ public interface PlaylistService {
 
 	Optional<Playlist> findById(Long id, boolean includeDetails, User user);
 
-	Optional<Playlist> findById(Long id, boolean includeDetails, User user, String accessKey);
+    Optional<Playlist> findById(Long id, boolean includeDetails, User user, String accessKey, String filter);
 
 	Playlist create(String name, User user);
 

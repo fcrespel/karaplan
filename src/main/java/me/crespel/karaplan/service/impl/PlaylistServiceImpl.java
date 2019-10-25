@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -78,13 +79,13 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id, boolean includeDetails, User user) {
-		return findById(id, includeDetails, null, null);
+		return findById(id, includeDetails, null, null, null);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Optional<Playlist> findById(Long id, boolean includeDetails, User user, String accessKey) {
-		Optional<Playlist> playlist = playlistRepo.findById(id);
+	public Optional<Playlist> findById(Long id, boolean includeDetails, User user, String accessKey, String filter) {
+		Optional<Playlist> playlist = playlistRepo.findById(id);		
 		if (playlist.isPresent()) {
 			Playlist p = playlist.get();
 			if (isMember(user, p)) {
@@ -104,6 +105,9 @@ public class PlaylistServiceImpl implements PlaylistService {
 				p.getSongs().size();
 				p.getComments().size();
 			}
+		    if(filter != null) {
+		      playlist = filterPlaylistSongs(p, filter);
+		    }
 		}
 		return playlist;
 	}
@@ -314,6 +318,17 @@ public class PlaylistServiceImpl implements PlaylistService {
 		for (PlaylistSong playlistSong : playlistSongs) {
 			playlistSong.setPosition(pos++);
 		}
+	}
+	
+	private Optional<Playlist> filterPlaylistSongs(Playlist playlist, String filter) {
+	  SortedSet<PlaylistSong> songs = Sets.newTreeSet();
+	  playlist.getSongs().forEach(song -> {
+	    if(song.getSong().getName().contains(filter) || (song.getSong().getArtist() != null && song.getSong().getArtist().getName().contains(filter))) {
+	      songs.add(song);
+	    }
+	  });
+	  playlist.setSongs(songs);
+	  return Optional.of(playlist);
 	}
 
 }

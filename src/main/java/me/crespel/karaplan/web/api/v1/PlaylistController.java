@@ -79,9 +79,9 @@ public class PlaylistController {
 
 	@GetMapping("/{playlistId}")
 	@ApiOperation("Get a playlist")
-	public Playlist getPlaylist(@PathVariable Long playlistId, @RequestParam(required = false) String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		return playlistService.findById(playlistId, true, user, accessKey).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
-	}
+    public Playlist getPlaylist(@PathVariable Long playlistId, @RequestParam(required = false) String accessKey, @RequestParam(required = false) String filter, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+      return playlistService.findById(playlistId, true, user, accessKey, filter).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+    }
 
 	@PutMapping("/{playlistId}")
 	@ApiOperation("Save a playlist")
