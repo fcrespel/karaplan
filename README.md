@@ -14,7 +14,15 @@ You may use your preferred IDE to develop this project, e.g. [VS Code](https://c
 
 ### Backend 
 
-Local backend development uses an embedded H2 database and Tomcat server listening on port 8080. Appropriate credentials must be supplied in a `application-local.yml` file in the `src/main/resources` directory.
+Local backend development uses an embedded H2 database and Tomcat server listening on port 8080.
+
+We chose Google to authenticate users. To get a Google OAuth client:
+- if you don't have a Google account, [create it](https://support.google.com/accounts/answer/27441)
+- then [create a Google OAuth client](https://developers.google.com/identity/protocols/OAuth2WebServer#creatingcred)
+  - add _Authorized redirect URIs_ :
+  http://localhost:4200/login/oauth2/code/google
+
+Your OAuth client credentials must be supplied in a `application-local.yml` file in the `src/main/resources` directory.
 
 You may launch the backend as a Spring Boot app with the following arguments:
 
