@@ -1,3 +1,7 @@
+.navbar {
+    min-height: 56px;
+}
+
 .navbar-brand.logo {
     padding-top: 0;
     padding-bottom: 0;

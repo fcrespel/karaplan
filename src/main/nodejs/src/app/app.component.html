@@ -1,5 +1,8 @@
 <app-navbar></app-navbar>
 <app-alert></app-alert>
-<div class="container text-light mt-4">
+<div class="container-fluid text-light" *ngIf="currentRoute == '/home'">
+  <router-outlet></router-outlet>
+</div>
+<div class="container text-light mt-4" *ngIf="currentRoute != '/home'">
   <router-outlet></router-outlet>
 </div>
