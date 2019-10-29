@@ -49,17 +49,26 @@
     <span class="badge badge-primary ml-1" *ngIf="song.playlists">{{ song.playlistsCount }}</span>
   </button>
   <div class="dropdown-menu shadow" ngbDropdownMenu>
+    <button type="button" class="dropdown-item" ngbDropdownItem (click)="playlistDropdown.close(); createPlaylist()"><i class="fas fa-plus mr-1"></i> New playlist</button>
+    <div class="dropdown-divider" *ngIf="!playlists || playlists.length > 0"></div>
     <button type="button" class="dropdown-item" ngbDropdownItem *ngIf="!playlists">
       <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
       Loading ...
     </button>
-    <button type="button" class="dropdown-item" ngbDropdownItem *ngFor="let playlist of playlists; trackBy: trackByPlaylistId" (click)="togglePlaylist(playlist)" [disabled]="playlist.readOnly">
-      <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
-      <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
-      {{ playlist.name }}
-    </button>
-    <div class="dropdown-divider" *ngIf="!playlists || playlists.length > 0"></div>
-    <button type="button" class="dropdown-item" ngbDropdownItem (click)="playlistDropdown.close(); createPlaylist()"><i class="fas fa-plus mr-1"></i> New playlist</button>
+    <ng-container *ngFor="let playlist of playlists; trackBy: trackByPlaylistId">
+      <button type="button" class="dropdown-item" ngbDropdownItem *ngIf="!playlist.readOnly" (click)="togglePlaylist(playlist)">
+        <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
+        <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
+        {{ playlist.name }}
+      </button>
+    </ng-container>
+    <ng-container *ngFor="let playlist of playlists; trackBy: trackByPlaylistId">
+      <button type="button" class="dropdown-item" ngbDropdownItem *ngIf="playlist.readOnly" (click)="togglePlaylist(playlist)" disabled>
+        <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
+        <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
+        {{ playlist.name }}
+      </button>
+    </ng-container>
   </div>
 </div>
 
