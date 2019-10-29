@@ -161,7 +161,7 @@ public class PlaylistController {
 
 	@GetMapping("/{playlistId}/export/csv")
 	@ApiOperation("Export a playlist to a CSV file")
-	public ResponseEntity<Resource> exportPlaylistToKarafunBar(@PathVariable Long playlistId) {
+	public ResponseEntity<Resource> exportPlaylistToCSV(@PathVariable Long playlistId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		File csvFile = null;
 		try {
