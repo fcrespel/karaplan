@@ -16,6 +16,8 @@ public interface CatalogService {
 
 	CatalogSong getSong(long songId);
 
+	CatalogSong getSong(long songId, Locale locale);
+
 	CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset);
 
 	CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale);

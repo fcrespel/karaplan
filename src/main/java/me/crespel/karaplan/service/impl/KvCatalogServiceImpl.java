@@ -99,13 +99,19 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable("kvCatalogCache")
 	public CatalogSong getSong(long songId) {
+		return getSong(songId, null);
+	}
+
+	@Override
+	@Cacheable("kvCatalogCache")
+	public CatalogSong getSong(long songId, Locale locale) {
 		try {
 			KvQuery<KvQuery.SongGet> query = new KvQuery<KvQuery.SongGet>()
 					.setAffiliateId(properties.getAffiliateId())
 					.setFunction("get")
 					.setParameters(new KvQuery.SongGet().setId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
 					.path("/song/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 

@@ -83,8 +83,14 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable("karafunCatalogCache")
 	public CatalogSong getSong(long songId) {
+		return getSong(songId, null);
+	}
+
+	@Override
+	@Cacheable("karafunCatalogCache")
+	public CatalogSong getSong(long songId, Locale locale) {
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
 					.path(Integer.toString(properties.getRemoteId()))
 					.queryParam("type", "song_info")
 					.queryParam("id", Long.toString(songId));

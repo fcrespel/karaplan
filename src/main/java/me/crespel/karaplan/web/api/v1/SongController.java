@@ -61,15 +61,15 @@ public class SongController {
 
 	@GetMapping("/{catalogId}")
 	@ApiOperation("Get a song")
-	public Song getSong(@PathVariable Long catalogId) {
-		return songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+	public Song getSong(@PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 	}
 
 	@PostMapping("/{catalogId}")
 	@ResponseStatus(HttpStatus.CREATED)
 	@ApiOperation("Import a song from the catalog")
-	public Song importSong(@PathVariable Long catalogId) {
-		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+	public Song importSong(@PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.save(song);
 	}
 
@@ -82,28 +82,28 @@ public class SongController {
 	@PostMapping("/{catalogId}/vote")
 	@ApiOperation("Vote for a song")
 	public Song voteSong(@PathVariable Long catalogId, @RequestParam(defaultValue = "0") int score, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.vote(song, user, score);
 	}
 
 	@PostMapping("/{catalogId}/comment")
 	@ApiOperation("Add a comment to a song")
 	public Song addCommentToSong(@PathVariable Long catalogId, @RequestBody String comment, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.addComment(song, user, comment);
 	}
 
 	@DeleteMapping("/{catalogId}/comment/{commentId}")
 	@ApiOperation("Remove a comment from a song")
 	public Song removeCommentFromSong(@PathVariable Long catalogId, @PathVariable Long commentId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.removeComment(song, user, commentId);
 	}
 
 	@PostMapping("/{catalogId}/playlist/{playlistId}")
 	@ApiOperation("Add a song to a playlist")
 	public Song addSongToPlaylist(@PathVariable Long catalogId, @PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		playlistService.addSong(playlist, song, user);
 		return song;
@@ -112,7 +112,7 @@ public class SongController {
 	@DeleteMapping("/{catalogId}/playlist/{playlistId}")
 	@ApiOperation("Remove a song from a playlist")
 	public Song removeSongFromPlaylist(@PathVariable Long catalogId, @PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		playlistService.removeSong(playlist, song, user);
 		return song;

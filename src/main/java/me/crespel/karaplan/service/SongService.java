@@ -24,6 +24,8 @@ public interface SongService {
 
 	Optional<Song> findByCatalogId(Long catalogId);
 
+	Optional<Song> findByCatalogId(Long catalogId, Locale locale);
+
 	Song save(Song song);
 
 	Song vote(Song song, User user, int score);

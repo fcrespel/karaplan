@@ -79,9 +79,14 @@ public class SongServiceImpl implements SongService {
 
 	@Override
 	public Optional<Song> findByCatalogId(Long catalogId) {
+		return findByCatalogId(catalogId, null);
+	}
+
+	@Override
+	public Optional<Song> findByCatalogId(Long catalogId, Locale locale) {
 		Optional<Song> song = songRepo.findByCatalogId(catalogId);
 		if (!song.isPresent()) {
-			song = Optional.ofNullable(conversionService.convert(catalogService.getSong(catalogId), Song.class));
+			song = Optional.ofNullable(conversionService.convert(catalogService.getSong(catalogId, locale), Song.class));
 		}
 		return song;
 	}
