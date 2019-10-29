@@ -10,7 +10,7 @@
             "name": "Backend Server",
             "mainClass": "me.crespel.karaplan.KaraplanApplication",
             "projectName": "karaplan",
-            "vmArgs": "-Dspring.profiles.active=local"
+            "vmArgs": "-Dspring.profiles.active=local -Dspring.output.ansi.enabled=always"
         },
         {
             "type": "node",
