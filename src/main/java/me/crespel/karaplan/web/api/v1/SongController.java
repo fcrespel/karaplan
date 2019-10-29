@@ -47,22 +47,16 @@ public class SongController {
 	@Autowired
 	protected PlaylistService playlistService;
 
-	@GetMapping
-	@ApiOperation("Get all songs")
-	public Set<Song> getSongs(@PageableDefault Pageable pageable) {
-		return songService.findAll(pageable);
-	}
-
 	@GetMapping("/search")
 	@ApiOperation("Search songs in the catalog")
-	public Set<Song> searchSongs(@RequestParam CatalogSongListType type, @RequestParam String query, @PageableDefault Pageable pageable) {
-		return songService.search(type, query, pageable);
+	public Set<Song> searchSongs(@RequestParam CatalogSongListType type, @RequestParam String query, @PageableDefault Pageable pageable, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return songService.search(type, query, pageable, user.getLocaleParsed());
 	}
 
 	@GetMapping("/selections")
 	@ApiOperation("Get song selections in the catalog")
-	public Set<CatalogSelection> getSelections(@RequestParam CatalogSelectionType type) {
-		return catalogService.getSelectionList(type).getSelections();
+	public Set<CatalogSelection> getSelections(@RequestParam CatalogSelectionType type, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return catalogService.getSelectionList(type, user.getLocaleParsed()).getSelections();
 	}
 
 	@GetMapping("/{catalogId}")

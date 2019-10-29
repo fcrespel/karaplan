@@ -1,5 +1,7 @@
 package me.crespel.karaplan.service.impl;
 
+import java.util.Locale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -38,12 +40,17 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
+		return getSongList(type, filter, limit, offset, null);
+	}
+
+	@Override
+	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
 		switch (type) {
 		case query:
 		case artist:
-			return kvCatalog.getSongList(type, filter, limit, offset);
+			return kvCatalog.getSongList(type, filter, limit, offset, locale);
 		default:
-			return karafunCatalog.getSongList(type, filter, limit, offset);
+			return karafunCatalog.getSongList(type, filter, limit, offset, locale);
 		}
 	}
 
@@ -54,7 +61,12 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
-		return karafunCatalog.getSelectionList(type);
+		return getSelectionList(type, null);
+	}
+
+	@Override
+	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
+		return karafunCatalog.getSelectionList(type, locale);
 	}
 
 }

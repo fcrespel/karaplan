@@ -1,5 +1,6 @@
 package me.crespel.karaplan.service;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,6 +17,8 @@ public interface SongService {
 	Set<Song> findAll(Pageable pageable);
 
 	Set<Song> search(CatalogSongListType type, String query, Pageable pageable);
+
+	Set<Song> search(CatalogSongListType type, String query, Pageable pageable, Locale locale);
 
 	Optional<Song> findById(Long id);
 

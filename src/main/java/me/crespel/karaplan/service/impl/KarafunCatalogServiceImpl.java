@@ -2,6 +2,7 @@ package me.crespel.karaplan.service.impl;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,21 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 		conversionService.addConverter(new KarafunToCatalogPlaylistConverter());
 	}
 
+	protected String getEndpoint() {
+		return getEndpoint(null);
+	}
+
+	protected String getEndpoint(Locale locale) {
+		String endpoint = null;
+		if (locale != null) {
+			endpoint = properties.getEndpointForLocale().get(locale.getLanguage());
+		}
+		if (endpoint == null) {
+			endpoint = properties.getEndpoint();
+		}
+		return endpoint;
+	}
+
 	@Override
 	public CatalogArtist getArtist(long artistId) {
 		throw new UnsupportedOperationException();
@@ -68,7 +84,7 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	@Cacheable("karafunCatalogCache")
 	public CatalogSong getSong(long songId) {
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
 					.path(Integer.toString(properties.getRemoteId()))
 					.queryParam("type", "song_info")
 					.queryParam("id", Long.toString(songId));
@@ -88,8 +104,14 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable("karafunCatalogCache")
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
+		return getSongList(type, filter, limit, offset, null);
+	}
+
+	@Override
+	@Cacheable("karafunCatalogCache")
+	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
 					.path(Integer.toString(properties.getRemoteId()))
 					.queryParam("type", "song_list");
 			switch (type) {
@@ -129,11 +151,17 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	@Cacheable("karafunCatalogCache")
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
+		return getSelectionList(type, null);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	@Cacheable("karafunCatalogCache")
+	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
 					.path(Integer.toString(properties.getRemoteId()))
 					.queryParam("type", type.toString());
 

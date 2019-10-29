@@ -28,3 +28,23 @@ server:
 logging:
   level:
     me.crespel.karaplan: debug
+karaplan:
+  karafun:
+    remote:
+      endpoint: https://www.karafun.com
+      endpoint-for-locale:
+        de: https://www.karafun.de
+        en: https://www.karafun.com
+        es: https://www.karafun.es
+        fr: https://www.karafun.fr
+        it: https://www.karafun.it
+        nl: https://www.karafun.nl
+  kv:
+    endpoint: https://www.karaoke-version.com/api
+    endpoint-for-locale:
+      de: https://www.karaoke-version.de/api
+      en: https://www.karaoke-version.com/api
+      es: https://www.version-karaoke.es/api
+      fr: https://www.version-karaoke.fr/api
+      it: https://www.versione-karaoke.it/api
+      nl: https://www.karaoke-versie.nl/api

@@ -1,6 +1,7 @@
 package me.crespel.karaplan.domain;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.SortedSet;
 
 import javax.persistence.Column;
@@ -19,6 +20,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Sets;
 
@@ -88,5 +90,21 @@ public class User {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
 	private Calendar updatedDate;
+
+	private transient Locale localeParsed = null;
+
+	@JsonIgnore
+	public Locale getLocaleParsed() {
+		if (locale != null) {
+			localeParsed = Locale.forLanguageTag(locale);
+		}
+		return localeParsed;
+	}
+
+	public User setLocale(String locale) {
+		this.locale = locale;
+		this.localeParsed = null;
+		return this;
+	}
 
 }

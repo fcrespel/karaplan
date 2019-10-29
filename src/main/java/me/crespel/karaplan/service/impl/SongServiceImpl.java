@@ -3,6 +3,7 @@ package me.crespel.karaplan.service.impl;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -87,9 +88,14 @@ public class SongServiceImpl implements SongService {
 
 	@Override
 	public Set<Song> search(CatalogSongListType type, String query, Pageable pageable) {
+		return search(type, query, pageable, null);
+	}
+
+	@Override
+	public Set<Song> search(CatalogSongListType type, String query, Pageable pageable, Locale locale) {
 		Set<Song> resultSongs = Sets.newLinkedHashSet();
 
-		CatalogSongList catalogSongList = catalogService.getSongList(type, query, pageable.getPageSize(), pageable.getOffset());
+		CatalogSongList catalogSongList = catalogService.getSongList(type, query, pageable.getPageSize(), pageable.getOffset(), locale);
 		if (catalogSongList.getSongs() != null) {
 			// Convert catalog songs
 			Set<Song> catalogSongs = catalogSongList.getSongs().stream()

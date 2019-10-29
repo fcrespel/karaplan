@@ -2,6 +2,7 @@ package me.crespel.karaplan.service.impl;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,21 @@ public class KvCatalogServiceImpl implements CatalogService {
 		conversionService.addConverter(new KvToCatalogSongFileListConverter());
 	}
 
+	protected String getEndpoint() {
+		return getEndpoint(null);
+	}
+
+	protected String getEndpoint(Locale locale) {
+		String endpoint = null;
+		if (locale != null) {
+			endpoint = properties.getEndpointForLocale().get(locale.getLanguage());
+		}
+		if (endpoint == null) {
+			endpoint = properties.getEndpoint();
+		}
+		return endpoint;
+	}
+
 	@Override
 	@Cacheable("kvCatalogCache")
 	public CatalogArtist getArtist(long artistId) {
@@ -68,7 +84,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("get")
 					.setParameters(new KvQuery.ArtistGet().setId(artistId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
 					.path("/artist/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -89,7 +105,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("get")
 					.setParameters(new KvQuery.SongGet().setId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
 					.path("/song/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -104,6 +120,12 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable("kvCatalogCache")
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
+		return getSongList(type, filter, limit, offset, null);
+	}
+
+	@Override
+	@Cacheable("kvCatalogCache")
+	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
 		try {
 			String path;
 			KvQuery<?> query;
@@ -126,7 +148,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 				throw new UnsupportedOperationException("Unsupported song list type '" + type + "'");
 			}
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
 					.path(path)
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -147,7 +169,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("list")
 					.setParameters(new KvQuery.SongFileList().setSongId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
 					.path("/songfile/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -161,6 +183,11 @@ public class KvCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
+		return getSelectionList(null);
+	}
+
+	@Override
+	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
 		throw new UnsupportedOperationException();
 	}
 
