@@ -8,6 +8,7 @@ import { SongDetailComponent } from './song-detail/song-detail.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AboutComponent } from './about/about.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'playlists', component: PlaylistsComponent },
   { path: 'playlists/:id', component: PlaylistDetailComponent },
   { path: 'user/profile', component: UserProfileComponent },
+  { path: 'about', component: AboutComponent },
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];
 

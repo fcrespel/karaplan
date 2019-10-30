@@ -20,6 +20,7 @@ import { PlaylistsComponent } from './playlists/playlists.component';
 import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
 import { PlaylistModalComponent } from './playlist-modal/playlist-modal.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AboutComponent } from './about/about.component';
 import { DurationPipe } from './pipes/duration.pipe';
 import { HttpErrorInterceptor } from './http-error.interceptor';
 
@@ -39,6 +40,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     PlaylistDetailComponent,
     PlaylistModalComponent,
     UserProfileComponent,
+    AboutComponent,
     DurationPipe
   ],
   imports: [

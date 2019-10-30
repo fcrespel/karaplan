@@ -20,7 +20,6 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private cookieService: CookieService,
-    private modalService: NgbModal,
     private actuatorService: ActuatorService,
     private accountService: AccountService
   ) { }
@@ -29,10 +28,6 @@ export class NavbarComponent implements OnInit {
     this.xsrfToken = this.cookieService.get('XSRF-TOKEN');
     this.actuatorService.getInfo().subscribe(actuatorInfo => this.actuatorInfo = actuatorInfo);
     this.accountService.getUser().subscribe(user => this.user = user);
-  }
-
-  openAboutModal(aboutModalContent) {
-    this.modalService.open(aboutModalContent, { size: 'lg' });
   }
 
 }
