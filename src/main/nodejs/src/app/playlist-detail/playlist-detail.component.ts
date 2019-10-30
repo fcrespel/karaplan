@@ -123,7 +123,7 @@ export class PlaylistDetailComponent implements OnInit {
           let message = new AlertMessage();
           message.severity = 'success';
           message.title = 'Success';
-          message.text = `Export to Karafun Remote #${remoteId} completed successfully`;
+          message.text = `Export to KaraFun Remote #${remoteId} completed successfully`;
           this.alertService.addMessage(message);
         });
       }
@@ -137,7 +137,7 @@ export class PlaylistDetailComponent implements OnInit {
           let message = new AlertMessage();
           message.severity = 'success';
           message.title = 'Success';
-          message.text = `Export to Karafun Bar session #${bookingId} completed successfully`;
+          message.text = `Export to KaraFun Bar session #${bookingId} completed successfully`;
           this.alertService.addMessage(message);
         });
       }
