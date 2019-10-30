@@ -63,10 +63,8 @@
       </button>
     </ng-container>
     <ng-container *ngFor="let playlist of playlists; trackBy: trackByPlaylistId">
-      <button type="button" class="dropdown-item" ngbDropdownItem *ngIf="playlist.readOnly" (click)="togglePlaylist(playlist)" disabled>
-        <i class="far fa-square mr-1" *ngIf="!playlist.isSelected"></i>
-        <i class="far fa-check-square mr-1" *ngIf="playlist.isSelected"></i>
-        {{ playlist.name }}
+      <button type="button" class="dropdown-item" ngbDropdownItem *ngIf="playlist.readOnly && playlist.isSelected" disabled>
+        <i class="far fa-check-square mr-1"></i> {{ playlist.name }}
       </button>
     </ng-container>
   </div>
