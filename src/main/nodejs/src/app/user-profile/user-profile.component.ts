@@ -10,6 +10,7 @@ import { User } from '../models/user';
 export class UserProfileComponent implements OnInit {
 
   user: User = null;
+  tab: string = 'profile';
 
   constructor(
     private accountService: AccountService
@@ -19,6 +20,11 @@ export class UserProfileComponent implements OnInit {
     this.accountService.getUser(false).subscribe(user => {
       this.user = user;
     });
+  }
+
+  switchTab($event: Event, tab: string) {
+    $event.preventDefault();
+    this.tab = tab;
   }
 
   updateUser(user: User) {

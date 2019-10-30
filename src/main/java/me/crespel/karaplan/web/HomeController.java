@@ -12,7 +12,8 @@ public class HomeController {
 		"/home/**",
 		"/songs/**",
 		"/playlists/**",
-		"/user/**"
+		"/user/**",
+		"/about/**"
 	})
 	public String index() {
 		return "index";
