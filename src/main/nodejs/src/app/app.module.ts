@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AlertComponent } from './alert/alert.component';
+import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { SongsComponent } from './songs/songs.component';
@@ -29,6 +30,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     AppComponent,
     NavbarComponent,
     AlertComponent,
+    FooterComponent,
     HomeComponent,
     LoginComponent,
     SongsComponent,
