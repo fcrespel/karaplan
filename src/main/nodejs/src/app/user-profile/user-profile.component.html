@@ -10,47 +10,58 @@
   </li>
 </ul>
 
-<!-- Profile -->
-<div class="card" *ngIf="tab == 'profile'">
-  <div class="card-body text-dark">
-    <p>
-      Your user profile is linked to your
-      <ng-container [ngSwitch]="user.provider">
-        <a href="https://accounts.google.com" *ngSwitchCase="'google'">Google account</a>
-        <a href="https://www.facebook.com/settings?tab=account" *ngSwitchCase="'facebook'">Facebook account</a>
-        <a href="https://github.com/settings/profile" *ngSwitchCase="'github'">GitHub account</a>
-      </ng-container>. You may choose a different display name to use here.
-    </p>
-    <form #userProfileForm="ngForm" *ngIf="user" (ngSubmit)="updateUser(user)">
-      <div class="form-group row">
-        <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" id="displayName" name="displayName" [(ngModel)]="user.displayName" #displayNameField="ngModel" [class.is-invalid]="displayNameField.dirty && displayNameField.invalid" required>
+<ng-container *ngIf="user; else userLoading">
+  <!-- Profile -->
+  <div class="card" *ngIf="tab == 'profile'">
+    <div class="card-body text-dark">
+      <p>
+        Your user profile is linked to your
+        <ng-container [ngSwitch]="user.provider">
+          <a href="https://accounts.google.com" *ngSwitchCase="'google'">Google account</a>
+          <a href="https://www.facebook.com/settings?tab=account" *ngSwitchCase="'facebook'">Facebook account</a>
+          <a href="https://github.com/settings/profile" *ngSwitchCase="'github'">GitHub account</a>
+        </ng-container>. You may choose a different display name to use here.
+      </p>
+      <form #userProfileForm="ngForm" *ngIf="user" (ngSubmit)="updateUser(user)">
+        <div class="form-group row">
+          <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="displayName" name="displayName" [(ngModel)]="user.displayName" #displayNameField="ngModel" [class.is-invalid]="displayNameField.dirty && displayNameField.invalid" required>
+          </div>
         </div>
-      </div>
-      <div class="form-group row">
-        <label for="firstName" class="col-sm-2 col-form-label">First name</label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="user.firstName" readonly>
+        <div class="form-group row">
+          <label for="firstName" class="col-sm-2 col-form-label">First name</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="user.firstName" readonly>
+          </div>
         </div>
-      </div>
-      <div class="form-group row">
-        <label for="lastName" class="col-sm-2 col-form-label">Last name</label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="user.lastName" readonly>
+        <div class="form-group row">
+          <label for="lastName" class="col-sm-2 col-form-label">Last name</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="user.lastName" readonly>
+          </div>
         </div>
-      </div>
-      <div class="form-group row">
-        <label for="email" class="col-sm-2 col-form-label">Email address</label>
-        <div class="col-sm-6">
-          <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" readonly>
+        <div class="form-group row">
+          <label for="email" class="col-sm-2 col-form-label">Email address</label>
+          <div class="col-sm-6">
+            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" readonly>
+          </div>
         </div>
-      </div>
-      <div class="form-group row">
-        <div class="col-sm-6 offset-md-2">
-          <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Save</button>
+        <div class="form-group row">
+          <div class="col-sm-6 offset-md-2">
+            <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Save</button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
-</div>
+</ng-container>
+
+<!-- Loading indicator -->
+<ng-template #userLoading>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border spinner-border-lg" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</ng-template>
