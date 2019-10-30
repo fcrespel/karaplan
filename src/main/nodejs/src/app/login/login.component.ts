@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
       message.text = 'You have been signed out';
       this.alertService.addMessage(message);
     }
-    this.accountService.getUser().subscribe(user => {
+    this.accountService.getUser(false).subscribe(user => {
       if (user) {
         this.router.navigate(['/songs']);
       }
