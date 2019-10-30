@@ -1,6 +1,16 @@
-<div class="text-center">
-  <h1 class="mb-5">Login</h1>
+<h1 class="text-center mt-5 mb-4">Please sign in!</h1>
 
-  <p>To take advantage of <strong>KaraPlan</strong>, please sign in.</p>
-  <a class="btn btn-pink shadow" href="/oauth2/authorization/google">Sign in with your <strong>Google</strong> account</a>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-6">
+    <div class="card">
+      <div class="card-body text-dark text-center">
+      <p>Pick an identity provider to login with:</p>
+      <p>
+        <a class="btn btn-lg btn-pink shadow mx-2 my-1" href="/oauth2/authorization/google"><i class="fab fa-google mr-1"></i> Google</a>
+        <a class="btn btn-lg btn-pink shadow mx-2 my-1" href="/oauth2/authorization/facebook"><i class="fab fa-facebook-f mr-1"></i> Facebook</a>
+        <a class="btn btn-lg btn-pink shadow mx-2 my-1" href="/oauth2/authorization/github"><i class="fab fa-github mr-1"></i> GitHub</a>
+      </p>
+      <p class="small">By continuing, you agree with the <a href="#" routerLink="/about">Terms of use</a> of <strong>KaraPlan</strong>.</p>
+    </div>
+  </div>
 </div>

@@ -6,14 +6,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import me.crespel.karaplan.security.OAuth2UserServiceWrapper;
 import me.crespel.karaplan.security.OidcUserServiceWrapper;
 
 @Configuration
@@ -38,11 +42,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("/login")
 				.permitAll()
 				.userInfoEndpoint()
+					.userService(oauth2UserService())
 					.oidcUserService(oidcUserService())
 					.and()
 				.and()
 			.exceptionHandling()
 				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**"));
+	}
+
+	@Bean
+	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
+		return new OAuth2UserServiceWrapper(new DefaultOAuth2UserService());
 	}
 
 	@Bean

@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import me.crespel.karaplan.domain.User;
 
-public class OidcUserWrapper implements OidcUser {
+public class OidcUserWrapper implements OidcUser, UserWrapper {
 
 	protected final OidcUser delegate;
 	protected final User user;

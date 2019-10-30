@@ -14,7 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.exception.BusinessException;
-import me.crespel.karaplan.security.OidcUserWrapper;
+import me.crespel.karaplan.security.UserWrapper;
 import me.crespel.karaplan.service.UserService;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -34,15 +34,15 @@ public class AccountController {
 
 	@GetMapping("/principal")
 	@ApiOperation("Get the authenticated principal")
-	public OidcUserWrapper getPrincipal(@ApiIgnore @AuthenticationPrincipal OidcUserWrapper oidcUser) {
-		return oidcUser;
+	public UserWrapper getPrincipal(@ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
+		return userWrapper;
 	}
 
 	@GetMapping("/user")
 	@ApiOperation("Get the authenticated user")
-	public User getUser(@ApiIgnore @AuthenticationPrincipal OidcUserWrapper oidcUser) {
-		if (oidcUser != null) {
-			return oidcUser.getUser();
+	public User getUser(@ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
+		if (userWrapper != null) {
+			return userWrapper.getUser();
 		} else {
 			return null;
 		}
@@ -50,9 +50,9 @@ public class AccountController {
 
 	@PostMapping("/user")
 	@ApiOperation("Update the authenticated user")
-	public User updateUser(@RequestBody User user, @ApiIgnore @AuthenticationPrincipal OidcUserWrapper oidcUser) {
-		if (oidcUser != null) {
-			User userToUpdate = oidcUser.getUser();
+	public User updateUser(@RequestBody User user, @ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
+		if (userWrapper != null) {
+			User userToUpdate = userWrapper.getUser();
 			userToUpdate.setDisplayName(user.getDisplayName());
 			return userService.save(userToUpdate);
 		} else {

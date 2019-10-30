@@ -18,6 +18,12 @@ spring:
           google:
             client-id: toComplete
             client-secret: toComplete
+          github:
+            client-id: toComplete
+            client-secret: toComplete
+          facebook:
+            client-id: toComplete
+            client-secret: toComplete
 server:
   port: 8080
   compression:
