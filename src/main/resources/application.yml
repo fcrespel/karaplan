@@ -21,6 +21,7 @@ spring:
           github:
             client-id: toComplete
             client-secret: toComplete
+            scope: read:user,user:email
           facebook:
             client-id: toComplete
             client-secret: toComplete
