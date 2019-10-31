@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AccountService } from '../services/account.service';
+import { AlertService } from '../services/alert.service';
 import { User } from '../models/user';
+import { AlertMessage } from '../models/alert-message';
 
 @Component({
   selector: 'app-user-profile',
@@ -13,12 +16,17 @@ export class UserProfileComponent implements OnInit {
   tab: string = 'profile';
 
   constructor(
-    private accountService: AccountService
+    private router: Router,
+    private accountService: AccountService,
+    private alertService: AlertService
   ) { }
 
   ngOnInit() {
     this.accountService.getUser(false).subscribe(user => {
       this.user = user;
+      if (!user) {
+        this.router.navigate(['/login']);
+      }
     });
   }
 
@@ -30,6 +38,12 @@ export class UserProfileComponent implements OnInit {
   updateUser(user: User) {
     this.accountService.updateUser(user).subscribe(user => {
       this.user = user;
+      let message = new AlertMessage();
+      message.severity = 'success';
+      message.title = 'Success';
+      message.text = "Your user profile has been updated";
+      this.alertService.addMessage(message);
+      this.accountService.refreshCache();
     });
   }
 

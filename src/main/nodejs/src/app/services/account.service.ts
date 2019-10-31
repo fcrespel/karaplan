@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { shareReplay, switchMapTo } from 'rxjs/operators';
 import { Principal } from '../models/principal';
 import { User } from '../models/user';
 
@@ -10,8 +10,10 @@ import { User } from '../models/user';
 })
 export class AccountService {
   private accountUrl = 'api/v1/account';
-  private principal$ = null;
-  private user$ = null;
+  private principal$: Observable<Principal> = null;
+  private principalRefresh$ = new BehaviorSubject<void>(undefined);
+  private user$: Observable<User> = null;
+  private userRefresh$ = new BehaviorSubject<void>(undefined);
 
   constructor(
     private http: HttpClient
@@ -22,7 +24,7 @@ export class AccountService {
     if (!cache) {
       return this.http.get<Principal>(url);
     } else if (this.principal$ == null) {
-      this.principal$ = this.http.get<Principal>(url).pipe(shareReplay(1));
+      this.principal$ = this.principalRefresh$.pipe(switchMapTo(this.http.get<Principal>(url)), shareReplay(1));
     }
     return this.principal$;
   }
@@ -32,7 +34,7 @@ export class AccountService {
     if (!cache) {
       return this.http.get<User>(url);
     } else if (this.user$ == null) {
-      this.user$ = this.http.get<User>(url).pipe(shareReplay(1));
+      this.user$ = this.userRefresh$.pipe(switchMapTo(this.http.get<User>(url)), shareReplay(1));
     }
     return this.user$;
   }
@@ -40,5 +42,10 @@ export class AccountService {
   updateUser(user: User): Observable<User> {
     const url = `${this.accountUrl}/user`;
     return this.http.post<User>(url, user);
+  }
+
+  refreshCache() {
+    this.principalRefresh$.next(undefined);
+    this.userRefresh$.next(undefined);
   }
 }
