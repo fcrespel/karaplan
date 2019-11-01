@@ -1,4 +1,3 @@
-[![Pipeline Status](https://gitlab.com/fcrespel/karaplan/badges/master/pipeline.svg)](https://gitlab.com/fcrespel/karaplan/pipelines)
 [![Docker Pulls](https://img.shields.io/docker/pulls/fcrespel/karaplan.svg)](https://hub.docker.com/r/fcrespel/karaplan)
 [![License](https://img.shields.io/github/license/fcrespel/karaplan.svg)](https://opensource.org/licenses/MIT)
 
