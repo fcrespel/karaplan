@@ -16,13 +16,26 @@ You may use your preferred IDE to develop this project, e.g. [VS Code](https://c
 
 Local backend development uses an embedded H2 database and Tomcat server listening on port 8080.
 
-We chose Google to authenticate users. To get a Google OAuth client:
-- if you don't have a Google account, [create it](https://support.google.com/accounts/answer/27441)
-- then [create a Google OAuth client](https://developers.google.com/identity/protocols/OAuth2WebServer#creatingcred)
-  - add _Authorized redirect URIs_ :
-  http://localhost:4200/login/oauth2/code/google
+Several identity providers are supported for authentication using OAuth 2.0, and need to be configured:
+- Google:
+  - if you don't have a Google account, [create it](https://support.google.com/accounts/answer/27441)
+  - then [create a Google OAuth client](https://developers.google.com/identity/protocols/OAuth2WebServer#creatingcred)
+  - add _Authorized redirect URIs_: http://localhost:4200/login/oauth2/code/google
+  - copy the OAuth client credentials (clientID / clientSecret)
+- Facebook:
+  - if you don't have a Facebook account, [create it](https://www.facebook.com/r.php)
+  - then [create a new app](https://developers.facebook.com/apps)
+  - in the _Products_ section, enable _Facebook Login_
+  - add _Valid OAuth redirect URIs_: http://localhost:4200/login/oauth2/code/facebook
+  - copy the OAuth client credentials (clientID / clientSecret) from the _Settings > General_ section
+- GitHub:
+  - if you don't have a GitHub account, [create it](https://github.com/join)
+  - then [register a new OAuth application](https://github.com/settings/applications/new)
+  - set _Authorization callback URL_: http://localhost:4200/login/oauth2/code/github
+  - copy the OAuth client credentials (clientID / clientSecret)
 
 Your OAuth client credentials must be supplied in a `application-local.yml` file in the `src/main/resources` directory.
+See [this Spring Security sample](https://github.com/spring-projects/spring-security/tree/5.1.x/samples/boot/oauth2login) for more information about configuring the OAuth 2.0 provider details.
 
 You may launch the backend as a Spring Boot app with the following arguments:
 
@@ -71,8 +84,10 @@ All configuration values may be overridden with environment variables (as suppor
 - SPRING_DATASOURCE_URL
 - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
 - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
-
-See [this Spring Security sample](https://github.com/spring-projects/spring-security/tree/5.1.x/samples/boot/oauth2login) for more information about configuring the OAuth 2.0 provider details.
+- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
+- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
+- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID
+- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET
 
 ## Legal notice
 
