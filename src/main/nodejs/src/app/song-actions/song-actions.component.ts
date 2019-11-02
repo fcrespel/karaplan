@@ -135,7 +135,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       this.updateSong(song);
       playlist.isSelected = true;
       this.playlistAdded.emit(new PlaylistSong(playlist, song));
-    });
+    }, error => this.loading = false);
   }
 
   removeFromPlaylist(playlist: Playlist) {
