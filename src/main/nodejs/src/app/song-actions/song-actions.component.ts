@@ -95,7 +95,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       } else {
         this.voteRemoved.emit(previousVote);
       }
-    });
+    }, error => this.loading = false);
   }
 
   voteDown() {
@@ -109,7 +109,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       } else {
         this.voteRemoved.emit(previousVote);
       }
-    });
+    }, error => this.loading = false);
   }
 
   addComment(comment: string, commentForm: NgForm) {
@@ -118,7 +118,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       commentForm.reset();
       this.updateSong(song);
       this.commentAdded.emit(song.comments.find(comment => comment.user.id == this.user.id));
-    });
+    }, error => this.loading = false);
   }
 
   removeComment(comment: SongComment) {
@@ -126,7 +126,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
       this.updateSong(song);
       this.commentRemoved.emit(comment);
-    });
+    }, error => this.loading = false);
   }
 
   addToPlaylist(playlist: Playlist) {
@@ -144,7 +144,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       this.updateSong(song);
       playlist.isSelected = false;
       this.playlistRemoved.emit(new PlaylistSong(playlist, song));
-    });
+    }, error => this.loading = false);
   }
 
   togglePlaylist(playlist: Playlist) {
