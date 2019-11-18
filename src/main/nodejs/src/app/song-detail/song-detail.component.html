@@ -58,7 +58,7 @@
                 <span class="badge badge-secondary ml-1" title="Year" *ngIf="song.year">{{ song.year }}</span>
                 <a href="#" class="badge badge-primary ml-1" title="Style" *ngFor="let style of song.styles" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
               </p>
-              <app-song-actions [song]="song" [showComments]="false"></app-song-actions>
+              <app-song-actions [(song)]="song" [showComments]="false"></app-song-actions>
             </div>
           </div>
         </div>

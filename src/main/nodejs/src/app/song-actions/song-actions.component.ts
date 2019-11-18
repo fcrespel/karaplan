@@ -30,6 +30,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   @Output() commentRemoved = new EventEmitter<SongComment>();
   @Output() playlistAdded = new EventEmitter<PlaylistSong>();
   @Output() playlistRemoved = new EventEmitter<PlaylistSong>();
+  @Output() songChange = new EventEmitter<Song>();
   @Output() songRemoved = new EventEmitter<Song>();
 
   user: User = null;
@@ -90,6 +91,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
       let previousVote = this.vote;
       this.updateSong(song);
+      this.songChange.emit(song);
       if (score != 0) {
         this.voteAdded.emit(this.vote);
       } else {
@@ -104,6 +106,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
       let previousVote = this.vote;
       this.updateSong(song);
+      this.songChange.emit(song);
       if (score != 0) {
         this.voteAdded.emit(this.vote);
       } else {
@@ -117,6 +120,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.songsService.addCommentToSong(this.song.catalogId, comment).subscribe(song => {
       commentForm.reset();
       this.updateSong(song);
+      this.songChange.emit(song);
       this.commentAdded.emit(song.comments.find(comment => comment.user.id == this.user.id));
     }, error => this.loading = false);
   }
@@ -125,6 +129,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.loading = true;
     this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
       this.updateSong(song);
+      this.songChange.emit(song);
       this.commentRemoved.emit(comment);
     }, error => this.loading = false);
   }
@@ -133,6 +138,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.loading = true;
     this.songsService.addSongToPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
       this.updateSong(song);
+      this.songChange.emit(song);
       playlist.isSelected = true;
       this.playlistAdded.emit(new PlaylistSong(playlist, song));
     }, error => this.loading = false);
@@ -142,6 +148,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     this.loading = true;
     this.songsService.removeSongFromPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
       this.updateSong(song);
+      this.songChange.emit(song);
       playlist.isSelected = false;
       this.playlistRemoved.emit(new PlaylistSong(playlist, song));
     }, error => this.loading = false);
