@@ -37,6 +37,7 @@
 		<!-- Dependency properties -->
 		<commons-csv.version>1.6</commons-csv.version>
 		<guava.version>27.1-jre</guava.version>
+		<mysql-socket-factory.version>1.0.15</mysql-socket-factory.version>
 		<node.version>v10.16.0</node.version>
 		<npm.version>6.9.0</npm.version>
 		<socketio-client.version>1.0.0</socketio-client.version>
@@ -161,6 +162,11 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.cloud.sql</groupId>
+			<artifactId>mysql-socket-factory-connector-j-8</artifactId>
+			<version>${mysql-socket-factory.version}</version>
+		</dependency>
 
 		<!-- Tests -->
 		<dependency>
@@ -226,6 +232,9 @@
 			<plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
+				<configuration>
+					<failOnNoGitDirectory>false</failOnNoGitDirectory>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
