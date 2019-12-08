@@ -2,7 +2,7 @@ pipeline {
   agent { label 'docker' }
   parameters {
     string(name: 'mvn_env_opts', defaultValue: '-Xms64m -Xmx256m', description: 'Maven environment options')
-    string(name: 'mvn_build_opts', defaultValue: '-Dfrontend-build -Ddocker-build', description: 'Maven build options')
+    string(name: 'mvn_build_opts', defaultValue: '-B -Dfrontend-build -Ddocker-build', description: 'Maven build options')
     string(name: 'mvn_goals', defaultValue: 'clean verify', description: 'Maven build goals')
   }
   environment { 

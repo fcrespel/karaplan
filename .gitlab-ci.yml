@@ -1,6 +1,6 @@
 variables:
   MVN_ENV_OPTS: '-Xms64m -Xmx256m -Dmaven.repo.local=.mvn/repository'
-  MVN_BUILD_OPTS: '-Dfrontend-build -Ddocker-build'
+  MVN_BUILD_OPTS: '-B -Dfrontend-build -Ddocker-build'
   MVN_GOALS: 'clean verify'
   DOCKER_USERNAME: toComplete
   DOCKER_PASSWORD: toComplete
