@@ -1,0 +1,12 @@
+steps:
+- name: 'maven:3.5.3-jdk-8'
+  entrypoint: 'mvn'
+  args: ['-B', '-Dfrontend-build', '-Ddocker-build', '-DskipTests', 'verify']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/karaplan:$BRANCH_NAME', '.']
+  dir: 'target/docker-build'
+images: ['eu.gcr.io/$PROJECT_ID/karaplan:$BRANCH_NAME']
+artifacts:
+  objects:
+    location: 'gs://$PROJECT_ID/karaplan/'
+    paths: ['target/karaplan-*.war']
