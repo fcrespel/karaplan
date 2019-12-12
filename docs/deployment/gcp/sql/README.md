@@ -4,9 +4,27 @@ This example uses [Cloud SQL](https://cloud.google.com/sql/) to deploy a MySQL d
 
 ## Using Cloud Console
 
-(TODO)
+Go to [Cloud Console](https://console.cloud.google.com) and make sure the appropriate project is selected in the header menu.
+
+In the side menu, go to **SQL**:
+* Click **Create instance** and choose **MySQL**.
+* Choose an **Instance ID** such as `karaplan`.
+* Generate a **root password** or type a secure one.
+* Choose a **Region** (e.g. `europe-west1`).
+* Expand **configuration options**.
+* In the **Connectivity** section, enable **Private IP** on the `default` network.
+* Adjust **Backup** and **Maintenance** settings if necessary.
+* Click **Create**.
+
+When the database instance is ready:
+* In the **Database** section, click **Create database**, enter name `karaplan`, select charset `utf8mb4` and collation `utf8mb4_general_ci`.
+* In the **User** section, click **Create user account**, enter name `karaplan` and a secure password.
+
+Take note of the **Private IP** and **user/password** for use during application deployment.
 
 ## Using Cloud Shell / SDK
+
+Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or anywhere the [Cloud SDK](https://cloud.google.com/sdk/) is installed:
 
     # Set variables, adjust them as needed
     REGION=$(gcloud config get-value compute/region)
@@ -14,7 +32,7 @@ This example uses [Cloud SQL](https://cloud.google.com/sql/) to deploy a MySQL d
     USER_PASSWORD=$(</dev/urandom tr -dc A-Za-z0-9 | head -c16)
 
     # Create database instance (takes some time)
-    gcloud beta sql instances create karaplan --database-version=MYSQL_5_7 --tier=db-n1-standard-1 --region=$REGION --network=default --root-password=$ROOT_PASSWORD --no-backup
+    gcloud beta sql instances create karaplan --database-version=MYSQL_5_7 --tier=db-n1-standard-1 --region=$REGION --network=default --root-password=$ROOT_PASSWORD
 
     # Create database
     gcloud sql databases create karaplan --instance=karaplan --charset=utf8mb4 --collation=utf8mb4_general_ci
@@ -23,7 +41,11 @@ This example uses [Cloud SQL](https://cloud.google.com/sql/) to deploy a MySQL d
     gcloud sql users create karaplan --instance=karaplan --host=% --password=$USER_PASSWORD
     echo "Created user karaplan / $USER_PASSWORD"
 
-To connect a local client for debugging, you may use Cloud SQL Proxy:
+Take note of the **Private IP** and **user/password** for use during application deployment.
+
+## Local debugging
+
+To connect a local client for debugging, you may use **Cloud SQL Proxy**:
 
     PROJECT_ID=$(gcloud config get-value project)
     REGION=$(gcloud config get-value compute/region)
