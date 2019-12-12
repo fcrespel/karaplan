@@ -11,7 +11,7 @@ In the side menu, go to **SQL**:
 * Choose an **Instance ID** such as `karaplan`.
 * Generate a **root password** or type a secure one.
 * Choose a **Region** (e.g. `europe-west1`).
-* Expand **configuration options**.
+* Expand the configuration options at the bottom.
 * In the **Connectivity** section, enable **Private IP** on the `default` network.
 * Adjust **Backup** and **Maintenance** settings if necessary.
 * Click **Create**.

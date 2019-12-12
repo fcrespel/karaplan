@@ -2,9 +2,11 @@
 
 This example uses [Cloud Build](https://cloud.google.com/cloud-build/) to build the application, upload a WAR file to [Cloud Storage](https://cloud.google.com/storage/), and push a Docker image to [Container Registry](https://cloud.google.com/container-registry/).
 
-## Using Cloud Console
+## Prerequisites
 
-Before starting, create a **fork** of the project on GitHub (https://github.com/fcrespel/karaplan) under your own account.
+Before starting, **create a fork** of the project on GitHub (https://github.com/fcrespel/karaplan) under your own account.
+
+## Using Cloud Console
 
 Go to [Cloud Console](https://console.cloud.google.com) and make sure the appropriate project is selected in the header menu.
 
