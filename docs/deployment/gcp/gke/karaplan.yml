@@ -1,3 +1,39 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: karaplan-datasource-secret
+type: Opaque
+stringData:
+  username: karaplan
+  password: toComplete
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: karaplan-google-oauth-secret
+type: Opaque
+stringData:
+  clientId: toComplete
+  clientSecret: toComplete
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: karaplan-facebook-oauth-secret
+type: Opaque
+stringData:
+  clientId: toComplete
+  clientSecret: toComplete
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: karaplan-github-oauth-secret
+type: Opaque
+stringData:
+  clientId: toComplete
+  clientSecret: toComplete
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,19 +53,52 @@ spec:
       containers:
       - name: karaplan-container
         image: fcrespel/karaplan:master
+        imagePullPolicy: Always
         env:
         - name: SPRING_DATASOURCE_USERNAME
-          value: karaplan
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: karaplan-datasource-secret
         - name: SPRING_DATASOURCE_PASSWORD
-          value: toComplete
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: karaplan-datasource-secret
         - name: SPRING_DATASOURCE_URL
           value: jdbc:mysql://toComplete/karaplan?useSSL=false
         - name: SPRING_JPA_DATABASEPLATFORM
           value: org.hibernate.dialect.MySQL5InnoDBDialect
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
-          value: toComplete
+          valueFrom:
+            secretKeyRef:
+              key: clientId
+              name: karaplan-google-oauth-secret
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
-          value: toComplete
+          valueFrom:
+            secretKeyRef:
+              key: clientSecret
+              name: karaplan-google-oauth-secret
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID
+          valueFrom:
+            secretKeyRef:
+              key: clientId
+              name: karaplan-facebook-oauth-secret
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              key: clientSecret
+              name: karaplan-facebook-oauth-secret
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
+          valueFrom:
+            secretKeyRef:
+              key: clientId
+              name: karaplan-github-oauth-secret
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
+          valueFrom:
+            secretKeyRef:
+              key: clientSecret
+              name: karaplan-github-oauth-secret
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -104,9 +173,8 @@ kind: Ingress
 metadata:
   name: karaplan-ingress
   annotations:
-    kubernetes.io/ingress.allow-http: "false"
-    kubernetes.io/ingress.global-static-ip-name: karaplan-ip
-    ingress.gcp.kubernetes.io/pre-shared-cert: karaplan-ssl-cert
+    kubernetes.io/ingress.global-static-ip-name: karaplan-gke-ip
+    ingress.gcp.kubernetes.io/pre-shared-cert: karaplan-gke-ssl-cert
 spec:
   backend:
     serviceName: karaplan-service
