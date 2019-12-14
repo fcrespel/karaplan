@@ -43,7 +43,7 @@ In the side menu, go to **Network services > Load balancing**:
   * Enter `karaplan-classic-bes` as the backend service **name**.
   * Select `karaplan-classic-ig` as the **Instance group**, `8080` as the port number, then click **Done**.
   * In **Health check**, click **Create a health check** 
-    * Enter `karaplan-hc` as the health check **name**.
+    * Enter `karaplan-classic-hc` as the health check **name**.
     * Select **HTTP** as the **Protocol**, and `8080` as the port number.
     * Enter `/actuator/health` as the **Request path**.
   * Expand the configuration options at the bottom.
@@ -51,11 +51,11 @@ In the side menu, go to **Network services > Load balancing**:
   * Click **Create**.
 * In **Frontend configuration**:
   * Enter `karaplan-classic-frontend` as the frontend service **name**.
-  * In the **IP Address** dropdown, **Create IP address** named `karaplan-ip`.
+  * In the **IP Address** dropdown, **Create IP address** named `karaplan-classic-ip`.
   * If you *don't* have a custom domain name, leave **HTTP** as the **Protocol**.
   * If you *do* have a custom domain name:
     * Select **HTTPS** as the **Protocol**.
-    * In the **Certificate** dropdown, **Create a new certificate** named `karaplan-ssl-cert` for your custom domain name.
+    * In the **Certificate** dropdown, **Create a new certificate** named `karaplan-classic-ssl-cert` for your custom domain name.
   * Click **Done**.
 * Click **Create**.
 
@@ -71,5 +71,49 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     # Set variables, adjust them as needed
     PROJECT_ID=$(gcloud config get-value project)
     REGION=$(gcloud config get-value compute/region)
+    BUCKET_NAME=$PROJECT_ID
 
-    (TODO)
+    # Create Instance template
+    gcloud compute instance-templates create karaplan-classic-template-1 --machine-type=n1-standard-1 --image=debian-9-stretch-v20191121 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh
+
+    # Create Instance group
+    gcloud compute instance-groups managed create karaplan-classic-ig --size=3 --template=karaplan-classic-template-1 --region=$REGION
+    gcloud compute instance-groups managed set-named-ports karaplan-classic-ig --named-ports=http:8080 --region=$REGION
+
+    # Create HTTP health check
+    gcloud compute health-checks create http karaplan-classic-hc --port=8080 --request-path=/actuator/health
+
+    # Create Backend service
+    gcloud compute backend-services create karaplan-classic-bes --global --load-balancing-scheme=EXTERNAL --health-checks=karaplan-classic-hc --port-name=http --protocol=HTTP --session-affinity=GENERATED_COOKIE --affinity-cookie-ttl=0
+
+    # Create URL map
+    gcloud compute url-maps create karaplan-classic-url-map --default-service=karaplan-classic-bes
+
+    # Create IP address
+    gcloud compute addresses create karaplan-classic-ip --global
+    gcloud compute addresses list
+
+If you *don't* have a custom domain name:
+
+    # Create Target HTTP proxy
+    gcloud compute target-http-proxies create karaplan-classic-http-proxy --url-map=karaplan-classic-url-map
+
+    # Create Forwarding rule
+    gcloud compute forwarding-rules create karaplan-classic-forwarding-rule --global --load-balancing-scheme=EXTERNAL --target-http-proxy=karaplan-classic-http-proxy --global-address --address=karaplan-classic-ip --ports=80
+
+If you *do* have a custom domain name, add the created IP address in a **A record**, then:
+
+    DOMAIN=your.custom.domain
+
+    # Create SSL certificate
+    gcloud beta compute ssl-certificates create karaplan-classic-ssl-cert --domains=$DOMAIN --global
+
+    # Create Target HTTPS proxy
+    gcloud compute target-https-proxies create karaplan-classic-https-proxy --ssl-certificates=karaplan-classic-ssl-cert --url-map=karaplan-classic-url-map
+
+    # Create Forwarding rule
+    gcloud compute forwarding-rules create karaplan-classic-forwarding-rule --global --load-balancing-scheme=EXTERNAL --target-https-proxy=karaplan-classic-https-proxy --global-address --address=karaplan-classic-ip --ports=443
+
+
+
+After several minutes, the application should become available at this IP address and/or at the custom domain name.
