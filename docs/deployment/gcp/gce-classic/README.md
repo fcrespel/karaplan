@@ -6,7 +6,7 @@ This example uses [Compute Engine](https://cloud.google.com/compute/) to run the
 
 Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the WAR file and database.
 
-Then, download the `karaplan-startup.sh` file available in this directory to your computer. Update the fields marked `toComplete` with appropriate values using your preferred editor.
+Then, download the `karaplan-startup.sh` file available in this directory to your computer. Update the fields marked `toComplete` with appropriate values using your preferred editor. Refer to the main [README](../../../../README.md) file for information about configuring identity providers.
 
 In the side menu, go to **Storage > Browser**:
 * Select your bucket and enter the `karaplan` folder.
@@ -113,7 +113,5 @@ If you *do* have a custom domain name, add the created IP address in a **A recor
 
     # Create Forwarding rule
     gcloud compute forwarding-rules create karaplan-classic-forwarding-rule --global --load-balancing-scheme=EXTERNAL --target-https-proxy=karaplan-classic-https-proxy --global-address --address=karaplan-classic-ip --ports=443
-
-
 
 After several minutes, the application should become available at this IP address and/or at the custom domain name.
