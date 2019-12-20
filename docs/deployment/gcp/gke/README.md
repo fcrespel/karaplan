@@ -6,9 +6,9 @@ This example uses [Kubernetes Engine](https://cloud.google.com/kubernetes-engine
 
 Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
 
-Then, download the `karaplan.yml` file available in this directory to your computer. Update the fields marked `toComplete` with appropriate values using your preferred editor. Refer to the main [README](../../../../README.md) file for information about configuring identity providers.
+Then, download the `karaplan.yml` file available in this directory to your computer. Update the fields marked `toComplete` with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 
-Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address.
+Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
 ## Using Cloud Console
 

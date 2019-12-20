@@ -6,13 +6,13 @@ This example uses [Compute Engine](https://cloud.google.com/compute/) to run the
 
 Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the WAR file and database.
 
-Then, download the `karaplan-startup.sh` file available in this directory to your computer. Update the fields marked `toComplete` with appropriate values using your preferred editor. Refer to the main [README](../../../../README.md) file for information about configuring identity providers.
+Then, download the `karaplan-startup.sh` file available in this directory to your computer. Update the fields marked `toComplete` with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 
 In the side menu, go to **Storage > Browser**:
 * Select your bucket and enter the `karaplan` folder.
 * Click **Upload file** and select the `karaplan-startup.sh` file.
 
-Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address.
+Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
 ## Using Cloud Console
 
