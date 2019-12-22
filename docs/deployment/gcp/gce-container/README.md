@@ -123,7 +123,7 @@ If you *don't* have a custom domain name:
     gcloud compute target-http-proxies create karaplan-container-http-proxy --url-map=karaplan-container-url-map
 
     # Create Forwarding rule
-    gcloud compute forwarding-rules create karaplan-container-forwarding-rule --global --load-balancing-scheme=EXTERNAL --target-http-proxy=karaplan-container-http-proxy --global-address --address=karaplan-container-ip --ports=80
+    gcloud compute forwarding-rules create karaplan-container-fwd-http --global --load-balancing-scheme=EXTERNAL --target-http-proxy=karaplan-container-http-proxy --global-address --address=karaplan-container-ip --ports=80
 
 If you *do* have a custom domain name, add the created IP address in a **A record**, then:
 
@@ -136,6 +136,35 @@ If you *do* have a custom domain name, add the created IP address in a **A recor
     gcloud compute target-https-proxies create karaplan-container-https-proxy --ssl-certificates=karaplan-container-ssl-cert --url-map=karaplan-container-url-map
 
     # Create Forwarding rule
-    gcloud compute forwarding-rules create karaplan-container-forwarding-rule --global --load-balancing-scheme=EXTERNAL --target-https-proxy=karaplan-container-https-proxy --global-address --address=karaplan-container-ip --ports=443
+    gcloud compute forwarding-rules create karaplan-container-fwd-https --global --load-balancing-scheme=EXTERNAL --target-https-proxy=karaplan-container-https-proxy --global-address --address=karaplan-container-ip --ports=443
 
 After several minutes, the application should become available at this IP address and/or at the custom domain name.
+
+## Using Terraform
+
+You may use [Terraform](https://terraform.io) to provision all resources automatically. See the `main.tf` and `variables.tf` files for more information.
+
+First create a `terraform.tfvars` file in this directory, providing appropriate values for all variables:
+
+    credentials = "/path/to/credentials.json"
+    project_id = "your-project-id"
+    region = "europe-west1"
+    zones = ["europe-west1-b", "europe-west1-c", "europe-west1-d"]
+    domain_name = "your.custom.domain"
+    https_enabled = true
+    instances_count = 3
+    db_password = "toComplete"
+    db_address = "host:port"
+    google_oauth_clientid = "toComplete"
+    google_oauth_clientsecret = "toComplete"
+    facebook_oauth_clientid = "toComplete"
+    facebook_oauth_clientsecret = "toComplete"
+    github_oauth_clientid = "toComplete"
+    github_oauth_clientsecret = "toComplete"
+
+Then, run the following commands:
+
+    terraform init
+    terraform apply
+
+After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.

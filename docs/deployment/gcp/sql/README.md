@@ -53,3 +53,21 @@ To connect a local client for debugging, you may use **Cloud SQL Proxy**:
     cloud_sql_proxy -instances=$PROJECT_ID:$REGION:karaplan=tcp:3306
 
 Then connect to localhost:3306 with the user created earlier.
+
+## Using Terraform
+
+You may use [Terraform](https://terraform.io) to provision all resources automatically. See the `main.tf` and `variables.tf` files for more information.
+
+First create a `terraform.tfvars` file in this directory, providing appropriate values for all variables:
+
+    credentials = "/path/to/credentials.json"
+    project_id = "your-project-id"
+    region = "europe-west1"
+    db_password = "toComplete"
+
+Then, run the following commands:
+
+    terraform init
+    terraform apply
+
+Take note of the **Private IP** and **user/password** for use during application deployment.
