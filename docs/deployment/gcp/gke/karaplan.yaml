@@ -1,0 +1,35 @@
+replicaCount: 3
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: karaplan-gke-ip
+    ingress.gcp.kubernetes.io/pre-shared-cert: karaplan-gke-ssl-cert
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+backendConfig:
+  enabled: true
+
+datasource:
+  url: jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete
+
+secrets:
+  datasource:
+    username: karaplan
+    password: toComplete
+  google:
+    clientId: toComplete
+    clientSecret: toComplete
+  facebook:
+    clientId: toComplete
+    clientSecret: toComplete
+  github:
+    clientId: toComplete
+    clientSecret: toComplete

@@ -1,12 +1,12 @@
 # Google Kubernetes Engine
 
-This example uses [Kubernetes Engine](https://cloud.google.com/kubernetes-engine/) to run the Docker image in a Kubernetes cluster, and an Ingress to expose the service over HTTPS.
+This example uses [Kubernetes Engine](https://cloud.google.com/kubernetes-engine/) and [Helm](https://helm.sh) to run the Docker image in a Kubernetes cluster, and an Ingress to expose the service over HTTPS.
 
 ## Prerequisites
 
 Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
 
-Then, update the fields marked `toComplete` in the `karaplan.yml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
+Then, download and install the **Helm 2.x client** from the official [releases](https://github.com/helm/helm/releases) page. Update the fields marked `toComplete` in the `karaplan.yaml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 
 Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
@@ -60,15 +60,21 @@ If you have a custom domain name, add the created IP address in a **A record**, 
     # Create SSL certificate
     gcloud beta compute ssl-certificates create karaplan-gke-ssl-cert --domains=$DOMAIN --global
 
-If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `karaplan.yml` file prepared in *Prerequisites* to your current session.
+If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `karaplan.yaml` file prepared in *Prerequisites* to your current session.
 
 **Deploy** the application to Kubernetes:
 
     # Get Kubernetes cluster config
     gcloud container clusters get-credentials karaplan-gke-cluster --region=$REGION
 
-    # Create Kubernetes resources
-    kubectl apply -f karaplan.yml
+    # Init Helm client and server
+    helm init
+
+    # Preview template before installing it
+    helm template -f karaplan.yaml -n karaplan-gke ../../helm/karaplan
+
+    # Install application
+    helm install -f karaplan.yaml -n karaplan-gke ../../helm/karaplan
 
 After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
 
@@ -83,10 +89,19 @@ First create a `terraform.tfvars` file in this directory, providing appropriate 
     region = "europe-west1"
     domain_name = "your.custom.domain"
     https_enabled = true
+    replica_count = 3
+    db_password = "toComplete"
+    db_instance = "project-id:region:instance-name"
+    google_oauth_clientid = "toComplete"
+    google_oauth_clientsecret = "toComplete"
+    facebook_oauth_clientid = "toComplete"
+    facebook_oauth_clientsecret = "toComplete"
+    github_oauth_clientid = "toComplete"
+    github_oauth_clientsecret = "toComplete"
 
 Then, run the following commands:
 
     terraform init
     terraform apply
 
-For the rest of this guide, you will need to switch to **Cloud Shell / SDK** to perform additional commands (see above, *Deploy the application to Kubernetes*).
+After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
