@@ -1,0 +1,16 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "karaplan.fullname" . }}-ingress
+  labels:
+{{ include "karaplan.labels" . | indent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  backend:
+    serviceName: {{ include "karaplan.fullname" . }}-service
+    servicePort: {{ .Values.service.port }}
+{{- end }}

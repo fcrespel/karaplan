@@ -3,6 +3,7 @@
 This directory contains specific deployment instructions and examples for:
 
 * [Docker](docker) and Docker Compose
+* [Helm](helm) chart for Kubernetes
 * [Google Cloud Platform (GCP)](gcp)
 
 ## Database

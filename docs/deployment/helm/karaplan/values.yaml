@@ -1,0 +1,59 @@
+# Default values for karaplan.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: fcrespel/karaplan
+  tag: master
+  pullPolicy: Always
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: NodePort
+  port: 80
+  annotations: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.global-static-ip-name: karaplan-gke-ip
+    # ingress.gcp.kubernetes.io/pre-shared-cert: karaplan-gke-ssl-cert
+
+resources: {}
+  # limits:
+  #   cpu: 1000m
+  #   memory: 1Gi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
+
+affinity: {}
+
+backendConfig:
+  enabled: false
+
+application:
+  # Application metadata descriptor CRD must be installed in cluster
+  # See https://github.com/kubernetes-sigs/application
+  enabled: false
+
+datasource:
+  url: jdbc:mysql://localhost/karaplan?useSSL=false
+
+secrets:
+  datasource:
+    username: karaplan
+    password: toComplete
+  google:
+    clientId: toComplete
+    clientSecret: toComplete
+  facebook:
+    clientId: toComplete
+    clientSecret: toComplete
+  github:
+    clientId: toComplete
+    clientSecret: toComplete

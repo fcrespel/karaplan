@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "karaplan.fullname" . }}-service
+  labels:
+{{ include "karaplan.labels" . | indent 4 }}
+{{- if or .Values.service.annotations .Values.backendConfig.enabled }}
+  annotations:
+    {{- if .Values.service.annotations }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
+    {{- end }}
+    {{- if .Values.backendConfig.enabled }}
+    cloud.google.com/neg: '{"ingress":{{ .Values.ingress.enabled }}}'
+    beta.cloud.google.com/backend-config: '{"ports":{"http":"{{ include "karaplan.fullname" . }}-backendconfig"}}'
+    {{- end }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app.kubernetes.io/name: {{ include "karaplan.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http

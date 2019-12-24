@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "karaplan.fullname" . }}-deployment
+  labels:
+{{ include "karaplan.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "karaplan.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "karaplan.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  key: username
+                  name: {{ include "karaplan.fullname" . }}-datasource-secret
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: {{ include "karaplan.fullname" . }}-datasource-secret
+            - name: SPRING_DATASOURCE_URL
+              value: {{ .Values.datasource.url }}
+            - name: SPRING_JPA_DATABASEPLATFORM
+              value: org.hibernate.dialect.MySQL5InnoDBDialect
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  key: clientId
+                  name: {{ include "karaplan.fullname" . }}-google-oauth-secret
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  key: clientSecret
+                  name: {{ include "karaplan.fullname" . }}-google-oauth-secret
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  key: clientId
+                  name: {{ include "karaplan.fullname" . }}-facebook-oauth-secret
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  key: clientSecret
+                  name: {{ include "karaplan.fullname" . }}-facebook-oauth-secret
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
+              valueFrom:
+                secretKeyRef:
+                  key: clientId
+                  name: {{ include "karaplan.fullname" . }}-github-oauth-secret
+            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  key: clientSecret
+                  name: {{ include "karaplan.fullname" . }}-github-oauth-secret
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+            tcpSocket:
+              port: 8080
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
