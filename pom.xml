@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.6.RELEASE</version>
+		<version>2.1.11.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -38,8 +38,8 @@
 		<commons-csv.version>1.6</commons-csv.version>
 		<guava.version>27.1-jre</guava.version>
 		<mysql-socket-factory.version>1.0.15</mysql-socket-factory.version>
-		<node.version>v10.16.0</node.version>
-		<npm.version>6.9.0</npm.version>
+		<node.version>v12.14.1</node.version>
+		<npm.version>6.13.4</npm.version>
 		<socketio-client.version>1.0.0</socketio-client.version>
 		<springfox.version>2.9.2</springfox.version>
 	</properties>
