@@ -281,11 +281,23 @@
 									<goal>copy-resources</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+									<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 									<resources>
 										<resource>
 											<directory>${nodejs.build.directory}/dist/karaplan</directory>
+											<targetPath>static</targetPath>
 											<filtering>false</filtering>
+											<excludes>
+												<exclude>index.html</exclude>
+											</excludes>
+										</resource>
+										<resource>
+											<directory>${nodejs.build.directory}/dist/karaplan</directory>
+											<targetPath>templates</targetPath>
+											<filtering>false</filtering>
+											<includes>
+												<include>index.html</include>
+											</includes>
 										</resource>
 									</resources>
 								</configuration>
@@ -326,7 +338,7 @@
 									<goal>npm</goal>
 								</goals>
 								<configuration>
-									<arguments>run build</arguments>
+									<arguments>run build-prod</arguments>
 								</configuration>
 							</execution>
 						</executions>
