@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlaylistModalComponent } from './playlist-modal.component';
+import { PlaylistLeaveModalComponent } from './playlist-leave-modal.component';
 
-describe('PlaylistModalComponent', () => {
-  let component: PlaylistModalComponent;
-  let fixture: ComponentFixture<PlaylistModalComponent>;
+describe('PlaylistLeaveModalComponent', () => {
+  let component: PlaylistLeaveModalComponent;
+  let fixture: ComponentFixture<PlaylistLeaveModalComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlaylistModalComponent ]
+      declarations: [ PlaylistLeaveModalComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PlaylistModalComponent);
+    fixture = TestBed.createComponent(PlaylistLeaveModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

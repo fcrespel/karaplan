@@ -3,11 +3,11 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Playlist } from '../models/playlist';
 
 @Component({
-  selector: 'app-playlist-modal',
-  templateUrl: './playlist-modal.component.html',
-  styleUrls: ['./playlist-modal.component.css']
+  selector: 'app-playlist-edit-modal',
+  templateUrl: './playlist-edit-modal.component.html',
+  styleUrls: ['./playlist-edit-modal.component.css']
 })
-export class PlaylistModalComponent implements OnInit {
+export class PlaylistEditModalComponent implements OnInit {
 
   @Input() playlist: Playlist;
 

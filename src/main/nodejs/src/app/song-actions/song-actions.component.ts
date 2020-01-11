@@ -10,7 +10,7 @@ import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { Playlist } from '../models/playlist';
 import { PlaylistSong } from '../models/playlist-song';
-import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
+import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
 
 @Component({
   selector: 'app-song-actions',
@@ -163,7 +163,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   }
 
   createPlaylist() {
-    let modal = this.modalService.open(PlaylistModalComponent);
+    let modal = this.modalService.open(PlaylistEditModalComponent);
     modal.componentInstance.playlist = new Playlist();
     modal.result.then((result: Playlist) => {
       this.playlistsService.createPlaylist(result.name).subscribe(playlist => {

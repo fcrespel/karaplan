@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -6,7 +7,8 @@ import { switchMap } from 'rxjs/operators';
 import { AccountService } from '../services/account.service';
 import { AlertService } from '../services/alert.service';
 import { PlaylistsService } from '../services/playlists.service';
-import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
+import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
+import { PlaylistLeaveModalComponent } from '../playlist-leave-modal/playlist-leave-modal.component';
 import { User } from '../models/user';
 import { Playlist } from '../models/playlist';
 import { Song } from '../models/song';
@@ -32,6 +34,7 @@ export class PlaylistDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private modalService: NgbModal,
     private accountService: AccountService,
     private playlistsService: PlaylistsService,
@@ -53,8 +56,11 @@ export class PlaylistDetailComponent implements OnInit {
     if (playlist !== undefined) {
       this.playlist = playlist;
     }
+    let urlTree = this.router.createUrlTree(['/playlists', this.playlist.id], {
+      queryParams: {accessKey: this.playlist.accessKey}
+    });
+    this.shareUrl = window.location.origin + this.location.prepareExternalUrl(urlTree.toString());
     this.playlistMembers = this.playlist.members ? this.playlist.members.map(user => user.displayName).join(', ') : '';
-    this.shareUrl = `${document.location.href}?accessKey=${this.playlist.accessKey}`;
   }
 
   joinPlaylist() {
@@ -64,13 +70,17 @@ export class PlaylistDetailComponent implements OnInit {
   }
 
   leavePlaylist() {
-    this.playlistsService.leavePlaylist(this.playlist.id).subscribe(response => {
-      this.router.navigate(['/playlists']);
-    });
+    let modal = this.modalService.open(PlaylistLeaveModalComponent);
+    modal.componentInstance.playlist = this.playlist;
+    modal.result.then((result: Playlist) => {
+      this.playlistsService.leavePlaylist(result.id).subscribe(response => {
+        this.router.navigate(['/playlists']);
+      });
+    }, reason => {});
   }
 
   editPlaylist() {
-    let modal = this.modalService.open(PlaylistModalComponent);
+    let modal = this.modalService.open(PlaylistEditModalComponent);
     modal.componentInstance.playlist = new Playlist(this.playlist.id, this.playlist.name, this.playlist.readOnly);
     modal.result.then((result: Playlist) => {
       this.playlistsService.savePlaylist(result).subscribe(playlist => {

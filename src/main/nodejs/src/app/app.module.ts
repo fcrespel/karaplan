@@ -19,7 +19,8 @@ import { SongDetailComponent } from './song-detail/song-detail.component';
 import { SongActionsComponent } from './song-actions/song-actions.component';
 import { PlaylistsComponent } from './playlists/playlists.component';
 import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
-import { PlaylistModalComponent } from './playlist-modal/playlist-modal.component';
+import { PlaylistEditModalComponent } from './playlist-edit-modal/playlist-edit-modal.component';
+import { PlaylistLeaveModalComponent } from './playlist-leave-modal/playlist-leave-modal.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AboutComponent } from './about/about.component';
 import { DurationPipe } from './pipes/duration.pipe';
@@ -40,7 +41,8 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     SongActionsComponent,
     PlaylistsComponent,
     PlaylistDetailComponent,
-    PlaylistModalComponent,
+    PlaylistEditModalComponent,
+    PlaylistLeaveModalComponent,
     UserProfileComponent,
     AboutComponent,
     DurationPipe
@@ -57,6 +59,9 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [PlaylistModalComponent]
+  entryComponents: [
+    PlaylistEditModalComponent,
+    PlaylistLeaveModalComponent
+  ]
 })
 export class AppModule { }

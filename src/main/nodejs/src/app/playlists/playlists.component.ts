@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
-import { PlaylistModalComponent } from '../playlist-modal/playlist-modal.component';
+import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
+import { PlaylistLeaveModalComponent } from '../playlist-leave-modal/playlist-leave-modal.component';
 import { Playlist } from '../models/playlist';
 
 @Component({
@@ -43,7 +44,7 @@ export class PlaylistsComponent implements OnInit {
   }
 
   createPlaylist() {
-    let modal = this.modalService.open(PlaylistModalComponent);
+    let modal = this.modalService.open(PlaylistEditModalComponent);
     modal.componentInstance.playlist = new Playlist();
     modal.result.then((result: Playlist) => {
       this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
@@ -53,7 +54,7 @@ export class PlaylistsComponent implements OnInit {
   }
 
   editPlaylist(playlist: Playlist) {
-    let modal = this.modalService.open(PlaylistModalComponent);
+    let modal = this.modalService.open(PlaylistEditModalComponent);
     modal.componentInstance.playlist = new Playlist(playlist.id, playlist.name, playlist.readOnly)
     modal.result.then((result: Playlist) => {
       this.playlistsService.savePlaylist(result).subscribe(playlist => {
@@ -63,9 +64,13 @@ export class PlaylistsComponent implements OnInit {
   }
 
   leavePlaylist(playlist: Playlist) {
-    this.playlistsService.leavePlaylist(playlist.id).subscribe(response => {
-      this.refreshPlaylists();
-    });
+    let modal = this.modalService.open(PlaylistLeaveModalComponent);
+    modal.componentInstance.playlist = playlist;
+    modal.result.then((result: Playlist) => {
+      this.playlistsService.leavePlaylist(result.id).subscribe(response => {
+        this.refreshPlaylists();
+      });
+    }, reason => {});
   }
 
 }
