@@ -13,18 +13,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SortComparator;
-import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -70,13 +67,10 @@ public class Song implements Comparable<Song> {
 	@Column(name = "IMAGE")
 	private String image;
 
-	@Lob
-	@Type(type = "org.hibernate.type.TextType")
-	@Column(name = "LYRICS")
+	@Transient
 	private String lyrics;
 
-	@Lob
-	@Column(name = "RIGHTS")
+	@Transient
 	private String rights;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
@@ -84,8 +78,7 @@ public class Song implements Comparable<Song> {
 	@JsonIgnoreProperties("songs")
 	private Artist artist;
 
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(name = "song_style", joinColumns = @JoinColumn(name = "FK_SONG", referencedColumnName = "ID"), inverseJoinColumns = @JoinColumn(name = "FK_STYLE", referencedColumnName = "ID"))
+	@Transient
 	private Set<Style> styles;
 
 	@Column(name = "SCORE")

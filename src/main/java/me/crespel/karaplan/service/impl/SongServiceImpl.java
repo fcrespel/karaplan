@@ -34,7 +34,6 @@ import me.crespel.karaplan.repository.SongVoteRepo;
 import me.crespel.karaplan.service.ArtistService;
 import me.crespel.karaplan.service.CatalogService;
 import me.crespel.karaplan.service.SongService;
-import me.crespel.karaplan.service.StyleService;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -50,9 +49,6 @@ public class SongServiceImpl implements SongService {
 
 	@Autowired
 	protected ArtistService artistService;
-
-	@Autowired
-	protected StyleService styleService;
 
 	protected final ConfigurableConversionService conversionService;
 
@@ -84,11 +80,9 @@ public class SongServiceImpl implements SongService {
 
 	@Override
 	public Optional<Song> findByCatalogId(Long catalogId, Locale locale) {
-		Optional<Song> song = songRepo.findByCatalogId(catalogId);
-		if (!song.isPresent()) {
-			song = Optional.ofNullable(conversionService.convert(catalogService.getSong(catalogId, locale), Song.class));
-		}
-		return song;
+		Optional<Song> localSong = songRepo.findByCatalogId(catalogId);
+		Optional<Song> catalogSong = Optional.ofNullable(conversionService.convert(catalogService.getSong(catalogId, locale), Song.class));
+		return mergeSongs(localSong, catalogSong);
 	}
 
 	@Override
@@ -118,7 +112,7 @@ public class SongServiceImpl implements SongService {
 			// Merge results
 			resultSongs.addAll(Stream.of(catalogSongs, localSongs)
 					.flatMap(Collection::stream)
-					.collect(Collectors.toMap(Song::getCatalogId, Function.identity(), (catalog, local) -> local, LinkedHashMap::new))
+					.collect(Collectors.toMap(Song::getCatalogId, Function.identity(), (catalog, local) -> mergeSongs(Optional.of(local), Optional.of(catalog)).get(), LinkedHashMap::new))
 					.values());
 		}
 		return resultSongs;
@@ -176,6 +170,40 @@ public class SongServiceImpl implements SongService {
 		return save(song);
 	}
 
+	protected Optional<Song> mergeSongs(Optional<Song> song1, Optional<Song> song2) {
+		if (song1.isPresent()) {
+			if (song2.isPresent()) {
+				Song s1 = song1.get();
+				Song s2 = song2.get();
+				if (s1.getCatalogId() == null)
+					s1.setCatalogId(s2.getCatalogId());
+				if (s1.getName() == null)
+					s1.setName(s2.getName());
+				if (s1.getDuration() == null)
+					s1.setDuration(s2.getDuration());
+				if (s1.getYear() == null)
+					s1.setYear(s2.getYear());
+				if (s1.getImage() == null)
+					s1.setImage(s2.getImage());
+				if (s1.getLyrics() == null)
+					s1.setLyrics(s2.getLyrics());
+				if (s1.getRights() == null)
+					s1.setRights(s2.getRights());
+				if (s1.getArtist() == null)
+					s1.setArtist(s2.getArtist());
+				if (s1.getStyles() == null || s1.getStyles().isEmpty())
+					s1.setStyles(s2.getStyles());
+				return song1;
+			} else {
+				return song1;
+			}
+		} else if (song2.isPresent()) {
+			return song2;
+		} else {
+			return Optional.empty();
+		}
+	}
+
 	public class CatalogSongToSongConverter implements Converter<CatalogSong, Song> {
 
 		@Override
@@ -191,7 +219,7 @@ public class SongServiceImpl implements SongService {
 					.setArtist(artistService.findByCatalogId(source.getArtist().getId()).orElse(null));
 			if (source.getStyles() != null) {
 				song.setStyles(source.getStyles().stream()
-						.map(it -> styleService.findByCatalogId(it.getId()).orElse(conversionService.convert(it, Style.class)))
+						.map(it -> conversionService.convert(it, Style.class))
 						.collect(Collectors.toCollection(LinkedHashSet::new)));
 			}
 			return song;
