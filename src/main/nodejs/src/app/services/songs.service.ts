@@ -33,10 +33,14 @@ export class SongsService {
     return this.http.get<Song[]>(url, {params: params});
   }
 
-  getSelections(type: string): Observable<CatalogSelection[]> {
-    const url = `${this.songsUrl}/selections`;
-    let params = new HttpParams().set('type', type);
-    return this.http.get<CatalogSelection[]>(url, {params: params});
+  getSelections(selectionType: string): Observable<CatalogSelection[]> {
+    const url = `${this.songsUrl}/selections/${selectionType}`;
+    return this.http.get<CatalogSelection[]>(url);
+  }
+
+  getSelection(selectionType: string, selectionId: number): Observable<CatalogSelection> {
+    const url = `${this.songsUrl}/selections/${selectionType}/${selectionId}`;
+    return this.http.get<CatalogSelection>(url);
   }
 
   getSong(catalogId: number): Observable<Song> {

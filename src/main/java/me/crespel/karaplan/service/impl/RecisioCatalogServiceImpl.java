@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import me.crespel.karaplan.model.CatalogArtist;
+import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionList;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
@@ -62,6 +63,16 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 	@Override
 	public CatalogSongFileList getSongFileList(long songId) {
 		return kvCatalog.getSongFileList(songId);
+	}
+
+	@Override
+	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId) {
+		return getSelection(type, selectionId, null);
+	}
+
+	@Override
+	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
+		return karafunCatalog.getSelection(type, selectionId, locale);
 	}
 
 	@Override

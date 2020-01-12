@@ -48,6 +48,20 @@
   </div>
 </div>
 
+<!-- Selection info -->
+<div class="card mb-3" *ngIf="queryContext.selection">
+  <div class="card-body px-3 py-2 text-dark">
+    <div class="row no-gutters align-items-center">
+      <div class="col-auto">
+        <img src="{{ queryContext.selection.img || 'https://via.placeholder.com/50?text=?' }}" class="rounded" style="width: 50px; height: 50px;">
+      </div>
+      <div class="col px-3">
+        <h5 class="card-title mb-1">{{ queryContext.selection.name || '...' }}</h5>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Loading indicator -->
 <div class="d-flex justify-content-center" *ngIf="queryContext.loading">
   <div class="spinner-border spinner-border-lg" role="status">

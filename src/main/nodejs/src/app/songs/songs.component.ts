@@ -31,6 +31,9 @@ export class SongsComponent implements OnInit {
           let result = new QueryContext(type, query);
           result.songs = songs;
           result.hasMoreSongs = songs && songs.length == result.songsLimit;
+          if (type != 'query') {
+            this.songsService.getSelection(type, +query).subscribe(selection => result.selection = selection);
+          }
           return result;
         })));
       } else if (type == 'votes') {
@@ -49,6 +52,9 @@ export class SongsComponent implements OnInit {
       }
     })).subscribe(result => {
       this.queryContext = result;
+      if (result.loading) {
+        this.queryField = result.query;
+      }
     });
   }
 
@@ -85,11 +91,16 @@ class QueryContext {
   songsLimit: number = 10;
   hasMoreSongs: boolean = false;
   hasMoreSongsLoading: boolean = false;
+  selection: CatalogSelection;
   selections: CatalogSelection[];
 
   constructor(
     public type: string = 'query',
     public query: string = '',
     public loading: boolean = false
-  ) { }
+  ) {
+    if (type != 'query' && query) {
+      this.selection = new CatalogSelection();
+    }
+  }
 }

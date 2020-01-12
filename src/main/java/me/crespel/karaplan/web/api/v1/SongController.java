@@ -59,10 +59,16 @@ public class SongController {
 		return songService.search(type, query, pageable, user.getLocaleParsed());
 	}
 
-	@GetMapping("/selections")
+	@GetMapping("/selections/{selectionType}")
 	@ApiOperation("Get song selections in the catalog")
-	public Set<CatalogSelection> getSelections(@RequestParam CatalogSelectionType type, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		return catalogService.getSelectionList(type, user.getLocaleParsed()).getSelections();
+	public Set<CatalogSelection> getSelections(@PathVariable CatalogSelectionType selectionType, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return catalogService.getSelectionList(selectionType, user.getLocaleParsed()).getSelections();
+	}
+
+	@GetMapping("/selections/{selectionType}/{selectionId}")
+	@ApiOperation("Get song selection information from the catalog")
+	public CatalogSelection getSelection(@PathVariable CatalogSelectionType selectionType, @PathVariable Long selectionId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return catalogService.getSelection(selectionType, selectionId, user.getLocaleParsed());
 	}
 
 	@GetMapping("/{catalogId}")

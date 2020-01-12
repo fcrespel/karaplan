@@ -3,6 +3,7 @@ package me.crespel.karaplan.service.impl;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,9 @@ import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.model.CatalogArtist;
-import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionList;
+import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongFileList;
 import me.crespel.karaplan.model.CatalogSongList;
@@ -154,6 +155,20 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	@Override
 	public CatalogSongFileList getSongFileList(long songId) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	@Cacheable("karafunCatalogCache")
+	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId) {
+		return getSelection(type, selectionId, null);
+	}
+
+	@Override
+	@Cacheable("karafunCatalogCache")
+	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
+		CatalogSelectionList list = getSelectionList(type, locale);
+		Optional<CatalogSelection> selection = list.getSelections().stream().filter(it -> it.getId() == selectionId).findFirst();
+		return selection.orElseThrow(() -> new BusinessException("Invalid selection ID"));
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import me.crespel.karaplan.config.KvConfig.KvProperties;
 import me.crespel.karaplan.model.CatalogArtist;
+import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionList;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSong;
@@ -185,6 +186,16 @@ public class KvCatalogServiceImpl implements CatalogService {
 		} catch (JsonProcessingException | RestClientException e) {
 			throw new TechnicalException(e);
 		}
+	}
+
+	@Override
+	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId) {
+		return getSelection(type, selectionId, null);
+	}
+
+	@Override
+	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
