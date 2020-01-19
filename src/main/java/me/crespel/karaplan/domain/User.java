@@ -1,5 +1,6 @@
 package me.crespel.karaplan.domain;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.SortedSet;
@@ -37,7 +38,9 @@ import lombok.experimental.Accessors;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "user")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class User {
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue

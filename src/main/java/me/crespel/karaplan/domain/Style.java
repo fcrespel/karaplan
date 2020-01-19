@@ -1,5 +1,6 @@
 package me.crespel.karaplan.domain;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -17,7 +18,9 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(exclude = { "songs" })
 @ToString(of = { "id", "name" })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Style implements Comparable<Style> {
+public class Style implements Comparable<Style>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private Long catalogId;
@@ -32,7 +35,9 @@ public class Style implements Comparable<Style> {
 
 	public static Comparator<Style> orderByIdComparator = new OrderByIdComparator();
 
-	public static class OrderByIdComparator implements Comparator<Style> {
+	public static class OrderByIdComparator implements Comparator<Style>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(Style o1, Style o2) {
@@ -45,7 +50,9 @@ public class Style implements Comparable<Style> {
 
 	public static Comparator<Style> orderByNameComparator = new OrderByNameComparator();
 
-	public static class OrderByNameComparator implements Comparator<Style> {
+	public static class OrderByNameComparator implements Comparator<Style>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(Style o1, Style o2) {

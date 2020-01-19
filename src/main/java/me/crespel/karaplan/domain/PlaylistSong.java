@@ -43,7 +43,9 @@ import lombok.experimental.Accessors;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "playlist_song")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PlaylistSong implements Comparable<PlaylistSong> {
+public class PlaylistSong implements Comparable<PlaylistSong>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@JsonIgnore
 	@EmbeddedId
@@ -104,7 +106,9 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 
 	public static Comparator<PlaylistSong> orderByPlaylistAndPositionAndSongComparator = new OrderByPlaylistAndPositionAndSongComparator();
 
-	public static class OrderByPlaylistAndPositionAndSongComparator implements Comparator<PlaylistSong> {
+	public static class OrderByPlaylistAndPositionAndSongComparator implements Comparator<PlaylistSong>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(PlaylistSong o1, PlaylistSong o2) {
@@ -119,7 +123,9 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 
 	public static Comparator<PlaylistSong> orderBySongNameComparator = new OrderBySongNameComparator();
 
-	public static class OrderBySongNameComparator implements Comparator<PlaylistSong> {
+	public static class OrderBySongNameComparator implements Comparator<PlaylistSong>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(PlaylistSong o1, PlaylistSong o2) {
@@ -133,7 +139,9 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 
 	public static Comparator<PlaylistSong> orderBySongScoreComparator = new OrderBySongScoreComparator();
 
-	public static class OrderBySongScoreComparator implements Comparator<PlaylistSong> {
+	public static class OrderBySongScoreComparator implements Comparator<PlaylistSong>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(PlaylistSong o1, PlaylistSong o2) {
@@ -147,7 +155,9 @@ public class PlaylistSong implements Comparable<PlaylistSong> {
 
 	public static Comparator<PlaylistSong> orderByCreatedDateComparator = new OrderByCreatedDateComparator();
 
-	public static class OrderByCreatedDateComparator implements Comparator<PlaylistSong> {
+	public static class OrderByCreatedDateComparator implements Comparator<PlaylistSong>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(PlaylistSong o1, PlaylistSong o2) {

@@ -1,16 +1,21 @@
 package me.crespel.karaplan.security;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import me.crespel.karaplan.domain.User;
 
-public class OAuth2UserWrapper implements OAuth2User, UserWrapper {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class OAuth2UserWrapper implements OAuth2User, UserWrapper, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	protected final OAuth2User delegate;
 	protected final User user;

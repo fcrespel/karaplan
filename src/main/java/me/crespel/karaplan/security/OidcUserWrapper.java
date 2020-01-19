@@ -1,5 +1,6 @@
 package me.crespel.karaplan.security;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -9,10 +10,14 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import me.crespel.karaplan.domain.User;
 
-public class OidcUserWrapper implements OidcUser, UserWrapper {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class OidcUserWrapper implements OidcUser, UserWrapper, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	protected final OidcUser delegate;
 	protected final User user;

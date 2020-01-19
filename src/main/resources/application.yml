@@ -1,6 +1,10 @@
 spring:
   application:
     name: karaplan
+  data:
+    redis:
+      repositories:
+        enabled: false
   http:
     encoding:
       charset: UTF-8
@@ -25,6 +29,10 @@ spring:
           facebook:
             client-id: toComplete
             client-secret: toComplete
+  session:
+    store-type: none
+    redis:
+      namespace: karaplan:session
 server:
   port: 8080
   compression:

@@ -1,5 +1,6 @@
 package me.crespel.karaplan.domain;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Set;
@@ -49,7 +50,9 @@ import lombok.experimental.Accessors;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "playlist")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Playlist implements Comparable<Playlist> {
+public class Playlist implements Comparable<Playlist>, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue
@@ -123,7 +126,9 @@ public class Playlist implements Comparable<Playlist> {
 
 	public static Comparator<Playlist> orderByIdComparator = new OrderByIdComparator();
 
-	public static class OrderByIdComparator implements Comparator<Playlist> {
+	public static class OrderByIdComparator implements Comparator<Playlist>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(Playlist o1, Playlist o2) {
@@ -136,7 +141,9 @@ public class Playlist implements Comparable<Playlist> {
 
 	public static Comparator<Playlist> orderByNameComparator = new OrderByNameComparator();
 
-	public static class OrderByNameComparator implements Comparator<Playlist> {
+	public static class OrderByNameComparator implements Comparator<Playlist>, Serializable {
+
+		private static final long serialVersionUID = 1L;
 
 		@Override
 		public int compare(Playlist o1, Playlist o2) {
