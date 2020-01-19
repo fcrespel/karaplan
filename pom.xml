@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.11.RELEASE</version>
+		<version>2.2.3.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -41,7 +41,7 @@
 		<node.version>v12.14.1</node.version>
 		<npm.version>6.13.4</npm.version>
 		<socketio-client.version>1.0.0</socketio-client.version>
-		<springfox.version>2.9.2</springfox.version>
+		<springfox.version>3.0.0-SNAPSHOT</springfox.version>
 	</properties>
 
 	<scm>
@@ -57,6 +57,13 @@
 			<url>https://maven.pkg.github.com/fcrespel/karaplan</url>
 		</repository>
 	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>jcenter-snapshots</id>
+			<url>http://oss.jfrog.org/artifactory/oss-snapshot-local/</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -165,7 +172,6 @@
 		<dependency>
 			<groupId>com.google.cloud.sql</groupId>
 			<artifactId>mysql-socket-factory-connector-j-8</artifactId>
-			<version>${mysql-socket-factory.version}</version>
 		</dependency>
 
 		<!-- Tests -->
@@ -192,6 +198,11 @@
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud.sql</groupId>
+				<artifactId>mysql-socket-factory-connector-j-8</artifactId>
+				<version>${mysql-socket-factory.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.socket</groupId>

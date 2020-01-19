@@ -1,5 +1,8 @@
 package me.crespel.karaplan.config;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static springfox.documentation.schema.AlternateTypeRules.newRule;
+
 import java.lang.reflect.Type;
 import java.security.Principal;
 import java.util.List;
@@ -22,13 +25,10 @@ import springfox.documentation.schema.AlternateTypeRuleConvention;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import static com.google.common.collect.Lists.*;
-import static springfox.documentation.schema.AlternateTypeRules.*;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
 @Configuration
-@EnableSwagger2
+@EnableSwagger2WebMvc
 public class SwaggerConfig {
 
 	@Bean
