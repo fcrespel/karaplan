@@ -1,3 +1,4 @@
+[![Build status](https://github.com/fcrespel/karaplan/workflows/CI/badge.svg)](https://github.com/fcrespel/karaplan/actions?query=workflow%3ACI)
 [![Docker Pulls](https://img.shields.io/docker/pulls/fcrespel/karaplan.svg)](https://hub.docker.com/r/fcrespel/karaplan)
 [![License](https://img.shields.io/github/license/fcrespel/karaplan.svg)](https://opensource.org/licenses/MIT)
 
