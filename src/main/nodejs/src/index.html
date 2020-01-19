@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" prefix="og: http://ogp.me/ns#" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <title>KaraPlan</title>
@@ -12,6 +12,11 @@
   <link rel="mask-icon" href="safari-pinned-tab.svg" color="#d5177a">
   <meta name="msapplication-TileColor" content="#603cba">
   <meta name="theme-color" content="#d5177a">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="KaraPlan">
+  <meta property="og:description" content="KaraPlan is a Karaoke Planner web application with song search, ratings, comments, playlists and more.">
+  <meta property="og:url" content="http://localhost:8080" th:content="@{${#request.requestURL}}">
+  <meta property="og:image" content="http://localhost:8080/android-chrome-192x192.png" th:content="@{${#request.scheme+'://'+#request.serverName+':'+#request.serverPort+#request.contextPath+'/android-chrome-192x192.png'}}">
 </head>
 <body>
   <app-root></app-root>
