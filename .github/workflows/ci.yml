@@ -3,7 +3,7 @@ name: CI
 on: [push]
 
 env:
-  MAVEN_OPTS: -Xms64m -Xmx256m
+  MAVEN_OPTS: -Xms64m -Xmx512m
   MAVEN_CLI_OPTS: -s .mvn/settings.xml -B -Dfrontend-build -Ddocker-build
   MAVEN_GOALS: clean verify
   GITHUB_USER: fcrespel
@@ -25,12 +25,17 @@ jobs:
       run: mvn ${MAVEN_CLI_OPTS} ${MAVEN_GOALS} -DskipTests
     - name: Test webapp
       run: mvn ${MAVEN_CLI_OPTS} test
-    - name: Deploy webapp
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: webapp
+        path: target/karaplan.war
+    - name: Publish artifacts
       if: startsWith(github.ref, 'refs/tags')
       run: mvn ${MAVEN_CLI_OPTS} deploy -DskipTests
-    - name: Build image
+    - name: Build Docker image
       run: docker build -t ${DOCKER_REPO}/${DOCKER_IMAGE}:$(basename $GITHUB_REF) target/docker-build
-    - name: Publish image
+    - name: Publish Docker image
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
         docker push ${DOCKER_REPO}/${DOCKER_IMAGE}:$(basename $GITHUB_REF)
