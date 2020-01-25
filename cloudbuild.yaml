@@ -9,4 +9,4 @@ images: ['eu.gcr.io/$PROJECT_ID/karaplan:$BRANCH_NAME']
 artifacts:
   objects:
     location: 'gs://$PROJECT_ID/karaplan/'
-    paths: ['target/karaplan-*.war']
+    paths: ['target/karaplan.war']

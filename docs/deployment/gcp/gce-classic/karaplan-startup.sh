@@ -11,7 +11,7 @@ systemctl stop tomcat8
 rm -Rf /var/lib/tomcat8/webapps/ROOT
 
 # Download app
-gsutil cp gs://$BUCKET_NAME/karaplan/karaplan-1.0.0-SNAPSHOT.war /var/lib/tomcat8/webapps/ROOT.war
+gsutil cp gs://$BUCKET_NAME/karaplan/karaplan.war /var/lib/tomcat8/webapps/ROOT.war
 
 # Configure app
 mkdir -p /var/lib/tomcat8/bin

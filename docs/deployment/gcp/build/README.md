@@ -26,7 +26,7 @@ In the side menu, go to **Cloud Build > Triggers**:
 * Go to the **History** section of the side menu to see the current build.
 
 When the build is successful, you may check the results in:
-* **Cloud Storage > Browser**: in the `karaplan` folder of your bucket, you should now see a WAR file (e.g. `karaplan-1.0.0-SNAPSHOT.war`).
+* **Cloud Storage > Browser**: in the `karaplan` folder of your bucket, you should now see the `karaplan.war` file.
 * **Container Registry > Images**: a `karaplan` image should be available with the `master` tag.
 
 ## Using Cloud Shell / SDK
