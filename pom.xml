@@ -29,8 +29,11 @@
 		<docker.image.prefix>fcrespel</docker.image.prefix>
 		<docker.image.repository>${docker.image.prefix}/${project.artifactId}</docker.image.repository>
 		<docker.image.tag>${project.version}</docker.image.tag>
+		<appengine.src.directory>${basedir}/src/main/appengine</appengine.src.directory>
+		<appengine.build.directory>${project.build.directory}/appengine-staging</appengine.build.directory>
 
 		<!-- Plugin properties -->
+		<appengine-maven-plugin.version>2.2.0</appengine-maven-plugin.version>
 		<dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
 		<frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
 
@@ -430,6 +433,83 @@
 							<repository>${docker.image.repository}</repository>
 							<tag>${docker.image.tag}</tag>
 							<contextDirectory>${docker.build.directory}</contextDirectory>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>appengine-build</id>
+			<activation>
+				<property>
+					<name>appengine-build</name>
+				</property>
+			</activation>
+			<build>
+				<defaultGoal>package</defaultGoal>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>appengine-unpack</id>
+								<phase>package</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${appengine.build.directory}</outputDirectory>
+									<artifactItems>
+										<artifactItem>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>${project.artifactId}</artifactId>
+											<version>${project.version}</version>
+											<type>${project.packaging}</type>
+											<includes>WEB-INF/classes/static/**</includes>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>appengine-resources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${appengine.build.directory}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${appengine.src.directory}/files</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.google.cloud.tools</groupId>
+						<artifactId>appengine-maven-plugin</artifactId>
+						<version>${appengine-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>appengine-stage</id>
+								<phase>package</phase>
+								<goals>
+									<goal>stage</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<version>1</version>
+							<projectId>GCLOUD_CONFIG</projectId>
 						</configuration>
 					</plugin>
 				</plugins>
