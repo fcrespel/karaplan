@@ -39,7 +39,7 @@ public class SwaggerConfig {
 				.apiInfo(apiInfo())
 				.ignoredParameterTypes(Principal.class)
 				.select()
-				.apis(RequestHandlerSelectors.basePackage(ApiController.class.getPackageName()))
+				.apis(RequestHandlerSelectors.basePackage(ApiController.class.getPackage().getName()))
 				.paths(PathSelectors.any())
 				.build();
 	}
