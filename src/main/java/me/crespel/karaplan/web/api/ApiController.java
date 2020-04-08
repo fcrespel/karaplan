@@ -6,11 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
-@RequestMapping("/api")
 @ApiIgnore
 public class ApiController {
 
-	@RequestMapping("/")
+	@RequestMapping("/api")
 	public String index() {
 		return "redirect:/swagger-ui.html";
 	}
