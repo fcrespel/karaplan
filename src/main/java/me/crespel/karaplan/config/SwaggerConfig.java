@@ -13,6 +13,8 @@ import org.springframework.core.Ordered;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 
+import me.crespel.karaplan.web.api.ApiController;
+
 import com.fasterxml.classmate.TypeResolver;
 
 import springfox.documentation.builders.AlternateTypeBuilder;
@@ -37,15 +39,15 @@ public class SwaggerConfig {
 				.apiInfo(apiInfo())
 				.ignoredParameterTypes(Principal.class)
 				.select()
-				.apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.ant("/api/**"))
+				.apis(RequestHandlerSelectors.basePackage(ApiController.class.getPackageName()))
+				.paths(PathSelectors.any())
 				.build();
 	}
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
 				.title("KaraPlan REST API")
-				.description("All operations are exposed as JSON and require an OAuth 2.0 Access Token granted by the configured OAuth Authorization Server.")
+				.description("Karaoke Planner web application with song search, ratings, comments, playlists and more.")
 				.version("1.0")
 				.build();
 	}
