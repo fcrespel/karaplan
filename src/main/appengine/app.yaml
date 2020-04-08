@@ -9,12 +9,14 @@ handlers:
     secure: always
     script: auto
 env_variables:
-  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xmx512m"
+  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m"
 automatic_scaling:
   min_instances: 0
-  max_instances: 5
-  min_pending_latency: 100ms
-  max_pending_latency: 1000ms
+  max_instances: 3
+  min_idle_instances: 1
+  max_idle_instances: 1
+  min_pending_latency: 1000ms
+  max_pending_latency: 5000ms
   max_concurrent_requests: 50
   target_throughput_utilization: 0.9
   target_cpu_utilization: 0.9
