@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.security.UserWrapper;
+import me.crespel.karaplan.service.SongService;
 import me.crespel.karaplan.service.UserService;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -25,6 +27,9 @@ public class AccountController {
 
 	@Autowired
 	protected UserService userService;
+	
+	@Autowired
+	protected SongService songService;
 
 	@GetMapping("/authentication")
 	@ApiOperation("Get authentication info")
@@ -57,6 +62,17 @@ public class AccountController {
 			return userService.save(userToUpdate);
 		} else {
 			throw new BusinessException("Authentication is required");
+		}
+	}
+
+	@DeleteMapping("/user")
+	@ApiOperation("Delete the authenticated user")
+	public void deleteUser(@ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
+		if (userWrapper != null) {
+			songService.deleteUserVotes(userWrapper.getUser());
+			userService.deleteAccount(userWrapper.getUser());
+		} else {
+			throw new BusinessException("Authentication is required"); 
 		}
 	}
 

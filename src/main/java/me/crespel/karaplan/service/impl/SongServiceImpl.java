@@ -3,6 +3,7 @@ package me.crespel.karaplan.service.impl;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -237,6 +238,26 @@ public class SongServiceImpl implements SongService {
 					.setImage(source.getImg());
 		}
 
+	}
+	
+	@Override
+	@Transactional
+	public void deleteUserVotes(User user) {
+		List<SongVote> userVotes = songVoteRepo.findByUser(user);
+		for(SongVote songVote : userVotes) {
+			Song song = songRepo.findById(songVote.getSong().getId()).get();
+			if(song != null) {
+				if(songVote.getScore() > 0) {
+					song.setScore(song.getScore() - 1);
+					song.setScoreUp(song.getScoreUp() - 1);
+				} else {
+					song.setScore(song.getScore() + 1);
+					song.setScoreUp(song.getScoreUp() + 1);
+				}
+				songRepo.save(song);
+			}
+		}
+		songVoteRepo.deleteByUserId(user.getId());
 	}
 
 }

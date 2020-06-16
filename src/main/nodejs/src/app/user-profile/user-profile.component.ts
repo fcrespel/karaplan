@@ -4,6 +4,8 @@ import { AccountService } from '../services/account.service';
 import { AlertService } from '../services/alert.service';
 import { User } from '../models/user';
 import { AlertMessage } from '../models/alert-message';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,8 +18,10 @@ export class UserProfileComponent implements OnInit {
   tab: string = 'profile';
 
   constructor(
+    private cookieService: CookieService,
     private router: Router,
     private accountService: AccountService,
+    private modalService: NgbModal,
     private alertService: AlertService
   ) { }
 
@@ -47,4 +51,12 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  deleteAccount(modalContent) {
+    this.modalService.open(modalContent).result.then(() => {
+      this.accountService.deleteUser().subscribe(() => {
+        this.cookieService.delete('XSRF-TOKEN');
+        this.router.navigate(['/login'], { queryParams: { delete: '' } });
+      });
+    })
+  }
 }

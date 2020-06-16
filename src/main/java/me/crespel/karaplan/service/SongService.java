@@ -29,6 +29,8 @@ public interface SongService {
 	Song save(Song song);
 
 	Song vote(Song song, User user, int score);
+	
+	void deleteUserVotes(User user);
 
 	Song addComment(Song song, User user, String comment);
 

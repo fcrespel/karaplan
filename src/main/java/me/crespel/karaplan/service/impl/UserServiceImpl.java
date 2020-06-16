@@ -46,4 +46,17 @@ public class UserServiceImpl implements UserService {
 		return userRepo.save(user);
 	}
 
+	@Override
+	public void deleteAccount(User user) {
+		user.setUsername("deletedUser");
+		user.setDisplayName("Deleted User");
+		user.setFirstName(null);
+		user.setLastName(null);
+		user.setFullName(null);
+		user.setEmail(null);
+		user.setLocale(null);
+		user.setProvider("");
+		userRepo.save(user);
+	}
+
 }

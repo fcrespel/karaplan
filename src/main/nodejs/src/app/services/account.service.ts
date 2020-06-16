@@ -44,6 +44,12 @@ export class AccountService {
     return this.http.post<User>(url, user);
   }
 
+  deleteUser(): Observable<void> {
+    const url = `${this.accountUrl}/user`;
+    this.user$ = null;
+    return this.http.delete<void>(url);
+  }
+
   refreshCache() {
     this.principalRefresh$.next(undefined);
     this.userRefresh$.next(undefined);
