@@ -36,11 +36,20 @@ export class LoginComponent implements OnInit {
       message.text = 'You have been signed out';
       this.alertService.addMessage(message);
     }
-    this.accountService.getUser(false).subscribe(user => {
-      if (user) {
-        this.router.navigate(['/songs']);
-      }
-    });
+    if (this.route.snapshot.queryParamMap.has('delete')) {
+      let message = new AlertMessage();
+      message.severity = 'success';
+      message.title = 'Success';
+      message.text = 'Your account has been deleted';
+      this.alertService.addMessage(message);
+      
+    } else {
+      this.accountService.getUser(false).subscribe(user => {
+        if (user) {
+          this.router.navigate(['/songs']);
+        }
+      });
+    }
   }
 
 }
