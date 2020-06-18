@@ -3,6 +3,7 @@ package me.crespel.karaplan.web.api.v1;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +91,13 @@ public class PlaylistController {
 				.setName(playlist.getName())
 				.setReadOnly(playlist.getReadOnly());
 		return playlistService.save(playlistToSave, user);
+	}
+	
+	@PostMapping("/{playlistId}/sort/custom")
+	@ApiOperation("Change song order")
+	public Playlist changeOrder(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.changeOrder(playlist, songIdList);
 	}
 
 	@PostMapping("/{playlistId}/join")

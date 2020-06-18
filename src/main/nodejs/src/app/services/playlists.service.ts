@@ -79,6 +79,11 @@ export class PlaylistsService {
     return this.http.post<Playlist>(url, null, {params: params});
   }
 
+  changeSongsOrder(playlistId: number, catalogIds: number[]): Observable<Playlist> {
+  const url = `${this.playlistsUrl}/${playlistId}/sort/custom`;
+  return this.http.post<Playlist>(url, catalogIds);
+  }
+
   exportPlaylistToKarafunRemote(playlistId: number, remoteId: string): Observable<Response> {
     const url = `${this.playlistsUrl}/${playlistId}/export/karafun/${remoteId}`
     return this.http.post<Response>(url, null);
