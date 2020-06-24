@@ -1,9 +1,14 @@
 package me.crespel.karaplan.web.api.v1;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +35,9 @@ public class AccountController {
 	
 	@Autowired
 	protected SongService songService;
+	
+	@Resource
+	private HttpServletRequest request;
 
 	@GetMapping("/authentication")
 	@ApiOperation("Get authentication info")
@@ -73,6 +81,15 @@ public class AccountController {
 			userService.deleteAccount(userWrapper.getUser());
 		} else {
 			throw new BusinessException("Authentication is required"); 
+		}
+	}
+	
+	@GetMapping("/logout")
+	@ApiOperation("Log user out")
+	public void logout(){
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null) {
+			new SecurityContextLogoutHandler().logout(request, null, auth);
 		}
 	}
 
