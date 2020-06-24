@@ -54,4 +54,9 @@ export class AccountService {
     this.principalRefresh$.next(undefined);
     this.userRefresh$.next(undefined);
   }
+
+  logout() {
+    const url = `${this.accountUrl}/logout`;
+    return this.http.get<void>(url);
+  }
 }

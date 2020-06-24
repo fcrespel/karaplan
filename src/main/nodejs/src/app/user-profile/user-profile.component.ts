@@ -18,7 +18,6 @@ export class UserProfileComponent implements OnInit {
   tab: string = 'profile';
 
   constructor(
-    private cookieService: CookieService,
     private router: Router,
     private accountService: AccountService,
     private modalService: NgbModal,
@@ -54,8 +53,10 @@ export class UserProfileComponent implements OnInit {
   deleteAccount(modalContent) {
     this.modalService.open(modalContent).result.then(() => {
       this.accountService.deleteUser().subscribe(() => {
-        this.cookieService.delete('XSRF-TOKEN');
-        this.router.navigate(['/login'], { queryParams: { delete: '' } });
+        this.accountService.logout().subscribe(() => {
+          this.accountService.refreshCache();
+          this.router.navigate(['/login'], { queryParams: { delete: ''}});
+        });
       });
     })
   }
