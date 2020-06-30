@@ -24,6 +24,7 @@ export class Song {
   comments: SongComment[];
   playlistsCount: number;
   playlists: PlaylistSong[];
+  previewUrl: string;
   createdDate: Date;
   createdBy: User;
   updatedDate: Date;

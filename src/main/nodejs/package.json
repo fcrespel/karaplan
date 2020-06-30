@@ -24,6 +24,7 @@
     "core-js": "^2.5.4",
     "ngx-cookie-service": "^2.1.0",
     "ngx-plyr": "^4.0.0",
+    "plyr": "^3.6.2",
     "rxjs": "~6.5.5",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"

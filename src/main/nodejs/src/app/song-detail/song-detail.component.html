@@ -60,6 +60,7 @@
               </p>
               <app-song-actions [(song)]="song" [showComments]="false"></app-song-actions>
             </div>
+            <div plyr style="width: 480px;" plyrTitle="song.title" [plyrPlaysInline]="true" [plyrSources]="preview.previewUrl" (plyrInit)="player = $event"></div>
           </div>
         </div>
       </div>

@@ -1,9 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, SimpleChanges, IterableDiffer, IterableDiffers, IterableChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { Song } from '../models/song';
 import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { PlaylistSong } from '../models/playlist-song';
+import { SongsService } from '../services/songs.service';
+import { CatalogSongFile } from '../models/catalog-song-file';
+import { PlyrComponent } from 'ngx-plyr';
 
 @Component({
   selector: 'app-song-list',
@@ -26,11 +29,35 @@ export class SongListComponent implements OnInit {
   @Output() playlistRemoved = new EventEmitter<PlaylistSong>();
   @Output() songRemoved = new EventEmitter<Song>();
 
+  @ViewChild(PlyrComponent, {static: false}) plyr: PlyrComponent;
+  player: Plyr;
+  preview: CatalogSongFile;
+  _diff: IterableDiffer<Song | PlaylistSong>;
+
   constructor(
-    private router: Router
+    private router: Router,
+    private songsService: SongsService,
+    private _iterableDiffers: IterableDiffers
   ) { }
 
   ngOnInit() {
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this._diff = this._iterableDiffers.find(this.songs).create();
+    this.songs.forEach((song: Song | PlaylistSong) => {
+      this.setPreview(song);
+    });
+  }
+
+  ngDoCheck() {
+    const changes: IterableChanges<Song | PlaylistSong> = this._diff.diff(this.songs);
+
+    if(changes) {
+      this.songs.forEach((song: Song | PlaylistSong) => {
+        this.setPreview(song);
+      });
+    }
   }
 
   trackBySongCatalogId(index: number, song: Song | PlaylistSong): number {
@@ -47,6 +74,25 @@ export class SongListComponent implements OnInit {
     } else {
       this.router.navigate(['/songs', song.catalogId]);
     }
+  }
+
+  setPreview(song: Song | PlaylistSong): void {
+    const catalogId = this.trackBySongCatalogId(null, song);
+    this.songsService.getSongFiles(catalogId).subscribe(songFiles => {
+      songFiles.forEach((file: CatalogSongFile) => {
+        if (file.trackType == 'nbv-ld') {
+          if ('song' in song) {
+            song.song.previewUrl = file.previewUrl;
+          } else {
+            song.previewUrl = file.previewUrl;
+          }
+        }
+      });
+    });
+  }
+
+  play() {
+    this.player.play();
   }
 
 }
