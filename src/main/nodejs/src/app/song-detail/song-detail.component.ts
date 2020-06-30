@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { of } from 'rxjs';
@@ -9,6 +9,7 @@ import { User } from '../models/user';
 import { Song } from '../models/song';
 import { SongComment } from '../models/song-comment';
 import { CatalogSongFile } from '../models/catalog-song-file';
+import { PlyrComponent } from 'ngx-plyr';
 
 @Component({
   selector: 'app-song-detail',
@@ -16,6 +17,9 @@ import { CatalogSongFile } from '../models/catalog-song-file';
   styleUrls: ['./song-detail.component.css']
 })
 export class SongDetailComponent implements OnInit {
+
+  @ViewChild(PlyrComponent, {static: false}) plyr: PlyrComponent;
+  player: Plyr;
 
   user: User = null;
   song: Song = null;
@@ -26,6 +30,7 @@ export class SongDetailComponent implements OnInit {
   hasMoreRelatedSongs: boolean = false;
   tab: string = 'info';
   commentText: string;
+  preview: CatalogSongFile;
 
   trackTypeLabels = {
     'nbv': 'Instrumental',
@@ -58,6 +63,10 @@ export class SongDetailComponent implements OnInit {
     private accountService: AccountService,
     private songsService: SongsService
   ) { }
+   
+  play(): void {
+    this.player.play();
+  }
 
   ngOnInit() {
     this.accountService.getUser().subscribe(user => {
@@ -75,6 +84,11 @@ export class SongDetailComponent implements OnInit {
         this.tab = 'info';
         this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
           this.songFiles = songFiles;
+          this.songFiles.forEach((file: CatalogSongFile) => {
+            if (file.format == 'wmv' || file.format == 'mp4') {
+              this.preview = file;
+            }
+          });
         });
         this.songsService.searchSongs('artist', ''+song.artist.catalogId).subscribe(songs => {
           this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);

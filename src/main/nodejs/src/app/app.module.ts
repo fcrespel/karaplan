@@ -26,6 +26,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AboutComponent } from './about/about.component';
 import { DurationPipe } from './pipes/duration.pipe';
 import { HttpErrorInterceptor } from './http-error.interceptor';
+import { PlyrModule } from 'ngx-plyr';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     HttpClientModule,
     DragDropModule,
     NgbModule,
-    AppRoutingModule
+    AppRoutingModule,
+    PlyrModule
   ],
   providers: [
     CookieService,

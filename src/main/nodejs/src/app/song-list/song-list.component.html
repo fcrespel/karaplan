@@ -28,6 +28,8 @@
   <div class="col-auto" *ngIf="showDuration && song.duration">
     <span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span>
   </div>
+  <i *ngIf="!song.previewUrl" class="col-auto fas fa-spinner fa-spin"></i>
+  <div class="col-auto px-3" style="width: 320px;" *ngIf="song.previewUrl" plyr (click)="false; $event.stopPropagation();" plyrTitle="song.title" plyrType="audio" [plyrSources]="song.previewUrl" (plyrInit)="player = $event;"></div>
   <div class="col-auto d-none d-sm-block ml-2">
     <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists" [showRemove]="showRemove"
       (voteAdded)="voteAdded.emit($event)" (voteRemoved)="voteRemoved.emit($event)" (commentAdded)="commentAdded.emit($event)" (commentRemoved)="commentRemoved.emit($event)"
