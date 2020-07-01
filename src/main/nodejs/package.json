@@ -24,7 +24,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.3.1",
     "core-js": "^2.5.4",
     "ngx-cookie-service": "^2.1.0",
-    "ngx-plyr": "^4.0.0",
+    "ngx-plyr": "^3.0.1",
     "plyr": "^3.6.2",
     "rxjs": "~6.5.5",
     "tslib": "^1.9.0",
