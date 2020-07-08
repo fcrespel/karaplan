@@ -1,6 +1,6 @@
 <ul class="list-group shadow" *ngIf="songs" cdkDropListGroup>
   <li *ngFor="let song of songs; trackBy: trackBySongCatalogId; let i=index" cdkDropList (click)="gotoSong(song)" class="list-group-item list-group-item-action align-items-center no-gutters px-3 py-2" 
-    cdkDrag (mouseenter)="enter(i)" (cdkDropListDropped)="moveSong($event)" (cdkDragStarted)="previousIndex=i; dragging = true" (cdgDragDropped)="dragging = false">
+    cdkDrag (mouseenter)="enter(i)" (cdkDropListDropped)="moveSong($event)" (cdkDragStarted)="previousIndex=i; dragging = true" (cdkDragDropped)="dragging = false">
     <ng-container *ngIf="song?.song">
       <ng-container *ngTemplateOutlet="songItem; context: { song: song.song, playlistSong: song }"></ng-container>
     </ng-container>
