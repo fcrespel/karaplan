@@ -286,16 +286,15 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
-	public Playlist changeOrder(Playlist playlist, List<Long> songIdList) {
+	public Playlist sortCustom(Playlist playlist, List<Long> songIdList, User user) {
 		for(int i = 0; i < songIdList.size(); i++) {
-			Song s = songRepo.findById(songIdList.get(i)).get();
 			for(PlaylistSong ps : playlist.getSongs()) {
-				if(ps.getSong().getId().equals(s.getId())) {
+				if(ps.getSong().getId().equals(songIdList.get(i))) {
 					ps.setPosition(i);
 				}
 			}
 		}
-		return playlistRepo.save(playlist);
+		return save(playlist);
 	}
 	
 	@Override

@@ -92,13 +92,6 @@ public class PlaylistController {
 				.setReadOnly(playlist.getReadOnly());
 		return playlistService.save(playlistToSave, user);
 	}
-	
-	@PostMapping("/{playlistId}/sort/custom")
-	@ApiOperation("Change song order")
-	public Playlist changeOrder(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
-		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
-		return playlistService.changeOrder(playlist, songIdList);
-	}
 
 	@PostMapping("/{playlistId}/join")
 	@ApiOperation("Add the current user to a playlist with the given access key")
@@ -149,6 +142,13 @@ public class PlaylistController {
 	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.sort(playlist, sortType, sortDirection, user);
+	}
+	
+	@PostMapping("/{playlistId}/sort/custom")
+	@ApiOperation("Sort a playlist's song by a custom order")
+	public Playlist sortPlaylistCustom(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.sortCustom(playlist, songIdList, user);
 	}
 
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")

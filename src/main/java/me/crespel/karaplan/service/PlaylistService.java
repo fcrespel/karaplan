@@ -50,7 +50,7 @@ public interface PlaylistService {
 
 	Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user);
 	
-	Playlist changeOrder(Playlist playlist, List<Long> songIdList);
+	Playlist sortCustom(Playlist playlist, List<Long> songIdList, User user);
 
 	void delete(Playlist playlist, User user);
 

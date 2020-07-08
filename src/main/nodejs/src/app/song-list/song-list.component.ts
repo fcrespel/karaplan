@@ -4,7 +4,7 @@ import { Song } from '../models/song';
 import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { PlaylistSong } from '../models/playlist-song';
-import { CdkDragDrop, CdkDragMove, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-song-list',
