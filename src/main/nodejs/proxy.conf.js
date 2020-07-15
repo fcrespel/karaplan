@@ -9,7 +9,7 @@ const PROXY_CONFIG = [
         "/webjars",
         "/v2",
         "/swagger-resources",
-        "/swagger-ui.html"
+        "/swagger-ui"
     ],
     target: "http://localhost:8080",
     secure: false

@@ -11,7 +11,7 @@ public class ApiController {
 
 	@RequestMapping("/api")
 	public String index() {
-		return "redirect:/swagger-ui.html";
+		return "redirect:/swagger-ui/index.html";
 	}
 
 }

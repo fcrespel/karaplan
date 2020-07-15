@@ -5,6 +5,8 @@ spring:
     redis:
       repositories:
         enabled: false
+    rest:
+      detection-strategy: annotated
   http:
     encoding:
       charset: UTF-8
