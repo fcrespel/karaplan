@@ -286,6 +286,18 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
+	public Playlist sortCustom(Playlist playlist, List<Long> songIdList, User user) {
+		for(int i = 0; i < songIdList.size(); i++) {
+			for(PlaylistSong ps : playlist.getSongs()) {
+				if(ps.getSong().getId().equals(songIdList.get(i))) {
+					ps.setPosition(i);
+				}
+			}
+		}
+		return save(playlist);
+	}
+	
+	@Override
 	@Transactional
 	public void delete(Playlist playlist, User user) {
 		if (!isMember(user, playlist)) {

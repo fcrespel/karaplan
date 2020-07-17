@@ -4,6 +4,7 @@ import { Song } from '../models/song';
 import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { PlaylistSong } from '../models/playlist-song';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-song-list',
@@ -24,7 +25,12 @@ export class SongListComponent implements OnInit {
   @Output() commentRemoved = new EventEmitter<SongComment>();
   @Output() playlistAdded = new EventEmitter<PlaylistSong>();
   @Output() playlistRemoved = new EventEmitter<PlaylistSong>();
+  @Output() songMoved = new EventEmitter<Song[] | PlaylistSong[]>();
   @Output() songRemoved = new EventEmitter<Song>();
+
+  dragging: boolean;
+  activeIndex: number;
+  previousIndex: number;
 
   constructor(
     private router: Router
@@ -42,11 +48,21 @@ export class SongListComponent implements OnInit {
   }
 
   gotoSong(song: Song | PlaylistSong) {
-    if ('song' in song) {
-      this.router.navigate(['/songs', song.song.catalogId]);
-    } else {
-      this.router.navigate(['/songs', song.catalogId]);
+    if(!this.dragging) {
+      if ('song' in song) {
+        this.router.navigate(['/songs', song.song.catalogId]);
+      } else {
+        this.router.navigate(['/songs', song.catalogId]);
+      }
     }
+  }
+
+  enter(i) {
+    this.activeIndex = i;
+  }
+  moveSong(event: CdkDragDrop<Song[] | PlaylistSong[]>) {
+    moveItemInArray<Song | PlaylistSong>(this.songs, this.previousIndex, this.activeIndex);
+    this.songMoved.emit(this.songs);
   }
 
 }

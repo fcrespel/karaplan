@@ -1,5 +1,6 @@
 package me.crespel.karaplan.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,6 +49,8 @@ public interface PlaylistService {
 	Playlist removeComment(Playlist playlist, User user, long commentId);
 
 	Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user);
+	
+	Playlist sortCustom(Playlist playlist, List<Long> songIdList, User user);
 
 	void delete(Playlist playlist, User user);
 

@@ -3,6 +3,7 @@ package me.crespel.karaplan.web.api.v1;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,13 @@ public class PlaylistController {
 	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.sort(playlist, sortType, sortDirection, user);
+	}
+	
+	@PostMapping("/{playlistId}/sort/custom")
+	@ApiOperation("Sort a playlist's song by a custom order")
+	public Playlist sortPlaylistCustom(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+		return playlistService.sortCustom(playlist, songIdList, user);
 	}
 
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
