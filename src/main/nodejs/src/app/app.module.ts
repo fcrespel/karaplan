@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -25,7 +26,6 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AboutComponent } from './about/about.component';
 import { DurationPipe } from './pipes/duration.pipe';
 import { HttpErrorInterceptor } from './http-error.interceptor';
-import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -52,9 +52,9 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    DragDropModule,
     NgbModule,
-    AppRoutingModule,
-    DragDropModule
+    AppRoutingModule
   ],
   providers: [
     CookieService,

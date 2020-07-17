@@ -117,7 +117,7 @@ export class PlaylistDetailComponent implements OnInit {
   onSongMoved(songList: PlaylistSong[]) {
     let songIds: number[] = [];
     songList.forEach((song: PlaylistSong) => songIds.push(song.song.id));
-    this.playlistsService.changeSongsOrder(this.playlist.id, songIds).subscribe(playlist => {
+    this.playlistsService.sortPlaylistCustom(this.playlist.id, songIds).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
   }
