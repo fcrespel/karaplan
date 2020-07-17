@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -51,6 +52,7 @@ import { HttpErrorInterceptor } from './http-error.interceptor';
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    DragDropModule,
     NgbModule,
     AppRoutingModule
   ],

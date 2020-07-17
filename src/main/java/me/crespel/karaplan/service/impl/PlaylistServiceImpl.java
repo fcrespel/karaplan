@@ -287,6 +287,19 @@ public class PlaylistServiceImpl implements PlaylistService {
 
 	@Override
 	@Transactional
+	public Playlist sortCustom(Playlist playlist, List<Long> songIdList, User user) {
+		for (int i = 0; i < songIdList.size(); i++) {
+			for (PlaylistSong ps : playlist.getSongs()) {
+				if (ps.getSong().getId().equals(songIdList.get(i))) {
+					ps.setPosition(i + 1);
+				}
+			}
+		}
+		return save(playlist, user);
+	}
+	
+	@Override
+	@Transactional
 	public void delete(Playlist playlist, User user) {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
