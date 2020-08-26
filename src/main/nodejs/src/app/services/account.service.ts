@@ -44,9 +44,9 @@ export class AccountService {
     return this.http.post<User>(url, user);
   }
 
-  deleteUser(): Observable<void> {
-    const url = `${this.accountUrl}/user`;
-    this.user$ = null;
+  deleteUser(deleteComments: boolean): Observable<void> {
+    const url = `${this.accountUrl}/user?deleteComments=${deleteComments}`;
+    this.refreshCache();
     return this.http.delete<void>(url);
   }
 

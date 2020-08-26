@@ -7,13 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -75,22 +74,12 @@ public class AccountController {
 
 	@DeleteMapping("/user")
 	@ApiOperation("Delete the authenticated user")
-	public void deleteUser(@ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
+	public void deleteUser(@RequestParam(required = false, defaultValue = "false") boolean deleteComments, @ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
 		if (userWrapper != null) {
-			songService.deleteUserVotes(userWrapper.getUser());
-			userService.deleteAccount(userWrapper.getUser());
+			userService.deleteAccount(deleteComments, userWrapper.getUser());
 		} else {
 			throw new BusinessException("Authentication is required"); 
 		}
 	}
 	
-	@GetMapping("/logout")
-	@ApiOperation("Log user out")
-	public void logout(){
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null) {
-			new SecurityContextLogoutHandler().logout(request, null, auth);
-		}
-	}
-
 }

@@ -51,6 +51,11 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Set<Playlist> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(playlistRepo.findAll(pageable));
 	}
+	
+	@Override
+	public Set<Playlist> findAll(User user) {
+		return findAll(null, user);
+	}
 
 	@Override
 	public Set<Playlist> findAll(Pageable pageable, User user) {

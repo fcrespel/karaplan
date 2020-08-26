@@ -34,6 +34,6 @@
 </nav>
 
 <!-- Hidden logout form -->
-<form #logoutForm name="logoutForm" action="logout" method="POST" class="hidden">
+<form #logoutForm id="logoutForm" name="logoutForm" action="logout" method="POST" class="hidden">
   <input type="hidden" name="_csrf" [(ngModel)]="xsrfToken" />
 </form>
