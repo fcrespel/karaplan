@@ -19,6 +19,6 @@ public interface UserService {
 
 	User save(User user);
 	
-	void deleteAccount(User user);
+	void deleteAccount(boolean deleteComments, User user);
 
 }

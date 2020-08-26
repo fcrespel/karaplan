@@ -12,6 +12,9 @@ import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.repository.UserRepo;
+import me.crespel.karaplan.service.PlaylistService;
+import me.crespel.karaplan.service.SongCommentService;
+import me.crespel.karaplan.service.SongService;
 import me.crespel.karaplan.service.UserService;
 
 @Service
@@ -19,7 +22,16 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	protected UserRepo userRepo;
+	
+	@Autowired
+	protected SongService songService;
 
+	@Autowired
+	protected PlaylistService playlistService;
+	
+	@Autowired
+	protected SongCommentService songCommentService;
+	
 	@Override
 	public Set<User> findAll() {
 		return Sets.newLinkedHashSet(userRepo.findAll());
@@ -47,7 +59,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteAccount(User user) {
+	public void deleteAccount(boolean deleteComments, User user) {
+		songService.deleteUserVotes(user);
+		playlistService.findAll(user).forEach(playlist -> playlistService.removeUser(playlist, user));
+		if(deleteComments) {
+			songCommentService.findAll(user).forEach(comment -> songService.removeComment(comment.getSong(), user, comment.getId()));
+		}
 		user.setUsername("deletedUser");
 		user.setDisplayName("Deleted User");
 		user.setFirstName(null);

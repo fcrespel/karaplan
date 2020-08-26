@@ -5,7 +5,6 @@ import { AlertService } from '../services/alert.service';
 import { User } from '../models/user';
 import { AlertMessage } from '../models/alert-message';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-user-profile',
@@ -16,6 +15,7 @@ export class UserProfileComponent implements OnInit {
 
   user: User = null;
   tab: string = 'profile';
+  deleteComments : boolean = false;
 
   constructor(
     private router: Router,
@@ -52,11 +52,8 @@ export class UserProfileComponent implements OnInit {
 
   deleteAccount(modalContent) {
     this.modalService.open(modalContent).result.then(() => {
-      this.accountService.deleteUser().subscribe(() => {
-        this.accountService.logout().subscribe(() => {
-          this.accountService.refreshCache();
-          this.router.navigate(['/login'], { queryParams: { delete: ''}});
-        });
+      this.accountService.deleteUser(this.deleteComments).subscribe(() => {
+        (document.getElementById('logoutForm') as HTMLFormElement).submit();
       });
     })
   }

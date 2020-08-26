@@ -67,6 +67,7 @@
   <div class="modal-body">
     <form #accountDeletionForm="ngForm">
       <p><strong>This will delete your informations and all your likes.</strong></p>
+      <p><input [(ngModel)]="deleteComments" id="deleteComments" name="deleteComments" type="checkbox"> Delete all comments as well.</p>
       <p>Please type <strong>delete my account</strong> below to confirm :</p>
       <div class="form-group">
         <div class="input-group">

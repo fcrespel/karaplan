@@ -3,7 +3,6 @@ package me.crespel.karaplan.service.impl;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +34,7 @@ import me.crespel.karaplan.repository.SongVoteRepo;
 import me.crespel.karaplan.service.ArtistService;
 import me.crespel.karaplan.service.CatalogService;
 import me.crespel.karaplan.service.SongService;
+import me.crespel.karaplan.service.UserService;
 
 @Service
 public class SongServiceImpl implements SongService {
@@ -50,6 +50,9 @@ public class SongServiceImpl implements SongService {
 
 	@Autowired
 	protected ArtistService artistService;
+	
+	@Autowired
+	protected UserService userService;
 
 	protected final ConfigurableConversionService conversionService;
 
@@ -243,21 +246,14 @@ public class SongServiceImpl implements SongService {
 	@Override
 	@Transactional
 	public void deleteUserVotes(User user) {
-		List<SongVote> userVotes = songVoteRepo.findByUser(user);
+		Set<SongVote> userVotes = userService.findById(user.getId()).get().getVotes();
 		for(SongVote songVote : userVotes) {
 			Song song = songRepo.findById(songVote.getSong().getId()).get();
 			if(song != null) {
-				if(songVote.getScore() > 0) {
-					song.setScore(song.getScore() - 1);
-					song.setScoreUp(song.getScoreUp() - 1);
-				} else {
-					song.setScore(song.getScore() + 1);
-					song.setScoreUp(song.getScoreUp() + 1);
-				}
+				this.vote(song, user, 0);
 				songRepo.save(song);
 			}
 		}
-		songVoteRepo.deleteByUserId(user.getId());
 	}
 
 }
