@@ -17,6 +17,8 @@ spring:
     generateDdl: true
     properties:
       hibernate.globally_quoted_identifiers: true
+  main:
+    lazy-initialization: true
   security:
     oauth2:
       client:
@@ -45,6 +47,10 @@ server:
 logging:
   level:
     me.crespel.karaplan: debug
+management:
+  health:
+    redis:
+      enabled: false
 karaplan:
   karafun:
     remote:

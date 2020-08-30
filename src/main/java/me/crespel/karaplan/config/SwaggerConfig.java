@@ -2,8 +2,10 @@ package me.crespel.karaplan.config;
 
 import java.security.Principal;
 
+import org.springframework.boot.LazyInitializationExcludeFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import me.crespel.karaplan.web.api.ApiController;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -35,6 +37,11 @@ public class SwaggerConfig {
 				.description("Karaoke Planner web application with song search, ratings, comments, playlists and more.")
 				.version("1.0")
 				.build();
+	}
+
+	@Bean
+	public LazyInitializationExcludeFilter lazyInitExcludeFilter() {
+		return LazyInitializationExcludeFilter.forBeanTypes(RequestMappingHandlerAdapter.class);
 	}
 
 }

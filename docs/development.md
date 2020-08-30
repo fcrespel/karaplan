@@ -1,6 +1,6 @@
 # Development
 
-To develop this project you need [Java 8](https://adoptopenjdk.net) and [NodeJS](https://nodejs.org). Maven is included in the project with `mvnw`.
+To develop this project you need [Java](https://adoptopenjdk.net) 8 or higher and [NodeJS](https://nodejs.org) 12 or higher. Maven is included in the project with `mvnw`.
 
 You may use your preferred IDE to develop this project, e.g. [VS Code](https://code.visualstudio.com). Please respect the existing coding style.
 
