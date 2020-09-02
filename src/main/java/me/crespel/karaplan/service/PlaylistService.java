@@ -18,6 +18,8 @@ public interface PlaylistService {
 
 	Set<Playlist> findAll(Pageable pageable);
 
+	Set<Playlist> findAll(User user);
+	
 	Set<Playlist> findAll(Pageable pageable, User user);
 
 	Optional<Playlist> findById(Long id);

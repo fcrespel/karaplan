@@ -10,6 +10,8 @@ import me.crespel.karaplan.domain.User;
 
 public interface SongVoteRepo extends JpaRepository<SongVote, Long> {
 
+	Iterable<SongVote> findAllByUser(User user);
+
 	Optional<SongVote> findBySongAndUser(Song song, User user);
 
 }

@@ -1,13 +1,17 @@
 package me.crespel.karaplan.web.api.v1;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -60,4 +64,15 @@ public class AccountController {
 		}
 	}
 
+	@DeleteMapping("/user")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ApiOperation("Delete the authenticated user")
+	public void deleteUser(@RequestParam(required = false, defaultValue = "false") boolean deleteComments, @ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
+		if (userWrapper != null) {
+			userService.delete(userWrapper.getUser(), deleteComments);
+		} else {
+			throw new BusinessException("Authentication is required"); 
+		}
+	}
+	
 }

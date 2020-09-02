@@ -10,6 +10,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.google.common.collect.Sets;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
@@ -17,8 +19,6 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
@@ -29,6 +29,7 @@ import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
 import me.crespel.karaplan.model.CatalogStyle;
+import me.crespel.karaplan.repository.SongCommentRepo;
 import me.crespel.karaplan.repository.SongRepo;
 import me.crespel.karaplan.repository.SongVoteRepo;
 import me.crespel.karaplan.service.ArtistService;
@@ -45,6 +46,9 @@ public class SongServiceImpl implements SongService {
 	protected SongVoteRepo songVoteRepo;
 
 	@Autowired
+	protected SongCommentRepo songCommentRepo;
+
+	@Autowired
 	protected CatalogService catalogService;
 
 	@Autowired
@@ -59,26 +63,31 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Song> findAll() {
 		return Sets.newLinkedHashSet(songRepo.findAll());
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Song> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(songRepo.findAll(pageable));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Song> findById(Long id) {
 		return songRepo.findById(id);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Song> findByCatalogId(Long catalogId) {
 		return findByCatalogId(catalogId, null);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Song> findByCatalogId(Long catalogId, Locale locale) {
 		Optional<Song> localSong = songRepo.findByCatalogId(catalogId);
 		Optional<Song> catalogSong = Optional.ofNullable(conversionService.convert(catalogService.getSong(catalogId, locale), Song.class));
@@ -86,11 +95,13 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Song> search(CatalogSongListType type, String query, Pageable pageable) {
 		return search(type, query, pageable, null);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Song> search(CatalogSongListType type, String query, Pageable pageable, Locale locale) {
 		Set<Song> resultSongs = Sets.newLinkedHashSet();
 
@@ -145,6 +156,17 @@ public class SongServiceImpl implements SongService {
 
 	@Override
 	@Transactional
+	public void removeUserVotes(User user) {
+		Iterable<SongVote> songVotes = songVoteRepo.findAllByUser(user);
+		for (SongVote songVote : songVotes) {
+			Song song = songVote.getSong();
+			song.getVotes().remove(songVote);
+			save(song);
+		}
+	}
+
+	@Override
+	@Transactional
 	public Song addComment(Song song, User user, String comment) {
 		if (song.getId() == null) {
 			song = songRepo.save(song);
@@ -168,6 +190,17 @@ public class SongServiceImpl implements SongService {
 	public Song removeComment(Song song, User user, long commentId) {
 		song.getComments().removeIf(it -> it.getId() == commentId && (user == null || user.equals(it.getUser())));
 		return save(song);
+	}
+
+	@Override
+	@Transactional
+	public void removeUserComments(User user) {
+		Iterable<SongComment> songComments = songCommentRepo.findAllByUser(user);
+		for (SongComment songComment : songComments) {
+			Song song = songComment.getSong();
+			song.getComments().remove(songComment);
+			save(song);
+		}
 	}
 
 	protected Optional<Song> mergeSongs(Optional<Song> song1, Optional<Song> song2) {

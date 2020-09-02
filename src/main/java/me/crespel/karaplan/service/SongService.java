@@ -30,10 +30,14 @@ public interface SongService {
 
 	Song vote(Song song, User user, int score);
 
+	void removeUserVotes(User user);
+
 	Song addComment(Song song, User user, String comment);
 
 	Song removeComment(Song song, long commentId);
 
 	Song removeComment(Song song, User user, long commentId);
+
+	void removeUserComments(User user);
 
 }

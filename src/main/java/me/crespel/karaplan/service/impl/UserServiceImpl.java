@@ -12,6 +12,8 @@ import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.repository.UserRepo;
+import me.crespel.karaplan.service.PlaylistService;
+import me.crespel.karaplan.service.SongService;
 import me.crespel.karaplan.service.UserService;
 
 @Service
@@ -19,23 +21,33 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	protected UserRepo userRepo;
+	
+	@Autowired
+	protected SongService songService;
 
+	@Autowired
+	protected PlaylistService playlistService;
+	
 	@Override
+	@Transactional(readOnly = true)
 	public Set<User> findAll() {
 		return Sets.newLinkedHashSet(userRepo.findAll());
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<User> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(userRepo.findAll(pageable));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<User> findById(Long id) {
 		return userRepo.findById(id);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<User> findByProviderAndUsername(String provider, String username) {
 		return userRepo.findByProviderAndUsername(provider, username);
 	}
@@ -44,6 +56,27 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public User save(User user) {
 		return userRepo.save(user);
+	}
+
+	@Override
+	@Transactional
+	public void delete(User user, boolean deleteComments) {
+		songService.removeUserVotes(user);
+		playlistService.findAll(user).forEach(playlist -> playlistService.removeUser(playlist, user));
+		if (deleteComments) {
+			songService.removeUserComments(user);
+			userRepo.delete(user);
+		} else {
+			user.setUsername("deleted");
+			user.setDisplayName("Deleted User");
+			user.setFirstName(null);
+			user.setLastName(null);
+			user.setFullName(null);
+			user.setEmail(null);
+			user.setLocale(null);
+			user.setProvider("");
+			userRepo.save(user);
+		}
 	}
 
 }

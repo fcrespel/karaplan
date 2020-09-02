@@ -36,21 +36,25 @@ public class ArtistServiceImpl implements ArtistService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Artist> findAll() {
 		return Sets.newLinkedHashSet(artistRepo.findAll());
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Artist> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(artistRepo.findAll(pageable));
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Artist> findById(Long id) {
 		return artistRepo.findById(id);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Artist> findByCatalogId(Long catalogId) {
 		Optional<Artist> artist = artistRepo.findByCatalogId(catalogId);
 		if (!artist.isPresent()) {

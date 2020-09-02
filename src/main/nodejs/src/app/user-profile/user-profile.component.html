@@ -37,10 +37,14 @@
         </div>
         <div class="form-group row">
           <div class="col-sm-6 offset-md-2">
-            <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Save</button>
+            <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Update profile</button>
           </div>
         </div>
       </form>
+      <hr>
+      <div class="text-right">
+        <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete Account</button>
+      </div>
     </div>
   </div>
 </ng-container>
@@ -51,5 +55,34 @@
     <div class="spinner-border spinner-border-lg" role="status">
       <span class="sr-only">Loading...</span>
     </div>
+  </div>
+</ng-template>
+
+<!-- Deletion confirmation modal -->
+<ng-template #deleteAccountModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Delete Account</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #accountDeletionForm="ngForm">
+      <p class="text-danger"><strong>You are going to delete your account and all your votes.</strong></p>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="deleteComments" name="deleteComments" [(ngModel)]="deleteComments">
+        <label class="form-check-label" for="deleteComments">Delete all comments as well</label>
+      </div>
+      <p>Please type <strong>delete my account</strong> below to confirm:</p>
+      <div class="form-group">
+        <div class="input-group">
+          <input type="text" class="form-control" id="confirmDeletion" name="confirmDeletion" [(ngModel)]="confirmDeletion" 
+            #confirmDeletionField="ngModel" pattern="delete my account" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" [disabled]="!accountDeletionForm.form.valid" (click)="modal.close()">Delete my account</button>
   </div>
 </ng-template>
