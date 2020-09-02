@@ -42,7 +42,9 @@
         </div>
       </form>
       <hr>
-      <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger">Delete Account</button>
+      <div class="text-right">
+        <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete Account</button>
+      </div>
     </div>
   </div>
 </ng-container>
@@ -56,23 +58,26 @@
   </div>
 </ng-template>
 
-<!-- KaraFun Bar export modal -->
+<!-- Deletion confirmation modal -->
 <ng-template #deleteAccountModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Are your sure ?</h4>
+    <h4 class="modal-title" id="modal-basic-title">Delete Account</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <form #accountDeletionForm="ngForm">
-      <p><strong>This will delete your informations and all your likes.</strong></p>
-      <p><input [(ngModel)]="deleteComments" id="deleteComments" name="deleteComments" type="checkbox"> Delete all comments as well.</p>
-      <p>Please type <strong>delete my account</strong> below to confirm :</p>
+      <p class="text-danger"><strong>You are going to delete your account and all your votes.</strong></p>
+      <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="deleteComments" name="deleteComments" [(ngModel)]="deleteComments">
+        <label class="form-check-label" for="deleteComments">Delete all comments as well</label>
+      </div>
+      <p>Please type <strong>delete my account</strong> below to confirm:</p>
       <div class="form-group">
         <div class="input-group">
           <input type="text" class="form-control" id="confirmDeletion" name="confirmDeletion" [(ngModel)]="confirmDeletion" 
-          #confirmDeletionField="ngModel" pattern="delete my account" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
+            #confirmDeletionField="ngModel" pattern="delete my account" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
         </div>
       </div>
     </form>

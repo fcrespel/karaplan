@@ -18,7 +18,7 @@ public interface UserService {
 	Optional<User> findByProviderAndUsername(String provider, String username);
 
 	User save(User user);
-	
-	void deleteAccount(boolean deleteComments, User user);
+
+	void delete(User user, boolean deleteComments);
 
 }

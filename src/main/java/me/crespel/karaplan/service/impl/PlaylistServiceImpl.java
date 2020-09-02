@@ -43,21 +43,25 @@ public class PlaylistServiceImpl implements PlaylistService {
 	protected SongRepo songRepo;
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Playlist> findAll() {
 		return Sets.newLinkedHashSet(playlistRepo.findAll());
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Playlist> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(playlistRepo.findAll(pageable));
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Playlist> findAll(User user) {
 		return findAll(null, user);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Set<Playlist> findAll(Pageable pageable, User user) {
 		return playlistRepo.findAllByMembersId(user.getId(), pageable).stream()
 				.map(playlist -> {
@@ -70,6 +74,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id) {
 		return findById(id, false);
 	}
@@ -254,6 +259,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	}
 
 	@Override
+	@Transactional
 	public Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user) {
 		if (!isMember(user, playlist)) {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);

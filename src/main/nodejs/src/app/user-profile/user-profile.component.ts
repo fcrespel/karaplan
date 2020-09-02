@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AccountService } from '../services/account.service';
 import { AlertService } from '../services/alert.service';
 import { User } from '../models/user';
 import { AlertMessage } from '../models/alert-message';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-user-profile',
@@ -15,7 +15,8 @@ export class UserProfileComponent implements OnInit {
 
   user: User = null;
   tab: string = 'profile';
-  deleteComments : boolean = false;
+  deleteComments: boolean = false;
+  confirmDeletion: string;
 
   constructor(
     private router: Router,
@@ -55,6 +56,6 @@ export class UserProfileComponent implements OnInit {
       this.accountService.deleteUser(this.deleteComments).subscribe(() => {
         (document.getElementById('logoutForm') as HTMLFormElement).submit();
       });
-    })
+    }, reason => {})
   }
 }
