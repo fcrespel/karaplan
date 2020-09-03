@@ -167,7 +167,7 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	@Cacheable("karafunCatalogCache")
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
 		CatalogSelectionList list = getSelectionList(type, locale);
-		Optional<CatalogSelection> selection = list.getSelections().stream().filter(it -> it.getId() == selectionId).findFirst();
+		Optional<CatalogSelection> selection = list.getSelections().stream().filter(it -> selectionId.equals(it.getId())).findFirst();
 		return selection.orElseThrow(() -> new BusinessException("Invalid selection ID"));
 	}
 
