@@ -25,6 +25,8 @@ public interface CatalogService {
 
 	CatalogSongFileList getSongFileList(long songId);
 
+	CatalogSongFileList getSongFileList(long songId, Locale locale);
+
 	CatalogSelection getSelection(CatalogSelectionType type, Long selectionId);
 
 	CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale);

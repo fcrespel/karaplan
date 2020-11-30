@@ -19,6 +19,7 @@ public class CatalogSongFile implements Serializable {
 	private Long id;
 	private Long songId;
 	private Long artistId;
+	private String catalogUrl;
 	private String previewUrl;
 	private String format;
 	private String trackType;

@@ -62,7 +62,12 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSongFileList getSongFileList(long songId) {
-		return kvCatalog.getSongFileList(songId);
+		return getSongFileList(songId, null);
+	}
+
+	@Override
+	public CatalogSongFileList getSongFileList(long songId, Locale locale) {
+		return kvCatalog.getSongFileList(songId, locale);
 	}
 
 	@Override
