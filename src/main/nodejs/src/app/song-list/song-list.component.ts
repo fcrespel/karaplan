@@ -5,6 +5,8 @@ import { Song } from '../models/song';
 import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { PlaylistSong } from '../models/playlist-song';
+import { SongsService } from '../services/songs.service';
+import Plyr from 'plyr';
 
 @Component({
   selector: 'app-song-list',
@@ -30,9 +32,13 @@ export class SongListComponent implements OnInit {
   @Output() songRemoved = new EventEmitter<Song>();
 
   dragging: boolean;
+  songPlyr: Plyr;
+  songPlyrSource: string;
+  songPlyrCurrent: Song;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private songsService: SongsService
   ) { }
 
   ngOnInit() {
@@ -59,6 +65,57 @@ export class SongListComponent implements OnInit {
   moveSong(event: CdkDragDrop<Song[] | PlaylistSong[]>) {
     moveItemInArray<Song | PlaylistSong>(this.songs, event.previousIndex, event.currentIndex);
     this.songMoved.emit(this.songs);
+  }
+
+  playSong(song: Song) {
+    this.stopSong();
+    if (song.previewUrl) {
+      this.songPlyrCurrent = song;
+      this.songPlyrCurrent.previewStatus = 'waiting';
+      this.songPlyrSource = song.previewUrl;
+    } else if (song.previewUrl === undefined && song.previewStatus != 'waiting') {
+      this.songPlyrCurrent = song;
+      this.songPlyrCurrent.previewStatus = 'waiting';
+      this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
+        var songFile = songFiles.find(songFile => songFile.trackType == 'nbv-ld');
+        if (songFile && songFile.previewUrl) {
+          song.previewUrl = songFile.previewUrl;
+          if (song == this.songPlyrCurrent) {
+            this.songPlyrSource = song.previewUrl;
+          }
+        } else {
+          song.previewUrl = null;
+          song.previewStatus = 'notfound';
+        }
+      });
+    }
+  }
+
+  stopSong() {
+    this.songPlyr.stop();
+    if (this.songPlyrCurrent) {
+      this.songPlyrCurrent.previewStatus = 'ended';
+    }
+  }
+
+  songPlyrEvent(event: Plyr.PlyrEvent) {
+    var plyr = event.detail.plyr;
+    var song = this.songPlyrCurrent;
+    if (song && song.previewUrl == ""+plyr.source) {
+      switch (event.type) {
+        case 'canplay':
+          if (song.previewStatus == 'waiting') {
+            plyr.play();
+          }
+          break;
+        case 'waiting':
+        case 'playing':
+        case 'pause':
+        case 'ended':
+          song.previewStatus = event.type;
+          break;
+      }
+    }
   }
 
 }

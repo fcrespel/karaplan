@@ -87,8 +87,8 @@ public class SongController {
 
 	@GetMapping("/{catalogId}/files")
 	@ApiOperation("Get a song's files")
-	public Set<CatalogSongFile> getSongFiles(@PathVariable Long catalogId) {
-		return catalogService.getSongFileList(catalogId).getSongFiles();
+	public Set<CatalogSongFile> getSongFiles(@PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		return catalogService.getSongFileList(catalogId, user.getLocaleParsed()).getSongFiles();
 	}
 
 	@PostMapping("/{catalogId}/vote")

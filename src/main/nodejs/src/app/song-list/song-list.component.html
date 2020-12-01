@@ -29,9 +29,20 @@
     <span class="badge badge-secondary" title="Duration">{{ song.duration | duration }}</span>
   </div>
   <div class="col-auto d-none d-sm-block ml-2">
+    <ng-container [ngSwitch]="song.previewStatus">
+      <button *ngSwitchDefault type="button" class="btn btn-outline-dark" title="Play audio preview" (click)="$event.stopPropagation(); playSong(song)"><i class="fas fa-play"></i></button>
+      <button *ngSwitchCase="'waiting'" type="button" class="btn btn-outline-dark" (click)="$event.stopPropagation(); stopSong()"><i class="fas fa-spinner fa-spin"></i></button>
+      <button *ngSwitchCase="'playing'" type="button" class="btn btn-dark" title="Stop audio preview" (click)="$event.stopPropagation(); stopSong()"><i class="fas fa-stop"></i></button>
+      <button *ngSwitchCase="'notfound'" type="button" class="btn btn-dark" title="Not available" disabled><i class="fas fa-ban"></i></button>
+    </ng-container>
+  </div>
+  <div class="col-auto d-none d-sm-block ml-2">
     <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists" [showRemove]="showRemove"
       (voteAdded)="voteAdded.emit($event)" (voteRemoved)="voteRemoved.emit($event)" (commentAdded)="commentAdded.emit($event)" (commentRemoved)="commentRemoved.emit($event)"
       (playlistAdded)="playlistAdded.emit($event)" (playlistRemoved)="playlistRemoved.emit($event)" (songRemoved)="songRemoved.emit($event)">
     </app-song-actions>
   </div>
 </ng-template>
+
+<!-- Hidden audio player -->
+<div class="d-none" plyr plyrType="audio" [plyrSources]="songPlyrSource" (plyrInit)="songPlyr = $event" (plyrWaiting)="songPlyrEvent($event)" (plyrCanPlay)="songPlyrEvent($event)" (plyrPlaying)="songPlyrEvent($event)" (plyrPause)="songPlyrEvent($event)" (plyrEnded)="songPlyrEvent($event)"></div>

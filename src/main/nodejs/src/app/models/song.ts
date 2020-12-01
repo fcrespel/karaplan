@@ -28,4 +28,8 @@ export class Song {
   createdBy: User;
   updatedDate: Date;
   updatedBy: User;
+
+  // Local fields
+  previewUrl: string;
+  previewStatus: string;
 }

@@ -158,6 +158,11 @@ public class KarafunCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	public CatalogSongFileList getSongFileList(long songId, Locale locale) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	@Cacheable("karafunCatalogCache")
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId) {
 		return getSelection(type, selectionId, null);
