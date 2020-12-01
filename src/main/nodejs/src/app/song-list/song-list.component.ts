@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, SimpleChanges, IterableDiffer, IterableDiffers, IterableChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { Song } from '../models/song';
@@ -6,8 +6,7 @@ import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { PlaylistSong } from '../models/playlist-song';
 import { SongsService } from '../services/songs.service';
-import { CatalogSongFile } from '../models/catalog-song-file';
-import { PlyrComponent } from 'ngx-plyr';
+import Plyr from 'plyr';
 
 @Component({
   selector: 'app-song-list',
@@ -33,36 +32,16 @@ export class SongListComponent implements OnInit {
   @Output() songRemoved = new EventEmitter<Song>();
 
   dragging: boolean;
-
-  @ViewChild(PlyrComponent, {static: false}) plyr: PlyrComponent;
-  player: Plyr;
-  preview: CatalogSongFile;
-  _diff: IterableDiffer<Song | PlaylistSong>;
+  songPlyr: Plyr;
+  songPlyrSource: string;
+  songPlyrCurrent: Song;
 
   constructor(
     private router: Router,
-    private songsService: SongsService,
-    private _iterableDiffers: IterableDiffers
+    private songsService: SongsService
   ) { }
 
   ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    this._diff = this._iterableDiffers.find(this.songs).create();
-    this.songs.forEach((song: Song | PlaylistSong) => {
-      this.setPreview(song);
-    });
-  }
-
-  ngDoCheck() {
-    const changes: IterableChanges<Song | PlaylistSong> = this._diff.diff(this.songs);
-
-    if(changes) {
-      this.songs.forEach((song: Song | PlaylistSong) => {
-        this.setPreview(song);
-      });
-    }
   }
 
   trackBySongCatalogId(index: number, song: Song | PlaylistSong): number {
@@ -88,23 +67,55 @@ export class SongListComponent implements OnInit {
     this.songMoved.emit(this.songs);
   }
 
-  setPreview(song: Song | PlaylistSong): void {
-    const catalogId = this.trackBySongCatalogId(null, song);
-    this.songsService.getSongFiles(catalogId).subscribe(songFiles => {
-      songFiles.forEach((file: CatalogSongFile) => {
-        if (file.trackType == 'nbv-ld') {
-          if ('song' in song) {
-            song.song.previewUrl = file.previewUrl;
-          } else {
-            song.previewUrl = file.previewUrl;
+  playSong(song: Song) {
+    this.stopSong();
+    if (song.previewUrl) {
+      this.songPlyrCurrent = song;
+      this.songPlyrCurrent.previewStatus = 'waiting';
+      this.songPlyrSource = song.previewUrl;
+    } else if (song.previewUrl === undefined && song.previewStatus != 'waiting') {
+      this.songPlyrCurrent = song;
+      this.songPlyrCurrent.previewStatus = 'waiting';
+      this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
+        var songFile = songFiles.find(songFile => songFile.trackType == 'nbv-ld');
+        if (songFile && songFile.previewUrl) {
+          song.previewUrl = songFile.previewUrl;
+          if (song == this.songPlyrCurrent) {
+            this.songPlyrSource = song.previewUrl;
           }
+        } else {
+          song.previewUrl = null;
+          song.previewStatus = 'notfound';
         }
       });
-    });
+    }
   }
 
-  play() {
-    this.player.play();
+  stopSong() {
+    this.songPlyr.stop();
+    if (this.songPlyrCurrent) {
+      this.songPlyrCurrent.previewStatus = 'ended';
+    }
+  }
+
+  songPlyrEvent(event: Plyr.PlyrEvent) {
+    var plyr = event.detail.plyr;
+    var song = this.songPlyrCurrent;
+    if (song && song.previewUrl == ""+plyr.source) {
+      switch (event.type) {
+        case 'canplay':
+          if (song.previewStatus == 'waiting') {
+            plyr.play();
+          }
+          break;
+        case 'waiting':
+        case 'playing':
+        case 'pause':
+        case 'ended':
+          song.previewStatus = event.type;
+          break;
+      }
+    }
   }
 
 }

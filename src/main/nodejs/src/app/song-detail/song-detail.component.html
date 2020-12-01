@@ -12,28 +12,28 @@
 <!-- Navigation pills -->
 <ul class="nav nav-pills my-3" *ngIf="tab != 'error'">
   <li class="nav-item">
-    <a class="nav-link" href="#" (click)="switchTab($event, 'info')" [class.active]="tab == 'info'" title="Info">
+    <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('info')" [class.active]="tab == 'info'" title="Info">
       <i class="fas fa-info-circle"></i><span class="d-md-inline" [class.d-none]="tab != 'info'"> Info</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" (click)="switchTab($event, 'lyrics')" [class.active]="tab == 'lyrics'" title="Lyrics">
+    <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('lyrics')" [class.active]="tab == 'lyrics'" title="Lyrics">
       <i class="fas fa-microphone-alt"></i><span class="d-md-inline" [class.d-none]="tab != 'lyrics'"> Lyrics</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" (click)="switchTab($event, 'comments')" [class.active]="tab == 'comments'" title="Comments">
+    <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('comments')" [class.active]="tab == 'comments'" title="Comments">
       <i class="fas fa-comments"></i><span class="d-md-inline" [class.d-none]="tab != 'comments'"> Comments</span>
       <span class="badge badge-light ml-1" *ngIf="song && song.comments">{{ song.commentsCount }}</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" (click)="switchTab($event, 'related')" [class.active]="tab == 'related'" title="Related">
+    <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('related')" [class.active]="tab == 'related'" title="Related">
       <i class="fas fa-music"></i><span class="d-md-inline" [class.d-none]="tab != 'related'"> Related</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" (click)="switchTab($event, 'files')" [class.active]="tab == 'files'" title="Files">
+    <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('files')" [class.active]="tab == 'files'" title="Files">
       <i class="fas fa-headphones"></i><span class="d-md-inline" [class.d-none]="tab != 'files'"> Files</span>
       <span class="badge badge-light ml-1" *ngIf="songFiles">{{ songFiles.length }}</span>
     </a>
@@ -60,7 +60,9 @@
               </p>
               <app-song-actions [(song)]="song" [showComments]="false"></app-song-actions>
             </div>
-            <div plyr style="width: 480px;" plyrTitle="song.title" [plyrPlaysInline]="true" [plyrSources]="preview.previewUrl" (plyrInit)="player = $event"></div>
+            <div class="col-12 col-lg-auto mt-3 mt-lg-0" *ngIf="preview && preview.previewUrl">
+              <div plyr class="preview-player" [plyrTitle]="song.name" [plyrPlaysInline]="true" [plyrSources]="preview.previewUrl"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -122,14 +124,19 @@
             <p class="m-0 text-dark">{{ getSongFileTrackTypeLabel(songFile) }}</p>
           </div>
           <div class="col-auto">
-            <small class="badge badge-secondary">
+            <small class="badge badge-secondary mx-1">
               <i class="fas fa-volume-up" *ngIf="songFile.format == 'mp3'"></i>
               <i class="fas fa-film" *ngIf="songFile.format == 'wmv' || songFile.format == 'mp4'"></i>
               <i class="fas fa-archive" *ngIf="songFile.format == 'zip'"></i>
               <i class="fas fa-microphone-alt" *ngIf="songFile.format == 'kfn' || songFile.format == 'cdg'"></i>
               {{ songFile.format }}
             </small>
-            <a href="{{ songFile.previewUrl }}" class="btn btn-sm btn-pink ml-2"><i class="far fa-arrow-alt-circle-down"></i> Preview</a>
+            <div *ngIf="songFile.previewUrl" [ngSwitch]="songFile.previewStatus" class="d-inline-block ml-2">
+              <button *ngSwitchDefault type="button" class="btn btn-sm btn-block btn-outline-dark" title="Play audio preview" (click)="playSongFile(songFile)"><i class="fas fa-play"></i><span class="d-none d-sm-inline"> Preview</span></button>
+              <button *ngSwitchCase="'waiting'" type="button" class="btn btn-sm btn-block btn-outline-dark" (click)="stopSongFile()"><i class="fas fa-spinner fa-spin"></i><span class="d-none d-sm-inline"> Loading</span></button>
+              <button *ngSwitchCase="'playing'" type="button" class="btn btn-sm btn-block btn-dark" title="Stop audio preview" (click)="stopSongFile()"><i class="fas fa-stop"></i><span class="d-none d-sm-inline"> Playing</span></button>
+            </div>
+            <a href="{{ songFile.catalogUrl }}" target="_blank" class="btn btn-sm btn-pink ml-2" title="Download full version"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> Download</span></a>
           </div>
         </li>
       </ul>
@@ -157,3 +164,6 @@
     </div>
   </div>
 </ng-template>
+
+<!-- Hidden audio player -->
+<div class="d-none" plyr plyrType="audio" [plyrSources]="songFilePlyrSource" (plyrInit)="songFilePlyr = $event" (plyrWaiting)="songFilePlyrEvent($event)" (plyrCanPlay)="songFilePlyrEvent($event)" (plyrPlaying)="songFilePlyrEvent($event)" (plyrPause)="songFilePlyrEvent($event)" (plyrEnded)="songFilePlyrEvent($event)"></div>

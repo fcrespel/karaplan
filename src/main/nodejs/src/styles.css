@@ -3,6 +3,10 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url("https://use.typekit.net/cty8gcd.css");
 
+:root {
+	--plyr-color-main: #d5177a;
+}
+
 html {
 	height: 100%;
 }
@@ -101,4 +105,8 @@ a:hover {
 .spinner-border-lg {
 	width: 3rem;
 	height: 3rem;
+}
+
+.plyr {
+	border-radius: .25rem !important;
 }

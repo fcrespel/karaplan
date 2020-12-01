@@ -14,6 +14,8 @@ export class Playlist {
   createdBy: User;
   updatedDate: Date;
   updatedBy: User;
+
+  // Local field
   isSelected: boolean;
 
   constructor(

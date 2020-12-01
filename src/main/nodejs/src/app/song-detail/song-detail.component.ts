@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { of } from 'rxjs';
@@ -9,7 +9,7 @@ import { User } from '../models/user';
 import { Song } from '../models/song';
 import { SongComment } from '../models/song-comment';
 import { CatalogSongFile } from '../models/catalog-song-file';
-import { PlyrComponent } from 'ngx-plyr';
+import Plyr from 'plyr';
 
 @Component({
   selector: 'app-song-detail',
@@ -17,9 +17,6 @@ import { PlyrComponent } from 'ngx-plyr';
   styleUrls: ['./song-detail.component.css']
 })
 export class SongDetailComponent implements OnInit {
-
-  @ViewChild(PlyrComponent, {static: false}) plyr: PlyrComponent;
-  player: Plyr;
 
   user: User = null;
   song: Song = null;
@@ -31,6 +28,9 @@ export class SongDetailComponent implements OnInit {
   tab: string = 'info';
   commentText: string;
   preview: CatalogSongFile;
+  songFilePlyr: Plyr;
+  songFilePlyrSource: string;
+  songFilePlyrCurrent: CatalogSongFile;
 
   trackTypeLabels = {
     'nbv': 'Instrumental',
@@ -56,17 +56,13 @@ export class SongDetailComponent implements OnInit {
     'npi-voc': 'No piano + vocals',
     'npi-pi-voc': 'Piano + vocals',
     'pi': 'Piano only',
-  }
+  };
 
   constructor(
     private route: ActivatedRoute,
     private accountService: AccountService,
     private songsService: SongsService
   ) { }
-   
-  play(): void {
-    this.player.play();
-  }
 
   ngOnInit() {
     this.accountService.getUser().subscribe(user => {
@@ -80,29 +76,29 @@ export class SongDetailComponent implements OnInit {
       this.relatedSongsPage = 0;
       this.hasMoreRelatedSongs = false;
       this.song = song;
+      this.songFiles = [];
+      this.preview = null;
+      this.relatedSongs = [];
+      this.hasMoreRelatedSongs = false;
       if (song.catalogId) {
-        this.tab = 'info';
+        this.switchTab('info');
         this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
           this.songFiles = songFiles;
-          this.songFiles.forEach((file: CatalogSongFile) => {
-            if (file.format == 'wmv' || file.format == 'mp4') {
-              this.preview = file;
-            }
-          });
+          this.preview = songFiles.find(songFile => songFile.format == 'wmv' || songFile.format == 'mp4') || songFiles.find(songFile => songFile.trackType == 'nbv-ld');
         });
         this.songsService.searchSongs('artist', ''+song.artist.catalogId).subscribe(songs => {
           this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);
           this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
         });
       } else {
-        this.tab = 'error';
+        this.switchTab('error');
       }
     });
   }
 
-  switchTab($event: Event, tab: string) {
-    $event.preventDefault();
+  switchTab(tab: string) {
     this.tab = tab;
+    this.stopSongFile();
   }
 
   trackByCommentId(index: number, comment: SongComment): number {
@@ -140,6 +136,42 @@ export class SongDetailComponent implements OnInit {
       return this.trackTypeLabels[songFile.trackType];
     } else {
       return 'Unknown';
+    }
+  }
+
+  playSongFile(songFile: CatalogSongFile) {
+    this.stopSongFile();
+    if (songFile.previewUrl) {
+      this.songFilePlyrCurrent = songFile;
+      this.songFilePlyrCurrent.previewStatus = 'waiting';
+      this.songFilePlyrSource = songFile.previewUrl;
+    }
+  }
+
+  stopSongFile() {
+    this.songFilePlyr.stop();
+    if (this.songFilePlyrCurrent) {
+      this.songFilePlyrCurrent.previewStatus = 'ended';
+    }
+  }
+
+  songFilePlyrEvent(event: Plyr.PlyrEvent) {
+    var plyr = event.detail.plyr;
+    var songFile = this.songFilePlyrCurrent;
+    if (songFile && songFile.previewUrl == ""+plyr.source) {
+      switch (event.type) {
+        case 'canplay':
+          if (songFile.previewStatus == 'waiting') {
+            plyr.play();
+          }
+          break;
+        case 'waiting':
+        case 'playing':
+        case 'pause':
+        case 'ended':
+          songFile.previewStatus = event.type;
+          break;
+      }
     }
   }
 
