@@ -7,10 +7,6 @@ spring:
         enabled: false
     rest:
       detection-strategy: annotated
-  http:
-    encoding:
-      charset: UTF-8
-      force: true
   jackson:
     default-property-inclusion: non-empty
   jpa:
@@ -41,13 +37,23 @@ server:
   port: 8080
   compression:
     enabled: true
+  error:
+    include-message: always
   servlet:
+    encoding:
+      charset: UTF-8
+      force: true
     session:
       timeout: 12h
+  shutdown: graceful
 logging:
   level:
     me.crespel.karaplan: debug
 management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
   health:
     redis:
       enabled: false

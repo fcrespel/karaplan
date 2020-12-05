@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.3.RELEASE</version>
+		<version>2.3.6.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -33,16 +33,16 @@
 		<appengine.build.directory>${project.build.directory}/appengine-staging</appengine.build.directory>
 
 		<!-- Plugin properties -->
-		<appengine-maven-plugin.version>2.2.0</appengine-maven-plugin.version>
-		<dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
-		<frontend-maven-plugin.version>1.7.6</frontend-maven-plugin.version>
+		<appengine-maven-plugin.version>2.4.0</appengine-maven-plugin.version>
+		<dockerfile-maven-plugin.version>1.4.13</dockerfile-maven-plugin.version>
+		<frontend-maven-plugin.version>1.10.4</frontend-maven-plugin.version>
 
 		<!-- Dependency properties -->
-		<commons-csv.version>1.6</commons-csv.version>
+		<commons-csv.version>1.8</commons-csv.version>
 		<guava.version>27.1-jre</guava.version>
-		<mysql-socket-factory.version>1.0.15</mysql-socket-factory.version>
-		<node.version>v12.14.1</node.version>
-		<npm.version>6.13.4</npm.version>
+		<mysql-socket-factory.version>1.2.0</mysql-socket-factory.version>
+		<node.version>v12.20.0</node.version>
+		<npm.version>6.14.9</npm.version>
 		<socketio-client.version>1.0.0</socketio-client.version>
 		<springfox.version>3.0.0</springfox.version>
 	</properties>
@@ -112,6 +112,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

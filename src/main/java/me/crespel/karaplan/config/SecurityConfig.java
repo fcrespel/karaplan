@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/**/*.css", "/**/*.js", "/**/*.js.map", "/**/*.jpg", "/**/*.png", "/**/*.svg", "/**/*.ico", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
 				.antMatchers("/api", "/v*/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/csrf").permitAll()
 				.antMatchers("/api/v1/account/**").permitAll()
-				.antMatchers("/actuator/health", "/actuator/info").permitAll()
+				.antMatchers("/actuator/health", "/actuator/health/liveness", "/actuator/health/readiness", "/actuator/info").permitAll()
 				.antMatchers("/actuator/**").hasRole("ADMIN")
 				.antMatchers("/_ah/**").permitAll()
 				.anyRequest().authenticated()
