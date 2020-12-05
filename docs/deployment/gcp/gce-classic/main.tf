@@ -84,7 +84,7 @@ resource "google_compute_backend_service" "karaplan-bes" {
 resource "google_compute_http_health_check" "karaplan-hc" {
   name                = "${var.name}-hc"
   port                = "8080"
-  request_path        = "/actuator/health"
+  request_path        = "/actuator/health/readiness"
 }
 
 // Instance group manager

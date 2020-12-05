@@ -69,22 +69,28 @@ spec:
                 secretKeyRef:
                   key: clientSecret
                   name: {{ include "karaplan.fullname" . }}-github-oauth-secret
+          startupProbe:
+            failureThreshold: 6
+            periodSeconds: 10
+            timeoutSeconds: 5
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
           livenessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 60
             periodSeconds: 10
-            successThreshold: 1
             timeoutSeconds: 5
-            tcpSocket:
+            httpGet:
+              path: /actuator/health/liveness
               port: 8080
+              scheme: HTTP
           readinessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 60
             periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 10
+            timeoutSeconds: 5
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/readiness
               port: 8080
               scheme: HTTP
           resources:

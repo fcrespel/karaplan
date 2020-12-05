@@ -45,7 +45,7 @@ In the side menu, go to **Network services > Load balancing**:
   * In **Health check**, click **Create a health check** 
     * Enter `karaplan-classic-hc` as the health check **name**.
     * Select **HTTP** as the **Protocol**, and `8080` as the port number.
-    * Enter `/actuator/health` as the **Request path**.
+    * Enter `/actuator/health/readiness` as the **Request path**.
   * Expand the configuration options at the bottom.
   * Select **Generated cookie** as the **Session affinity**.
   * Click **Create**.
@@ -81,7 +81,7 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     gcloud compute instance-groups managed set-named-ports karaplan-classic-ig --named-ports=http:8080 --region=$REGION
 
     # Create HTTP health check
-    gcloud compute health-checks create http karaplan-classic-hc --port=8080 --request-path=/actuator/health
+    gcloud compute health-checks create http karaplan-classic-hc --port=8080 --request-path=/actuator/health/readiness
 
     # Create Backend service
     gcloud compute backend-services create karaplan-classic-bes --global --load-balancing-scheme=EXTERNAL --health-checks=karaplan-classic-hc --port-name=http --protocol=HTTP --session-affinity=GENERATED_COOKIE --affinity-cookie-ttl=0
