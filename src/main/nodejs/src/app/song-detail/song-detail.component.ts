@@ -86,7 +86,7 @@ export class SongDetailComponent implements OnInit {
           this.songFiles = songFiles;
           this.preview = songFiles.find(songFile => songFile.format == 'wmv' || songFile.format == 'mp4') || songFiles.find(songFile => songFile.trackType == 'nbv-ld');
         });
-        this.songsService.searchSongs('artist', ''+song.artist.catalogId).subscribe(songs => {
+        this.songsService.searchSongs('artist', ''+song.artist.catalogId, 0, this.relatedSongsLimit).subscribe(songs => {
           this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);
           this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
         });
@@ -124,7 +124,7 @@ export class SongDetailComponent implements OnInit {
 
   loadMoreRelatedSongs() {
     if (this.hasMoreRelatedSongs) {
-      this.songsService.searchSongs('artist', ''+this.song.artist.catalogId, ++this.relatedSongsPage).subscribe(songs => {
+      this.songsService.searchSongs('artist', ''+this.song.artist.catalogId, ++this.relatedSongsPage, this.relatedSongsLimit).subscribe(songs => {
         songs.filter(song => song.catalogId != this.song.catalogId).forEach(song => this.relatedSongs.push(song));
         this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
       });
