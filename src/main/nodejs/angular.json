@@ -27,8 +27,7 @@
               "src/styles.css",
               "node_modules/plyr/dist/plyr.css"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "production": {
