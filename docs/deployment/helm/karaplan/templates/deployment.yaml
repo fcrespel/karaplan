@@ -24,51 +24,18 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          {{- if .Values.env }}
           env:
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  key: username
-                  name: {{ include "karaplan.fullname" . }}-datasource-secret
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  key: password
-                  name: {{ include "karaplan.fullname" . }}-datasource-secret
-            - name: SPRING_DATASOURCE_URL
-              value: {{ .Values.datasource.url }}
-            - name: SPRING_JPA_DATABASEPLATFORM
-              value: org.hibernate.dialect.MySQL5InnoDBDialect
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
-              valueFrom:
-                secretKeyRef:
-                  key: clientId
-                  name: {{ include "karaplan.fullname" . }}-google-oauth-secret
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
-              valueFrom:
-                secretKeyRef:
-                  key: clientSecret
-                  name: {{ include "karaplan.fullname" . }}-google-oauth-secret
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID
-              valueFrom:
-                secretKeyRef:
-                  key: clientId
-                  name: {{ include "karaplan.fullname" . }}-facebook-oauth-secret
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET
-              valueFrom:
-                secretKeyRef:
-                  key: clientSecret
-                  name: {{ include "karaplan.fullname" . }}-facebook-oauth-secret
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
-              valueFrom:
-                secretKeyRef:
-                  key: clientId
-                  name: {{ include "karaplan.fullname" . }}-github-oauth-secret
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
-              valueFrom:
-                secretKeyRef:
-                  key: clientSecret
-                  name: {{ include "karaplan.fullname" . }}-github-oauth-secret
+            {{- range $key, $value := .Values.env }}
+            - name: "{{ tpl $key $ }}"
+              value: "{{ tpl (print $value) $ }}"
+            {{- end }}
+          {{- end }}
+          {{- if .Values.envFromSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ tpl .Values.envFromSecret . }}
+          {{- end }}
           startupProbe:
             failureThreshold: 6
             periodSeconds: 10

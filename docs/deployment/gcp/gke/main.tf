@@ -1,153 +1,70 @@
-// Google Cloud provider
-provider google {
-  credentials = var.credentials
-  project     = var.project_id
-  region      = var.region
-  version     = "~> 3.0"
-}
-provider google-beta {
-  credentials = var.credentials
-  project     = var.project_id
-  region      = var.region
-  version     = "~> 3.0"
+// Local variables
+locals {
+  dns_name = var.dns_zone != "" ? replace(google_dns_record_set.karaplan-dns-record[0].name, "/\\.$/", "") : "${replace(google_compute_global_address.karaplan-ip.address, ".", "-")}.sslip.io"
 }
 
-// Google Cloud client config
-data "google_client_config" "default" {
+// DNS zone
+data "google_dns_managed_zone" "karaplan-dns-zone" {
+  count   = var.dns_zone != "" ? 1 : 0
+  name    = var.dns_zone
+  project = var.dns_project_id
+}
+
+// DNS record
+resource "google_dns_record_set" "karaplan-dns-record" {
+  count        = var.dns_zone != "" ? 1 : 0
+  name         = "${var.dns_name_prefix}.${data.google_dns_managed_zone.karaplan-dns-zone[0].dns_name}"
+  project      = data.google_dns_managed_zone.karaplan-dns-zone[0].project
+  managed_zone = data.google_dns_managed_zone.karaplan-dns-zone[0].name
+  type         = "A"
+  ttl          = 300
+  rrdatas      = [google_compute_global_address.karaplan-ip.address]
 }
 
 // Global IP
 resource "google_compute_global_address" "karaplan-ip" {
   name         = "${var.name}-ip"
+  project      = var.project_id
   address_type = "EXTERNAL"
 }
 
 // SSL certificate
 resource "google_compute_managed_ssl_certificate" "karaplan-ssl-cert" {
-  count    = var.https_enabled ? 1 : 0
-  provider = google-beta
-  name     = "${var.name}-ssl-cert"
+  count   = var.https_enabled ? 1 : 0
+  name    = "${var.name}-ssl-cert"
+  project = var.project_id
   managed {
-    domains = [var.domain_name]
+    domains = [local.dns_name]
   }
 }
 
-// GKE custom network
-resource "google_compute_network" "karaplan-network" {
-  name                    = "${var.name}-network"
-  auto_create_subnetworks = false
-}
-
-// GKE subnetwork with alias IP for pods and services
-resource "google_compute_subnetwork" "karaplan-subnet" {
-  name                     = "${var.name}-subnet"
-  region                   = var.region
-  network                  = google_compute_network.karaplan-network.self_link
-  ip_cidr_range            = "10.132.0.0/20"
-
-  secondary_ip_range {
-    range_name    = "${var.name}-pods"
-    ip_cidr_range = "10.24.0.0/14"
-  }
-  secondary_ip_range {
-    range_name    = "${var.name}-services"
-    ip_cidr_range = "10.28.0.0/20"
-  }
-}
-
-// GKE cluster
-resource "google_container_cluster" "karaplan-cluster" {
-  name       = "${var.name}-cluster"
-  location   = var.region
-  network    = google_compute_network.karaplan-network.self_link
-  subnetwork = google_compute_subnetwork.karaplan-subnet.self_link
-
-  remove_default_node_pool = true
-  initial_node_count       = 1
-
-  master_auth {
-    username = ""
-    password = ""
-
-    client_certificate_config {
-      issue_client_certificate = false
-    }
-  }
-
-  ip_allocation_policy {
-    cluster_secondary_range_name  = "${var.name}-pods"
-    services_secondary_range_name = "${var.name}-services"
-  }
-}
-
-// GKE node pool
-resource "google_container_node_pool" "karaplan-node-pool" {
-  name       = "${var.name}-node-pool"
-  location   = var.region
-  cluster    = google_container_cluster.karaplan-cluster.name
-  node_count = var.node_count
-
-  node_config {
-    machine_type = var.machine_type
-
-    metadata = {
-      disable-legacy-endpoints = "true"
-    }
-
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/cloud-platform"
-    ]
-  }
-}
-
-// Kubernetes provider
-provider "kubernetes" {
-  load_config_file       = false
-  host                   = "https://${google_container_cluster.karaplan-cluster.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(google_container_cluster.karaplan-cluster.master_auth[0].cluster_ca_certificate)
-  version                = "~> 1.10"
-}
-
-// Helm service account
-resource "kubernetes_service_account" "helm-sa" {
+// Environment secret
+resource "kubernetes_secret" "karaplan-env-secret" {
   metadata {
-    name = "helm"
-    namespace = "kube-system"
+    name      = "${var.name}-env-secret"
+    namespace = var.namespace
   }
-}
-resource "kubernetes_cluster_role_binding" "helm-sa-binding" {
-  metadata {
-    name = "helm"
+  data = {
+    SPRING_DATASOURCE_USERNAME                                       = var.db_username
+    SPRING_DATASOURCE_PASSWORD                                       = var.db_password
+    SPRING_DATASOURCE_URL                                            = "jdbc:mysql:///${var.db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${var.db_instance}"
+    SPRING_JPA_DATABASEPLATFORM                                      = "org.hibernate.dialect.MySQL5InnoDBDialect"
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID       = var.google_oauth_clientid
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET   = var.google_oauth_clientsecret
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID     = var.facebook_oauth_clientid
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET = var.facebook_oauth_clientsecret
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID       = var.github_oauth_clientid
+    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET   = var.github_oauth_clientsecret
+    SPRING_SESSION_STORETYPE                                         = "redis"
+    SPRING_REDIS_HOST                                                = var.redis_host
   }
-  role_ref {
-    api_group= "rbac.authorization.k8s.io"
-    kind = "ClusterRole"
-    name = "cluster-admin"
-  }
-  subject {
-    kind = "ServiceAccount"
-    name = kubernetes_service_account.helm-sa.metadata[0].name
-    namespace = kubernetes_service_account.helm-sa.metadata[0].namespace
-  }
-}
-
-// Helm provider
-provider "helm" {
-  service_account = kubernetes_service_account.helm-sa.metadata[0].name
-  kubernetes {
-    load_config_file       = false
-    host                   = "https://${google_container_cluster.karaplan-cluster.endpoint}"
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(google_container_cluster.karaplan-cluster.master_auth[0].cluster_ca_certificate)
-  }
-  version = "~> 0.10"
 }
 
 // Helm release
 resource "helm_release" "karaplan-helm-release" {
-  name  = var.name
-  chart = "${path.module}/../../helm/karaplan"
+  name      = var.name
+  chart     = "${path.module}/../../helm/karaplan"
+  namespace = var.namespace
 
   set {
     name  = "replicaCount"
@@ -157,16 +74,19 @@ resource "helm_release" "karaplan-helm-release" {
     name  = "ingress.enabled"
     value = var.http_enabled || var.https_enabled
   }
-  set_string {
+  set {
     name  = "ingress.annotations.kubernetes\\.io/ingress\\.allow-http"
+    type  = "string"
     value = var.http_enabled
   }
-  set_string {
+  set {
     name  = "ingress.annotations.kubernetes\\.io/ingress\\.global-static-ip-name"
+    type  = "string"
     value = google_compute_global_address.karaplan-ip.name
   }
-  set_string {
+  set {
     name  = "ingress.annotations.ingress\\.gcp\\.kubernetes\\.io/pre-shared-cert"
+    type  = "string"
     value = var.https_enabled ? google_compute_managed_ssl_certificate.karaplan-ssl-cert[0].name : ""
   }
   set {
@@ -179,72 +99,22 @@ resource "helm_release" "karaplan-helm-release" {
   }
   set {
     name  = "resources.limits.cpu"
-    value  = "1000m"
+    value = "1000m"
   }
   set {
     name  = "resources.limits.memory"
-    value  = "1Gi"
+    value = "1Gi"
   }
   set {
     name  = "resources.requests.cpu"
-    value  = "500m"
+    value = "500m"
   }
   set {
     name  = "resources.requests.memory"
-    value  = "512Mi"
+    value = "512Mi"
   }
   set {
-    name  = "datasource.url"
-    value = "jdbc:mysql:///${var.db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${var.db_instance}"
+    name  = "envFromSecret"
+    value = kubernetes_secret.karaplan-env-secret.metadata[0].name
   }
-  set {
-    name  = "secrets.datasource.username"
-    value = var.db_username
-  }
-  set_sensitive {
-    name  = "secrets.datasource.password"
-    value = var.db_password
-  }
-  set {
-    name  = "secrets.google.clientId"
-    value = var.google_oauth_clientid
-  }
-  set_sensitive {
-    name  = "secrets.google.clientSecret"
-    value = var.google_oauth_clientsecret
-  }
-  set {
-    name  = "secrets.facebook.clientId"
-    value = var.facebook_oauth_clientid
-  }
-  set_sensitive {
-    name  = "secrets.facebook.clientSecret"
-    value = var.facebook_oauth_clientsecret
-  }
-  set {
-    name  = "secrets.github.clientId"
-    value = var.github_oauth_clientid
-  }
-  set_sensitive {
-    name  = "secrets.github.clientSecret"
-    value = var.github_oauth_clientsecret
-  }
-}
-
-// Outputs
-output "http_url_ip" {
-  value = "http://${google_compute_global_address.karaplan-ip.address}"
-  description = "HTTP URL of the load balancer"
-}
-output "https_url_ip" {
-  value = "https://${google_compute_global_address.karaplan-ip.address}"
-  description = "HTTPS URL of the load balancer"
-}
-output "http_url_domain" {
-  value = "http://${var.domain_name}"
-  description = "HTTP URL of the custom domain"
-}
-output "https_url_domain" {
-  value = "https://${var.domain_name}"
-  description = "HTTPS URL of the custom domain"
 }

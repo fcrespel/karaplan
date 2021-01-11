@@ -1,0 +1,36 @@
+# This is a container manifest for Konlet, not a real K8S pod
+# See: https://github.com/GoogleCloudPlatform/konlet/blob/master/gce-containers-startup/types/api.go
+apiVersion: v1
+kind: Pod
+metadata:
+  name: karaplan
+spec:
+  containers:
+    - name: karaplan
+      image: ${container_image}
+      env:
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "${db_username}"
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: "${db_password}"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:mysql:///${db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${db_instance}"
+        - name: SPRING_JPA_DATABASEPLATFORM
+          value: "org.hibernate.dialect.MySQL5InnoDBDialect"
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
+          value: "${google_oauth_clientid}"
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
+          value: "${google_oauth_clientsecret}"
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID
+          value: "${facebook_oauth_clientid}"
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET
+          value: "${facebook_oauth_clientsecret}"
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
+          value: "${github_oauth_clientid}"
+        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
+          value: "${github_oauth_clientsecret}"
+        - name: SPRING_SESSION_STORETYPE
+          value: "redis"
+        - name: SPRING_REDIS_HOST
+          value: "${redis_host}"
+  restartPolicy: Always

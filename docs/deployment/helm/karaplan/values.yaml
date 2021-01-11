@@ -13,7 +13,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 service:
-  type: NodePort
+  type: ClusterIP
   port: 80
   annotations: {}
 
@@ -41,19 +41,8 @@ application:
   # See https://github.com/kubernetes-sigs/application
   enabled: false
 
-datasource:
-  url: jdbc:mysql://localhost/karaplan?useSSL=false
+# Environment variables
+env: {}
 
-secrets:
-  datasource:
-    username: karaplan
-    password: toComplete
-  google:
-    clientId: toComplete
-    clientSecret: toComplete
-  facebook:
-    clientId: toComplete
-    clientSecret: toComplete
-  github:
-    clientId: toComplete
-    clientSecret: toComplete
+# Environment from secret
+envFromSecret: ""

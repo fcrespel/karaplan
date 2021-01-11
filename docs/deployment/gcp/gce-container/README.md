@@ -4,7 +4,7 @@ This example uses [Compute Engine](https://cloud.google.com/compute/) to run the
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
+Before starting, follow the [Build](../build), [SQL](../sql) and [Memorystore](../memorystore) guides to create the container image, database and Redis instance.
 
 Then, refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 
@@ -26,7 +26,7 @@ In the side menu, go to **Compute > Instance templates**:
 | ---- | ----- |
 | SPRING_DATASOURCE_USERNAME | karaplan |
 | SPRING_DATASOURCE_PASSWORD | toComplete |
-| SPRING_DATASOURCE_URL | jdbc:mysql://toComplete/karaplan?useSSL | false |
+| SPRING_DATASOURCE_URL | jdbc:mysql:///toComplete?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete |
 | SPRING_JPA_DATABASEPLATFORM | org.hibernate.dialect.MySQL5InnoDBDialect |
 | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID | toComplete |
 | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET | toComplete |
@@ -34,6 +34,8 @@ In the side menu, go to **Compute > Instance templates**:
 | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET | toComplete |
 | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID | toComplete |
 | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET | toComplete |
+| SPRING_SESSION_STORETYPE | redis |
+| SPRING_REDIS_HOST | toComplete |
 
 * Click **Create**.
 
@@ -57,8 +59,6 @@ In the side menu, go to **Network services > Load balancing**:
     * Enter `karaplan-container-hc` as the health check **name**.
     * Select **HTTP** as the **Protocol**, and `8080` as the port number.
     * Enter `/actuator/health/readiness` as the **Request path**.
-  * Expand the configuration options at the bottom.
-  * Select **Generated cookie** as the **Session affinity**.
   * Click **Create**.
 * In **Frontend configuration**:
   * Enter `karaplan-container-frontend` as the frontend service **name**.
@@ -87,7 +87,7 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     cat - > karaplan.env <<EOF
     SPRING_DATASOURCE_USERNAME=karaplan
     SPRING_DATASOURCE_PASSWORD=toComplete
-    SPRING_DATASOURCE_URL=jdbc:mysql://toComplete/karaplan?useSSL=false
+    SPRING_DATASOURCE_URL=jdbc:mysql:///toComplete?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=$PROJECT_ID:$REGION:toComplete
     SPRING_JPA_DATABASEPLATFORM=org.hibernate.dialect.MySQL5InnoDBDialect
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID=toComplete
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET=toComplete
@@ -95,6 +95,8 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET=toComplete
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID=toComplete
     SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET=toComplete
+    SPRING_SESSION_STORETYPE=redis
+    SPRING_REDIS_HOST=toComplete
     EOF
 
     # Create Instance template
@@ -108,7 +110,7 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     gcloud compute health-checks create http karaplan-container-hc --port=8080 --request-path=/actuator/health/readiness
 
     # Create Backend service
-    gcloud compute backend-services create karaplan-container-bes --global --load-balancing-scheme=EXTERNAL --health-checks=karaplan-container-hc --port-name=http --protocol=HTTP --session-affinity=GENERATED_COOKIE --affinity-cookie-ttl=0
+    gcloud compute backend-services create karaplan-container-bes --global --load-balancing-scheme=EXTERNAL --health-checks=karaplan-container-hc --port-name=http --protocol=HTTP
 
     # Create URL map
     gcloud compute url-maps create karaplan-container-url-map --default-service=karaplan-container-bes
@@ -142,29 +144,10 @@ After several minutes, the application should become available at this IP addres
 
 ## Using Terraform
 
-You may use [Terraform](https://terraform.io) to provision all resources automatically. See the `main.tf` and `variables.tf` files for more information.
+This directory contains a [Terraform](https://terraform.io) module to provision all resources automatically. See the `main.tf`, `variables.tf` and `outputs.tf` files for more information.
 
-First create a `terraform.tfvars` file in this directory, providing appropriate values for all variables:
+Please refer to the [Terraform GCE Container Deployment](../../terraform/gce-container) guide for a full example.
 
-    credentials = "/path/to/credentials.json"
-    project_id = "your-project-id"
-    region = "europe-west1"
-    zones = ["europe-west1-b", "europe-west1-c", "europe-west1-d"]
-    domain_name = "your.custom.domain"
-    https_enabled = true
-    instances_count = 3
-    db_password = "toComplete"
-    db_address = "host:port"
-    google_oauth_clientid = "toComplete"
-    google_oauth_clientsecret = "toComplete"
-    facebook_oauth_clientid = "toComplete"
-    facebook_oauth_clientsecret = "toComplete"
-    github_oauth_clientid = "toComplete"
-    github_oauth_clientsecret = "toComplete"
+## Architecture diagram
 
-Then, run the following commands:
-
-    terraform init
-    terraform apply
-
-After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
+![Architecture](architecture.png)

@@ -12,7 +12,6 @@ In the side menu, go to **SQL**:
 * Generate a **root password** or type a secure one.
 * Choose a **Region** (e.g. `europe-west1`).
 * Expand the configuration options at the bottom.
-* In the **Connectivity** section, enable **Private IP** on the `default` network.
 * Adjust **Backup** and **Maintenance** settings if necessary.
 * Click **Create**.
 
@@ -20,7 +19,7 @@ When the database instance is ready:
 * In the **Database** section, click **Create database**, enter name `karaplan`, select charset `utf8mb4` and collation `utf8mb4_general_ci`.
 * In the **User** section, click **Create user account**, enter name `karaplan` and a secure password.
 
-Take note of the **Private IP** and **user/password** for use during application deployment.
+Take note of the **Connection name** and **user/password** for use during application deployment.
 
 ## Using Cloud Shell / SDK
 
@@ -32,7 +31,7 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     USER_PASSWORD=$(</dev/urandom tr -dc A-Za-z0-9 | head -c16)
 
     # Create database instance (takes some time)
-    gcloud beta sql instances create karaplan --database-version=MYSQL_5_7 --tier=db-n1-standard-1 --region=$REGION --network=default --root-password=$ROOT_PASSWORD
+    gcloud beta sql instances create karaplan --database-version=MYSQL_5_7 --tier=db-n1-standard-1 --region=$REGION --root-password=$ROOT_PASSWORD
 
     # Create database
     gcloud sql databases create karaplan --instance=karaplan --charset=utf8mb4 --collation=utf8mb4_general_ci
@@ -41,7 +40,7 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     gcloud sql users create karaplan --instance=karaplan --host=% --password=$USER_PASSWORD
     echo "Created user karaplan / $USER_PASSWORD"
 
-Take note of the **Private IP** and **user/password** for use during application deployment.
+Take note of the **Connection name** and **user/password** for use during application deployment.
 
 ## Local debugging
 
@@ -56,18 +55,6 @@ Then connect to localhost:3306 with the user created earlier.
 
 ## Using Terraform
 
-You may use [Terraform](https://terraform.io) to provision all resources automatically. See the `main.tf` and `variables.tf` files for more information.
+This directory contains a [Terraform](https://terraform.io) module to provision all resources automatically. See the `main.tf`, `variables.tf` and `outputs.tf` files for more information.
 
-First create a `terraform.tfvars` file in this directory, providing appropriate values for all variables:
-
-    credentials = "/path/to/credentials.json"
-    project_id = "your-project-id"
-    region = "europe-west1"
-    db_password = "toComplete"
-
-Then, run the following commands:
-
-    terraform init
-    terraform apply
-
-Take note of the **Private IP** and **user/password** for use during application deployment.
+Please refer to the [Terraform](../terraform) guide for a full example.

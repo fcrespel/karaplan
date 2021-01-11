@@ -30,17 +30,6 @@ Take note of the **IP address** for use during application deployment.
 
 ## Using Terraform
 
-You may use [Terraform](https://terraform.io) to provision all resources automatically. See the `main.tf` and `variables.tf` files for more information.
+This directory contains a [Terraform](https://terraform.io) module to provision all resources automatically. See the `main.tf`, `variables.tf` and `outputs.tf` files for more information.
 
-First create a `terraform.tfvars` file in this directory, providing appropriate values for all variables:
-
-    credentials = "/path/to/credentials.json"
-    project_id = "your-project-id"
-    region = "europe-west1"
-
-Then, run the following commands:
-
-    terraform init
-    terraform apply
-
-Take note of the **IP address** for use during application deployment.
+Please refer to the [Terraform](../terraform) guide for a full example.

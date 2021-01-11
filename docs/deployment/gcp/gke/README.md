@@ -4,9 +4,9 @@ This example uses [Kubernetes Engine](https://cloud.google.com/kubernetes-engine
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
+Before starting, follow the [Build](../build), [SQL](../sql) and [Memorystore](../memorystore) guides to create the container image, database and Redis instance.
 
-Then, download and install the **Helm 2.x client** from the official [releases](https://github.com/helm/helm/releases) page. Update the fields marked `toComplete` in the `karaplan.yaml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
+Then, download and install the **Helm client** from the official [releases](https://github.com/helm/helm/releases) page. Update the fields marked `toComplete` in the `karaplan.yaml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 
 Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
@@ -67,41 +67,20 @@ If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `kar
     # Get Kubernetes cluster config
     gcloud container clusters get-credentials karaplan-gke-cluster --region=$REGION
 
-    # Init Helm client and server
-    helm init
-
     # Preview template before installing it
-    helm template -f karaplan.yaml -n karaplan-gke ../../helm/karaplan
+    helm template -f karaplan.yaml  ../../helm/karaplan
 
     # Install application
-    helm install -f karaplan.yaml -n karaplan-gke ../../helm/karaplan
+    helm install -f karaplan.yaml ../../helm/karaplan
 
 After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
 
 ## Using Terraform
 
-You may use [Terraform](https://terraform.io) to provision all resources automatically. See the `main.tf` and `variables.tf` files for more information.
+This directory contains a [Terraform](https://terraform.io) module to provision all resources automatically. See the `main.tf`, `variables.tf` and `outputs.tf` files for more information.
 
-First create a `terraform.tfvars` file in this directory, providing appropriate values for all variables:
+Please refer to the [Terraform GKE Deployment](../../terraform/gke) guide for a full example.
 
-    credentials = "/path/to/credentials.json"
-    project_id = "your-project-id"
-    region = "europe-west1"
-    domain_name = "your.custom.domain"
-    https_enabled = true
-    replica_count = 3
-    db_password = "toComplete"
-    db_instance = "project-id:region:instance-name"
-    google_oauth_clientid = "toComplete"
-    google_oauth_clientsecret = "toComplete"
-    facebook_oauth_clientid = "toComplete"
-    facebook_oauth_clientsecret = "toComplete"
-    github_oauth_clientid = "toComplete"
-    github_oauth_clientsecret = "toComplete"
+## Architecture diagram
 
-Then, run the following commands:
-
-    terraform init
-    terraform apply
-
-After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
+![Architecture](architecture.png)

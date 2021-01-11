@@ -2,6 +2,9 @@ variable "name" {
   default     = "karaplan"
   description = "Name to use in all resources of this module"
 }
+variable "credentials" {
+  description = "Service account credentials JSON file"
+}
 variable "project_id" {
   description = "GCP project ID"
 }
@@ -16,44 +19,31 @@ variable "dns_zone" {
   default     = ""
   description = "Cloud DNS zone name"
 }
-variable "dns_name_prefix" {
-  default     = "karaplan"
-  description = "DNS name prefix"
+variable "gke_cluster_name" {
+  description = "GKE cluster name"
+}
+variable "gke_network_name" {
+  description = "GKE network name"
+}
+variable "gke_namespace" {
+  default     = "default"
+  description = "GKE namespace (must exist)"
 }
 variable "http_enabled" {
   default     = true
   description = "Enable HTTP load balancing"
 }
 variable "https_enabled" {
-  default     = false
+  default     = true
   description = "Enable HTTPS load balancing"
 }
-variable "instances_count" {
-  default     = 1
-  description = "Number of instances to create"
+variable "replica_count" {
+  default     = 3
+  description = "Deployment replica count"
 }
 variable "machine_type" {
   default     = "n1-standard-1"
   description = "Machine type"
-}
-variable "container_image" {
-  default     = "fcrespel/karaplan:master"
-  description = "Container image name"
-}
-variable "db_instance" {
-  description = "Database instance (project_id:region:instance_name)"
-}
-variable "db_name" {
-  description = "Database name"
-}
-variable "db_username" {
-  description = "Database user name"
-}
-variable "db_password" {
-  description = "Database user password"
-}
-variable "redis_host" {
-  description = "Redis host"
 }
 variable "google_oauth_clientid" {
   description = "Google OAuth 2.0 client ID"

@@ -9,7 +9,4 @@ spec:
   timeoutSec: 30
   connectionDraining:
     drainingTimeoutSec: 60
-  sessionAffinity:
-    affinityType: "GENERATED_COOKIE"
-    affinityCookieTtlSec: 0
 {{- end }}
