@@ -11,6 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -138,11 +139,19 @@ public class KvCatalogServiceImpl implements CatalogService {
 			KvQuery<?> query;
 			switch (type) {
 			case query:
-				path = "/search/";
-				query = new KvQuery<KvQuery.SearchSong>()
-						.setAffiliateId(properties.getAffiliateId())
-						.setFunction("song")
-						.setParameters(new KvQuery.SearchSong().setQuery(filter).setLimit(limit).setOffset(offset));
+				if (StringUtils.hasText(filter)) {
+					path = "/search/";
+					query = new KvQuery<KvQuery.SearchSong>()
+							.setAffiliateId(properties.getAffiliateId())
+							.setFunction("song")
+							.setParameters(new KvQuery.SearchSong().setQuery(filter).setLimit(limit).setOffset(offset));
+				} else {
+					path = "/song/";
+					query = new KvQuery<KvQuery.SongList>()
+							.setAffiliateId(properties.getAffiliateId())
+							.setFunction("list")
+							.setParameters(new KvQuery.SongList().setLimit(limit).setOffset(offset));
+				}
 				break;
 			case artist:
 				path = "/song/";
