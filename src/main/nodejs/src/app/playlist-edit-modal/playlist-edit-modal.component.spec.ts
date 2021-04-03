@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PlaylistEditModalComponent } from './playlist-edit-modal.component';
 
@@ -6,7 +6,7 @@ describe('PlaylistEditModalComponent', () => {
   let component: PlaylistEditModalComponent;
   let fixture: ComponentFixture<PlaylistEditModalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PlaylistEditModalComponent ]
     })
