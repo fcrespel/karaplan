@@ -1,5 +1,5 @@
 <div class="shadow" *ngIf="alertService.messages">
-  <ngb-alert *ngFor="let message of alertService.messages" [type]="message.severity" (close)="onClose(message)">
+  <ngb-alert *ngFor="let message of alertService.messages" [type]="message.severity" (closed)="onClose(message)">
     <strong>{{ message.title }}:</strong> {{ message.text }}
   </ngb-alert>
 </div>
