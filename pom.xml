@@ -66,6 +66,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -440,9 +441,39 @@
 					<name>appengine-build</name>
 				</property>
 			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+					<!-- Force inclusion in classpath -->
+				</dependency>
+			</dependencies>
 			<build>
 				<defaultGoal>package</defaultGoal>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>appengine-thin-jar</id>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>thin</classifier>
+									<archive>
+										<manifest>
+											<addClasspath>true</addClasspath>
+											<classpathPrefix>WEB-INF/lib/</classpathPrefix>
+											<useUniqueVersions>false</useUniqueVersions>
+										</manifest>
+									</archive>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
@@ -454,14 +485,22 @@
 									<goal>unpack</goal>
 								</goals>
 								<configuration>
-									<outputDirectory>${appengine.build.directory}</outputDirectory>
 									<artifactItems>
 										<artifactItem>
+											<outputDirectory>${appengine.build.directory}</outputDirectory>
 											<groupId>${project.groupId}</groupId>
 											<artifactId>${project.artifactId}</artifactId>
 											<version>${project.version}</version>
 											<type>${project.packaging}</type>
 											<includes>WEB-INF/classes/static/**</includes>
+										</artifactItem>
+										<artifactItem>
+											<outputDirectory>${project.build.directory}</outputDirectory>
+											<groupId>${project.groupId}</groupId>
+											<artifactId>${project.artifactId}</artifactId>
+											<version>${project.version}</version>
+											<type>${project.packaging}</type>
+											<includes>WEB-INF/lib/**</includes>
 										</artifactItem>
 									</artifactItems>
 								</configuration>
@@ -503,7 +542,8 @@
 							</execution>
 						</executions>
 						<configuration>
-							<version>1</version>
+							<artifact>${project.build.directory}/${project.build.finalName}-thin.jar</artifact>
+							<version>GCLOUD_CONFIG</version>
 							<projectId>GCLOUD_CONFIG</projectId>
 						</configuration>
 					</plugin>

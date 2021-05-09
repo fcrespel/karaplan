@@ -1,15 +1,26 @@
 runtime: java11
 instance_class: F4
-entrypoint: java -jar karaplan.war
+entrypoint: java -jar karaplan-thin.jar
 handlers:
-  - url: /(.*\.(js|css|png|jpg|svg|ico|xml|webmanifest))$
+  - url: /(api|swagger-ui)(/.*)?
+    secure: always
+    script: auto
+  - url: /(.*\.js)$
+    mime_type: application/javascript
     static_files: WEB-INF/classes/static/\1
-    upload: WEB-INF/classes/static/.*\.(js|css|png|jpg|svg|ico|xml|webmanifest)$
+    upload: WEB-INF/classes/static/.*\.js$
+  - url: /(.*\.css)$
+    mime_type: text/css
+    static_files: WEB-INF/classes/static/\1
+    upload: WEB-INF/classes/static/.*\.css$
+  - url: /(.*\.(png|jpg|svg|ico|xml|webmanifest))$
+    static_files: WEB-INF/classes/static/\1
+    upload: WEB-INF/classes/static/.*\.(png|jpg|svg|ico|xml|webmanifest)$
   - url: /.*
     secure: always
     script: auto
 env_variables:
-  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m"
+  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m -Xverify:none -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -agentpath:/opt/cdbg/cdbg_java_agent.so=--log_dir=/var/log"
   SPRING_PROFILES_ACTIVE: "gcp,appengine"
 automatic_scaling:
   min_instances: 0
@@ -17,8 +28,8 @@ automatic_scaling:
   min_idle_instances: 1
   max_idle_instances: 1
   min_pending_latency: 1000ms
-  max_pending_latency: 5000ms
-  max_concurrent_requests: 50
+  max_pending_latency: 10000ms
+  max_concurrent_requests: 80
   target_throughput_utilization: 0.9
   target_cpu_utilization: 0.9
 inbound_services:
