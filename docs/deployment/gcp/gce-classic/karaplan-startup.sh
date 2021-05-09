@@ -16,6 +16,7 @@ gsutil cp gs://$BUCKET_NAME/karaplan/karaplan.war /var/lib/tomcat8/webapps/ROOT.
 # Configure app
 mkdir -p /var/lib/tomcat8/bin
 cat - > /var/lib/tomcat8/bin/setenv.sh <<'EOF'
+export SPRING_PROFILES_ACTIVE='gcp'
 export SPRING_DATASOURCE_USERNAME='${db_username}'
 export SPRING_DATASOURCE_PASSWORD='${db_password}'
 export SPRING_DATASOURCE_URL='jdbc:mysql:///${db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${db_instance}'

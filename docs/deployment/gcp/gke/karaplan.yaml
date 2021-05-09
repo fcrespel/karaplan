@@ -18,6 +18,7 @@ backendConfig:
   enabled: true
 
 env:
+  SPRING_PROFILES_ACTIVE: "gcp"
   SPRING_DATASOURCE_USERNAME: "karaplan"
   SPRING_DATASOURCE_PASSWORD: "toComplete"
   SPRING_DATASOURCE_URL: "jdbc:mysql:///toComplete?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete"

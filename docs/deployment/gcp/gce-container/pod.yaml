@@ -9,6 +9,8 @@ spec:
     - name: karaplan
       image: ${container_image}
       env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "gcp"
         - name: SPRING_DATASOURCE_USERNAME
           value: "${db_username}"
         - name: SPRING_DATASOURCE_PASSWORD
