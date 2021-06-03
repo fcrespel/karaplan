@@ -11,8 +11,8 @@
 		copyOnWrite="true"
 	/>
 
-	<!-- KarafunCatalog cache for artists and songs -->
-	<cache name="karafunCatalogCache"
+	<!-- KarafunRemoteCatalog cache for artists and songs -->
+	<cache name="karafunRemoteCatalogCache"
 		maxEntriesLocalHeap="1000"
 		eternal="false"
 		timeToIdleSeconds="86400"

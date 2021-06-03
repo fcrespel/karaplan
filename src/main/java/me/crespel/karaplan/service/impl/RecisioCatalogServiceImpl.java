@@ -22,8 +22,8 @@ import me.crespel.karaplan.service.CatalogService;
 public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Autowired
-	@Qualifier("karafunCatalog")
-	protected CatalogService karafunCatalog;
+	@Qualifier("karafunRemoteCatalog")
+	protected CatalogService karafunRemoteCatalog;
 
 	@Autowired
 	@Qualifier("kvCatalog")
@@ -41,7 +41,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSong getSong(long songId, Locale locale) {
-		return karafunCatalog.getSong(songId, locale);
+		return karafunRemoteCatalog.getSong(songId, locale);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 		case artist:
 			return kvCatalog.getSongList(type, filter, limit, offset, locale);
 		default:
-			return karafunCatalog.getSongList(type, filter, limit, offset, locale);
+			return karafunRemoteCatalog.getSongList(type, filter, limit, offset, locale);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
-		return karafunCatalog.getSelection(type, selectionId, locale);
+		return karafunRemoteCatalog.getSelection(type, selectionId, locale);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
-		return karafunCatalog.getSelectionList(type, locale);
+		return karafunRemoteCatalog.getSelectionList(type, locale);
 	}
 
 }

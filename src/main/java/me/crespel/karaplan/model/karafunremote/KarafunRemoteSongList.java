@@ -1,4 +1,6 @@
-package me.crespel.karaplan.model.karafun;
+package me.crespel.karaplan.model.karafunremote;
+
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -8,9 +10,10 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KarafunArtist {
+public class KarafunRemoteSongList {
 
-	private Long id;
-	private String name;
+	private Long count;
+	private Long total;
+	private List<KarafunRemoteSong> songs;
 
 }

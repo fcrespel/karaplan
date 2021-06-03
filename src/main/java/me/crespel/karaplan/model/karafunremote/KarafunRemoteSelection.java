@@ -1,4 +1,4 @@
-package me.crespel.karaplan.model.karafun;
+package me.crespel.karaplan.model.karafunremote;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString(of = {"id", "name"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KarafunStyle {
+public class KarafunRemoteSelection {
 
 	private Long id;
 	private String name;

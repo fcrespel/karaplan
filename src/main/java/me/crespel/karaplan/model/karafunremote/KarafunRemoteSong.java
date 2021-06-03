@@ -1,4 +1,4 @@
-package me.crespel.karaplan.model.karafun;
+package me.crespel.karaplan.model.karafunremote;
 
 import java.util.List;
 
@@ -12,14 +12,14 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @ToString(of = {"id", "name", "artist"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KarafunSong {
+public class KarafunRemoteSong {
 
 	private Long id;
 	private String name;
-	private KarafunArtist artist;
+	private KarafunRemoteArtist artist;
 	private Long duration;
 	private Integer year;
-	private List<KarafunStyle> styles;
+	private List<KarafunRemoteStyle> styles;
 	private String img;
 	private String lyrics;
 	private String rights;
