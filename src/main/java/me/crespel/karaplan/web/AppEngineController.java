@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/_ah")
 public class AppEngineController {
 
-    @RequestMapping("/start")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void start() {
-    }
+	@RequestMapping("/start")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void start() {
+	}
 
-    @RequestMapping("/warmup")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void warmup() {
-    }
+	@RequestMapping("/warmup")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void warmup() {
+	}
 
 }
