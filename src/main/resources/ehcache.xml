@@ -21,4 +21,14 @@
 		copyOnWrite="true"
 	/>
 
+	<!-- KarafunWebCatalog cache for artists and songs -->
+	<cache name="karafunWebCatalogCache"
+		maxEntriesLocalHeap="1000"
+		eternal="false"
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="604800"
+		copyOnRead="true"
+		copyOnWrite="true"
+	/>
+
 </ehcache>

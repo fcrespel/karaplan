@@ -1,3 +1,6 @@
 spring:
   main:
     lazy-initialization: false
+logging:
+  level:
+    me.crespel.karaplan: trace

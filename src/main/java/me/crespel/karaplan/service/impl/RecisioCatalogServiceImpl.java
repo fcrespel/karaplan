@@ -26,6 +26,10 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 	protected CatalogService karafunRemoteCatalog;
 
 	@Autowired
+	@Qualifier("karafunWebCatalog")
+	protected CatalogService karafunWebCatalog;
+
+	@Autowired
 	@Qualifier("kvCatalog")
 	protected CatalogService kvCatalog;
 
@@ -41,7 +45,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSong getSong(long songId, Locale locale) {
-		return karafunRemoteCatalog.getSong(songId, locale);
+		return karafunWebCatalog.getSong(songId, locale);
 	}
 
 	@Override
@@ -56,7 +60,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 		case artist:
 			return kvCatalog.getSongList(type, filter, limit, offset, locale);
 		default:
-			return karafunRemoteCatalog.getSongList(type, filter, limit, offset, locale);
+			return karafunWebCatalog.getSongList(type, filter, limit, offset, locale);
 		}
 	}
 
@@ -77,7 +81,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
-		return karafunRemoteCatalog.getSelection(type, selectionId, locale);
+		return karafunWebCatalog.getSelection(type, selectionId, locale);
 	}
 
 	@Override
@@ -87,7 +91,7 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
-		return karafunRemoteCatalog.getSelectionList(type, locale);
+		return karafunWebCatalog.getSelectionList(type, locale);
 	}
 
 }

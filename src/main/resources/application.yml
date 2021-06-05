@@ -46,9 +46,6 @@ server:
     session:
       timeout: 12h
   shutdown: graceful
-logging:
-  level:
-    me.crespel.karaplan: debug
 management:
   endpoint:
     health:
@@ -60,6 +57,15 @@ management:
 karaplan:
   karafun:
     remote:
+      endpoint: https://www.karafun.com
+      endpoint-for-locale:
+        de: https://www.karafun.de
+        en: https://www.karafun.com
+        es: https://www.karafun.es
+        fr: https://www.karafun.fr
+        it: https://www.karafun.it
+        nl: https://www.karafun.nl
+    web:
       endpoint: https://www.karafun.com
       endpoint-for-locale:
         de: https://www.karafun.de
