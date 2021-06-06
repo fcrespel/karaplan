@@ -41,13 +41,8 @@ public class KarafunWebSession {
 		this.locale = locale;
 	}
 
-	public boolean isValid() {
+	public synchronized boolean isValid() {
 		return sessionKey != null && !sessionKey.equals("null") && queryKey != null;
-	}
-
-	public synchronized void init(String sessionKey, Long queryKey) {
-		this.sessionKey = sessionKey;
-		this.queryKey = queryKey;
 	}
 
 	public synchronized void reset() {

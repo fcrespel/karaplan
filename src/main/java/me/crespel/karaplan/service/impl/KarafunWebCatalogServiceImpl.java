@@ -98,6 +98,29 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		return endpoint;
 	}
 
+	protected KarafunWebSession getSession(Locale locale) {
+		String sessionKey = locale != null ? locale.getLanguage() : "";
+		KarafunWebSession session = sessions.computeIfAbsent(sessionKey, k -> new KarafunWebSession(locale));
+		if (!session.isValid()) {
+			Map<String, Object> sessionParams = new HashMap<>();
+			sessionParams.put("protocol", properties.getProtocol());
+			sessionParams.put("client", properties.getClientId());
+			sessionParams.put("client_version", properties.getClientVersion());
+			sessionParams.put("login", "");
+			sessionParams.put("pwd", "");
+			sessionParams.put("key", properties.getKey());
+
+			KarafunWebSessionResponse sessionResponse = callApi(session, "session", "open", sessionParams, KarafunWebSessionResponse.class);
+			session = sessionResponse.getSession().setLocale(locale);
+			if (!session.isValid()) {
+				throw new TechnicalException("Invalid KaraFun Web session");
+			}
+			log.debug("New KaraFun Web session: {}", session);
+			sessions.put(sessionKey, session);
+		}
+		return session;
+	}
+
 	protected <T extends KarafunWebResponse> T callApi(KarafunWebSession session, String resource, String action, Map<String, Object> params, Class<T> responseType) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(session.getLocale()))
@@ -123,7 +146,6 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 				if (response.shouldRestart() || response.shouldDisconnect()) {
 					log.info("Resetting KaraFun Web session for locale: {}", session.getLocale());
 					session.reset();
-					// TODO: auto retry
 					throw new TechnicalException("KaraFun Web technical error (" + response.getError() + "): " + response.getMessage());
 				} else {
 					throw new BusinessException("KaraFun Web functional error (" + response.getError() + "): " + response.getMessage());
@@ -138,26 +160,18 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	}
 
 	protected <T extends KarafunWebResponse> T callApi(Locale locale, String resource, String action, Map<String, Object> params, Class<T> responseType) {
-		String sessionKey = locale != null ? locale.getLanguage() : "";
-		KarafunWebSession session = sessions.computeIfAbsent(sessionKey, k -> new KarafunWebSession(locale));
-		if (!session.isValid()) {
-			Map<String, Object> sessionParams = new HashMap<>();
-			sessionParams.put("protocol", properties.getProtocol());
-			sessionParams.put("client", properties.getClientId());
-			sessionParams.put("client_version", properties.getClientVersion());
-			sessionParams.put("login", "");
-			sessionParams.put("pwd", "");
-			sessionParams.put("key", properties.getKey());
-
-			KarafunWebSessionResponse sessionResponse = callApi(session, "session", "open", sessionParams, KarafunWebSessionResponse.class);
-			session = sessionResponse.getSession().setLocale(locale);
-			log.debug("New KaraFun Web session: {}", session);
-			sessions.put(sessionKey, session);
+		KarafunWebSession session = getSession(locale);
+		try {
+			return callApi(session, resource, action, params, responseType);
+		} catch (TechnicalException e) {
 			if (!session.isValid()) {
-				throw new TechnicalException("Invalid KaraFun Web session");
+				// Refresh session and retry immediately
+				session = getSession(locale);
+				return callApi(session, resource, action, params, responseType);
+			} else {
+				throw e;
 			}
 		}
-		return callApi(session, resource, action, params, responseType);
 	}
 
 	@Override
@@ -174,10 +188,27 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable("karafunWebCatalogCache")
 	public CatalogSong getSong(long songId, Locale locale) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("song", songId);
-		KarafunWebSongResponse songResponse = callApi(locale, "song", "info", params, KarafunWebSongResponse.class);
-		return conversionService.convert(songResponse.getSong(), CatalogSong.class);
+		KarafunWebSongResponse songResponse = callApi(locale, "song", "info", Collections.singletonMap("song", songId), KarafunWebSongResponse.class);
+		if (songResponse.getSong() == null) {
+			throw new BusinessException("This song is not available for Karaoke");
+		} else {
+			CatalogSong song = conversionService.convert(songResponse.getSong(), CatalogSong.class);
+			if (song.getStyles() != null && !song.getStyles().isEmpty()) {
+				// Load style names
+				KarafunWebStyleListResponse styleListResponse = callApi(locale, "style", "list", Collections.singletonMap("no_favorite", 1), KarafunWebStyleListResponse.class);
+				if (styleListResponse.getStyles() != null && styleListResponse.getStyles().getStyles() != null) {
+					// Convert style list to map
+					Map<Long, CatalogStyle> styleMap = styleListResponse.getStyles().getStyles().stream()
+							.map(it -> conversionService.convert(it, CatalogStyle.class))
+							.collect(Collectors.toMap(CatalogStyle::getId, Function.identity()));
+					// Map style ID to full style
+					song.setStyles(song.getStyles().stream()
+							.map(it -> mergeCatalogStyles(it, styleMap.get(it.getId())))
+							.collect(Collectors.toCollection(LinkedHashSet::new)));
+				}
+			}
+			return song;
+		}
 	}
 
 	@Override
@@ -212,7 +243,6 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		}
 		KarafunWebSongListResponse songListResponse = callApi(locale, "song", action, params, KarafunWebSongListResponse.class);
 		return conversionService.convert(songListResponse.getList(), CatalogSongList.class).setType(type);
-		// TODO: match song style with style/list response
 	}
 
 	@Override
@@ -284,19 +314,39 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	}
 
 	protected CatalogSelection mergeCatalogSelections(CatalogSelection selection1, CatalogSelection selection2) {
-		if (selection1.getName() == null)
-			selection1.setName(selection2.getName());
-		if (selection1.getImg() == null)
-			selection1.setImg(selection2.getImg());
-		return selection1;
+		if (selection1 != null) {
+			if (selection2 != null) {
+				if (selection1.getName() == null)
+					selection1.setName(selection2.getName());
+				if (selection1.getImg() == null)
+					selection1.setImg(selection2.getImg());
+				return selection1;
+			} else {
+				return selection1;
+			}
+		} else if (selection2 != null) {
+			return selection2;
+		} else {
+			return null;
+		}
 	}
 
 	protected CatalogStyle mergeCatalogStyles(CatalogStyle style1, CatalogStyle style2) {
-		if (style1.getName() == null)
-			style1.setName(style2.getName());
-		if (style1.getImg() == null)
-			style1.setImg(style2.getImg());
-		return style1;
+		if (style1 != null) {
+			if (style2 != null) {
+				if (style1.getName() == null)
+					style1.setName(style2.getName());
+				if (style1.getImg() == null)
+					style1.setImg(style2.getImg());
+				return style1;
+			} else {
+				return style1;
+			}
+		} else if (style2 != null) {
+			return style2;
+		} else {
+			return null;
+		}
 	}
 
 	public class KarafunToCatalogArtistConverter implements Converter<KarafunWebArtist, CatalogArtist> {
