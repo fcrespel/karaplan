@@ -22,10 +22,6 @@ import me.crespel.karaplan.service.CatalogService;
 public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Autowired
-	@Qualifier("karafunRemoteCatalog")
-	protected CatalogService karafunRemoteCatalog;
-
-	@Autowired
 	@Qualifier("karafunWebCatalog")
 	protected CatalogService karafunWebCatalog;
 

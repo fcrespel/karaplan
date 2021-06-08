@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
@@ -41,6 +42,7 @@ import me.crespel.karaplan.model.kv.KvSongResponse;
 import me.crespel.karaplan.service.CatalogService;
 
 @Service("kvCatalog")
+@CacheConfig(cacheNames = "kvCatalogCache")
 public class KvCatalogServiceImpl implements CatalogService {
 
 	@Autowired
@@ -78,7 +80,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogArtist getArtist(long artistId) {
 		try {
 			KvQuery<KvQuery.ArtistGet> query = new KvQuery<KvQuery.ArtistGet>()
@@ -99,13 +101,13 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogSong getSong(long songId) {
 		return getSong(songId, null);
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogSong getSong(long songId, Locale locale) {
 		try {
 			KvQuery<KvQuery.SongGet> query = new KvQuery<KvQuery.SongGet>()
@@ -126,13 +128,13 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
 		return getSongList(type, filter, limit, offset, null);
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
 		try {
 			String path;
@@ -177,13 +179,13 @@ public class KvCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogSongFileList getSongFileList(long songId) {
 		return getSongFileList(songId, null);
 	}
 
 	@Override
-	@Cacheable("kvCatalogCache")
+	@Cacheable
 	public CatalogSongFileList getSongFileList(long songId, Locale locale) {
 		try {
 			KvQuery<KvQuery.SongFileList> query = new KvQuery<KvQuery.SongFileList>()

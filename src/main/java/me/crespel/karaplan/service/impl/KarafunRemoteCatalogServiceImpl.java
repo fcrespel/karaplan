@@ -6,7 +6,10 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Sets;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.convert.TypeDescriptor;
@@ -19,8 +22,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.model.CatalogArtist;
@@ -42,6 +43,7 @@ import me.crespel.karaplan.model.karafunremote.KarafunRemoteStyle;
 import me.crespel.karaplan.service.CatalogService;
 
 @Service("karafunRemoteCatalog")
+@CacheConfig(cacheNames = "karafunRemoteCatalogCache")
 public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 
 	@Autowired
@@ -58,7 +60,7 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 		conversionService.addConverter(new KarafunToCatalogStyleConverter());
 		conversionService.addConverter(new KarafunToCatalogSongConverter());
 		conversionService.addConverter(new KarafunToCatalogSongListConverter());
-		conversionService.addConverter(new KarafunToCatalogPlaylistConverter());
+		conversionService.addConverter(new KarafunToCatalogSelectionConverter());
 	}
 
 	protected String getEndpoint() {
@@ -82,13 +84,13 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSong getSong(long songId) {
 		return getSong(songId, null);
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSong getSong(long songId, Locale locale) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
@@ -109,13 +111,13 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
 		return getSongList(type, filter, limit, offset, null);
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
@@ -163,13 +165,13 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId) {
 		return getSelection(type, selectionId, null);
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
 		CatalogSelectionList list = getSelectionList(type, locale);
 		Optional<CatalogSelection> selection = list.getSelections().stream().filter(it -> selectionId.equals(it.getId())).findFirst();
@@ -177,14 +179,14 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
 		return getSelectionList(type, null);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	@Cacheable("karafunRemoteCatalogCache")
+	@Cacheable
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
@@ -263,7 +265,7 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 
 	}
 
-	public class KarafunToCatalogPlaylistConverter implements Converter<KarafunRemoteSelection, CatalogSelection> {
+	public class KarafunToCatalogSelectionConverter implements Converter<KarafunRemoteSelection, CatalogSelection> {
 
 		@Override
 		public CatalogSelection convert(KarafunRemoteSelection source) {

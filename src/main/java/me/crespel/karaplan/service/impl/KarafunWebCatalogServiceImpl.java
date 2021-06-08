@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
@@ -58,6 +59,7 @@ import me.crespel.karaplan.service.CatalogService;
 
 @Slf4j
 @Service("karafunWebCatalog")
+@CacheConfig(cacheNames = "karafunWebCatalogCache")
 public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 	@Autowired
@@ -180,13 +182,13 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSong getSong(long songId) {
 		return getSong(songId, null);
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSong getSong(long songId, Locale locale) {
 		KarafunWebSongResponse songResponse = callApi(locale, "song", "info", Collections.singletonMap("song", songId), KarafunWebSongResponse.class);
 		if (songResponse.getSong() == null) {
@@ -212,13 +214,13 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset) {
 		return getSongList(type, filter, limit, offset, null);
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
 		String action = "list";
 		Map<String, Object> params = new HashMap<>();
@@ -256,13 +258,13 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId) {
 		return getSelection(type, selectionId, null);
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSelection getSelection(CatalogSelectionType type, Long selectionId, Locale locale) {
 		CatalogSelectionList list = getSelectionList(type, locale);
 		Optional<CatalogSelection> selection = list.getSelections().stream().filter(it -> selectionId.equals(it.getId())).findFirst();
@@ -270,13 +272,13 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
 		return getSelectionList(type, null);
 	}
 
 	@Override
-	@Cacheable("karafunWebCatalogCache")
+	@Cacheable
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
 		if (CatalogSelectionType.styles.equals(type)) {
 			// Get styles without images
