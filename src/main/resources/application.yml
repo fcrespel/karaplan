@@ -39,6 +39,7 @@ server:
     enabled: true
   error:
     include-message: always
+  forward-headers-strategy: framework
   servlet:
     encoding:
       charset: UTF-8
