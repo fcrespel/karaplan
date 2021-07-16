@@ -4,7 +4,7 @@
 
 To run the application as a Docker container, execute the following command:
 
-    docker run -d --name karaplan -p 8080:8080 fcrespel/karaplan:latest
+    docker run -d --name karaplan -p 8080:8080 ghcr.io/fcrespel/karaplan:latest
 
 The application will then be available at [http://localhost:8080](http://localhost:8080)
 
@@ -38,7 +38,7 @@ services:
       MYSQL_USER: 'karaplan'
       MYSQL_PASSWORD: 'toComplete'
   karaplan:
-    image: fcrespel/karaplan:master
+    image: ghcr.io/fcrespel/karaplan:master
     restart: always
     environment:
       JAVA_TOOL_OPTIONS: '-Xms512m -Xmx1024m'

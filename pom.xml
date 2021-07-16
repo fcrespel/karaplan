@@ -26,7 +26,7 @@
 		<docker.src.directory>${basedir}/src/main/docker</docker.src.directory>
 		<docker.build.directory>${project.build.directory}/docker-build</docker.build.directory>
 		<docker.app.directory>/opt/${project.artifactId}</docker.app.directory>
-		<docker.image.prefix>fcrespel</docker.image.prefix>
+		<docker.image.prefix>ghcr.io/fcrespel</docker.image.prefix>
 		<docker.image.repository>${docker.image.prefix}/${project.artifactId}</docker.image.repository>
 		<docker.image.tag>${project.version}</docker.image.tag>
 		<appengine.src.directory>${basedir}/src/main/appengine</appengine.src.directory>

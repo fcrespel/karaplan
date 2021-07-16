@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: fcrespel/karaplan
+  repository: ghcr.io/fcrespel/karaplan
   tag: master
   pullPolicy: Always
 

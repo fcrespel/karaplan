@@ -6,7 +6,7 @@ To build the application and Docker image locally, execute the following command
 
     ./mvnw -DskipTests -Dfrontend-build -Ddocker-build -Ddocker.image.tag=latest clean package dockerfile:build
 
-A Docker image tagged `fcrespel/karaplan:latest` will then be created.
+A Docker image tagged `ghcr.io/fcrespel/karaplan:latest` will then be created.
 
 You may set the `docker.image.prefix` system property to specify a different Docker registry/repository.
 

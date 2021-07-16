@@ -18,7 +18,7 @@ In the side menu, go to **Compute > Instance templates**:
 * Click **Create instance template**.
 * Enter `karaplan-container-template-1` as the template **name**.
 * Leave the default **Machine type** as `n1-standard-1`.
-* Check **Deploy a container image to this VM instance** and enter the container image name, e.g. `eu.gcr.io/YOUR_PROJECT_ID/karaplan:master`, or the official image `fcrespel/karaplan:master`.
+* Check **Deploy a container image to this VM instance** and enter the container image name, e.g. `eu.gcr.io/YOUR_PROJECT_ID/karaplan:master`, or the official image `ghcr.io/fcrespel/karaplan:master`.
 * Expand the advanced container options just below.
 * Add the following **Environment variables** (replace `toComplete` with appropriate values):
 

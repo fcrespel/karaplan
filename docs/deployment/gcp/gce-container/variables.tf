@@ -37,7 +37,7 @@ variable "machine_type" {
   description = "Machine type"
 }
 variable "container_image" {
-  default     = "fcrespel/karaplan:master"
+  default     = "ghcr.io/fcrespel/karaplan:master"
   description = "Container image name"
 }
 variable "db_instance" {
