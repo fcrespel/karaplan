@@ -17,7 +17,7 @@ stages:
 
 build:
   stage: build
-  image: maven:3.5.3-jdk-8
+  image: maven:3.6.3-jdk-8
   cache:
     key: ${CI_PROJECT_PATH_SLUG}
     paths:
@@ -33,7 +33,7 @@ build:
 
 test:
   stage: test
-  image: maven:3.5.3-jdk-8
+  image: maven:3.6.3-jdk-8
   dependencies:
     - build
   cache:
