@@ -15,6 +15,11 @@ spring:
       hibernate.globally_quoted_identifiers: true
   main:
     lazy-initialization: true
+  resources:
+    cache:
+      cachecontrol:
+        cache-public: true
+        max-age: 30d
   security:
     oauth2:
       client:
