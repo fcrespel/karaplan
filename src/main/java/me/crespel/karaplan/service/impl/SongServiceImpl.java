@@ -218,8 +218,6 @@ public class SongServiceImpl implements SongService {
 					s1.setYear(s2.getYear());
 				if (s1.getImage() == null)
 					s1.setImage(s2.getImage());
-				if (s1.getLyrics() == null)
-					s1.setLyrics(s2.getLyrics());
 				if (s1.getRights() == null)
 					s1.setRights(s2.getRights());
 				if (s1.getArtist() == null)
@@ -247,7 +245,6 @@ public class SongServiceImpl implements SongService {
 					.setDuration(source.getDuration())
 					.setYear(source.getYear())
 					.setImage(source.getImg())
-					.setLyrics(source.getLyrics())
 					.setRights(source.getRights())
 					.setArtist(artistService.findByCatalogId(source.getArtist().getId()).orElse(null));
 			if (source.getStyles() != null) {

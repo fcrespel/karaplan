@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
 
-	<!-- KvCatalog cache for artists and songs -->
-	<cache name="kvCatalogCache"
+	<!-- AzLyrics cache for song lyrics -->
+	<cache name="azLyricsCache"
 		maxEntriesLocalHeap="1000"
 		eternal="false"
 		timeToIdleSeconds="86400"
@@ -23,6 +23,16 @@
 
 	<!-- KarafunWebCatalog cache for artists and songs -->
 	<cache name="karafunWebCatalogCache"
+		maxEntriesLocalHeap="1000"
+		eternal="false"
+		timeToIdleSeconds="86400"
+		timeToLiveSeconds="604800"
+		copyOnRead="true"
+		copyOnWrite="true"
+	/>
+
+	<!-- KvCatalog cache for artists and songs -->
+	<cache name="kvCatalogCache"
 		maxEntriesLocalHeap="1000"
 		eternal="false"
 		timeToIdleSeconds="86400"

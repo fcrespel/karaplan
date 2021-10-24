@@ -236,7 +236,6 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 					.setDuration(source.getDuration())
 					.setYear(source.getYear())
 					.setImg(source.getImg())
-					.setLyrics(source.getLyrics())
 					.setRights(source.getRights());
 			if (source.getStyles() != null) {
 				target.setStyles(source.getStyles().stream()

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Song } from '../models/song';
+import { SongLyrics } from '../models/song-lyrics';
 import { CatalogSelection } from '../models/catalog-selection';
 import { CatalogSongFile } from '../models/catalog-song-file';
 
@@ -51,6 +52,11 @@ export class SongsService {
   importSong(catalogId: number): Observable<Song> {
     const url = `${this.songsUrl}/${catalogId}`;
     return this.http.post<Song>(url, null);
+  }
+
+  getSongLyrics(catalogId: number): Observable<SongLyrics> {
+    const url = `${this.songsUrl}/${catalogId}/lyrics`;
+    return this.http.get<SongLyrics>(url);
   }
 
   getSongFiles(catalogId: number): Observable<CatalogSongFile[]> {

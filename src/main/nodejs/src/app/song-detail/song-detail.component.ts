@@ -7,6 +7,7 @@ import { AccountService } from '../services/account.service';
 import { SongsService } from '../services/songs.service';
 import { User } from '../models/user';
 import { Song } from '../models/song';
+import { SongLyrics } from '../models/song-lyrics';
 import { SongComment } from '../models/song-comment';
 import { CatalogSongFile } from '../models/catalog-song-file';
 import Plyr from 'plyr';
@@ -20,6 +21,7 @@ export class SongDetailComponent implements OnInit {
 
   user: User = null;
   song: Song = null;
+  songLyrics: SongLyrics = null;
   songFiles: CatalogSongFile[] = [];
   relatedSongs: Song[] = [];
   relatedSongsPage: number = 0;
@@ -76,12 +78,16 @@ export class SongDetailComponent implements OnInit {
       this.relatedSongsPage = 0;
       this.hasMoreRelatedSongs = false;
       this.song = song;
+      this.songLyrics = null;
       this.songFiles = [];
       this.preview = null;
       this.relatedSongs = [];
       this.hasMoreRelatedSongs = false;
       if (song.catalogId) {
         this.switchTab('info');
+        this.songsService.getSongLyrics(song.catalogId).subscribe(songLyrics => {
+          this.songLyrics = songLyrics;
+        });
         this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
           this.songFiles = songFiles;
           this.preview = songFiles.find(songFile => songFile.format == 'wmv' || songFile.format == 'mp4') || songFiles.find(songFile => songFile.trackType == 'nbv-ld');

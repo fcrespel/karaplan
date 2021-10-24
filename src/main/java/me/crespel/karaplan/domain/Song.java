@@ -71,9 +71,6 @@ public class Song implements Comparable<Song>, Serializable {
 	private String image;
 
 	@Transient
-	private String lyrics;
-
-	@Transient
 	private String rights;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })

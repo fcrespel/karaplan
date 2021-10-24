@@ -27,8 +27,10 @@ import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionType;
 import me.crespel.karaplan.model.CatalogSongFile;
 import me.crespel.karaplan.model.CatalogSongListType;
+import me.crespel.karaplan.model.SongLyrics;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.service.CatalogService;
+import me.crespel.karaplan.service.LyricsService;
 import me.crespel.karaplan.service.PlaylistService;
 import me.crespel.karaplan.service.SongService;
 import springfox.documentation.annotations.ApiIgnore;
@@ -43,6 +45,9 @@ public class SongController {
 
 	@Autowired
 	protected CatalogService catalogService;
+
+	@Autowired
+	protected LyricsService lyricsService;
 
 	@Autowired
 	protected PlaylistService playlistService;
@@ -83,6 +88,13 @@ public class SongController {
 	public Song importSong(@PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
 		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return songService.save(song);
+	}
+
+	@GetMapping("/{catalogId}/lyrics")
+	@ApiOperation("Get a song's lyrics")
+	public SongLyrics getSongLyrics(@PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+		Song song = songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
+		return lyricsService.getSongLyrics(song);
 	}
 
 	@GetMapping("/{catalogId}/files")

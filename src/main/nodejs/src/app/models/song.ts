@@ -12,7 +12,6 @@ export class Song {
   duration: number;
   year: number;
   image: string;
-  lyrics: string;
   rights: string;
   styles: Style[];
   artist: Artist;
