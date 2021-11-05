@@ -1,5 +1,5 @@
 variables:
-  MVN_ENV_OPTS: '-Xms64m -Xmx256m -Dmaven.repo.local=.mvn/repository'
+  MVN_ENV_OPTS: '-Xms64m -Xmx512m -Dmaven.repo.local=.mvn/repository'
   MVN_BUILD_OPTS: '-B -Dfrontend-build -Ddocker-build'
   MVN_GOALS: 'clean verify'
   DOCKER_USERNAME: toComplete
@@ -17,7 +17,7 @@ stages:
 
 build:
   stage: build
-  image: maven:3.6.3-jdk-8
+  image: maven:3.6.3-jdk-11
   cache:
     key: ${CI_PROJECT_PATH_SLUG}
     paths:
@@ -33,7 +33,7 @@ build:
 
 test:
   stage: test
-  image: maven:3.6.3-jdk-8
+  image: maven:3.6.3-jdk-11
   dependencies:
     - build
   cache:
