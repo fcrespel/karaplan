@@ -11,6 +11,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import lombok.extern.slf4j.Slf4j;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.model.SongLyrics;
 import me.crespel.karaplan.model.azlyrics.AzLyricsSuggestResponse;
@@ -18,6 +19,7 @@ import me.crespel.karaplan.model.azlyrics.AzLyricsSuggestion;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.LyricsService;
 
+@Slf4j
 @Service("azLyrics")
 @CacheConfig(cacheNames = "azLyricsCache")
 public class AzLyricsServiceImpl implements LyricsService {
@@ -56,7 +58,8 @@ public class AzLyricsServiceImpl implements LyricsService {
 					.queryParam("q", song.getName() + " - " + song.getArtist().getName());
 			return restTemplate.getForObject(builder.build().encode().toUri(), AzLyricsSuggestResponse.class);
 		} catch (RestClientException e) {
-			throw new TechnicalException(e);
+			log.error("Failed to retrieve lyrics from AZLyrics for {}", song, e);
+			throw new TechnicalException("Lyrics could not be retrieved for this song");
 		}
 	}
 
