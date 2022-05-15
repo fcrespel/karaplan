@@ -23,13 +23,13 @@ import { AlertMessage } from '../models/alert-message';
 })
 export class PlaylistDetailComponent implements OnInit {
 
-  user: User = null;
-  playlist: Playlist = null;
-  playlistMembers: string;
-  commentText: string;
-  karafunRemoteId: string;
-  karafunBarId: string;
-  shareUrl: string;
+  user?: User;
+  playlist?: Playlist;
+  playlistMembers: string = '';
+  commentText: string = '';
+  karafunRemoteId: string = '';
+  karafunBarId: string = '';
+  shareUrl: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -46,7 +46,7 @@ export class PlaylistDetailComponent implements OnInit {
       this.user = user;
     });
     this.route.paramMap.pipe(switchMap(params => {
-      return this.playlistsService.getPlaylist(+params.get('id'), this.route.snapshot.queryParamMap.get('accessKey'));
+      return this.playlistsService.getPlaylist(+params.get('id')!, this.route.snapshot.queryParamMap.get('accessKey'));
     })).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
@@ -56,22 +56,24 @@ export class PlaylistDetailComponent implements OnInit {
     if (playlist !== undefined) {
       this.playlist = playlist;
     }
-    let urlTree = this.router.createUrlTree(['/playlists', this.playlist.id], {
-      queryParams: {accessKey: this.playlist.accessKey}
-    });
-    this.shareUrl = window.location.origin + this.location.prepareExternalUrl(urlTree.toString());
-    this.playlistMembers = this.playlist.members ? this.playlist.members.map(user => user.displayName).join(', ') : '';
+    if (this.playlist !== undefined) {
+      let urlTree = this.router.createUrlTree(['/playlists', this.playlist.id], {
+        queryParams: {accessKey: this.playlist.accessKey}
+      });
+      this.shareUrl = window.location.origin + this.location.prepareExternalUrl(urlTree.toString());
+      this.playlistMembers = this.playlist.members ? this.playlist.members.map(user => user.displayName).join(', ') : '';
+    }
   }
 
-  joinPlaylist() {
-    this.playlistsService.joinPlaylist(this.playlist.id, this.route.snapshot.queryParamMap.get('accessKey')).subscribe(playlist => {
+  joinPlaylist(playlist: Playlist) {
+    this.playlistsService.joinPlaylist(playlist.id, this.route.snapshot.queryParamMap.get('accessKey')!).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
   }
 
-  leavePlaylist() {
+  leavePlaylist(playlist: Playlist) {
     let modal = this.modalService.open(PlaylistLeaveModalComponent);
-    modal.componentInstance.playlist = this.playlist;
+    modal.componentInstance.playlist = playlist;
     modal.result.then((result: Playlist) => {
       this.playlistsService.leavePlaylist(result.id).subscribe(response => {
         this.router.navigate(['/playlists']);
@@ -79,9 +81,9 @@ export class PlaylistDetailComponent implements OnInit {
     }, reason => {});
   }
 
-  editPlaylist() {
+  editPlaylist(playlist: Playlist) {
     let modal = this.modalService.open(PlaylistEditModalComponent);
-    modal.componentInstance.playlist = new Playlist(this.playlist.id, this.playlist.name, this.playlist.readOnly);
+    modal.componentInstance.playlist = {id: playlist.id, name: playlist.name, readOnly: playlist.readOnly};
     modal.result.then((result: Playlist) => {
       this.playlistsService.savePlaylist(result).subscribe(playlist => {
         this.updatePlaylist(playlist);
@@ -89,8 +91,8 @@ export class PlaylistDetailComponent implements OnInit {
     }, reason => {});
   }
 
-  addComment(comment: string, commentForm: NgForm) {
-    this.playlistsService.addCommentToPlaylist(this.playlist.id, comment).subscribe(playlist => {
+  addComment(playlist: Playlist, comment: string, commentForm: NgForm) {
+    this.playlistsService.addCommentToPlaylist(playlist.id, comment).subscribe(playlist => {
       commentForm.reset();
       this.updatePlaylist(playlist);
     });
@@ -100,62 +102,63 @@ export class PlaylistDetailComponent implements OnInit {
     return comment.id;
   }
 
-  removeComment(comment: PlaylistComment) {
-    this.playlistsService.removeCommentFromPlaylist(this.playlist.id, comment.id).subscribe(playlist => {
+  removeComment(playlist: Playlist, comment: PlaylistComment) {
+    this.playlistsService.removeCommentFromPlaylist(playlist.id, comment.id).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
   }
 
-  onPlaylistRemoved(playlistSong: PlaylistSong) {
-    if (playlistSong.playlist.id === this.playlist.id) {
-      this.playlistsService.getPlaylist(this.playlist.id).subscribe(playlist => {
+  onPlaylistRemoved(playlist: Playlist, playlistSong: PlaylistSong) {
+    if (playlistSong.playlist?.id === playlist.id) {
+      this.playlistsService.getPlaylist(playlist.id).subscribe(playlist => {
         this.updatePlaylist(playlist);
       });
     }
   }
 
-  onSongMoved(songList: PlaylistSong[]) {
-    let songIds: number[] = [];
-    songList.forEach((song: PlaylistSong) => songIds.push(song.song.id));
-    this.playlistsService.sortPlaylistCustom(this.playlist.id, songIds).subscribe(playlist => {
+  onSongMoved(playlist: Playlist, songList: PlaylistSong[]) {
+    let songIds: number[] = songList.map(playlistSong => playlistSong.song.id!);
+    this.playlistsService.sortPlaylistCustom(playlist.id, songIds).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
   }
 
-  onSongRemoved(song: Song) {
-    this.playlistsService.removeSongFromPlaylist(this.playlist.id, song.catalogId).subscribe(playlist => {
+  onSongRemoved(playlist: Playlist, song: Song) {
+    this.playlistsService.removeSongFromPlaylist(playlist.id, song.catalogId).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
   }
 
-  sortPlaylist(sortType: string, sortDirection: string) {
-    this.playlistsService.sortPlaylist(this.playlist.id, sortType, sortDirection).subscribe(playlist => {
+  sortPlaylist(playlist: Playlist, sortType: string, sortDirection?: string) {
+    this.playlistsService.sortPlaylist(playlist.id, sortType, sortDirection).subscribe(playlist => {
       this.updatePlaylist(playlist);
     });
   }
 
-  exportPlaylistToKarafunRemote(modalContent) {
+  exportPlaylistToKarafunRemote(playlist: Playlist, modalContent: any) {
     this.modalService.open(modalContent).result.then(remoteId => {
       if (remoteId) {
-        this.playlistsService.exportPlaylistToKarafunRemote(this.playlist.id, remoteId).subscribe(response => {
-          let message = new AlertMessage();
-          message.severity = 'success';
-          message.title = 'Success';
-          message.text = `Export to KaraFun Remote #${remoteId} completed successfully`;
+        this.playlistsService.exportPlaylistToKarafunRemote(playlist.id, remoteId).subscribe(response => {
+          let message: AlertMessage = {
+            severity: 'success',
+            title: 'Success',
+            text: `Export to KaraFun Remote #${remoteId} completed successfully`
+          };
           this.alertService.addMessage(message);
         });
       }
     }, reason => {});
   }
 
-  exportPlaylistToKarafunBar(modalContent) {
+  exportPlaylistToKarafunBar(playlist: Playlist, modalContent: any) {
     this.modalService.open(modalContent).result.then(bookingId => {
       if (bookingId) {
-        this.playlistsService.exportPlaylistToKarafunBar(this.playlist.id, bookingId).subscribe(response => {
-          let message = new AlertMessage();
-          message.severity = 'success';
-          message.title = 'Success';
-          message.text = `Export to KaraFun Bar session #${bookingId} completed successfully`;
+        this.playlistsService.exportPlaylistToKarafunBar(playlist.id, bookingId).subscribe(response => {
+          let message: AlertMessage = {
+            severity: 'success',
+            title: 'Success',
+            text: `Export to KaraFun Bar session #${bookingId} completed successfully`
+          };
           this.alertService.addMessage(message);
         });
       }
@@ -168,7 +171,7 @@ export class PlaylistDetailComponent implements OnInit {
     document.execCommand('copy');
   }
 
-  isMember(user: User, playlist: Playlist) {
+  isMember(user?: User, playlist?: Playlist) {
     return user && playlist && playlist.members && playlist.members.findIndex(member => member.id == user.id) >= 0;
   }
 

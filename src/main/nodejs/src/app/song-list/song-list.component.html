@@ -1,16 +1,11 @@
 <ul class="list-group shadow" *ngIf="songs" cdkDropList cdkDropListLockAxis="y" [cdkDropListDisabled]="!allowMove" (cdkDropListDropped)="moveSong($event)">
-  <li *ngFor="let song of songs; trackBy: trackBySongCatalogId" (click)="gotoSong(song)" class="list-group-item list-group-item-action align-items-center no-gutters px-3 py-2" 
+  <li *ngFor="let playlistSong of songs; trackBy: trackBySongCatalogId" (click)="gotoSong(playlistSong.song)" class="list-group-item list-group-item-action align-items-center no-gutters px-3 py-2" 
     cdkDrag (cdkDragStarted)="dragging = true" (cdkDragDropped)="dragging = false">
     <div class="list-group-item py-2" *cdkDragPlaceholder></div>
     <div class="col-auto px-2" cdkDragHandle *ngIf="allowMove">
       <i class="fas fa-grip-lines-vertical"></i>
     </div>
-    <ng-container *ngIf="song?.song">
-      <ng-container *ngTemplateOutlet="songItem; context: { song: song.song, playlistSong: song }"></ng-container>
-    </ng-container>
-    <ng-container *ngIf="!song?.song">
-      <ng-container *ngTemplateOutlet="songItem; context: { song: song }"></ng-container>
-    </ng-container>
+    <ng-container *ngTemplateOutlet="songItem; context: { song: playlistSong.song, playlistSong: playlistSong }"></ng-container>
   </li>
 </ul>
 
@@ -45,4 +40,4 @@
 </ng-template>
 
 <!-- Hidden audio player -->
-<div class="d-none" plyr plyrType="audio" [plyrSources]="songPlyrSource" (plyrInit)="songPlyr = $event" (plyrWaiting)="songPlyrEvent($event)" (plyrCanPlay)="songPlyrEvent($event)" (plyrPlaying)="songPlyrEvent($event)" (plyrPause)="songPlyrEvent($event)" (plyrEnded)="songPlyrEvent($event)"></div>
+<div class="d-none" plyr plyrType="audio" [plyrSources]="songPlyrSources" (plyrInit)="songPlyr = $event" (plyrWaiting)="songPlyrEvent($event)" (plyrCanPlay)="songPlyrEvent($event)" (plyrPlaying)="songPlyrEvent($event)" (plyrPause)="songPlyrEvent($event)" (plyrEnded)="songPlyrEvent($event)"></div>

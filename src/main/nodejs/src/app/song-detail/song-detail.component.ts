@@ -9,8 +9,9 @@ import { User } from '../models/user';
 import { Song } from '../models/song';
 import { SongLyrics } from '../models/song-lyrics';
 import { SongComment } from '../models/song-comment';
+import { PlaylistSong } from '../models/playlist-song';
 import { CatalogSongFile } from '../models/catalog-song-file';
-import Plyr from 'plyr';
+import * as Plyr from 'plyr';
 
 @Component({
   selector: 'app-song-detail',
@@ -19,22 +20,22 @@ import Plyr from 'plyr';
 })
 export class SongDetailComponent implements OnInit {
 
-  user: User = null;
-  song: Song = null;
-  songLyrics: SongLyrics = null;
+  user?: User;
+  song?: Song;
+  songLyrics?: SongLyrics;
   songFiles: CatalogSongFile[] = [];
-  relatedSongs: Song[] = [];
+  relatedSongs: PlaylistSong[] = [];
   relatedSongsPage: number = 0;
   relatedSongsLimit: number = 10;
   hasMoreRelatedSongs: boolean = false;
   tab: string = 'info';
-  commentText: string;
-  preview: CatalogSongFile;
-  songFilePlyr: Plyr;
-  songFilePlyrSource: string;
-  songFilePlyrCurrent: CatalogSongFile;
+  commentText: string = '';
+  preview?: CatalogSongFile;
+  songFilePlyr?: Plyr;
+  songFilePlyrSources: Plyr.Source[] = [];
+  songFilePlyrCurrent?: CatalogSongFile;
 
-  trackTypeLabels = {
+  trackTypeLabels: any = {
     'nbv': 'Instrumental',
     'nbv-gm': 'Instrumental + backing vocals',
     'nbv-ld': 'Cover version',
@@ -72,18 +73,18 @@ export class SongDetailComponent implements OnInit {
     });
     this.route.paramMap.pipe(
       switchMap((params: ParamMap) => 
-        this.songsService.getSong(+params.get('catalogId')).pipe(catchError(err => of(new Song())))
+        this.songsService.getSong(+params.get('catalogId')!).pipe(catchError(err => of(undefined)))
       )
     ).subscribe(song => {
       this.relatedSongsPage = 0;
       this.hasMoreRelatedSongs = false;
       this.song = song;
-      this.songLyrics = null;
+      this.songLyrics = undefined;
       this.songFiles = [];
-      this.preview = null;
+      this.preview = undefined;
       this.relatedSongs = [];
       this.hasMoreRelatedSongs = false;
-      if (song.catalogId) {
+      if (song?.catalogId) {
         this.switchTab('info');
         this.songsService.getSongLyrics(song.catalogId).subscribe(songLyrics => {
           this.songLyrics = songLyrics;
@@ -93,7 +94,7 @@ export class SongDetailComponent implements OnInit {
           this.preview = songFiles.find(songFile => songFile.format == 'wmv' || songFile.format == 'mp4') || songFiles.find(songFile => songFile.trackType == 'nbv-ld');
         });
         this.songsService.searchSongs('artist', ''+song.artist.catalogId, 0, this.relatedSongsLimit).subscribe(songs => {
-          this.relatedSongs = songs.filter(song => song.catalogId != this.song.catalogId);
+          this.relatedSongs = songs.filter(song => song.catalogId != this.song?.catalogId).map(song => { return {song: song} });
           this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
         });
       } else {
@@ -116,22 +117,22 @@ export class SongDetailComponent implements OnInit {
   }
 
   addComment(comment: string, commentForm: NgForm) {
-    this.songsService.addCommentToSong(this.song.catalogId, comment).subscribe(song => {
+    this.songsService.addCommentToSong(this.song!.catalogId, comment).subscribe(song => {
       commentForm.reset();
       this.song = song;
     });
   }
 
   removeComment(comment: SongComment) {
-    this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
+    this.songsService.removeCommentFromSong(this.song!.catalogId, comment.id).subscribe(song => {
       this.song = song;
     });
   }
 
   loadMoreRelatedSongs() {
     if (this.hasMoreRelatedSongs) {
-      this.songsService.searchSongs('artist', ''+this.song.artist.catalogId, ++this.relatedSongsPage, this.relatedSongsLimit).subscribe(songs => {
-        songs.filter(song => song.catalogId != this.song.catalogId).forEach(song => this.relatedSongs.push(song));
+      this.songsService.searchSongs('artist', ''+this.song!.artist.catalogId, ++this.relatedSongsPage, this.relatedSongsLimit).subscribe(songs => {
+        songs.filter(song => song.catalogId != this.song!.catalogId).forEach(song => this.relatedSongs.push({song: song}));
         this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
       });
     }
@@ -150,12 +151,12 @@ export class SongDetailComponent implements OnInit {
     if (songFile.previewUrl) {
       this.songFilePlyrCurrent = songFile;
       this.songFilePlyrCurrent.previewStatus = 'waiting';
-      this.songFilePlyrSource = songFile.previewUrl;
+      this.songFilePlyrSources = [{src: songFile.previewUrl}];
     }
   }
 
   stopSongFile() {
-    this.songFilePlyr.stop();
+    this.songFilePlyr?.stop();
     if (this.songFilePlyrCurrent) {
       this.songFilePlyrCurrent.previewStatus = 'ended';
     }

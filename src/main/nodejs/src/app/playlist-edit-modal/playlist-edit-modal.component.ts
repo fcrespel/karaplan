@@ -9,7 +9,7 @@ import { Playlist } from '../models/playlist';
 })
 export class PlaylistEditModalComponent implements OnInit {
 
-  @Input() playlist: Playlist;
+  @Input() playlist!: Playlist;
 
   constructor(
     public activeModal: NgbActiveModal

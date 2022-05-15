@@ -10,9 +10,9 @@ import { User } from '../models/user';
 })
 export class AccountService {
   private accountUrl = 'api/v1/account';
-  private principal$: Observable<Principal> = null;
+  private principal$?: Observable<Principal>;
   private principalRefresh$ = new BehaviorSubject<void>(undefined);
-  private user$: Observable<User> = null;
+  private user$?: Observable<User>;
   private userRefresh$ = new BehaviorSubject<void>(undefined);
 
   constructor(
@@ -23,7 +23,7 @@ export class AccountService {
     const url = `${this.accountUrl}/principal`;
     if (!cache) {
       return this.http.get<Principal>(url);
-    } else if (this.principal$ == null) {
+    } else if (this.principal$ === undefined) {
       this.principal$ = this.principalRefresh$.pipe(switchMapTo(this.http.get<Principal>(url)), shareReplay(1));
     }
     return this.principal$;
@@ -33,7 +33,7 @@ export class AccountService {
     const url = `${this.accountUrl}/user`;
     if (!cache) {
       return this.http.get<User>(url);
-    } else if (this.user$ == null) {
+    } else if (this.user$ === undefined) {
       this.user$ = this.userRefresh$.pipe(switchMapTo(this.http.get<User>(url)), shareReplay(1));
     }
     return this.user$;

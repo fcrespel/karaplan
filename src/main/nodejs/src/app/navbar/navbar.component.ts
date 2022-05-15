@@ -14,9 +14,9 @@ import { User } from '../models/user';
 export class NavbarComponent implements OnInit {
 
   navbarOpen: boolean = false;
-  xsrfToken: string;
-  actuatorInfo: ActuatorInfo;
-  user: User;
+  xsrfToken: string = '';
+  actuatorInfo?: ActuatorInfo;
+  user?: User;
 
   constructor(
     private cookieService: CookieService,

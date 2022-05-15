@@ -6,8 +6,8 @@
 </div>
 <div class="modal-body">
   <p>Are you sure you want to leave this playlist?</p>
-  <p *ngIf="playlist.members.length > 1">Other members will still be able to access it, and you can join it again with the following link:</p>
-  <p *ngIf="playlist.members.length <= 1">You can join it again with the following link:</p>
+  <p *ngIf="playlist.members!.length > 1">Other members will still be able to access it, and you can join it again with the following link:</p>
+  <p *ngIf="playlist.members!.length <= 1">You can join it again with the following link:</p>
   <div class="input-group">
     <input type="text" class="form-control form-control-sm" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
     <div class="input-group-append">

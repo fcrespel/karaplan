@@ -1,10 +1,10 @@
 import { Song } from './song';
 import { User } from './user';
 
-export class SongVote {
+export interface SongVote {
   id: number;
   score: number;
-  song: Song;
-  user: User;
-  createdDate: Date;
+  song?: Song;
+  user?: User;
+  createdDate?: Date;
 }

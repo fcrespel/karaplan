@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SongsService } from '../services/songs.service';
-import { Song } from '../models/song';
+import { PlaylistSong } from '../models/playlist-song';
 import { CatalogSelection } from '../models/catalog-selection';
 import { switchMap, map } from 'rxjs/operators';
 import { of, concat } from 'rxjs';
@@ -14,7 +14,7 @@ import { of, concat } from 'rxjs';
 export class SongsComponent implements OnInit {
 
   queryContext: QueryContext = new QueryContext();
-  queryField: string = "";
+  queryField: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -29,7 +29,7 @@ export class SongsComponent implements OnInit {
       if (type == 'query' || query) {
         return concat(of(new QueryContext(type, query, true)), this.songsService.searchSongs(type, query, 0, this.queryContext.songsLimit).pipe(map(songs => {
           let result = new QueryContext(type, query);
-          result.songs = songs;
+          result.songs = songs.map(song => { return {song: song} });
           result.hasMoreSongs = songs && songs.length == result.songsLimit;
           if (type != 'query') {
             this.songsService.getSelection(type, +query).subscribe(selection => result.selection = selection);
@@ -39,7 +39,7 @@ export class SongsComponent implements OnInit {
       } else if (type == 'votes') {
         return concat(of(new QueryContext(type, query, true)), this.songsService.getSongs(0, this.queryContext.songsLimit, 'score,desc').pipe(map(songs => {
           let result = new QueryContext(type, query);
-          result.songs = songs;
+          result.songs = songs.map(song => { return {song: song} });
           result.hasMoreSongs = songs && songs.length == result.songsLimit;
           return result;
         })));
@@ -68,14 +68,14 @@ export class SongsComponent implements OnInit {
       if (queryContext.type == 'query' || queryContext.query) {
         queryContext.hasMoreSongsLoading = true;
         this.songsService.searchSongs(queryContext.type, queryContext.query, ++queryContext.songsPage, queryContext.songsLimit).subscribe(songs => {
-          songs.forEach(song => queryContext.songs.push(song));
+          songs.forEach(song => queryContext.songs.push({song: song}));
           queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
           queryContext.hasMoreSongsLoading = false;
         });
       } else if (queryContext.type == 'votes') {
         queryContext.hasMoreSongsLoading = true;
         this.songsService.getSongs(++queryContext.songsPage, queryContext.songsLimit, 'score,desc').subscribe(songs => {
-          songs.forEach(song => queryContext.songs.push(song));
+          songs.forEach(song => queryContext.songs.push({song: song}));
           queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
           queryContext.hasMoreSongsLoading = false;
         });
@@ -86,12 +86,12 @@ export class SongsComponent implements OnInit {
 }
 
 class QueryContext {
-  songs: Song[] = [];
+  songs: PlaylistSong[] = [];
   songsPage: number = 0;
   songsLimit: number = 10;
   hasMoreSongs: boolean = false;
   hasMoreSongsLoading: boolean = false;
-  selection: CatalogSelection;
+  selection?: CatalogSelection;
   selections: CatalogSelection[] = [];
 
   constructor(
@@ -100,7 +100,7 @@ class QueryContext {
     public loading: boolean = false
   ) {
     if (type != 'query' && query) {
-      this.selection = new CatalogSelection();
+      this.selection = undefined;
     }
   }
 }

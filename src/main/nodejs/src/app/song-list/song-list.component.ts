@@ -6,7 +6,7 @@ import { SongVote } from '../models/song-vote';
 import { SongComment } from '../models/song-comment';
 import { PlaylistSong } from '../models/playlist-song';
 import { SongsService } from '../services/songs.service';
-import Plyr from 'plyr';
+import * as Plyr from 'plyr';
 
 @Component({
   selector: 'app-song-list',
@@ -15,7 +15,7 @@ import Plyr from 'plyr';
 })
 export class SongListComponent implements OnInit {
 
-  @Input() songs: Song[] | PlaylistSong[];
+  @Input() songs: PlaylistSong[] = [];
   @Input() showDuration: boolean = false;
   @Input() showVotes: boolean = true;
   @Input() showComments: boolean = true;
@@ -28,13 +28,13 @@ export class SongListComponent implements OnInit {
   @Output() commentRemoved = new EventEmitter<SongComment>();
   @Output() playlistAdded = new EventEmitter<PlaylistSong>();
   @Output() playlistRemoved = new EventEmitter<PlaylistSong>();
-  @Output() songMoved = new EventEmitter<Song[] | PlaylistSong[]>();
+  @Output() songMoved = new EventEmitter<PlaylistSong[]>();
   @Output() songRemoved = new EventEmitter<Song>();
 
-  dragging: boolean;
-  songPlyr: Plyr;
-  songPlyrSource: string;
-  songPlyrCurrent: Song;
+  dragging: boolean = false;
+  songPlyr?: Plyr;
+  songPlyrSources: Plyr.Source[] = [];
+  songPlyrCurrent?: Song;
 
   constructor(
     private router: Router,
@@ -44,26 +44,18 @@ export class SongListComponent implements OnInit {
   ngOnInit() {
   }
 
-  trackBySongCatalogId(index: number, song: Song | PlaylistSong): number {
-    if ('song' in song) {
-      return song.song.catalogId;
-    } else {
-      return song.catalogId;
-    }
+  trackBySongCatalogId(index: number, playlistSong: PlaylistSong): number {
+    return playlistSong.song.catalogId;
   }
 
-  gotoSong(song: Song | PlaylistSong) {
+  gotoSong(song: Song) {
     if (!this.dragging) {
-      if ('song' in song) {
-        this.router.navigate(['/songs', song.song.catalogId]);
-      } else {
-        this.router.navigate(['/songs', song.catalogId]);
-      }
+      this.router.navigate(['/songs', song.catalogId]);
     }
   }
 
-  moveSong(event: CdkDragDrop<Song[] | PlaylistSong[]>) {
-    moveItemInArray<Song | PlaylistSong>(this.songs, event.previousIndex, event.currentIndex);
+  moveSong(event: CdkDragDrop<PlaylistSong[]>) {
+    moveItemInArray<PlaylistSong>(this.songs, event.previousIndex, event.currentIndex);
     this.songMoved.emit(this.songs);
   }
 
@@ -72,7 +64,7 @@ export class SongListComponent implements OnInit {
     if (song.previewUrl) {
       this.songPlyrCurrent = song;
       this.songPlyrCurrent.previewStatus = 'waiting';
-      this.songPlyrSource = song.previewUrl;
+      this.songPlyrSources = [{src: song.previewUrl}];
     } else if (song.previewUrl === undefined && song.previewStatus != 'waiting') {
       this.songPlyrCurrent = song;
       this.songPlyrCurrent.previewStatus = 'waiting';
@@ -81,10 +73,10 @@ export class SongListComponent implements OnInit {
         if (songFile && songFile.previewUrl) {
           song.previewUrl = songFile.previewUrl;
           if (song == this.songPlyrCurrent) {
-            this.songPlyrSource = song.previewUrl;
+            this.songPlyrSources = [{src: song.previewUrl}];
           }
         } else {
-          song.previewUrl = null;
+          song.previewUrl = undefined;
           song.previewStatus = 'notfound';
         }
       });
@@ -92,7 +84,7 @@ export class SongListComponent implements OnInit {
   }
 
   stopSong() {
-    this.songPlyr.stop();
+    this.songPlyr?.stop();
     if (this.songPlyrCurrent) {
       this.songPlyrCurrent.previewStatus = 'ended';
     }

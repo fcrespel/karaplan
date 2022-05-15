@@ -16,24 +16,21 @@ export class HttpErrorInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
-      catchError((error: HttpErrorResponse) => {
-        if (error.status == 401) {
-          this.router.navigate(['/login']);
-        } else {
-          let message = new AlertMessage();
-          message.severity = 'danger';
-          if (error.error && error.error.message) {
-            message.title = error.error.error ? error.error.error : 'Error';
-            message.code = error.error.status;
-            message.text = error.error.message;
+      catchError((err: any) => {
+        if (err instanceof HttpErrorResponse) {
+          if (err.status == 401) {
+            this.router.navigate(['/login']);
           } else {
-            message.title = 'HTTP Error';
-            message.code = error.status;
-            message.text = error.message;
+            let message: AlertMessage = {
+              severity: 'danger',
+              title: err.error?.error || 'Error',
+              text: err.error?.message || err.message,
+              code: err.error?.status || err.status
+            }
+            this.alertService.addMessage(message);
           }
-          this.alertService.addMessage(message);
-          return throwError(error);
         }
+        return throwError(err);
       })
     );
   }

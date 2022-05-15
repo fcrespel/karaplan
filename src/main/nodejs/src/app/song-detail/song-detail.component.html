@@ -61,7 +61,7 @@
               <app-song-actions [(song)]="song" [showComments]="false"></app-song-actions>
             </div>
             <div class="col-12 col-lg-auto mt-3 mt-lg-0" *ngIf="preview && preview.previewUrl">
-              <div plyr class="preview-player" [plyrTitle]="song.name" [plyrPlaysInline]="true" [plyrSources]="preview.previewUrl"></div>
+              <div plyr class="preview-player" [plyrTitle]="song.name" [plyrPlaysInline]="true" [plyrSources]="[{src: preview.previewUrl}]"></div>
             </div>
           </div>
         </div>
@@ -96,9 +96,9 @@
         </li>
         <li *ngFor="let comment of song.comments; trackBy: trackByCommentId" class="list-group-item px-3 py-2">
           <div class="d-flex align-items-center justify-content-between">
-            <small class="text-muted flex-grow-1">{{ comment.user.displayName }}</small>
+            <small class="text-muted flex-grow-1">{{ comment.user?.displayName }}</small>
             <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
-            <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+            <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user?.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
           </div>
           <p class="mb-2 comment-text text-dark">{{ comment.comment }}</p>
         </li>
@@ -167,4 +167,4 @@
 </ng-template>
 
 <!-- Hidden audio player -->
-<div class="d-none" plyr plyrType="audio" [plyrSources]="songFilePlyrSource" (plyrInit)="songFilePlyr = $event" (plyrWaiting)="songFilePlyrEvent($event)" (plyrCanPlay)="songFilePlyrEvent($event)" (plyrPlaying)="songFilePlyrEvent($event)" (plyrPause)="songFilePlyrEvent($event)" (plyrEnded)="songFilePlyrEvent($event)"></div>
+<div class="d-none" plyr plyrType="audio" [plyrSources]="songFilePlyrSources" (plyrInit)="songFilePlyr = $event" (plyrWaiting)="songFilePlyrEvent($event)" (plyrCanPlay)="songFilePlyrEvent($event)" (plyrPlaying)="songFilePlyrEvent($event)" (plyrPause)="songFilePlyrEvent($event)" (plyrEnded)="songFilePlyrEvent($event)"></div>

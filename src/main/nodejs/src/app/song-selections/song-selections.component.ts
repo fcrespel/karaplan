@@ -8,7 +8,7 @@ import { CatalogSelection } from '../models/catalog-selection';
 })
 export class SongSelectionsComponent implements OnInit {
 
-  @Input() selections: CatalogSelection[];
+  @Input() selections: CatalogSelection[] = [];
 
   constructor() { }
 

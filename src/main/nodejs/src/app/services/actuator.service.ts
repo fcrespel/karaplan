@@ -9,7 +9,7 @@ import { ActuatorInfo } from '../models/actuator-info';
 })
 export class ActuatorService {
   private actuatorUrl = 'actuator';
-  private info$: Observable<ActuatorInfo>;
+  private info$?: Observable<ActuatorInfo>;
 
   constructor(
     private http: HttpClient
@@ -17,7 +17,7 @@ export class ActuatorService {
 
   getInfo(): Observable<ActuatorInfo> {
     const url = `${this.actuatorUrl}/info`;
-    if (this.info$ == null) {
+    if (this.info$ === undefined) {
       this.info$ = this.http.get<ActuatorInfo>(url).pipe(shareReplay(1));
     }
     return this.info$;

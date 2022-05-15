@@ -13,9 +13,9 @@ import { Playlist } from '../models/playlist';
 })
 export class PlaylistsComponent implements OnInit {
 
-  playlists: Playlist[] = null;
-  playlistsRW: Playlist[] = null;
-  playlistsRO: Playlist[] = null;
+  playlists: Playlist[] = [];
+  playlistsRW: Playlist[] = [];
+  playlistsRO: Playlist[] = [];
 
   constructor(
     private router: Router,
@@ -39,13 +39,13 @@ export class PlaylistsComponent implements OnInit {
     return playlist.id;
   }
 
-  gotoPlaylist(playlist) {
+  gotoPlaylist(playlist: Playlist) {
     this.router.navigate(['/playlists', playlist.id]);
   }
 
   createPlaylist() {
     let modal = this.modalService.open(PlaylistEditModalComponent);
-    modal.componentInstance.playlist = new Playlist();
+    modal.componentInstance.playlist = {};
     modal.result.then((result: Playlist) => {
       this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
         this.gotoPlaylist(playlist);
@@ -55,7 +55,7 @@ export class PlaylistsComponent implements OnInit {
 
   editPlaylist(playlist: Playlist) {
     let modal = this.modalService.open(PlaylistEditModalComponent);
-    modal.componentInstance.playlist = new Playlist(playlist.id, playlist.name, playlist.readOnly)
+    modal.componentInstance.playlist = {id: playlist.id, name: playlist.name, readOnly: playlist.readOnly};
     modal.result.then((result: Playlist) => {
       this.playlistsService.savePlaylist(result).subscribe(playlist => {
         this.refreshPlaylists();

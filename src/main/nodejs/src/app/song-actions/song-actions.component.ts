@@ -19,7 +19,7 @@ import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit
 })
 export class SongActionsComponent implements OnInit, OnChanges {
 
-  @Input() song: Song;
+  @Input() song!: Song;
   @Input() showVotes: boolean = true;
   @Input() showComments: boolean = true;
   @Input() showPlaylists: boolean = true;
@@ -33,12 +33,12 @@ export class SongActionsComponent implements OnInit, OnChanges {
   @Output() songChange = new EventEmitter<Song>();
   @Output() songRemoved = new EventEmitter<Song>();
 
-  user: User = null;
-  playlists: Playlist[] = null;
-  vote: SongVote;
-  voteUpUsers: string;
-  voteDownUsers: string;
-  commentText: string;
+  user?: User;
+  playlists?: Playlist[];
+  vote?: SongVote;
+  voteUpUsers?: string;
+  voteDownUsers?: string;
+  commentText: string = '';
   loading: boolean = false;
 
   constructor(
@@ -66,9 +66,9 @@ export class SongActionsComponent implements OnInit, OnChanges {
       this.song = song;
     }
     if (this.user && this.song && this.song.votes) {
-      this.vote = this.song.votes.find(vote => vote.user.id == this.user.id);
-      this.voteUpUsers = this.song.votes.filter(vote => vote.score > 0).map(vote => vote.user.displayName).join(', ');
-      this.voteDownUsers = this.song.votes.filter(vote => vote.score < 0).map(vote => vote.user.displayName).join(', ');
+      this.vote = this.song.votes.find(vote => vote.user?.id == this.user?.id);
+      this.voteUpUsers = this.song.votes.filter(vote => vote.score > 0).map(vote => vote.user?.displayName).join(', ');
+      this.voteDownUsers = this.song.votes.filter(vote => vote.score < 0).map(vote => vote.user?.displayName).join(', ');
     } else {
       this.vote = undefined;
       this.voteUpUsers = undefined;
@@ -121,7 +121,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       commentForm.reset();
       this.updateSong(song);
       this.songChange.emit(song);
-      this.commentAdded.emit(song.comments.find(comment => comment.user.id == this.user.id));
+      this.commentAdded.emit(song.comments!.find(comment => comment.user?.id == this.user?.id));
     }, error => this.loading = false);
   }
 
@@ -140,7 +140,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       this.updateSong(song);
       this.songChange.emit(song);
       playlist.isSelected = true;
-      this.playlistAdded.emit(new PlaylistSong(playlist, song));
+      this.playlistAdded.emit({playlist: playlist, song: song});
     }, error => this.loading = false);
   }
 
@@ -150,7 +150,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
       this.updateSong(song);
       this.songChange.emit(song);
       playlist.isSelected = false;
-      this.playlistRemoved.emit(new PlaylistSong(playlist, song));
+      this.playlistRemoved.emit({playlist: playlist, song: song});
     }, error => this.loading = false);
   }
 
@@ -164,16 +164,16 @@ export class SongActionsComponent implements OnInit, OnChanges {
 
   createPlaylist() {
     let modal = this.modalService.open(PlaylistEditModalComponent);
-    modal.componentInstance.playlist = new Playlist();
+    modal.componentInstance.playlist = {};
     modal.result.then((result: Playlist) => {
       this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
-        this.playlists = null;
+        this.playlists = undefined;
       });
     }, reason => {});
   }
 
   onPlaylistOpen() {
-    if (this.playlists == null) {
+    if (this.playlists === undefined) {
       this.playlistsService.getPlaylists(0, 100, 'name').subscribe(playlists => {
         this.updatePlaylists(playlists);
       });
@@ -188,7 +188,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
     }
     if (this.playlists) {
       this.playlists.forEach(playlist => {
-        playlist.isSelected = (this.song && this.song.playlists && this.song.playlists.findIndex(playlistSong => playlistSong.playlist.id == playlist.id) >= 0);
+        playlist.isSelected = (this.song && this.song.playlists && this.song.playlists.findIndex(playlistSong => playlistSong.playlist?.id == playlist.id) >= 0);
       });
     }
   }

@@ -11,8 +11,8 @@ import { Playlist } from '../models/playlist';
 })
 export class PlaylistLeaveModalComponent implements OnInit {
 
-  @Input() playlist: Playlist;
-  shareUrl: string;
+  @Input() playlist!: Playlist;
+  shareUrl: string = '';
 
   constructor(
     public activeModal: NgbActiveModal,

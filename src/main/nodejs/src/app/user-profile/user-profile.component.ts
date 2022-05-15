@@ -13,10 +13,10 @@ import { AlertMessage } from '../models/alert-message';
 })
 export class UserProfileComponent implements OnInit {
 
-  user: User = null;
+  user?: User;
   tab: string = 'profile';
   deleteComments: boolean = false;
-  confirmDeletion: string;
+  confirmDeletion: string = '';
 
   constructor(
     private router: Router,
@@ -42,16 +42,17 @@ export class UserProfileComponent implements OnInit {
   updateUser(user: User) {
     this.accountService.updateUser(user).subscribe(user => {
       this.user = user;
-      let message = new AlertMessage();
-      message.severity = 'success';
-      message.title = 'Success';
-      message.text = "Your user profile has been updated";
+      let message: AlertMessage = {
+        severity: 'success',
+        title: 'Success',
+        text: 'Your user profile has been updated'
+      }
       this.alertService.addMessage(message);
       this.accountService.refreshCache();
     });
   }
 
-  deleteAccount(modalContent) {
+  deleteAccount(modalContent: any) {
     this.modalService.open(modalContent).result.then(() => {
       this.accountService.deleteUser(this.deleteComments).subscribe(() => {
         (document.getElementById('logoutForm') as HTMLFormElement).submit();

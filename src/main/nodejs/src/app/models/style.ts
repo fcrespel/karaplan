@@ -1,9 +1,9 @@
 import { Song } from './song';
 
-export class Style {
-  id: number;
+export interface Style {
+  id?: number;
   catalogId: number;
   name: string;
-  image: string;
-  songs: Song[];
+  image?: string;
+  songs?: Song[];
 }
