@@ -7,7 +7,7 @@ describe('PlaylistEditModalComponent', () => {
   let fixture: ComponentFixture<PlaylistEditModalComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [ PlaylistEditModalComponent ]
     })
     .compileComponents();

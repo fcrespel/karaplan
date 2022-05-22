@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
-import { Song } from '../models/song';
-import { SongVote } from '../models/song-vote';
-import { SongComment } from '../models/song-comment';
-import { PlaylistSong } from '../models/playlist-song';
-import { SongsService } from '../services/songs.service';
+import { Song } from '../../models/song';
+import { SongVote } from '../../models/song-vote';
+import { SongComment } from '../../models/song-comment';
+import { PlaylistSong } from '../../models/playlist-song';
+import { SongsService } from '../../services/songs.service';
 import * as Plyr from 'plyr';
 
 @Component({

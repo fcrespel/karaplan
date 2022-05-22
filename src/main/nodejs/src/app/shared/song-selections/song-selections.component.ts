@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { CatalogSelection } from '../models/catalog-selection';
+import { CatalogSelection } from '../../models/catalog-selection';
 
 @Component({
   selector: 'app-song-selections',

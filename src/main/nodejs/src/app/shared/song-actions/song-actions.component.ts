@@ -1,15 +1,15 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AccountService } from '../services/account.service';
-import { SongsService } from '../services/songs.service';
-import { PlaylistsService } from '../services/playlists.service';
-import { User } from '../models/user';
-import { Song } from '../models/song';
-import { SongVote } from '../models/song-vote';
-import { SongComment } from '../models/song-comment';
-import { Playlist } from '../models/playlist';
-import { PlaylistSong } from '../models/playlist-song';
+import { AccountService } from '../../services/account.service';
+import { SongsService } from '../../services/songs.service';
+import { PlaylistsService } from '../../services/playlists.service';
+import { User } from '../../models/user';
+import { Song } from '../../models/song';
+import { SongVote } from '../../models/song-vote';
+import { SongComment } from '../../models/song-comment';
+import { Playlist } from '../../models/playlist';
+import { PlaylistSong } from '../../models/playlist-song';
 import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
 
 @Component({

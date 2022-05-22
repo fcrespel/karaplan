@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PlaylistsService } from '../services/playlists.service';
-import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
-import { PlaylistLeaveModalComponent } from '../playlist-leave-modal/playlist-leave-modal.component';
+import { PlaylistEditModalComponent } from '../shared/playlist-edit-modal/playlist-edit-modal.component';
+import { PlaylistLeaveModalComponent } from '../shared/playlist-leave-modal/playlist-leave-modal.component';
 import { Playlist } from '../models/playlist';
 
 @Component({

@@ -4,17 +4,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { switchMap } from 'rxjs/operators';
-import { AccountService } from '../services/account.service';
-import { AlertService } from '../services/alert.service';
-import { PlaylistsService } from '../services/playlists.service';
-import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
-import { PlaylistLeaveModalComponent } from '../playlist-leave-modal/playlist-leave-modal.component';
-import { User } from '../models/user';
-import { Playlist } from '../models/playlist';
-import { Song } from '../models/song';
-import { PlaylistSong } from '../models/playlist-song';
-import { PlaylistComment } from '../models/playlist-comment';
-import { AlertMessage } from '../models/alert-message';
+import { AccountService } from '../../services/account.service';
+import { AlertService } from '../../services/alert.service';
+import { PlaylistsService } from '../../services/playlists.service';
+import { PlaylistEditModalComponent } from '../../shared/playlist-edit-modal/playlist-edit-modal.component';
+import { PlaylistLeaveModalComponent } from '../../shared/playlist-leave-modal/playlist-leave-modal.component';
+import { User } from '../../models/user';
+import { Playlist } from '../../models/playlist';
+import { Song } from '../../models/song';
+import { PlaylistSong } from '../../models/playlist-song';
+import { PlaylistComment } from '../../models/playlist-comment';
+import { AlertMessage } from '../../models/alert-message';
 
 @Component({
   selector: 'app-playlist-detail',

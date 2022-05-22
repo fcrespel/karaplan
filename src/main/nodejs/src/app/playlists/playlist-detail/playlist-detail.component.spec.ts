@@ -7,7 +7,7 @@ describe('PlaylistDetailComponent', () => {
   let fixture: ComponentFixture<PlaylistDetailComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [ PlaylistDetailComponent ]
     })
     .compileComponents();

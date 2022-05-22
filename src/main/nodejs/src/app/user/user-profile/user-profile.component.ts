@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AccountService } from '../services/account.service';
-import { AlertService } from '../services/alert.service';
-import { User } from '../models/user';
-import { AlertMessage } from '../models/alert-message';
+import { AccountService } from '../../services/account.service';
+import { AlertService } from '../../services/alert.service';
+import { User } from '../../models/user';
+import { AlertMessage } from '../../models/alert-message';
 
 @Component({
   selector: 'app-user-profile',

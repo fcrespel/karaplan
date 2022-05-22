@@ -7,7 +7,7 @@ describe('AlertComponent', () => {
   let fixture: ComponentFixture<AlertComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [ AlertComponent ]
     })
     .compileComponents();

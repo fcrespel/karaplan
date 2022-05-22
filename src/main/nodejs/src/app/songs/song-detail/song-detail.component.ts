@@ -3,14 +3,14 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { of } from 'rxjs';
 import { switchMap, catchError } from 'rxjs/operators';
-import { AccountService } from '../services/account.service';
-import { SongsService } from '../services/songs.service';
-import { User } from '../models/user';
-import { Song } from '../models/song';
-import { SongLyrics } from '../models/song-lyrics';
-import { SongComment } from '../models/song-comment';
-import { PlaylistSong } from '../models/playlist-song';
-import { CatalogSongFile } from '../models/catalog-song-file';
+import { AccountService } from '../../services/account.service';
+import { SongsService } from '../../services/songs.service';
+import { User } from '../../models/user';
+import { Song } from '../../models/song';
+import { SongLyrics } from '../../models/song-lyrics';
+import { SongComment } from '../../models/song-comment';
+import { PlaylistSong } from '../../models/playlist-song';
+import { CatalogSongFile } from '../../models/catalog-song-file';
 import * as Plyr from 'plyr';
 
 @Component({

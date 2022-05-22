@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Playlist } from '../models/playlist';
+import { Playlist } from '../../models/playlist';
 
 @Component({
   selector: 'app-playlist-edit-modal',

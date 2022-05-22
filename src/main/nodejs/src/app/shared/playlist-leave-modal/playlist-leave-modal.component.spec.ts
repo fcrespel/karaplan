@@ -7,7 +7,7 @@ describe('PlaylistLeaveModalComponent', () => {
   let fixture: ComponentFixture<PlaylistLeaveModalComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       declarations: [ PlaylistLeaveModalComponent ]
     })
     .compileComponents();

@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Playlist } from '../models/playlist';
+import { Playlist } from '../../models/playlist';
 
 @Component({
   selector: 'app-playlist-leave-modal',
