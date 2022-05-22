@@ -75,7 +75,7 @@
       <div class="card">
         <div class="card-body text-dark text-center">
           <p class="card-text" style="white-space: pre-line;">{{ songLyrics?.lyrics || 'Lyrics are not available'}}</p>
-          <p class="card-text text-muted small" *ngIf="songLyrics?.url">Source: <a href="{{ songLyrics?.url }}" target="_blank">{{ songLyrics?.source || songLyrics?.url }}</a></p>
+          <p class="card-text text-muted small" *ngIf="songLyrics?.url">Source: <a href="{{ songLyrics?.url }}" target="_blank" rel="noopener noreferrer">{{ songLyrics?.source || songLyrics?.url }}</a></p>
           <p class="card-text text-muted small" *ngIf="song.rights">{{ song.rights }}</p>
         </div>
       </div>
@@ -137,7 +137,7 @@
               <button *ngSwitchCase="'waiting'" type="button" class="btn btn-sm btn-block btn-outline-dark" (click)="stopSongFile()"><i class="fas fa-spinner fa-spin"></i><span class="d-none d-sm-inline"> Loading</span></button>
               <button *ngSwitchCase="'playing'" type="button" class="btn btn-sm btn-block btn-dark" title="Stop audio preview" (click)="stopSongFile()"><i class="fas fa-stop"></i><span class="d-none d-sm-inline"> Playing</span></button>
             </div>
-            <a href="{{ songFile.catalogUrl }}" target="_blank" class="btn btn-sm btn-pink ml-2" title="Download full version"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> Download</span></a>
+            <a href="{{ songFile.catalogUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-pink ml-2" title="Download full version"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> Download</span></a>
           </div>
         </li>
       </ul>
