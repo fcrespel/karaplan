@@ -38,15 +38,19 @@ public class AccountController {
 
 	@GetMapping("/principal")
 	@ApiOperation("Get the authenticated principal")
-	public UserWrapper getPrincipal(@ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
-		return userWrapper;
+	public UserWrapper getPrincipal(@ApiIgnore @AuthenticationPrincipal Object principal) {
+		if (principal instanceof UserWrapper) {
+			return (UserWrapper) principal;
+		} else {
+			return null;
+		}
 	}
 
 	@GetMapping("/user")
 	@ApiOperation("Get the authenticated user")
-	public User getUser(@ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
-		if (userWrapper != null) {
-			return userWrapper.getUser();
+	public User getUser(@ApiIgnore @AuthenticationPrincipal Object principal) {
+		if (principal instanceof UserWrapper) {
+			return ((UserWrapper) principal).getUser();
 		} else {
 			return null;
 		}
@@ -54,9 +58,9 @@ public class AccountController {
 
 	@PostMapping("/user")
 	@ApiOperation("Update the authenticated user")
-	public User updateUser(@RequestBody User user, @ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
-		if (userWrapper != null) {
-			User userToUpdate = userWrapper.getUser();
+	public User updateUser(@RequestBody User user, @ApiIgnore @AuthenticationPrincipal Object principal) {
+		if (principal instanceof UserWrapper) {
+			User userToUpdate = ((UserWrapper) principal).getUser();
 			userToUpdate.setDisplayName(user.getDisplayName());
 			return userService.save(userToUpdate);
 		} else {
@@ -67,9 +71,10 @@ public class AccountController {
 	@DeleteMapping("/user")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@ApiOperation("Delete the authenticated user")
-	public void deleteUser(@RequestParam(required = false, defaultValue = "false") boolean deleteComments, @ApiIgnore @AuthenticationPrincipal UserWrapper userWrapper) {
-		if (userWrapper != null) {
-			userService.delete(userWrapper.getUser(), deleteComments);
+	public void deleteUser(@RequestParam(required = false, defaultValue = "false") boolean deleteComments, @ApiIgnore @AuthenticationPrincipal Object principal) {
+		if (principal instanceof UserWrapper) {
+			User userToDelete = ((UserWrapper) principal).getUser();
+			userService.delete(userToDelete, deleteComments);
 		} else {
 			throw new BusinessException("Authentication is required"); 
 		}

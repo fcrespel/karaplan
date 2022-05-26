@@ -10,16 +10,12 @@ spring:
   jackson:
     default-property-inclusion: non-empty
   jpa:
-    generateDdl: true
+    generate-ddl: true
+    open-in-view: true
     properties:
       hibernate.globally_quoted_identifiers: true
   main:
     lazy-initialization: true
-  resources:
-    cache:
-      cachecontrol:
-        cache-public: true
-        max-age: 30d
   security:
     oauth2:
       client:
@@ -38,6 +34,12 @@ spring:
     store-type: none
     redis:
       namespace: karaplan:session
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          cache-public: true
+          max-age: 30d
 server:
   port: 8080
   compression:
