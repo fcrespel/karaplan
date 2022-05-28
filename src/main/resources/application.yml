@@ -40,6 +40,15 @@ spring:
         cachecontrol:
           cache-public: true
           max-age: 30d
+springdoc:
+  packages-to-scan: me.crespel.karaplan.web.api
+  swagger-ui:
+    path: /api
+    doc-expansion: none
+    operations-sorter: alpha
+    tags-sorter: alpha
+    csrf:
+      enabled: true
 server:
   port: 8080
   compression:

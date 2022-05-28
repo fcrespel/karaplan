@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
 
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
@@ -28,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.User;
@@ -40,11 +41,10 @@ import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.ExportService;
 import me.crespel.karaplan.service.PlaylistService;
 import me.crespel.karaplan.service.SongService;
-import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping(path = "/api/v1/playlists", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = "playlists", description = "Playlists management")
+@Tag(name = "playlists", description = "Playlists management")
 public class PlaylistController {
 
 	@Autowired
@@ -66,27 +66,27 @@ public class PlaylistController {
 	protected ExportService csvExportService;
 
 	@GetMapping
-	@ApiOperation("Get all playlists")
-	public Set<Playlist> getPlaylists(@PageableDefault Pageable pageable, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Get all playlists")
+	public Set<Playlist> getPlaylists(@ParameterObject @PageableDefault Pageable pageable, @AuthenticationPrincipal(expression = "user") User user) {
 		return playlistService.findAll(pageable, user);
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	@ApiOperation("Create a playlist")
-	public Playlist createPlaylist(@RequestParam String name, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Create a playlist")
+	public Playlist createPlaylist(@RequestParam String name, @AuthenticationPrincipal(expression = "user") User user) {
 		return playlistService.create(name, user);
 	}
 
 	@GetMapping("/{playlistId}")
-	@ApiOperation("Get a playlist")
-	public Playlist getPlaylist(@PathVariable Long playlistId, @RequestParam(required = false) String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Get a playlist")
+	public Playlist getPlaylist(@PathVariable Long playlistId, @RequestParam(required = false) String accessKey, @AuthenticationPrincipal(expression = "user") User user) {
 		return playlistService.findById(playlistId, true, user, accessKey).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 	}
 
 	@PutMapping("/{playlistId}")
-	@ApiOperation("Save a playlist")
-	public Playlist savePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Save a playlist")
+	public Playlist savePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlistToSave = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"))
 				.setName(playlist.getName())
 				.setReadOnly(playlist.getReadOnly());
@@ -94,66 +94,66 @@ public class PlaylistController {
 	}
 
 	@PostMapping("/{playlistId}/join")
-	@ApiOperation("Add the current user to a playlist with the given access key")
-	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Add the current user to a playlist with the given access key")
+	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.addUser(playlist, user, accessKey);
 	}
 
 	@PostMapping("/{playlistId}/leave")
-	@ApiOperation("Remove the current user from a playlist")
-	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Remove the current user from a playlist")
+	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.removeUser(playlist, user);
 	}
 
 	@PostMapping("/{playlistId}/song/{catalogId}")
-	@ApiOperation("Add a song to a playlist")
-	public Playlist addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Add a song to a playlist")
+	public Playlist addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.addSong(playlist, song, user);
 	}
 
 	@DeleteMapping("/{playlistId}/song/{catalogId}")
-	@ApiOperation("Remove a song from a playlist")
-	public Playlist removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Remove a song from a playlist")
+	public Playlist removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		Song song = songService.findByCatalogId(catalogId).orElseThrow(() -> new BusinessException("Invalid song ID"));
 		return playlistService.removeSong(playlist, song, user);
 	}
 
 	@PostMapping("/{playlistId}/comment")
-	@ApiOperation("Add a comment to a playlist")
-	public Playlist addCommentToPlaylist(@PathVariable Long playlistId, @RequestBody String comment, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Add a comment to a playlist")
+	public Playlist addCommentToPlaylist(@PathVariable Long playlistId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.addComment(playlist, user, comment);
 	}
 
 	@DeleteMapping("/{playlistId}/comment/{commentId}")
-	@ApiOperation("Remove a comment from a playlist")
-	public Playlist removeCommentFromPlaylist(@PathVariable Long playlistId, @PathVariable Long commentId, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Remove a comment from a playlist")
+	public Playlist removeCommentFromPlaylist(@PathVariable Long playlistId, @PathVariable Long commentId, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.removeComment(playlist, user, commentId);
 	}
 
 	@PostMapping("/{playlistId}/sort")
-	@ApiOperation("Sort a playlist's songs according to a type and direction")
-	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Sort a playlist's songs according to a type and direction")
+	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.sort(playlist, sortType, sortDirection, user);
 	}
 	
 	@PostMapping("/{playlistId}/sort/custom")
-	@ApiOperation("Sort a playlist's song by a custom order")
-	public Playlist sortPlaylistCustom(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @ApiIgnore @AuthenticationPrincipal(expression = "user") User user) {
+	@Operation(summary = "Sort a playlist's song by a custom order")
+	public Playlist sortPlaylistCustom(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.sortCustom(playlist, songIdList, user);
 	}
 
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation("Export a playlist to Karafun Remote")
+	@Operation(summary = "Export a playlist to Karafun Remote")
 	public void exportPlaylistToKarafunRemote(@PathVariable Long playlistId, @PathVariable String remoteId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunRemoteExportService.exportPlaylist(playlist, remoteId);
@@ -161,14 +161,14 @@ public class PlaylistController {
 
 	@PostMapping("/{playlistId}/export/karafunbar/{bookingId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation("Export a playlist to Karafun Bar")
+	@Operation(summary = "Export a playlist to Karafun Bar")
 	public void exportPlaylistToKarafunBar(@PathVariable Long playlistId, @PathVariable String bookingId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunBarExportService.exportPlaylist(playlist, bookingId);
 	}
 
 	@GetMapping("/{playlistId}/export/csv")
-	@ApiOperation("Export a playlist to a CSV file")
+	@Operation(summary = "Export a playlist to a CSV file")
 	public ResponseEntity<Resource> exportPlaylistToCSV(@PathVariable Long playlistId) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		File csvFile = null;

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.14</version>
+		<version>2.6.8</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -45,7 +45,7 @@
 		<npm.version>6.14.17</npm.version>
 		<socketio-client.version>1.0.1</socketio-client.version>
 		<spring-cloud-gcp.version>3.2.1</spring-cloud-gcp.version>
-		<springfox.version>3.0.0</springfox.version>
+		<springdoc.version>1.6.9</springdoc.version>
 	</properties>
 
 	<scm>
@@ -132,10 +132,14 @@
 			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 
-		<!-- Springfox/Swagger -->
+		<!-- Springdoc OpenAPI -->
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
 		</dependency>
 
 		<!-- Utilities -->
@@ -231,9 +235,14 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>io.springfox</groupId>
-				<artifactId>springfox-boot-starter</artifactId>
-				<version>${springfox.version}</version>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-security</artifactId>
+				<version>${springdoc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springdoc</groupId>
+				<artifactId>springdoc-openapi-ui</artifactId>
+				<version>${springdoc.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -14,31 +14,30 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.security.UserWrapper;
 import me.crespel.karaplan.service.UserService;
-import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @RequestMapping(value = "/api/v1/account", produces = MediaType.APPLICATION_JSON_VALUE)
-@Api(tags = "account", description = "Account management")
+@Tag(name = "account", description = "Account management")
 public class AccountController {
 
 	@Autowired
 	protected UserService userService;
 
 	@GetMapping("/authentication")
-	@ApiOperation("Get authentication info")
-	public Authentication getAuthentication(@ApiIgnore Authentication auth) {
+	@Operation(summary = "Get authentication info")
+	public Authentication getAuthentication(Authentication auth) {
 		return auth;
 	}
 
 	@GetMapping("/principal")
-	@ApiOperation("Get the authenticated principal")
-	public UserWrapper getPrincipal(@ApiIgnore @AuthenticationPrincipal Object principal) {
+	@Operation(summary = "Get the authenticated principal")
+	public UserWrapper getPrincipal(@AuthenticationPrincipal Object principal) {
 		if (principal instanceof UserWrapper) {
 			return (UserWrapper) principal;
 		} else {
@@ -47,8 +46,8 @@ public class AccountController {
 	}
 
 	@GetMapping("/user")
-	@ApiOperation("Get the authenticated user")
-	public User getUser(@ApiIgnore @AuthenticationPrincipal Object principal) {
+	@Operation(summary = "Get the authenticated user")
+	public User getUser(@AuthenticationPrincipal Object principal) {
 		if (principal instanceof UserWrapper) {
 			return ((UserWrapper) principal).getUser();
 		} else {
@@ -57,8 +56,8 @@ public class AccountController {
 	}
 
 	@PostMapping("/user")
-	@ApiOperation("Update the authenticated user")
-	public User updateUser(@RequestBody User user, @ApiIgnore @AuthenticationPrincipal Object principal) {
+	@Operation(summary = "Update the authenticated user")
+	public User updateUser(@RequestBody User user, @AuthenticationPrincipal Object principal) {
 		if (principal instanceof UserWrapper) {
 			User userToUpdate = ((UserWrapper) principal).getUser();
 			userToUpdate.setDisplayName(user.getDisplayName());
@@ -70,8 +69,8 @@ public class AccountController {
 
 	@DeleteMapping("/user")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@ApiOperation("Delete the authenticated user")
-	public void deleteUser(@RequestParam(required = false, defaultValue = "false") boolean deleteComments, @ApiIgnore @AuthenticationPrincipal Object principal) {
+	@Operation(summary = "Delete the authenticated user")
+	public void deleteUser(@RequestParam(required = false, defaultValue = "false") boolean deleteComments, @AuthenticationPrincipal Object principal) {
 		if (principal instanceof UserWrapper) {
 			User userToDelete = ((UserWrapper) principal).getUser();
 			userService.delete(userToDelete, deleteComments);
