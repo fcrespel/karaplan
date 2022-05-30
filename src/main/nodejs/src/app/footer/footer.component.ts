@@ -9,7 +9,7 @@ import { ActuatorInfo } from '../models/actuator-info';
 })
 export class FooterComponent implements OnInit {
 
-  actuatorInfo: ActuatorInfo;
+  actuatorInfo?: ActuatorInfo;
 
   constructor(
     private actuatorService: ActuatorService

@@ -1,10 +1,10 @@
 import { Playlist } from './playlist';
 import { User } from './user';
 
-export class PlaylistComment {
+export interface PlaylistComment {
   id: number;
   comment: string;
-  playlist: Playlist;
-  user: User;
-  createdDate: Date;
+  playlist?: Playlist;
+  user?: User;
+  createdDate?: Date;
 }

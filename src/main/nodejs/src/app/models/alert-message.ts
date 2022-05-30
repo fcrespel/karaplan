@@ -1,6 +1,6 @@
-export class AlertMessage {
+export interface AlertMessage {
   severity: string;
   title: string;
-  code: number;
+  code?: number;
   text: string;
 }

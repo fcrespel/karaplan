@@ -11,9 +11,6 @@ import { AlertMessage } from '../models/alert-message';
 })
 export class LoginComponent implements OnInit {
 
-  isError: boolean;
-  isLogout: boolean;
-
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -23,17 +20,19 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (this.route.snapshot.queryParamMap.has('error')) {
-      let message = new AlertMessage();
-      message.severity = 'danger';
-      message.title = 'Error';
-      message.text = 'Authentication failed';
+      let message: AlertMessage = {
+        severity: 'danger',
+        title: 'Error',
+        text: 'Authentication failed'
+      };
       this.alertService.addMessage(message);
     }
     if (this.route.snapshot.queryParamMap.has('logout')) {
-      let message = new AlertMessage();
-      message.severity = 'success';
-      message.title = 'Success';
-      message.text = 'You have been signed out';
+      let message: AlertMessage = {
+        severity: 'success',
+        title: 'Success',
+        text: 'You have been signed out'
+      };
       this.alertService.addMessage(message);
     }
     this.accountService.getUser(false).subscribe(user => {

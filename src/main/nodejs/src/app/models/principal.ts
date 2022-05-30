@@ -1,6 +1,6 @@
 import { User } from './user';
 
-export class Principal {
+export interface Principal {
   user: User;
   name: string;
 }

@@ -9,7 +9,7 @@ import { filter } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
 
-  currentRoute: string;
+  currentRoute: string = '';
 
   constructor(
     private router: Router
@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.router.events
-      .pipe(filter((event: RouterEvent) => event instanceof NavigationEnd))
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => this.currentRoute = event.urlAfterRedirects);
   }
 

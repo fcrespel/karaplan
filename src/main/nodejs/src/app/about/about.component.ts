@@ -9,7 +9,7 @@ import { ActuatorInfo } from '../models/actuator-info';
 })
 export class AboutComponent implements OnInit {
 
-  actuatorInfo: ActuatorInfo;
+  actuatorInfo?: ActuatorInfo;
 
   constructor(
     private actuatorService: ActuatorService

@@ -1,9 +1,9 @@
-export class ActuatorInfo {
+export interface ActuatorInfo {
   build: BuildInfo;
   git: GitInfo;
 }
 
-class BuildInfo {
+interface BuildInfo {
   group: string;
   artifact: string;
   version: string;
@@ -11,12 +11,12 @@ class BuildInfo {
   time: Date;
 }
 
-class GitInfo {
+interface GitInfo {
   commit: GitCommitInfo;
   branch: string;
 }
 
-class GitCommitInfo {
+interface GitCommitInfo {
   id: string;
   time: Date;
 }

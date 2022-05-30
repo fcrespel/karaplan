@@ -9,16 +9,14 @@ import { User } from '../models/user';
 })
 export class HomeComponent implements OnInit {
 
-  user: User = null;
+  user?: User;
 
   constructor(
     private accountService: AccountService
   ) { }
 
   ngOnInit() {
-    this.accountService.getUser().subscribe(user => {
-      this.user = user;
-    });
+    this.accountService.getUser().subscribe(user => this.user = user);
   }
 
 }

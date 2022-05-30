@@ -26,7 +26,7 @@ export class PlaylistsService {
     return this.http.post<Playlist>(this.playlistsUrl, null, {params: params});
   }
 
-  getPlaylist(playlistId: number, accessKey?: string): Observable<Playlist> {
+  getPlaylist(playlistId: number, accessKey?: string | null): Observable<Playlist> {
     let params = new HttpParams();
     if (accessKey) {
       params = params.set('accessKey', accessKey);

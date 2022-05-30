@@ -1,4 +1,4 @@
-export class CatalogSongFile {
+export interface CatalogSongFile {
   id: number;
   songId: number;
   artistId: number;
@@ -8,5 +8,5 @@ export class CatalogSongFile {
   trackType: string;
 
   // Local field
-  previewStatus: string;
+  previewStatus?: string;
 }

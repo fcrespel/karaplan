@@ -1,10 +1,10 @@
 import { Song } from './song';
 
-export class Artist {
-  id: number;
+export interface Artist {
+  id?: number;
   catalogId: number;
   name: string;
-  songs: Song[];
-  createdDate: Date;
-  updatedDate: Date;
+  songs?: Song[];
+  createdDate?: Date;
+  updatedDate?: Date;
 }

@@ -16,7 +16,6 @@ import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.model.SongLyrics;
 import me.crespel.karaplan.model.azlyrics.AzLyricsSuggestResponse;
 import me.crespel.karaplan.model.azlyrics.AzLyricsSuggestion;
-import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.LyricsService;
 
 @Slf4j
@@ -37,7 +36,7 @@ public class AzLyricsServiceImpl implements LyricsService {
 	public SongLyrics getSongLyrics(Song song) {
 		SongLyrics lyrics = new SongLyrics();
 		AzLyricsSuggestResponse suggestions = getSuggestions(song);
-		if (suggestions.getSongs() != null && !suggestions.getSongs().isEmpty()) {
+		if (suggestions != null && suggestions.getSongs() != null && !suggestions.getSongs().isEmpty()) {
 			AzLyricsSuggestion suggestion = suggestions.getSongs().get(0);
 			if (suggestion.getUrl() != null && suggestion.getUrl().startsWith(BASE_URL)) {
 				String lyricsHtml = restTemplate.getForObject(suggestion.getUrl(), String.class);
@@ -59,7 +58,7 @@ public class AzLyricsServiceImpl implements LyricsService {
 			return restTemplate.getForObject(builder.build().encode().toUri(), AzLyricsSuggestResponse.class);
 		} catch (RestClientException e) {
 			log.error("Failed to retrieve lyrics from AZLyrics for {}", song, e);
-			throw new TechnicalException("Lyrics could not be retrieved for this song");
+			return null;
 		}
 	}
 

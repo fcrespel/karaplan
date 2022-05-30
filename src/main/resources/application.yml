@@ -10,16 +10,12 @@ spring:
   jackson:
     default-property-inclusion: non-empty
   jpa:
-    generateDdl: true
+    generate-ddl: true
+    open-in-view: true
     properties:
       hibernate.globally_quoted_identifiers: true
   main:
     lazy-initialization: true
-  resources:
-    cache:
-      cachecontrol:
-        cache-public: true
-        max-age: 30d
   security:
     oauth2:
       client:
@@ -38,6 +34,21 @@ spring:
     store-type: none
     redis:
       namespace: karaplan:session
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          cache-public: true
+          max-age: 30d
+springdoc:
+  packages-to-scan: me.crespel.karaplan.web.api
+  swagger-ui:
+    path: /api
+    doc-expansion: none
+    operations-sorter: alpha
+    tags-sorter: alpha
+    csrf:
+      enabled: true
 server:
   port: 8080
   compression:
@@ -53,6 +64,10 @@ server:
       timeout: 12h
   shutdown: graceful
 management:
+  endpoints:
+    web:
+      exposure:
+        include: [health, info]
   endpoint:
     health:
       probes:

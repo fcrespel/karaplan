@@ -1,71 +1,38 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
+import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
+import { AboutComponent } from './about/about.component';
 import { AlertComponent } from './alert/alert.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
-import { SongsComponent } from './songs/songs.component';
-import { SongListComponent } from './song-list/song-list.component';
-import { SongSelectionsComponent } from './song-selections/song-selections.component';
-import { SongDetailComponent } from './song-detail/song-detail.component';
-import { SongActionsComponent } from './song-actions/song-actions.component';
-import { PlaylistsComponent } from './playlists/playlists.component';
-import { PlaylistDetailComponent } from './playlist-detail/playlist-detail.component';
-import { PlaylistEditModalComponent } from './playlist-edit-modal/playlist-edit-modal.component';
-import { PlaylistLeaveModalComponent } from './playlist-leave-modal/playlist-leave-modal.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { AboutComponent } from './about/about.component';
-import { DurationPipe } from './pipes/duration.pipe';
+import { NavbarComponent } from './navbar/navbar.component';
 import { HttpErrorInterceptor } from './http-error.interceptor';
-import { PlyrModule } from 'ngx-plyr';
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavbarComponent,
+    AboutComponent,
     AlertComponent,
     FooterComponent,
     HomeComponent,
     LoginComponent,
-    SongsComponent,
-    SongListComponent,
-    SongSelectionsComponent,
-    SongDetailComponent,
-    SongActionsComponent,
-    PlaylistsComponent,
-    PlaylistDetailComponent,
-    PlaylistEditModalComponent,
-    PlaylistLeaveModalComponent,
-    UserProfileComponent,
-    AboutComponent,
-    DurationPipe
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    DragDropModule,
-    NgbModule,
-    AppRoutingModule,
-    PlyrModule
+    SharedModule,
+    AppRoutingModule
   ],
   providers: [
     CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: HttpErrorInterceptor, multi: true }
   ],
-  bootstrap: [AppComponent],
-  entryComponents: [
-    PlaylistEditModalComponent,
-    PlaylistLeaveModalComponent
-  ]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

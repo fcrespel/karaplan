@@ -2,13 +2,16 @@ import { PlaylistSong } from './playlist-song';
 import { PlaylistComment } from './playlist-comment';
 import { User } from './user';
 
-export class Playlist {
+export interface Playlist {
+  id: number;
+  name: string;
+  readOnly: boolean;
   accessKey: string;
-  members: User[];
+  members?: User[];
   songsCount: number;
   songs: PlaylistSong[];
   commentsCount: number;
-  comments: PlaylistComment[];
+  comments?: PlaylistComment[];
   duration: number;
   createdDate: Date;
   createdBy: User;
@@ -16,11 +19,5 @@ export class Playlist {
   updatedBy: User;
 
   // Local field
-  isSelected: boolean;
-
-  constructor(
-    public id?: number,
-    public name?: string,
-    public readOnly?: boolean
-  ) { }
+  isSelected?: boolean;
 }
