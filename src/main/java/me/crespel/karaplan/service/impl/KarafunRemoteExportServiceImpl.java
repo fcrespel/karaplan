@@ -1,8 +1,7 @@
 package me.crespel.karaplan.service.impl;
 
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.JSONException;
@@ -32,15 +31,13 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	public static final String EVENT_QUEUE = "queue";
 	public static final String EVENT_QUEUE_ADD = "queueAdd";
 
-	private static final long EVENT_QUEUE_ADD_DELAY = 100;
-
 	@Autowired
 	protected KarafunRemoteProperties properties;
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
-			Set<Long> songIds = playlist.getSongs().stream().map(it -> it.getSong().getCatalogId()).collect(Collectors.toSet());
+			List<Long> songIds = playlist.getSongs().stream().map(it -> it.getSong().getCatalogId()).collect(Collectors.toList());
 			try {
 				Socket socket = buildSocket(target);
 				socket.on(Socket.EVENT_CONNECT, new ConnectEventListener(socket, target))
@@ -52,7 +49,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 						.on(EVENT_PERMISSIONS, new LoggingListener(EVENT_PERMISSIONS))
 						.on(EVENT_PREFERENCES, new LoggingListener(EVENT_PREFERENCES))
 						.on(EVENT_STATUS, new LoggingListener(EVENT_STATUS))
-						.on(EVENT_QUEUE, new QueueEventListener(socket, songIds));
+						.on(EVENT_QUEUE, new QueueEventListener(EVENT_QUEUE, socket, songIds, 0));
 				log.debug("Connecting to Karafun Remote {}", target);
 				socket.connect();
 			} catch (Exception e) {
@@ -154,26 +151,22 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 
 	@AllArgsConstructor
 	public class QueueEventListener implements Emitter.Listener {
+		private final String eventName;
 		private final Socket socket;
-		private final Collection<Long> songIds;
+		private final List<Long> songIds;
+		private int index = 0;
 
 		@Override
 		public void call(Object... args) {
-			logReceivedEvent(EVENT_QUEUE, args);
-			for (Long songId : songIds) {
-				if (songId != null) {
-					JSONObject eventData = buildQueueAddEvent(songId);
-					logSendEvent(EVENT_QUEUE_ADD, eventData);
-					socket.emit(EVENT_QUEUE_ADD, eventData);
-					try {
-						Thread.sleep(EVENT_QUEUE_ADD_DELAY);
-					} catch (InterruptedException e) {
-						// Ignore
-					}
-				}
+			logReceivedEvent(eventName, args);
+			if (index < songIds.size()) {
+				JSONObject eventData = buildQueueAddEvent(songIds.get(index++));
+				logSendEvent(EVENT_QUEUE_ADD, eventData);
+				socket.emit(EVENT_QUEUE_ADD, eventData);
+			} else {
+				log.debug("Disconnecting from Karafun session");
+				socket.disconnect();
 			}
-			log.debug("Disconnecting from Karafun session");
-			socket.disconnect();
 		}
 	}
 
