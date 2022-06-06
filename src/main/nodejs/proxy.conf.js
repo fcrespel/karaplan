@@ -8,6 +8,7 @@ const PROXY_CONFIG = [
         "/actuator",
         "/webjars",
         "/v2",
+        "/v3",
         "/swagger-resources",
         "/swagger-ui"
     ],
