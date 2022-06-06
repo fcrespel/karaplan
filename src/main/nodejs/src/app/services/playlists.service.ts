@@ -13,11 +13,12 @@ export class PlaylistsService {
     private http: HttpClient
   ) { }
 
-  getPlaylists(page: number = 0, size: number = 10, sort: string = ''): Observable<Playlist[]> {
-    let params = new HttpParams()
-      .set('page', ''+page)
-      .set('size', ''+size)
-      .set('sort', sort);
+  getPlaylists(page: number = 0, size: number = 10, sort: string[] = []): Observable<Playlist[]> {
+    let params = new HttpParams().appendAll({
+      page: '' + page,
+      size: '' + size,
+      sort: sort
+    });
     return this.http.get<Playlist[]>(this.playlistsUrl, {params: params});
   }
 

@@ -37,7 +37,7 @@ export class SongsComponent implements OnInit {
           return result;
         })));
       } else if (type == 'votes') {
-        return concat(of(new QueryContext(type, query, true)), this.songsService.getSongs(0, this.queryContext.songsLimit, 'score,desc').pipe(map(songs => {
+        return concat(of(new QueryContext(type, query, true)), this.songsService.getSongs(0, this.queryContext.songsLimit, ['score,desc', 'name,asc']).pipe(map(songs => {
           let result = new QueryContext(type, query);
           result.songs = songs.map(song => { return {song: song} });
           result.hasMoreSongs = songs && songs.length == result.songsLimit;
@@ -74,7 +74,7 @@ export class SongsComponent implements OnInit {
         });
       } else if (queryContext.type == 'votes') {
         queryContext.hasMoreSongsLoading = true;
-        this.songsService.getSongs(++queryContext.songsPage, queryContext.songsLimit, 'score,desc').subscribe(songs => {
+        this.songsService.getSongs(++queryContext.songsPage, queryContext.songsLimit, ['score,desc', 'name,asc']).subscribe(songs => {
           songs.forEach(song => queryContext.songs.push({song: song}));
           queryContext.hasMoreSongs = songs.length == queryContext.songsLimit;
           queryContext.hasMoreSongsLoading = false;

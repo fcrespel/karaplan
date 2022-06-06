@@ -58,6 +58,12 @@ public class SongController {
 		return songService.findAll(pageable);
 	}
 
+	@GetMapping("/user")
+	@Operation(summary = "Get all songs of current user")
+	public Set<Song> getUserSongs(@ParameterObject @PageableDefault Pageable pageable, @AuthenticationPrincipal(expression = "user") User user) {
+		return songService.findAllByUserId(user.getId(), pageable);
+	}
+
 	@GetMapping("/search")
 	@Operation(summary = "Search songs in the catalog")
 	public Set<Song> searchSongs(@RequestParam CatalogSongListType type, @RequestParam String query, @ParameterObject @PageableDefault Pageable pageable, @AuthenticationPrincipal(expression = "user") User user) {

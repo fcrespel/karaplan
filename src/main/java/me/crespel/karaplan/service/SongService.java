@@ -16,6 +16,8 @@ public interface SongService {
 
 	Set<Song> findAll(Pageable pageable);
 
+	Set<Song> findAllByUserId(Long userId, Pageable pageable);
+
 	Set<Song> search(CatalogSongListType type, String query, Pageable pageable);
 
 	Set<Song> search(CatalogSongListType type, String query, Pageable pageable, Locale locale);

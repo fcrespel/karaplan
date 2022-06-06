@@ -75,6 +75,11 @@ public class SongServiceImpl implements SongService {
 	}
 
 	@Override
+	public Set<Song> findAllByUserId(Long userId, Pageable pageable) {
+		return Sets.newLinkedHashSet(songRepo.findAllByVotesUserId(userId, pageable));
+	}
+
+	@Override
 	@Transactional(readOnly = true)
 	public Optional<Song> findById(Long id) {
 		return songRepo.findById(id);

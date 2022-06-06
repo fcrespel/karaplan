@@ -4,15 +4,20 @@
 <!-- Navigation pills -->
 <ul class="nav nav-pills my-3">
   <li class="nav-item">
-    <a class="nav-link" href="#" (click)="switchTab($event, 'profile')" [class.active]="tab == 'profile'" title="Profile">
-      <i class="fas fa-user"></i><span class="d-md-inline" [class.d-none]="tab != 'profile'"> Profile</span>
+    <a class="nav-link active" href="#" routerLink="/user/profile" title="Profile">
+      <i class="fas fa-user"></i><span class="d-md-inline"> Profile</span>
+    </a>
+  </li>
+  <li>
+    <a class="nav-link" href="#" routerLink="/user/votes" title="Votes">
+      <i class="fas fa-thumbs-up"></i><span class="d-md-inline d-none"> Votes</span>
     </a>
   </li>
 </ul>
 
+<!-- Profile -->
 <ng-container *ngIf="user; else userLoading">
-  <!-- Profile -->
-  <div class="card" *ngIf="tab == 'profile'">
+  <div class="card">
     <div class="card-body text-dark">
       <p>
         Your user profile is linked to your

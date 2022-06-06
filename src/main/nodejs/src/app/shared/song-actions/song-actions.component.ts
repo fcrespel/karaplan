@@ -174,7 +174,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
 
   onPlaylistOpen() {
     if (this.playlists === undefined) {
-      this.playlistsService.getPlaylists(0, 100, 'name').subscribe(playlists => {
+      this.playlistsService.getPlaylists(0, 100, ['name']).subscribe(playlists => {
         this.updatePlaylists(playlists);
       });
     } else {

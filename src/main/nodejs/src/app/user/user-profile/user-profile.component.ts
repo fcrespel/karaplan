@@ -14,7 +14,6 @@ import { AlertMessage } from '../../models/alert-message';
 export class UserProfileComponent implements OnInit {
 
   user?: User;
-  tab: string = 'profile';
   deleteComments: boolean = false;
   confirmDeletion: string = '';
 
@@ -32,11 +31,6 @@ export class UserProfileComponent implements OnInit {
         this.router.navigate(['/login']);
       }
     });
-  }
-
-  switchTab($event: Event, tab: string) {
-    $event.preventDefault();
-    this.tab = tab;
   }
 
   updateUser(user: User) {

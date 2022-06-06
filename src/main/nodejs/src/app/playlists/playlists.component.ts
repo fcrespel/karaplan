@@ -28,7 +28,7 @@ export class PlaylistsComponent implements OnInit {
   }
 
   refreshPlaylists() {
-    this.playlistsService.getPlaylists(0, 100, 'name').subscribe(playlists => {
+    this.playlistsService.getPlaylists(0, 100, ['name']).subscribe(playlists => {
       this.playlists = playlists;
       this.playlistsRW = playlists.filter(p => !p.readOnly);
       this.playlistsRO = playlists.filter(p => p.readOnly);
