@@ -60,7 +60,7 @@ public class SongVote implements Comparable<SongVote>, Serializable {
 	@CreatedBy
 	@ManyToOne
 	@JoinColumn(name = "FK_USER", referencedColumnName = "ID")
-	@JsonIgnoreProperties({ "votes", "comments", "playlists" })
+	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale", "votes", "comments", "playlists" })
 	private User user;
 
 	@CreatedDate
