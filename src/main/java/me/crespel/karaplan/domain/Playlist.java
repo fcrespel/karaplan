@@ -72,7 +72,7 @@ public class Playlist implements Comparable<Playlist>, Serializable {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "playlist_user", joinColumns = { @JoinColumn(name = "FK_PLAYLIST", nullable = false) }, inverseJoinColumns = { @JoinColumn(name = "FK_USER", nullable = false) })
-	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale" })
+	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale", "votes", "comments", "playlists", "createdDate", "updatedDate" })
 	private Set<User> members = Sets.newLinkedHashSet();
 
 	@Column(name = "SONGS_COUNT")
@@ -102,7 +102,7 @@ public class Playlist implements Comparable<Playlist>, Serializable {
 	@CreatedBy
 	@ManyToOne
 	@JoinColumn(name = "FK_USER_CREATED", referencedColumnName = "ID")
-	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale" })
+	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale", "votes", "comments", "playlists", "createdDate", "updatedDate" })
 	private User createdBy;
 
 	@LastModifiedDate
@@ -113,7 +113,7 @@ public class Playlist implements Comparable<Playlist>, Serializable {
 	@LastModifiedBy
 	@ManyToOne
 	@JoinColumn(name = "FK_USER_UPDATED", referencedColumnName = "ID")
-	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale" })
+	@JsonIgnoreProperties({ "provider", "username", "firstName", "lastName", "fullName", "email", "locale", "votes", "comments", "playlists", "createdDate", "updatedDate" })
 	private User updatedBy;
 
 	public void updateStats() {

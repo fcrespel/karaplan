@@ -75,7 +75,7 @@ public class Song implements Comparable<Song>, Serializable {
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	@JoinColumn(name = "FK_ARTIST", referencedColumnName = "ID")
-	@JsonIgnoreProperties("songs")
+	@JsonIgnoreProperties({ "songs", "createdDate", "updatedDate" })
 	private Artist artist;
 
 	@Transient
