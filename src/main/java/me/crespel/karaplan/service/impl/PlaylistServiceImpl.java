@@ -202,7 +202,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Transactional
 	public Playlist addUser(Playlist playlist, User user, String accessKey) {
 		if (playlist.getAccessKey() != null && playlist.getAccessKey().equals(accessKey)) {
-			if (!playlist.getMembers().contains(user)) {
+			if (!isMember(user, playlist)) {
 				playlist.getMembers().add(user);
 				return save(playlist);
 			}
@@ -219,7 +219,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 			throw new BusinessException("User " + user + " is not a member of playlist " + playlist);
 		}
 
-		if (playlist.getMembers().contains(user)) {
+		if (user != null) {
 			playlist.getMembers().remove(user);
 			return save(playlist);
 		}
@@ -329,7 +329,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		} else if (user == null) {
 			return true;
 		} else {
-			return playlist.getMembers() != null && playlist.getMembers().contains(user);
+			return playlist.getMembers() != null && playlist.getMembers().stream().anyMatch(m -> m.getId().equals(user.getId()));
 		}
 	}
 
