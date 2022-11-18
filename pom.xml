@@ -41,7 +41,7 @@
 		<commons-csv.version>1.8</commons-csv.version>
 		<guava.version>31.1-jre</guava.version>
 		<mysql-socket-factory.version>1.6.0</mysql-socket-factory.version>
-		<node.version>v14.19.2</node.version>
+		<node.version>v16.18.1</node.version>
 		<npm.version>6.14.17</npm.version>
 		<socketio-client.version>1.0.1</socketio-client.version>
 		<spring-cloud-gcp.version>3.2.1</spring-cloud-gcp.version>
