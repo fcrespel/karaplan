@@ -1,112 +1,137 @@
-@import url('https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css');
 @import url('https://use.fontawesome.com/releases/v5.15.4/css/all.css');
 @import url('https://fonts.googleapis.com/css?family=Raleway');
 @import url("https://use.typekit.net/cty8gcd.css");
 
 :root {
-	--plyr-color-main: #d5177a;
+    --plyr-color-main: #d5177a;
 }
 
 html {
-	height: 100%;
+    height: 100%;
 }
 
 body {
-	min-height: 100%;
-	padding-top: 3.5rem;
-	padding-bottom: 1.5rem;
-	font-family: 'Raleway', sans-serif;
-	background-image: linear-gradient(141.27841068346947deg, #1d0032, #210038 3.1%, #240039 3.1%, #2a003d 6%, #2d003e 6%, #3a0046 9.9%, #cc577a 59.1%, #ca587a 59.1%,#7b222b);
-	background-size: 100%;
-	background-attachment: fixed;
+    min-height: 100%;
+    padding-top: 3.5rem;
+    padding-bottom: 1.5rem;
+    font-family: 'Raleway', sans-serif;
+    background-image: linear-gradient(141.27841068346947deg, #1d0032, #210038 3.1%, #240039 3.1%, #2a003d 6%, #2d003e 6%, #3a0046 9.9%, #cc577a 59.1%, #ca587a 59.1%,#7b222b);
+    background-size: 100%;
+    background-attachment: fixed;
 }
 
 body > .dropdown {
-	z-index: 1000;
+    z-index: 1000;
 }
 
 h1 {
-	margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }
 
 a {
-	color: #d5177a;
+    color: #d5177a;
+    text-decoration: none;
 }
 a:hover {
-	color: #cc577a;
+    color: #a3125d;
 }
 
-.logo {
-	font-family: cooper-black-std, sans-serif;
-	font-weight: 400 !important;
-	font-style: normal !important;
-}
-
-.bg-white-50 {
-	background-color: rgba(255,255,255,.5) !important;
-}
-
-.border-white-50 {
-	border-color: rgba(255,255,255,.5) !important;
+small, .small {
+    font-size: .8em;
 }
 
 .bg-pink {
-	background-color: #d5177a;
+    background-color: #d5177a;
 }
 
 .border-pink {
-	border-color: #d5177a;
-}
-
-.badge-pink {
-	background-color: #d5177a;
-	color: #fff;
+    border-color: #d5177a;
 }
 
 .btn-pink {
-	background-color: #d5177a;
-	border-color: #d5177a;
-	color: #fff;
-}
-.btn-pink:hover {
-	background-color: #cc577a;
-	border-color: #cc577a;
-	color: #fff;
-}
-
-.navbar-brand {
-	font-weight: bold;
-}
-
-.nav-pills .nav-link {
-	color: rgba(255, 255, 255, 0.8);
-}
-
-.nav-pills .nav-link.active {
-	background-color: #d5177a;
-	box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #d5177a;
+    --bs-btn-border-color: #d5177a;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #b01364;
+    --bs-btn-hover-border-color: #a3125d;
+    --bs-btn-focus-shadow-rgb: 214,51,136;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #a3125d;
+    --bs-btn-active-border-color: #8a0f4e;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #d5177a;
+    --bs-btn-disabled-border-color: #d5177a;
 }
 
 .dropdown-item.active,
 .dropdown-item:active {
-	background-color: #d5177a;
+    background-color: #d5177a;
+}
+
+.form-control:focus,
+.form-check-input:focus {
+    border-color: #d67eac;
+    box-shadow: 0 0 0 .25rem rgba(213,23,122,.25);
+}
+.form-check-input:checked {
+    background-color: #d5177a;
+    border-color: #d5177a;
+}
+
+.form-switch .form-check-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23d67eac'/%3e%3c/svg%3e");
+}
+.form-switch .form-check-input:checked {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.link-secondary:hover,
+.link-light:hover,
+.link-dark:hover {
+    text-decoration: underline;
 }
 
 .list-group-item.active {
-	background-color: #d5177a;
-	border-color: #d5177a;
+    background-color: #d5177a;
+    border-color: #d5177a;
 }
 
-.spinner-border-md {
-	width: 1.5rem;
-	height: 1.5rem;
+.logo {
+    font-family: cooper-black-std, sans-serif;
+    font-weight: 400 !important;
+    font-style: normal !important;
 }
 
-.spinner-border-lg {
-	width: 3rem;
-	height: 3rem;
+.nav-pills .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.nav-pills .nav-link.active {
+    background-color: #d5177a;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+}
+
+.navbar-brand {
+    font-weight: bold;
 }
 
 .plyr {
-	border-radius: .25rem !important;
+    border-radius: .25rem !important;
+}
+
+.spinner-border-md {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.spinner-border-lg {
+    width: 3rem;
+    height: 3rem;
+}
+
+.text-bg-pink {
+    background-color: #d5177a;
+    color: #fff;
 }

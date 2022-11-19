@@ -1,9 +1,9 @@
 <!-- Title -->
 <ng-container *ngIf="tab != 'error'">
   <p class="small mb-0">
-    <a href="#" routerLink="/songs" class="text-light">Songs</a> //
+    <a href="#" routerLink="/songs" class="link-light">Songs</a> //
     <ng-container *ngIf="song && song.artist">
-      <a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-light">{{ song.artist.name }}</a> //
+      <a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="link-light">{{ song.artist.name }}</a> //
     </ng-container>
   </p>
   <h1>{{ song?.name || '...' }}</h1>
@@ -24,7 +24,7 @@
   <li class="nav-item">
     <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('comments')" [class.active]="tab == 'comments'" title="Comments">
       <i class="fas fa-comments"></i><span class="d-md-inline" [class.d-none]="tab != 'comments'"> Comments</span>
-      <span class="badge badge-light ml-1" *ngIf="song && song.comments">{{ song.commentsCount }}</span>
+      <span class="badge text-bg-light ms-1" *ngIf="song && song.comments">{{ song.commentsCount }}</span>
     </a>
   </li>
   <li class="nav-item">
@@ -35,7 +35,7 @@
   <li class="nav-item">
     <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('files')" [class.active]="tab == 'files'" title="Files">
       <i class="fas fa-headphones"></i><span class="d-md-inline" [class.d-none]="tab != 'files'"> Files</span>
-      <span class="badge badge-light ml-1" *ngIf="songFiles">{{ songFiles.length }}</span>
+      <span class="badge text-bg-light ms-1" *ngIf="songFiles">{{ songFiles.length }}</span>
     </a>
   </li>
 </ul>
@@ -45,20 +45,20 @@
   <div class="row" *ngIf="tab == 'info'">
     <div class="col">
       <div class="card">
-        <div class="card-body text-dark text-center text-sm-left">
+        <div class="card-body text-dark text-center text-sm-start">
           <div class="row">
             <div class="col-12 col-sm-auto mb-3 mb-sm-0">
               <img src="{{ song.image }}" class="rounded" style="width: 150px;">
             </div>
             <div class="col">
               <h5 class="card-title mb-1">{{ song.name }}</h5>
-              <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="text-muted"><small>{{ song.artist.name }}</small></a></p>
+              <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="link-secondary"><small>{{ song.artist.name }}</small></a></p>
               <p>
-                <span class="badge badge-secondary" title="Duration" *ngIf="song.duration">{{ song.duration | duration }}</span>
-                <span class="badge badge-secondary ml-1" title="Year" *ngIf="song.year">{{ song.year }}</span>
-                <a href="#" class="badge badge-primary ml-1" title="Style" *ngFor="let style of song.styles" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
+                <span class="badge text-bg-secondary" title="Duration" *ngIf="song.duration">{{ song.duration | duration }}</span>
+                <span class="badge text-bg-secondary ms-1" title="Year" *ngIf="song.year">{{ song.year }}</span>
+                <a href="#" class="badge text-bg-primary ms-1" title="Style" *ngFor="let style of song.styles" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
               </p>
-              <app-song-actions [(song)]="song" [showComments]="false"></app-song-actions>
+              <app-song-actions [(song)]="song" [showComments]="false" [loadingPosition]="'last'" [class]="'justify-content-center justify-content-sm-start'"></app-song-actions>
             </div>
             <div class="col-12 col-lg-auto mt-3 mt-lg-0" *ngIf="preview && preview.previewUrl">
               <div plyr class="preview-player" [plyrTitle]="song.name" [plyrPlaysInline]="true" [plyrSources]="[{src: preview.previewUrl}]"></div>
@@ -86,9 +86,9 @@
   <div class="row" *ngIf="tab == 'comments'">
     <div class="col">
       <ul class="list-group shadow">
-        <li class="list-group-item px-3 py-2">
-          <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="text-right">
-            <div class="form-group mb-2">
+        <li class="list-group-item px-3 py-3">
+          <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="text-end">
+            <div class="mb-2">
               <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="2" placeholder="Your comment ..." required></textarea>
             </div>
             <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
@@ -98,7 +98,7 @@
           <div class="d-flex align-items-center justify-content-between">
             <small class="text-muted flex-grow-1">{{ comment.user?.displayName }}</small>
             <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
-            <button type="button" class="btn btn-sm btn-danger ml-2" *ngIf="comment.user?.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+            <button type="button" class="btn btn-sm btn-danger ms-2" *ngIf="comment.user?.id == user?.id" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
           </div>
           <p class="mb-2 comment-text text-dark">{{ comment.comment }}</p>
         </li>
@@ -120,24 +120,24 @@
   <div class="row" *ngIf="tab == 'files'">
     <div class="col">
       <ul class="list-group shadow">
-        <li class="list-group-item d-flex justify-content-between align-items-center no-gutters px-3 py-2" *ngFor="let songFile of songFiles; trackBy: trackBySongFileId">
+        <li class="list-group-item d-flex justify-content-between align-items-center g-0 px-3 py-2" *ngFor="let songFile of songFiles; trackBy: trackBySongFileId">
           <div class="col">
             <p class="m-0 text-dark">{{ getSongFileTrackTypeLabel(songFile) }}</p>
           </div>
           <div class="col-auto">
-            <small class="badge badge-secondary mx-1">
+            <small class="badge text-bg-secondary mx-1">
               <i class="fas fa-volume-up" *ngIf="songFile.format == 'mp3'"></i>
               <i class="fas fa-film" *ngIf="songFile.format == 'wmv' || songFile.format == 'mp4'"></i>
               <i class="fas fa-archive" *ngIf="songFile.format == 'zip'"></i>
               <i class="fas fa-microphone-alt" *ngIf="songFile.format == 'kfn' || songFile.format == 'cdg'"></i>
               {{ songFile.format }}
             </small>
-            <div *ngIf="songFile.previewUrl" [ngSwitch]="songFile.previewStatus" class="d-inline-block ml-2">
+            <div *ngIf="songFile.previewUrl" [ngSwitch]="songFile.previewStatus" class="d-inline-block ms-2">
               <button *ngSwitchDefault type="button" class="btn btn-sm btn-block btn-outline-dark" title="Play audio preview" (click)="playSongFile(songFile)"><i class="fas fa-play"></i><span class="d-none d-sm-inline"> Preview</span></button>
               <button *ngSwitchCase="'waiting'" type="button" class="btn btn-sm btn-block btn-outline-dark" (click)="stopSongFile()"><i class="fas fa-spinner fa-spin"></i><span class="d-none d-sm-inline"> Loading</span></button>
               <button *ngSwitchCase="'playing'" type="button" class="btn btn-sm btn-block btn-dark" title="Stop audio preview" (click)="stopSongFile()"><i class="fas fa-stop"></i><span class="d-none d-sm-inline"> Playing</span></button>
             </div>
-            <a href="{{ songFile.catalogUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-pink ml-2" title="Download full version"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> Download</span></a>
+            <a href="{{ songFile.catalogUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-pink ms-2" title="Download full version"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> Download</span></a>
           </div>
         </li>
       </ul>

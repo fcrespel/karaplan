@@ -24,6 +24,8 @@ export class SongActionsComponent implements OnInit, OnChanges {
   @Input() showComments: boolean = true;
   @Input() showPlaylists: boolean = true;
   @Input() showRemove: boolean = false;
+  @Input() loadingPosition: string = 'first';
+  @Input() class: string = '';
   @Output() voteAdded = new EventEmitter<SongVote>();
   @Output() voteRemoved = new EventEmitter<SongVote>();
   @Output() commentAdded = new EventEmitter<SongComment>();

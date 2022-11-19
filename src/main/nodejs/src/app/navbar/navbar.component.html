@@ -1,35 +1,37 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-pink shadow fixed-top">
-  <a class="navbar-brand logo" href="#" routerLink="/home">KaraPlan</a>
-  <button class="navbar-toggler" type="button" (click)="navbarOpen = !navbarOpen" [attr.aria-expanded]="navbarOpen" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="!navbarOpen">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item" *ngIf="user">
-        <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active" (click)="navbarOpen = false">Songs</a>
-      </li>
-      <li class="nav-item" *ngIf="user">
-        <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active" (click)="navbarOpen = false">Playlists</a>
-      </li>
-    </ul>
-    <ul class="navbar-nav" *ngIf="user">
-      <li class="nav-item" ngbDropdown placement="bottom-right" [display]="navbarOpen ? 'static' : 'dynamic'">
-        <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
-        <div class="dropdown-menu shadow" ngbDropdownMenu>
-          <a class="dropdown-item" href="#" routerLink="/user/profile" (click)="navbarOpen = false">
-            <i class="fas fa-user mr-1"></i> Profile
-          </a>
-          <a class="dropdown-item" href="#" routerLink="/about" (click)="navbarOpen = false">
-            <i class="fas fa-info-circle mr-1"></i> About
-          </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="logout" (click)="$event.preventDefault(); navbarOpen = false; logoutForm.submit()">
-            <i class="fas fa-sign-out-alt mr-1"></i> Logout
-          </a>
-        </div>
-      </li>
-    </ul>
-    <a class="btn btn-outline-light" href="login" routerLink="/login" (click)="navbarOpen = false" *ngIf="!user">Login</a>
+  <div class="container-md">
+    <a class="navbar-brand logo" href="#" routerLink="/home">KaraPlan</a>
+    <button class="navbar-toggler" type="button" (click)="navbarOpen = !navbarOpen" [attr.aria-expanded]="navbarOpen" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="!navbarOpen">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item" *ngIf="user">
+          <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active" (click)="navbarOpen = false">Songs</a>
+        </li>
+        <li class="nav-item" *ngIf="user">
+          <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active" (click)="navbarOpen = false">Playlists</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav" *ngIf="user">
+        <li class="nav-item" ngbDropdown placement="bottom-right" [display]="navbarOpen ? 'static' : 'dynamic'">
+          <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
+          <div class="dropdown-menu shadow" ngbDropdownMenu>
+            <a class="dropdown-item" href="#" routerLink="/user/profile" (click)="navbarOpen = false">
+              <i class="fas fa-user me-1"></i> Profile
+            </a>
+            <a class="dropdown-item" href="#" routerLink="/about" (click)="navbarOpen = false">
+              <i class="fas fa-info-circle me-1"></i> About
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="logout" (click)="$event.preventDefault(); navbarOpen = false; logoutForm.submit()">
+              <i class="fas fa-sign-out-alt me-1"></i> Logout
+            </a>
+          </div>
+        </li>
+      </ul>
+      <a class="btn btn-outline-light" href="login" routerLink="/login" (click)="navbarOpen = false" *ngIf="!user">Login</a>
+    </div>
   </div>
 </nav>
 
