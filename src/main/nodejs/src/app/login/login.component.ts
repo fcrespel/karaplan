@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AlertMessage } from '../models/alert-message';
 import { AccountService } from '../services/account.service';
 import { AlertService } from '../services/alert.service';
-import { AlertMessage } from '../models/alert-message';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private route: ActivatedRoute,
@@ -35,11 +39,18 @@ export class LoginComponent implements OnInit {
       };
       this.alertService.addMessage(message);
     }
-    this.accountService.getUser(false).subscribe(user => {
-      if (user) {
-        this.router.navigate(['/songs']);
-      }
-    });
+    this.accountService.getUser(false)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        if (user) {
+          this.router.navigate(['/songs']);
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

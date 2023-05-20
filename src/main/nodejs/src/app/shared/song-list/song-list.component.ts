@@ -1,19 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { Song } from '../../models/song';
-import { SongVote } from '../../models/song-vote';
-import { SongComment } from '../../models/song-comment';
-import { PlaylistSong } from '../../models/playlist-song';
-import { SongsService } from '../../services/songs.service';
 import * as Plyr from 'plyr';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { PlaylistSong } from '../../models/playlist-song';
+import { Song } from '../../models/song';
+import { SongComment } from '../../models/song-comment';
+import { SongVote } from '../../models/song-vote';
+import { SongsService } from '../../services/songs.service';
 
 @Component({
   selector: 'app-song-list',
   templateUrl: './song-list.component.html',
   styleUrls: ['./song-list.component.css']
 })
-export class SongListComponent implements OnInit {
+export class SongListComponent implements OnInit, OnDestroy {
 
   @Input() songs: PlaylistSong[] = [];
   @Input() showDuration: boolean = false;
@@ -35,6 +37,7 @@ export class SongListComponent implements OnInit {
   songPlyr?: Plyr;
   songPlyrSources: Plyr.Source[] = [];
   songPlyrCurrent?: Song;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private router: Router,
@@ -68,18 +71,20 @@ export class SongListComponent implements OnInit {
     } else if (song.previewUrl === undefined && song.previewStatus != 'waiting') {
       this.songPlyrCurrent = song;
       this.songPlyrCurrent.previewStatus = 'waiting';
-      this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
-        var songFile = songFiles.find(songFile => songFile.trackType == 'nbv-ld');
-        if (songFile && songFile.previewUrl) {
-          song.previewUrl = songFile.previewUrl;
-          if (song == this.songPlyrCurrent) {
-            this.songPlyrSources = [{src: song.previewUrl}];
+      this.songsService.getSongFiles(song.catalogId)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(songFiles => {
+          var songFile = songFiles.find(songFile => songFile.trackType == 'nbv-ld');
+          if (songFile && songFile.previewUrl) {
+            song.previewUrl = songFile.previewUrl;
+            if (song == this.songPlyrCurrent) {
+              this.songPlyrSources = [{src: song.previewUrl}];
+            }
+          } else {
+            song.previewUrl = undefined;
+            song.previewStatus = 'notfound';
           }
-        } else {
-          song.previewUrl = undefined;
-          song.previewStatus = 'notfound';
-        }
-      });
+        });
     }
   }
 
@@ -108,6 +113,11 @@ export class SongListComponent implements OnInit {
           break;
       }
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

@@ -1,15 +1,17 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AccountService } from '../../services/account.service';
-import { SongsService } from '../../services/songs.service';
-import { PlaylistsService } from '../../services/playlists.service';
-import { User } from '../../models/user';
-import { Song } from '../../models/song';
-import { SongVote } from '../../models/song-vote';
-import { SongComment } from '../../models/song-comment';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Playlist } from '../../models/playlist';
 import { PlaylistSong } from '../../models/playlist-song';
+import { Song } from '../../models/song';
+import { SongComment } from '../../models/song-comment';
+import { SongVote } from '../../models/song-vote';
+import { User } from '../../models/user';
+import { AccountService } from '../../services/account.service';
+import { PlaylistsService } from '../../services/playlists.service';
+import { SongsService } from '../../services/songs.service';
 import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
 
 @Component({
@@ -17,7 +19,7 @@ import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit
   templateUrl: './song-actions.component.html',
   styleUrls: ['./song-actions.component.css']
 })
-export class SongActionsComponent implements OnInit, OnChanges {
+export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() song!: Song;
   @Input() showVotes: boolean = true;
@@ -42,6 +44,7 @@ export class SongActionsComponent implements OnInit, OnChanges {
   voteDownUsers?: string;
   commentText: string = '';
   loading: boolean = false;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private accountService: AccountService,
@@ -51,10 +54,12 @@ export class SongActionsComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
-    this.accountService.getUser().subscribe(user => {
-      this.user = user;
-      this.updateSong();
-    });
+    this.accountService.getUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.user = user;
+        this.updateSong();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -90,70 +95,82 @@ export class SongActionsComponent implements OnInit, OnChanges {
   voteUp() {
     let score = (this.vote && this.vote.score) == 1 ? 0 : 1;
     this.loading = true;
-    this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
-      let previousVote = this.vote;
-      this.updateSong(song);
-      this.songChange.emit(song);
-      if (score != 0) {
-        this.voteAdded.emit(this.vote);
-      } else {
-        this.voteRemoved.emit(previousVote);
-      }
-    }, error => this.loading = false);
+    this.songsService.voteSong(this.song.catalogId, score)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        let previousVote = this.vote;
+        this.updateSong(song);
+        this.songChange.emit(song);
+        if (score != 0) {
+          this.voteAdded.emit(this.vote);
+        } else {
+          this.voteRemoved.emit(previousVote);
+        }
+      }, error => this.loading = false);
   }
 
   voteDown() {
     let score = (this.vote && this.vote.score) == -1 ? 0 : -1;
     this.loading = true;
-    this.songsService.voteSong(this.song.catalogId, score).subscribe(song => {
-      let previousVote = this.vote;
-      this.updateSong(song);
-      this.songChange.emit(song);
-      if (score != 0) {
-        this.voteAdded.emit(this.vote);
-      } else {
-        this.voteRemoved.emit(previousVote);
-      }
-    }, error => this.loading = false);
+    this.songsService.voteSong(this.song.catalogId, score)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        let previousVote = this.vote;
+        this.updateSong(song);
+        this.songChange.emit(song);
+        if (score != 0) {
+          this.voteAdded.emit(this.vote);
+        } else {
+          this.voteRemoved.emit(previousVote);
+        }
+      }, error => this.loading = false);
   }
 
   addComment(comment: string, commentForm: NgForm) {
     this.loading = true;
-    this.songsService.addCommentToSong(this.song.catalogId, comment).subscribe(song => {
-      commentForm.reset();
-      this.updateSong(song);
-      this.songChange.emit(song);
-      this.commentAdded.emit(song.comments!.find(comment => comment.user?.id == this.user?.id));
-    }, error => this.loading = false);
+    this.songsService.addCommentToSong(this.song.catalogId, comment)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        commentForm.reset();
+        this.updateSong(song);
+        this.songChange.emit(song);
+        this.commentAdded.emit(song.comments!.find(comment => comment.user?.id == this.user?.id));
+      }, error => this.loading = false);
   }
 
   removeComment(comment: SongComment) {
     this.loading = true;
-    this.songsService.removeCommentFromSong(this.song.catalogId, comment.id).subscribe(song => {
-      this.updateSong(song);
-      this.songChange.emit(song);
-      this.commentRemoved.emit(comment);
-    }, error => this.loading = false);
+    this.songsService.removeCommentFromSong(this.song.catalogId, comment.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        this.updateSong(song);
+        this.songChange.emit(song);
+        this.commentRemoved.emit(comment);
+      }, error => this.loading = false);
   }
 
   addToPlaylist(playlist: Playlist) {
     this.loading = true;
-    this.songsService.addSongToPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
-      this.updateSong(song);
-      this.songChange.emit(song);
-      playlist.isSelected = true;
-      this.playlistAdded.emit({playlist: playlist, song: song});
-    }, error => this.loading = false);
+    this.songsService.addSongToPlaylist(this.song.catalogId, playlist.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        this.updateSong(song);
+        this.songChange.emit(song);
+        playlist.isSelected = true;
+        this.playlistAdded.emit({playlist: playlist, song: song});
+      }, error => this.loading = false);
   }
 
   removeFromPlaylist(playlist: Playlist) {
     this.loading = true;
-    this.songsService.removeSongFromPlaylist(this.song.catalogId, playlist.id).subscribe(song => {
-      this.updateSong(song);
-      this.songChange.emit(song);
-      playlist.isSelected = false;
-      this.playlistRemoved.emit({playlist: playlist, song: song});
-    }, error => this.loading = false);
+    this.songsService.removeSongFromPlaylist(this.song.catalogId, playlist.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        this.updateSong(song);
+        this.songChange.emit(song);
+        playlist.isSelected = false;
+        this.playlistRemoved.emit({playlist: playlist, song: song});
+      }, error => this.loading = false);
   }
 
   togglePlaylist(playlist: Playlist) {
@@ -168,17 +185,17 @@ export class SongActionsComponent implements OnInit, OnChanges {
     let modal = this.modalService.open(PlaylistEditModalComponent);
     modal.componentInstance.playlist = {};
     modal.result.then((result: Playlist) => {
-      this.playlistsService.createPlaylist(result.name).subscribe(playlist => {
-        this.playlists = undefined;
-      });
+      this.playlistsService.createPlaylist(result.name)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(playlist => this.playlists = undefined);
     }, reason => {});
   }
 
   onPlaylistOpen() {
     if (this.playlists === undefined) {
-      this.playlistsService.getPlaylists(0, 100, ['name']).subscribe(playlists => {
-        this.updatePlaylists(playlists);
-      });
+      this.playlistsService.getPlaylists(0, 100, ['name'])
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(playlists => this.updatePlaylists(playlists));
     } else {
       this.updatePlaylists();
     }
@@ -193,6 +210,11 @@ export class SongActionsComponent implements OnInit, OnChanges {
         playlist.isSelected = (this.song && this.song.playlists && this.song.playlists.findIndex(playlistSong => playlistSong.playlist?.id == playlist.id) >= 0);
       });
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

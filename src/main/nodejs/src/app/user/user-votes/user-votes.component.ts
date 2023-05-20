@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { SongsService } from 'src/app/services/songs.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { PlaylistSong } from 'src/app/models/playlist-song';
+import { SongsService } from 'src/app/services/songs.service';
 
 @Component({
   selector: 'app-user-votes',
   templateUrl: './user-votes.component.html',
   styleUrls: ['./user-votes.component.css']
 })
-export class UserVotesComponent implements OnInit {
+export class UserVotesComponent implements OnInit, OnDestroy {
 
   songs: PlaylistSong[] = [];
   songsPage: number = 0;
@@ -16,6 +18,7 @@ export class UserVotesComponent implements OnInit {
   songsLoading: boolean = false;
   hasMoreSongs: boolean = false;
   hasMoreSongsLoading: boolean = false;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private songsService: SongsService
@@ -23,23 +26,32 @@ export class UserVotesComponent implements OnInit {
 
   ngOnInit() {
     this.songsLoading = true;
-    this.songsService.getUserSongs(0, this.songsLimit, this.songsSort).subscribe(songs => {
-      this.songs = songs.map(song => { return {song: song} });
-      this.songsLoading = false;
-      this.hasMoreSongs = songs.length == this.songsLimit;
-      this.hasMoreSongsLoading = false;
-    });
+    this.songsService.getUserSongs(0, this.songsLimit, this.songsSort)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(songs => {
+        this.songs = songs.map(song => { return {song: song} });
+        this.songsLoading = false;
+        this.hasMoreSongs = songs.length == this.songsLimit;
+        this.hasMoreSongsLoading = false;
+      });
   }
 
   loadMoreSongs() {
     if (this.hasMoreSongs) {
       this.hasMoreSongsLoading = true;
-      this.songsService.getUserSongs(++this.songsPage, this.songsLimit, this.songsSort).subscribe(songs => {
-        songs.forEach(song => this.songs.push({song: song}));
-        this.hasMoreSongs = songs.length == this.songsLimit;
-        this.hasMoreSongsLoading = false;
-      });
+      this.songsService.getUserSongs(++this.songsPage, this.songsLimit, this.songsSort)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(songs => {
+          songs.forEach(song => this.songs.push({song: song}));
+          this.hasMoreSongs = songs.length == this.songsLimit;
+          this.hasMoreSongsLoading = false;
+        });
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

@@ -1,24 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { of } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import * as Plyr from 'plyr';
+import { Subject, of } from 'rxjs';
+import { catchError, switchMap, takeUntil } from 'rxjs/operators';
+import { CatalogSongFile } from '../../models/catalog-song-file';
+import { PlaylistSong } from '../../models/playlist-song';
+import { Song } from '../../models/song';
+import { SongComment } from '../../models/song-comment';
+import { SongLyrics } from '../../models/song-lyrics';
+import { User } from '../../models/user';
 import { AccountService } from '../../services/account.service';
 import { SongsService } from '../../services/songs.service';
-import { User } from '../../models/user';
-import { Song } from '../../models/song';
-import { SongLyrics } from '../../models/song-lyrics';
-import { SongComment } from '../../models/song-comment';
-import { PlaylistSong } from '../../models/playlist-song';
-import { CatalogSongFile } from '../../models/catalog-song-file';
-import * as Plyr from 'plyr';
 
 @Component({
   selector: 'app-song-detail',
   templateUrl: './song-detail.component.html',
   styleUrls: ['./song-detail.component.css']
 })
-export class SongDetailComponent implements OnInit {
+export class SongDetailComponent implements OnInit, OnDestroy {
 
   user?: User;
   song?: Song;
@@ -34,6 +34,7 @@ export class SongDetailComponent implements OnInit {
   songFilePlyr?: Plyr;
   songFilePlyrSources: Plyr.Source[] = [];
   songFilePlyrCurrent?: CatalogSongFile;
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   trackTypeLabels: any = {
     'nbv': 'Instrumental',
@@ -68,39 +69,44 @@ export class SongDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.accountService.getUser().subscribe(user => {
-      this.user = user;
-    });
-    this.route.paramMap.pipe(
-      switchMap((params: ParamMap) => 
+    this.accountService.getUser()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => this.user = user);
+    this.route.paramMap
+      .pipe(takeUntil(this.destroy$))
+      .pipe(switchMap((params: ParamMap) => 
         this.songsService.getSong(+params.get('catalogId')!).pipe(catchError(err => of(undefined)))
-      )
-    ).subscribe(song => {
-      this.relatedSongsPage = 0;
-      this.hasMoreRelatedSongs = false;
-      this.song = song;
-      this.songLyrics = undefined;
-      this.songFiles = [];
-      this.preview = undefined;
-      this.relatedSongs = [];
-      this.hasMoreRelatedSongs = false;
-      if (song?.catalogId) {
-        this.switchTab('info');
-        this.songsService.getSongLyrics(song.catalogId).subscribe(songLyrics => {
-          this.songLyrics = songLyrics;
-        });
-        this.songsService.getSongFiles(song.catalogId).subscribe(songFiles => {
-          this.songFiles = songFiles;
-          this.preview = songFiles.find(songFile => songFile.format == 'wmv' || songFile.format == 'mp4') || songFiles.find(songFile => songFile.trackType == 'nbv-ld');
-        });
-        this.songsService.searchSongs('artist', ''+song.artist.catalogId, 0, this.relatedSongsLimit).subscribe(songs => {
-          this.relatedSongs = songs.filter(song => song.catalogId != this.song?.catalogId).map(song => { return {song: song} });
-          this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
-        });
-      } else {
-        this.switchTab('error');
-      }
-    });
+      ))
+      .subscribe(song => {
+        this.relatedSongsPage = 0;
+        this.hasMoreRelatedSongs = false;
+        this.song = song;
+        this.songLyrics = undefined;
+        this.songFiles = [];
+        this.preview = undefined;
+        this.relatedSongs = [];
+        this.hasMoreRelatedSongs = false;
+        if (song?.catalogId) {
+          this.switchTab('info');
+          this.songsService.getSongLyrics(song.catalogId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(songLyrics => this.songLyrics = songLyrics);
+          this.songsService.getSongFiles(song.catalogId)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(songFiles => {
+              this.songFiles = songFiles;
+              this.preview = songFiles.find(songFile => songFile.format == 'wmv' || songFile.format == 'mp4') || songFiles.find(songFile => songFile.trackType == 'nbv-ld');
+            });
+          this.songsService.searchSongs('artist', ''+song.artist.catalogId, 0, this.relatedSongsLimit)
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(songs => {
+              this.relatedSongs = songs.filter(song => song.catalogId != this.song?.catalogId).map(song => { return {song: song} });
+              this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
+            });
+        } else {
+          this.switchTab('error');
+        }
+      });
   }
 
   switchTab(tab: string) {
@@ -117,24 +123,28 @@ export class SongDetailComponent implements OnInit {
   }
 
   addComment(comment: string, commentForm: NgForm) {
-    this.songsService.addCommentToSong(this.song!.catalogId, comment).subscribe(song => {
-      commentForm.reset();
-      this.song = song;
-    });
+    this.songsService.addCommentToSong(this.song!.catalogId, comment)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => {
+        commentForm.reset();
+        this.song = song;
+      });
   }
 
   removeComment(comment: SongComment) {
-    this.songsService.removeCommentFromSong(this.song!.catalogId, comment.id).subscribe(song => {
-      this.song = song;
-    });
+    this.songsService.removeCommentFromSong(this.song!.catalogId, comment.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(song => this.song = song);
   }
 
   loadMoreRelatedSongs() {
     if (this.hasMoreRelatedSongs) {
-      this.songsService.searchSongs('artist', ''+this.song!.artist.catalogId, ++this.relatedSongsPage, this.relatedSongsLimit).subscribe(songs => {
-        songs.filter(song => song.catalogId != this.song!.catalogId).forEach(song => this.relatedSongs.push({song: song}));
-        this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
-      });
+      this.songsService.searchSongs('artist', ''+this.song!.artist.catalogId, ++this.relatedSongsPage, this.relatedSongsLimit)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(songs => {
+          songs.filter(song => song.catalogId != this.song!.catalogId).forEach(song => this.relatedSongs.push({song: song}));
+          this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
+        });
     }
   }
 
@@ -180,6 +190,11 @@ export class SongDetailComponent implements OnInit {
           break;
       }
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

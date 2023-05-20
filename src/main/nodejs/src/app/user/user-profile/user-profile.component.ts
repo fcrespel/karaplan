@@ -1,21 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AlertMessage } from '../../models/alert-message';
+import { User } from '../../models/user';
 import { AccountService } from '../../services/account.service';
 import { AlertService } from '../../services/alert.service';
-import { User } from '../../models/user';
-import { AlertMessage } from '../../models/alert-message';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
 
   user?: User;
   deleteComments: boolean = false;
   confirmDeletion: string = '';
+  destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     private router: Router,
@@ -25,32 +28,42 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.accountService.getUser(false).subscribe(user => {
-      this.user = user;
-      if (!user) {
-        this.router.navigate(['/login']);
-      }
-    });
+    this.accountService.getUser(false)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.user = user;
+        if (!user) {
+          this.router.navigate(['/login']);
+        }
+      });
   }
 
   updateUser(user: User) {
-    this.accountService.updateUser(user).subscribe(user => {
-      this.user = user;
-      let message: AlertMessage = {
-        severity: 'success',
-        title: 'Success',
-        text: 'Your user profile has been updated'
-      }
-      this.alertService.addMessage(message);
-      this.accountService.refreshCache();
-    });
+    this.accountService.updateUser(user)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        this.user = user;
+        let message: AlertMessage = {
+          severity: 'success',
+          title: 'Success',
+          text: 'Your user profile has been updated'
+        }
+        this.alertService.addMessage(message);
+        this.accountService.refreshCache();
+      });
   }
 
   deleteAccount(modalContent: any) {
     this.modalService.open(modalContent).result.then(() => {
-      this.accountService.deleteUser(this.deleteComments).subscribe(() => {
-        (document.getElementById('logoutForm') as HTMLFormElement).submit();
-      });
+      this.accountService.deleteUser(this.deleteComments)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => (document.getElementById('logoutForm') as HTMLFormElement).submit());
     }, reason => {})
   }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
 }
