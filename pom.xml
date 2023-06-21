@@ -39,7 +39,7 @@
 
 		<!-- Dependency properties -->
 		<commons-csv.version>1.8</commons-csv.version>
-		<guava.version>31.1-jre</guava.version>
+		<guava.version>32.0.1-jre</guava.version>
 		<mysql-socket-factory.version>1.7.2</mysql-socket-factory.version>
 		<node.version>v18.16.0</node.version>
 		<npm.version>6.14.18</npm.version>
