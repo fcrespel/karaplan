@@ -1,0 +1,34 @@
+trigger:
+- master
+
+resources:
+- repo: self
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  dockerRegistryServiceConnection: 'fcrespel.azurecr.io'
+  imageRepository: 'karaplan'
+  tag: '$(Build.SourceBranchName)'
+
+steps:
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx512m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'verify'
+    options: '-B -Dfrontend-build -Ddocker-build'
+- task: Docker@2
+  inputs:
+    command: 'buildAndPush'
+    Dockerfile: 'target/docker-build/Dockerfile'
+    buildContext: 'target/docker-build'
+    containerRegistry: '$(dockerRegistryServiceConnection)'
+    repository: '$(imageRepository)'
+    tags: '$(tag)'
