@@ -23,7 +23,6 @@
     "@ng-bootstrap/ng-bootstrap": "^14.1.0",
     "@popperjs/core": "^2.10.2",
     "ngx-cookie-service": "^15.0.0",
-    "ngx-plyr": "^4.0.0",
     "plyr": "^3.7.2",
     "rxjs": "~6.6.0",
     "tslib": "^2.3.0",

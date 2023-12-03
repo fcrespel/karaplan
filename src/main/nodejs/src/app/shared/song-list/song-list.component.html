@@ -40,4 +40,4 @@
 </ng-template>
 
 <!-- Hidden audio player -->
-<div class="d-none" plyr plyrType="audio" [plyrSources]="songPlyrSources" (plyrInit)="songPlyr = $event" (plyrWaiting)="songPlyrEvent($event)" (plyrCanPlay)="songPlyrEvent($event)" (plyrPlaying)="songPlyrEvent($event)" (plyrPause)="songPlyrEvent($event)" (plyrEnded)="songPlyrEvent($event)"></div>
+<div class="d-none" plyr plyrType="audio" [plyrSources]="songPlyrSources" (plyrInit)="songPlyr = $event" (plyrEvent)="songPlyrEvent($event)"></div>

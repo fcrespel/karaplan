@@ -61,7 +61,7 @@
               <app-song-actions [(song)]="song" [showComments]="false" [loadingPosition]="'last'" [class]="'justify-content-center justify-content-sm-start'"></app-song-actions>
             </div>
             <div class="col-12 col-lg-auto mt-3 mt-lg-0" *ngIf="preview && preview.previewUrl">
-              <div plyr class="preview-player" [plyrTitle]="song.name" [plyrPlaysInline]="true" [plyrSources]="[{src: preview.previewUrl}]"></div>
+              <div plyr class="preview-player" [plyrTitle]="song.name" [plyrSources]="[{src: preview.previewUrl}]"></div>
             </div>
           </div>
         </div>
@@ -167,4 +167,4 @@
 </ng-template>
 
 <!-- Hidden audio player -->
-<div class="d-none" plyr plyrType="audio" [plyrSources]="songFilePlyrSources" (plyrInit)="songFilePlyr = $event" (plyrWaiting)="songFilePlyrEvent($event)" (plyrCanPlay)="songFilePlyrEvent($event)" (plyrPlaying)="songFilePlyrEvent($event)" (plyrPause)="songFilePlyrEvent($event)" (plyrEnded)="songFilePlyrEvent($event)"></div>
+<div class="d-none" plyr plyrType="audio" [plyrSources]="songFilePlyrSources" (plyrInit)="songFilePlyr = $event" (plyrEvent)="songFilePlyrEvent($event)"></div>

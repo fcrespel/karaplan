@@ -172,7 +172,7 @@ export class SongDetailComponent implements OnInit, OnDestroy {
     }
   }
 
-  songFilePlyrEvent(event: Plyr.PlyrEvent) {
+  songFilePlyrEvent(event: Plyr.PlyrEvent | Plyr.PlyrStateChangeEvent) {
     var plyr = event.detail.plyr;
     var songFile = this.songFilePlyrCurrent;
     if (songFile && songFile.previewUrl == ""+plyr.source) {

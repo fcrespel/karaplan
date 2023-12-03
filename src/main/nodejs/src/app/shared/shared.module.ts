@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { PlyrModule } from 'ngx-plyr';
 
 import { DurationPipe } from './pipes/duration.pipe';
 import { SongListComponent } from './song-list/song-list.component';
@@ -13,6 +12,7 @@ import { SongActionsComponent } from './song-actions/song-actions.component';
 import { SongSelectionsComponent } from './song-selections/song-selections.component';
 import { PlaylistEditModalComponent } from './playlist-edit-modal/playlist-edit-modal.component';
 import { PlaylistLeaveModalComponent } from './playlist-leave-modal/playlist-leave-modal.component';
+import { PlyrComponent } from './plyr/plyr.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +21,8 @@ import { PlaylistLeaveModalComponent } from './playlist-leave-modal/playlist-lea
     SongActionsComponent,
     SongSelectionsComponent,
     PlaylistEditModalComponent,
-    PlaylistLeaveModalComponent
+    PlaylistLeaveModalComponent,
+    PlyrComponent
   ],
   imports: [
     CommonModule,
@@ -29,8 +30,7 @@ import { PlaylistLeaveModalComponent } from './playlist-leave-modal/playlist-lea
     HttpClientModule,
     RouterModule,
     DragDropModule,
-    NgbModule,
-    PlyrModule
+    NgbModule
   ],
   exports: [
     CommonModule,
@@ -42,7 +42,8 @@ import { PlaylistLeaveModalComponent } from './playlist-leave-modal/playlist-lea
     SongActionsComponent,
     SongSelectionsComponent,
     PlaylistEditModalComponent,
-    PlaylistLeaveModalComponent
+    PlaylistLeaveModalComponent,
+    PlyrComponent
   ]
 })
 export class SharedModule { }

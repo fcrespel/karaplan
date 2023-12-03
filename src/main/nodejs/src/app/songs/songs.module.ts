@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { PlyrModule } from 'ngx-plyr';
 
 import { SharedModule } from '../shared/shared.module';
 import { SongsRoutingModule } from './songs-routing.module';
@@ -13,7 +12,6 @@ import { SongDetailComponent } from './song-detail/song-detail.component';
   ],
   imports: [
     SharedModule,
-    PlyrModule,
     SongsRoutingModule
   ]
 })

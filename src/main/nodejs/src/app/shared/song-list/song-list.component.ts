@@ -95,7 +95,7 @@ export class SongListComponent implements OnInit, OnDestroy {
     }
   }
 
-  songPlyrEvent(event: Plyr.PlyrEvent) {
+  songPlyrEvent(event: Plyr.PlyrEvent | Plyr.PlyrStateChangeEvent) {
     var plyr = event.detail.plyr;
     var song = this.songPlyrCurrent;
     if (song && song.previewUrl == ""+plyr.source) {
