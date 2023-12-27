@@ -1,5 +1,5 @@
 steps:
-- name: 'maven:3.6.3-jdk-11'
+- name: 'maven:3.6.3-openjdk-17'
   entrypoint: 'mvn'
   args: ['-B', '-Dfrontend-build', '-Ddocker-build', '-DskipTests', 'verify']
 - name: 'gcr.io/cloud-builders/docker'

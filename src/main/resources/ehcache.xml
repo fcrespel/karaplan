@@ -1,44 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
+<config xmlns="http://www.ehcache.org/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.10.xsd">
 
-	<!-- AzLyrics cache for song lyrics -->
-	<cache name="azLyricsCache"
-		maxEntriesLocalHeap="1000"
-		eternal="false"
-		timeToIdleSeconds="86400"
-		timeToLiveSeconds="604800"
-		copyOnRead="true"
-		copyOnWrite="true"
-	/>
+	<cache-template name="default">
+		<key-type copier="org.ehcache.impl.copy.SerializingCopier">java.lang.Object</key-type>
+		<value-type copier="org.ehcache.impl.copy.SerializingCopier">java.lang.Object</value-type>
+		<expiry>
+			<ttl unit="hours">24</ttl>
+		</expiry>
+		<resources>
+			<heap unit="entries">1000</heap>
+		</resources>
+	</cache-template>
 
-	<!-- KarafunRemoteCatalog cache for artists and songs -->
-	<cache name="karafunRemoteCatalogCache"
-		maxEntriesLocalHeap="1000"
-		eternal="false"
-		timeToIdleSeconds="86400"
-		timeToLiveSeconds="604800"
-		copyOnRead="true"
-		copyOnWrite="true"
-	/>
+	<cache alias="azLyricsCache" uses-template="default" />
+	<cache alias="karafunRemoteCatalogCache" uses-template="default" />
+	<cache alias="karafunWebCatalogCache" uses-template="default" />
+	<cache alias="kvCatalogCache" uses-template="default" />
 
-	<!-- KarafunWebCatalog cache for artists and songs -->
-	<cache name="karafunWebCatalogCache"
-		maxEntriesLocalHeap="1000"
-		eternal="false"
-		timeToIdleSeconds="86400"
-		timeToLiveSeconds="604800"
-		copyOnRead="true"
-		copyOnWrite="true"
-	/>
-
-	<!-- KvCatalog cache for artists and songs -->
-	<cache name="kvCatalogCache"
-		maxEntriesLocalHeap="1000"
-		eternal="false"
-		timeToIdleSeconds="86400"
-		timeToLiveSeconds="604800"
-		copyOnRead="true"
-		copyOnWrite="true"
-	/>
-
-</ehcache>
+</config>

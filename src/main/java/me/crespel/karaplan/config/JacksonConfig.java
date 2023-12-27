@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
 
 @Configuration
 public class JacksonConfig {
@@ -25,8 +25,8 @@ public class JacksonConfig {
 
 	@Bean
 	public Module hibernateModule() {
-		Hibernate5Module module = new Hibernate5Module();
-		module.disable(Hibernate5Module.Feature.USE_TRANSIENT_ANNOTATION);
+		Hibernate6Module module = new Hibernate6Module();
+		module.disable(Hibernate6Module.Feature.USE_TRANSIENT_ANNOTATION);
 		return module;
 	}
 

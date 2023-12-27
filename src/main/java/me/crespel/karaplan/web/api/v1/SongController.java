@@ -2,7 +2,7 @@ package me.crespel.karaplan.web.api.v1;
 
 import java.util.Set;
 
-import org.springdoc.api.annotations.ParameterObject;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

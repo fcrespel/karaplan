@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -25,34 +26,29 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
+		csrfHandler.setCsrfRequestAttributeName(null); // Force loading CSRF token on every request
 		return http
-			.authorizeRequests()
-				.antMatchers("/", "/home").permitAll()
-				.antMatchers("/**/*.css", "/**/*.js", "/**/*.js.map", "/**/*.jpg", "/**/*.png", "/**/*.svg", "/**/*.ico", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
-				.antMatchers("/api", "/v*/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/csrf").permitAll()
-				.antMatchers("/api/v1/account/**").permitAll()
-				.antMatchers("/actuator/health", "/actuator/health/liveness", "/actuator/health/readiness", "/actuator/info").permitAll()
-				.antMatchers("/actuator/**").hasRole("ADMIN")
-				.antMatchers("/login").permitAll()
-				.antMatchers("/_ah/**").permitAll()
-				.anyRequest().authenticated()
-				.and()
-			.csrf()
+			.authorizeHttpRequests(requests -> requests
+				.requestMatchers("/", "/home").permitAll()
+				.requestMatchers("/*.css", "/*.js", "/*.js.map", "/*.jpg", "/*.png", "/*.svg", "/*.ico", "/assets/**", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
+				.requestMatchers("/api", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/csrf").permitAll()
+				.requestMatchers("/api/v1/account/**").permitAll()
+				.requestMatchers("/actuator/health", "/actuator/health/liveness", "/actuator/health/readiness", "/actuator/info").permitAll()
+				.requestMatchers("/actuator/**").hasRole("ADMIN")
+				.requestMatchers("/login").permitAll()
+				.requestMatchers("/_ah/**").permitAll()
+				.anyRequest().authenticated())
+			.csrf(csrf -> csrf
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.and()
-			.logout()
-				.deleteCookies("JSESSIONID")
-				.and()
-			.oauth2Login()
+				.csrfTokenRequestHandler(csrfHandler))
+			.oauth2Login(login -> login
 				.loginPage("/login")
-				.userInfoEndpoint()
+				.userInfoEndpoint(userinfo -> userinfo
 					.userService(oauth2UserService())
-					.oidcUserService(oidcUserService())
-					.and()
-				.and()
-			.exceptionHandling()
-				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**"))
-				.and()
+					.oidcUserService(oidcUserService())))
+			.exceptionHandling(handling -> handling
+				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**")))
 			.build();
 	}
 

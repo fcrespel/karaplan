@@ -1,12 +1,12 @@
 spring:
   application:
     name: karaplan
-  data:
-    redis:
-      repositories:
-        enabled: false
-    rest:
-      detection-strategy: annotated
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
+  h2:
+    console:
+      enabled: false
   jackson:
     default-property-inclusion: non-empty
   jpa:
@@ -14,6 +14,7 @@ spring:
     open-in-view: true
     properties:
       hibernate.globally_quoted_identifiers: true
+      hibernate.id.db_structure_naming_strategy: legacy
   main:
     lazy-initialization: true
   security:
@@ -31,9 +32,8 @@ spring:
             client-id: toComplete
             client-secret: toComplete
   session:
-    store-type: none
-    redis:
-      namespace: karaplan:session
+    jdbc:
+      initialize-schema: always
   web:
     resources:
       cache:
@@ -50,7 +50,7 @@ springdoc:
     csrf:
       enabled: true
 server:
-  port: 8080
+  port: ${PORT:8080}
   compression:
     enabled: true
   error:
@@ -72,9 +72,6 @@ management:
     health:
       probes:
         enabled: true
-  health:
-    redis:
-      enabled: false
 karaplan:
   karafun:
     remote:

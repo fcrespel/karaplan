@@ -3,8 +3,6 @@ spring:
     username: karaplan
     password: "toComplete"
     url: "jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete"
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   security:
     oauth2:
       client:
@@ -18,11 +16,3 @@ spring:
           facebook:
             client-id: "toComplete"
             client-secret: "toComplete"
-  session:
-    store-type: redis
-    redis:
-      configure-action: none
-  redis:
-    host: "toComplete"
-server:
-  port: ${PORT}

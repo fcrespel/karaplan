@@ -1,7 +1,5 @@
 package me.crespel.karaplan.model.karafunweb;
 
-import javax.xml.bind.annotation.XmlAttribute;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
@@ -49,7 +47,7 @@ public class KarafunWebResponse {
 
 	@Data
 	public static class KarafunWebError {
-		@XmlAttribute
+		@JacksonXmlProperty(localName = "action", isAttribute = true)
 		private String action;
 
 		@JacksonXmlText
@@ -62,7 +60,7 @@ public class KarafunWebResponse {
 
 	@Data
 	public static class KarafunWebMessage {
-		@XmlAttribute
+		@JacksonXmlProperty(localName = "action", isAttribute = true)
 		private String display;
 
 		@JacksonXmlText

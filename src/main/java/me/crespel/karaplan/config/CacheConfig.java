@@ -3,7 +3,7 @@ package me.crespel.karaplan.config;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableCaching
-public class CacheConfig extends CachingConfigurerSupport {
+public class CacheConfig implements CachingConfigurer {
 
 	@Bean
 	public KeyGenerator keyGenerator() {
@@ -23,31 +23,31 @@ public class CacheConfig extends CachingConfigurerSupport {
 
 		@Override
 		public Object generate(Object target, Method method, Object... params) {
-			return new MethodAndArgsKey(method, SimpleKeyGenerator.generateKey(params));
+			return new MethodAndArgsKey(method.toString(), SimpleKeyGenerator.generateKey(params));
 		}
 
 	}
 
 	public static class MethodAndArgsKey implements Serializable {
 
-		private Method method;
+		private String methodKey;
 		private Object paramsKey;
 
-		public MethodAndArgsKey(Method method, Object paramsKey) {
-			this.method = method;
+		public MethodAndArgsKey(String methodKey, Object paramsKey) {
+			this.methodKey = methodKey;
 			this.paramsKey = paramsKey;
 		}
 
 		@Override
 		public boolean equals(Object other) {
 			return this == other || (other instanceof MethodAndArgsKey &&
-					this.method.equals(((MethodAndArgsKey)other).method) &&
+					this.methodKey.equals(((MethodAndArgsKey)other).methodKey) &&
 					this.paramsKey.equals(((MethodAndArgsKey)other).paramsKey));
 		}
 
 		@Override
 		public int hashCode() {
-			return 31 * method.hashCode() + paramsKey.hashCode();
+			return 31 * methodKey.hashCode() + paramsKey.hashCode();
 		}
 
 	}

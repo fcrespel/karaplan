@@ -1,4 +1,4 @@
-runtime: java11
+runtime: java17
 instance_class: F4
 entrypoint: java -jar karaplan-thin.jar
 handlers:
@@ -20,7 +20,7 @@ handlers:
     secure: always
     script: auto
 env_variables:
-  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m -Xverify:none -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -agentpath:/opt/cdbg/cdbg_java_agent.so=--log_dir=/var/log"
+  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m -Xverify:none -XX:+TieredCompilation -XX:TieredStopAtLevel=1"
   SPRING_PROFILES_ACTIVE: "gcp,appengine"
 automatic_scaling:
   min_instances: 0
@@ -34,7 +34,3 @@ automatic_scaling:
   target_cpu_utilization: 0.9
 inbound_services:
   - warmup
-# Uncomment and configure the following block to allow access to VPC resources such as Memorystore (Redis)
-# See: https://cloud.google.com/vpc/docs/configure-serverless-vpc-access
-#vpc_access_connector:
-#  name: "projects/<project-id>/locations/<region>/connectors/<connector>"
