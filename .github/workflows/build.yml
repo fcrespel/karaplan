@@ -24,9 +24,9 @@ jobs:
         cache: maven
         settings-path: ${{ github.workspace }}/.mvn
     - name: Build webapp
-      run: mvn ${MAVEN_CLI_OPTS} ${MAVEN_GOALS} -DskipTests
+      run: ./mvnw ${MAVEN_CLI_OPTS} ${MAVEN_GOALS} -DskipTests
     - name: Test webapp
-      run: mvn ${MAVEN_CLI_OPTS} test
+      run: ./mvnw ${MAVEN_CLI_OPTS} test
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -34,7 +34,7 @@ jobs:
         path: target/karaplan.war
     - name: Publish artifacts
       if: startsWith(github.ref, 'refs/tags')
-      run: mvn ${MAVEN_CLI_OPTS} deploy -DskipTests
+      run: ./mvnw ${MAVEN_CLI_OPTS} deploy -DskipTests
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Login to Docker registry

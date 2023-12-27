@@ -1,11 +1,11 @@
 steps:
-- name: 'maven:3.6.3-openjdk-17'
-  entrypoint: 'mvn'
+- name: 'eclipse-temurin:17-jdk'
+  entrypoint: './mvnw'
   args: ['-B', '-Dfrontend-build', '-Ddocker-build', '-DskipTests', 'verify']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/karaplan:$BRANCH_NAME', '.']
+  args: ['build', '-t', 'europe-west1-docker.pkg.dev/$PROJECT_ID/docker/karaplan:$BRANCH_NAME', '.']
   dir: 'target/docker-build'
-images: ['eu.gcr.io/$PROJECT_ID/karaplan:$BRANCH_NAME']
+images: ['europe-west1-docker.pkg.dev/$PROJECT_ID/docker/karaplan:$BRANCH_NAME']
 artifacts:
   objects:
     location: 'gs://$PROJECT_ID/karaplan/'
