@@ -36,10 +36,6 @@ variable "replica_count" {
   default     = 3
   description = "Deployment replica count"
 }
-variable "application_enabled" {
-  default     = false
-  description = "Enable application metadata (requires Application CRD, see https://github.com/kubernetes-sigs/application)"
-}
 variable "db_instance" {
   description = "Database instance (project_id:region:instance_name)"
 }
@@ -51,9 +47,6 @@ variable "db_username" {
 }
 variable "db_password" {
   description = "Database user password"
-}
-variable "redis_host" {
-  description = "Redis host"
 }
 variable "google_oauth_clientid" {
   description = "Google OAuth 2.0 client ID"

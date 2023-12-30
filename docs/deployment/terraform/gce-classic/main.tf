@@ -13,14 +13,6 @@ module "sql" {
   region     = var.region
 }
 
-// Cloud Memorystore module
-module "memorystore" {
-  source     = "../../gcp/memorystore"
-  name       = var.name
-  project_id = var.project_id
-  region     = var.region
-}
-
 // Compute Engine "classic" module
 module "gce-classic" {
   source                      = "../../gcp/gce-classic"
@@ -39,7 +31,6 @@ module "gce-classic" {
   db_name                     = module.sql.db_name
   db_username                 = module.sql.db_username
   db_password                 = module.sql.db_password
-  redis_host                  = module.memorystore.redis_host
   google_oauth_clientid       = var.google_oauth_clientid
   google_oauth_clientsecret   = var.google_oauth_clientsecret
   facebook_oauth_clientid     = var.facebook_oauth_clientid

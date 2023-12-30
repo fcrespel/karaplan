@@ -36,7 +36,7 @@ variable "instances_count" {
   description = "Number of instances to create"
 }
 variable "machine_type" {
-  default     = "n1-standard-1"
+  default     = "e2-medium"
   description = "Machine type"
 }
 variable "db_instance" {
@@ -50,9 +50,6 @@ variable "db_username" {
 }
 variable "db_password" {
   description = "Database user password"
-}
-variable "redis_host" {
-  description = "Redis host"
 }
 variable "google_oauth_clientid" {
   description = "Google OAuth 2.0 client ID"

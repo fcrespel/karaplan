@@ -1,0 +1,40 @@
+replicaCount: ${replica_count}
+
+serviceAccount:
+  annotations:
+    iam.gke.io/gcp-service-account: "${gcp_service_account}"
+
+ingress:
+  enabled: ${ingress_enabled}
+  annotations:
+    kubernetes.io/ingress.allow-http: "${ingress_allow_http}"
+    kubernetes.io/ingress.global-static-ip-name: "${gcp_ip_address}"
+    ingress.gcp.kubernetes.io/pre-shared-cert: "${gcp_ssl_cert}"
+  hosts:
+    - host: ""
+      paths:
+        - path: /*
+          pathType: ImplementationSpecific
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+backendConfig:
+  enabled: true
+
+env:
+  SPRING_PROFILES_ACTIVE: "gcp"
+  SPRING_DATASOURCE_USERNAME: "${db_username}"
+  SPRING_DATASOURCE_PASSWORD: "${db_password}"
+  SPRING_DATASOURCE_URL: "jdbc:mysql:///${db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${db_instance}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID: "${google_oauth_clientid}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET: "${google_oauth_clientsecret}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID: "${facebook_oauth_clientid}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET: "${facebook_oauth_clientsecret}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID: "${github_oauth_clientid}"
+  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET: "${github_oauth_clientsecret}"

@@ -19,7 +19,6 @@ Create a `terraform.tfvars` file in this directory, providing appropriate values
     project_id = "your-project-id"
     region = "europe-west1"
     gke_cluster_name = "karaplan-cluster"
-    gke_network_name = "karaplan-network"
     google_oauth_clientid = "toComplete"
     google_oauth_clientsecret = "toComplete"
     facebook_oauth_clientid = "toComplete"

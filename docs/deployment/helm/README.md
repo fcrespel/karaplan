@@ -15,8 +15,7 @@ Then, examine the **variables** available in the [values.yaml](karaplan/values.y
     env:
       SPRING_DATASOURCE_USERNAME: "karaplan"
       SPRING_DATASOURCE_PASSWORD: "toComplete"
-      SPRING_DATASOURCE_URL: "jdbc:mysql:///toComplete?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete"
-      SPRING_JPA_DATABASEPLATFORM: "org.hibernate.dialect.MySQL5InnoDBDialect"
+      SPRING_DATASOURCE_URL: "jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete"
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID: "toComplete"
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET: "toComplete"
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID: "toComplete"
@@ -26,13 +25,10 @@ Then, examine the **variables** available in the [values.yaml](karaplan/values.y
 
 Run the following commands in this directory to deploy the application:
 
-    # Init Helm client and server
-    helm init
-
     # Preview template before installing it
-    helm template -f karaplan.yaml ./karaplan
+    helm template karaplan ./karaplan -f karaplan.yaml
 
     # Install application
-    helm install -f karaplan.yaml ./karaplan
+    helm upgrade -i karaplan ./karaplan -f karaplan.yaml
 
 After several minutes, the application should become available at the configured ingress.

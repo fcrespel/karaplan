@@ -2,7 +2,7 @@
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
 metadata:
-  name: {{ include "karaplan.fullname" . }}-backendconfig
+  name: {{ include "karaplan.fullname" . }}
   labels:
 {{ include "karaplan.labels" . | indent 4 }}
 spec:

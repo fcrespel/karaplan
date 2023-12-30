@@ -17,8 +17,6 @@ spec:
           value: "${db_password}"
         - name: SPRING_DATASOURCE_URL
           value: "jdbc:mysql:///${db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${db_instance}"
-        - name: SPRING_JPA_DATABASEPLATFORM
-          value: "org.hibernate.dialect.MySQL5InnoDBDialect"
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
           value: "${google_oauth_clientid}"
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
@@ -31,8 +29,4 @@ spec:
           value: "${github_oauth_clientid}"
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
           value: "${github_oauth_clientsecret}"
-        - name: SPRING_SESSION_STORETYPE
-          value: "redis"
-        - name: SPRING_REDIS_HOST
-          value: "${redis_host}"
   restartPolicy: Always

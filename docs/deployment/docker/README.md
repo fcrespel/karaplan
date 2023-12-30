@@ -28,7 +28,7 @@ To run the application using [Docker Compose](https://docs.docker.com/compose/),
 version: '3.5'
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:8.0
     restart: always
     volumes:
       - './mysql:/var/lib/mysql'
@@ -44,8 +44,7 @@ services:
       JAVA_TOOL_OPTIONS: '-Xms512m -Xmx1024m'
       SPRING_DATASOURCE_USERNAME: 'karaplan'
       SPRING_DATASOURCE_PASSWORD: 'toComplete'
-      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/karaplan?useSSL=false'
-      SPRING_JPA_DATABASEPLATFORM: 'org.hibernate.dialect.MySQL5InnoDBDialect'
+      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/karaplan'
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID: 'toComplete'
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET: 'toComplete'
       SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID: 'toComplete'

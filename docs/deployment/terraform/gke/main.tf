@@ -18,7 +18,6 @@ data "google_container_cluster" "karaplan-cluster" {
 
 // Kubernetes provider
 provider "kubernetes" {
-  load_config_file       = false
   host                   = "https://${data.google_container_cluster.karaplan-cluster.endpoint}"
   token                  = data.google_client_config.default.access_token
   cluster_ca_certificate = base64decode(data.google_container_cluster.karaplan-cluster.master_auth[0].cluster_ca_certificate)
@@ -27,7 +26,6 @@ provider "kubernetes" {
 // Helm provider
 provider "helm" {
   kubernetes {
-    load_config_file       = false
     host                   = "https://${data.google_container_cluster.karaplan-cluster.endpoint}"
     token                  = data.google_client_config.default.access_token
     cluster_ca_certificate = base64decode(data.google_container_cluster.karaplan-cluster.master_auth[0].cluster_ca_certificate)
@@ -40,15 +38,6 @@ module "sql" {
   name       = var.name
   project_id = var.project_id
   region     = var.region
-}
-
-// Cloud Memorystore module
-module "memorystore" {
-  source     = "../../gcp/memorystore"
-  name       = var.name
-  project_id = var.project_id
-  region     = var.region
-  network    = var.gke_network_name
 }
 
 // GKE module
@@ -68,7 +57,6 @@ module "gke" {
   db_name                     = module.sql.db_name
   db_username                 = module.sql.db_username
   db_password                 = module.sql.db_password
-  redis_host                  = module.memorystore.redis_host
   google_oauth_clientid       = var.google_oauth_clientid
   google_oauth_clientsecret   = var.google_oauth_clientsecret
   facebook_oauth_clientid     = var.facebook_oauth_clientid

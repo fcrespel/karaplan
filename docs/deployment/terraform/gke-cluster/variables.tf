@@ -11,11 +11,11 @@ variable "project_id" {
 variable "region" {
   description = "GCP region"
 }
-variable "node_count" {
-  default     = 1
-  description = "GKE node count per zone"
+variable "network_name" {
+  default     = "default"
+  description = "GCP network to use"
 }
-variable "machine_type" {
-  default     = "n1-standard-2"
-  description = "GKE node machine type"
+variable "subnetwork_name" {
+  default     = "default"
+  description = "GCP subnetwork to use"
 }

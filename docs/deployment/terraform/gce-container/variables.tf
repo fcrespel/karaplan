@@ -32,7 +32,7 @@ variable "instances_count" {
   description = "Number of instances to create"
 }
 variable "machine_type" {
-  default     = "n1-standard-1"
+  default     = "e2-medium"
   description = "Machine type"
 }
 variable "google_oauth_clientid" {

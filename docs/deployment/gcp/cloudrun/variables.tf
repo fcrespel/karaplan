@@ -24,10 +24,6 @@ variable "dns_name_prefix" {
   default     = "karaplan"
   description = "DNS name prefix"
 }
-variable "vpc_connector_ip_range" {
-  default     = "10.8.0.0/28"
-  description = "Serverless VPC access connector IP range (/28)"
-}
 variable "min_instances_count" {
   default     = 0
   description = "Minimum number of instances to create"
@@ -47,9 +43,6 @@ variable "db_username" {
 }
 variable "db_password" {
   description = "Database user password"
-}
-variable "redis_host" {
-  description = "Redis host"
 }
 variable "google_oauth_clientid" {
   description = "Google OAuth 2.0 client ID"

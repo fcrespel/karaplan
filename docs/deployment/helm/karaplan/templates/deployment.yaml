@@ -1,40 +1,48 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "karaplan.fullname" . }}-deployment
+  name: {{ include "karaplan.fullname" . }}
   labels:
-{{ include "karaplan.labels" . | indent 4 }}
+    {{- include "karaplan.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "karaplan.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      {{- include "karaplan.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
-        app.kubernetes.io/name: {{ include "karaplan.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "karaplan.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "karaplan.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           {{- if .Values.env }}
-          env:
-            {{- range $key, $value := .Values.env }}
-            - name: "{{ tpl $key $ }}"
-              value: "{{ tpl (print $value) $ }}"
-            {{- end }}
-          {{- end }}
-          {{- if .Values.envFromSecret }}
           envFrom:
             - secretRef:
-                name: {{ tpl .Values.envFromSecret . }}
+                name: {{ include "karaplan.fullname" . }}-env
           {{- end }}
           startupProbe:
             failureThreshold: 6
@@ -42,27 +50,32 @@ spec:
             timeoutSeconds: 5
             httpGet:
               path: /actuator/health/liveness
-              port: 8080
-              scheme: HTTP
+              port: http
           livenessProbe:
             failureThreshold: 3
             periodSeconds: 10
             timeoutSeconds: 5
             httpGet:
               path: /actuator/health/liveness
-              port: 8080
-              scheme: HTTP
+              port: http
           readinessProbe:
             failureThreshold: 3
             periodSeconds: 10
             timeoutSeconds: 5
             httpGet:
               path: /actuator/health/readiness
-              port: 8080
-              scheme: HTTP
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-    {{- with .Values.affinity }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

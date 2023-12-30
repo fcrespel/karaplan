@@ -10,6 +10,8 @@ In the side menu, go to **SQL**:
 * Click **Create instance** and choose **MySQL**.
 * Choose an **Instance ID** such as `karaplan`.
 * Generate a **root password** or type a secure one.
+* Select **MySQL 8.0** as the database version.
+* Select the **Cloud SQL Edition** and **preset** (e.g. Enterprise and Sandbox).
 * Choose a **Region** (e.g. `europe-west1`).
 * Expand the configuration options at the bottom.
 * Adjust **Backup** and **Maintenance** settings if necessary.
@@ -31,7 +33,7 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     USER_PASSWORD=$(</dev/urandom tr -dc A-Za-z0-9 | head -c16)
 
     # Create database instance (takes some time)
-    gcloud beta sql instances create karaplan --database-version=MYSQL_5_7 --tier=db-n1-standard-1 --region=$REGION --root-password=$ROOT_PASSWORD
+    gcloud sql instances create karaplan --database-version=MYSQL_8_0 --tier=db-n1-standard-1 --region=$REGION --root-password=$ROOT_PASSWORD
 
     # Create database
     gcloud sql databases create karaplan --instance=karaplan --charset=utf8mb4 --collation=utf8mb4_general_ci

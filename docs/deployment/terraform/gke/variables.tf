@@ -22,9 +22,6 @@ variable "dns_zone" {
 variable "gke_cluster_name" {
   description = "GKE cluster name"
 }
-variable "gke_network_name" {
-  description = "GKE network name"
-}
 variable "gke_namespace" {
   default     = "default"
   description = "GKE namespace (must exist)"
@@ -40,10 +37,6 @@ variable "https_enabled" {
 variable "replica_count" {
   default     = 3
   description = "Deployment replica count"
-}
-variable "machine_type" {
-  default     = "n1-standard-1"
-  description = "Machine type"
 }
 variable "google_oauth_clientid" {
   description = "Google OAuth 2.0 client ID"

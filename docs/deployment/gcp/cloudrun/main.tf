@@ -16,15 +16,6 @@ resource "google_dns_record_set" "karaplan-dns-record" {
   rrdatas      = ["ghs.googlehosted.com."]
 }
 
-// Serverless VPC access connector
-resource "google_vpc_access_connector" "karaplan-vpc-connector" {
-  name          = "${var.name}-connector"
-  project       = var.project_id
-  region        = var.region
-  ip_cidr_range = var.vpc_connector_ip_range
-  network       = var.network
-}
-
 // Cloud Run service
 resource "google_cloud_run_service" "karaplan-service" {
   name     = "${var.name}-service"
@@ -39,16 +30,14 @@ resource "google_cloud_run_service" "karaplan-service" {
   template {
     metadata {
       annotations = {
-        "autoscaling.knative.dev/minScale"        = var.min_instances_count
-        "autoscaling.knative.dev/maxScale"        = var.max_instances_count
-        "run.googleapis.com/vpc-access-connector" = google_vpc_access_connector.karaplan-vpc-connector.id
-        "run.googleapis.com/vpc-access-egress"    = "private-ranges-only"
-        "run.googleapis.com/client-name"          = "terraform"
+        "autoscaling.knative.dev/minScale" = var.min_instances_count
+        "autoscaling.knative.dev/maxScale" = var.max_instances_count
+        "run.googleapis.com/client-name"   = "terraform"
       }
     }
     spec {
       containers {
-        image = "eu.gcr.io/${var.project_id}/karaplan:master"
+        image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/karaplan:master"
         resources {
           limits = {
             cpu    = "1000m"
@@ -70,10 +59,6 @@ resource "google_cloud_run_service" "karaplan-service" {
         env {
           name  = "SPRING_DATASOURCE_URL"
           value = "jdbc:mysql:///${var.db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${var.db_instance}"
-        }
-        env {
-          name  = "SPRING_JPA_DATABASEPLATFORM"
-          value = "org.hibernate.dialect.MySQL5InnoDBDialect"
         }
         env {
           name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID"
@@ -98,14 +83,6 @@ resource "google_cloud_run_service" "karaplan-service" {
         env {
           name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET"
           value = var.github_oauth_clientsecret
-        }
-        env {
-          name  = "SPRING_SESSION_STORETYPE"
-          value = "redis"
-        }
-        env {
-          name  = "SPRING_REDIS_HOST"
-          value = var.redis_host
         }
       }
     }

@@ -3,7 +3,7 @@ resource "google_sql_database_instance" "karaplan-db-instance" {
   name                = "${var.name}-db-instance"
   project             = var.project_id
   region              = var.region
-  database_version    = "MYSQL_5_7"
+  database_version    = "MYSQL_8_0"
   deletion_protection = false
 
   settings {

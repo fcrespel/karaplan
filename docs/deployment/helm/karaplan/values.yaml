@@ -6,11 +6,38 @@ replicaCount: 1
 
 image:
   repository: ghcr.io/fcrespel/karaplan
-  tag: master
   pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
 
+imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
 
 service:
   type: ClusterIP
@@ -19,30 +46,35 @@ service:
 
 ingress:
   enabled: false
+  className: ""
   annotations: {}
     # kubernetes.io/ingress.global-static-ip-name: karaplan-gke-ip
     # ingress.gcp.kubernetes.io/pre-shared-cert: karaplan-gke-ssl-cert
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 resources: {}
   # limits:
-  #   cpu: 1000m
+  #   cpu: 500m
   #   memory: 1Gi
   # requests:
   #   cpu: 500m
-  #   memory: 512Mi
+  #   memory: 1Gi
+
+nodeSelector: {}
+
+tolerations: []
 
 affinity: {}
 
 backendConfig:
   enabled: false
 
-application:
-  # Application metadata descriptor CRD must be installed in cluster
-  # See https://github.com/kubernetes-sigs/application
-  enabled: false
-
-# Environment variables
 env: {}
-
-# Environment from secret
-envFromSecret: ""

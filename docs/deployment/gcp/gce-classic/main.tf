@@ -40,22 +40,24 @@ resource "google_compute_managed_ssl_certificate" "karaplan-ssl-cert" {
 
 // Forwarding rule (HTTP)
 resource "google_compute_global_forwarding_rule" "karaplan-fwd-http" {
-  count      = var.http_enabled ? 1 : 0
-  name       = "${var.name}-fwd-http"
-  project    = var.project_id
-  target     = google_compute_target_http_proxy.karaplan-http-proxy[0].self_link
-  ip_address = google_compute_global_address.karaplan-ip.address
-  port_range = "80"
+  count                 = var.http_enabled ? 1 : 0
+  name                  = "${var.name}-fwd-http"
+  project               = var.project_id
+  target                = google_compute_target_http_proxy.karaplan-http-proxy[0].self_link
+  ip_address            = google_compute_global_address.karaplan-ip.address
+  port_range            = "80"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
 // Forwarding rule (HTTPS)
 resource "google_compute_global_forwarding_rule" "karaplan-fwd-https" {
-  count      = var.https_enabled ? 1 : 0
-  name       = "${var.name}-fwd-https"
-  project    = var.project_id
-  target     = google_compute_target_https_proxy.karaplan-https-proxy[0].self_link
-  ip_address = google_compute_global_address.karaplan-ip.address
-  port_range = "443"
+  count                 = var.https_enabled ? 1 : 0
+  name                  = "${var.name}-fwd-https"
+  project               = var.project_id
+  target                = google_compute_target_https_proxy.karaplan-https-proxy[0].self_link
+  ip_address            = google_compute_global_address.karaplan-ip.address
+  port_range            = "443"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
 // Target proxy (HTTP)
@@ -91,7 +93,8 @@ resource "google_compute_backend_service" "karaplan-bes" {
   backend {
     group = google_compute_region_instance_group_manager.karaplan-ig.instance_group
   }
-  health_checks = [google_compute_http_health_check.karaplan-hc.self_link]
+  health_checks         = [google_compute_http_health_check.karaplan-hc.self_link]
+  load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
 // Health check
@@ -118,7 +121,6 @@ resource "google_compute_region_instance_group_manager" "karaplan-ig" {
     type                  = "PROACTIVE"
     minimal_action        = "RESTART"
     max_unavailable_fixed = 3
-    min_ready_sec         = 60
   }
 
   named_port {
@@ -139,7 +141,7 @@ resource "google_compute_instance_template" "karaplan-template" {
   }
 
   disk {
-    source_image = "debian-cloud/debian-9"
+    source_image = data.google_compute_image.karaplan-image.self_link
     auto_delete  = true
     boot         = true
   }
@@ -169,7 +171,6 @@ resource "google_storage_bucket_object" "karaplan-startup" {
     db_name                     = var.db_name
     db_username                 = var.db_username
     db_password                 = var.db_password
-    redis_host                  = var.redis_host
     google_oauth_clientid       = var.google_oauth_clientid
     google_oauth_clientsecret   = var.google_oauth_clientsecret
     facebook_oauth_clientid     = var.facebook_oauth_clientid
@@ -177,4 +178,10 @@ resource "google_storage_bucket_object" "karaplan-startup" {
     github_oauth_clientid       = var.github_oauth_clientid
     github_oauth_clientsecret   = var.github_oauth_clientsecret
   })
+}
+
+// VM image
+data "google_compute_image" "karaplan-image" {
+  family  = "debian-12"
+  project = "debian-cloud"
 }

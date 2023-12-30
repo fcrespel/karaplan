@@ -4,9 +4,9 @@ This example uses [Kubernetes Engine](https://cloud.google.com/kubernetes-engine
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build), [SQL](../sql) and [Memorystore](../memorystore) guides to create the container image, database and Redis instance.
+Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
 
-Then, download and install the **Helm client** from the official [releases](https://github.com/helm/helm/releases) page. Update the fields marked `toComplete` in the `karaplan.yaml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
+Then, download and install **Helm** from the official [releases](https://github.com/helm/helm/releases) page. If you are not going to use Terraform, update the `${...}` variables in the `values.yaml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 
 Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
@@ -15,11 +15,9 @@ Finally, to expose the application over HTTPS, you will need to obtain a **domai
 Go to [Cloud Console](https://console.cloud.google.com) and make sure the appropriate project is selected in the header menu.
 
 In the side menu, go to **Kubernetes Engine > Clusters** if you don't already have a Kubernetes Cluster:
-* Click **Create cluster**.
+* Click **Create cluster** and use Autopilot mode.
 * Enter `karaplan-gke-cluster` as the cluster **name**.
-* Select **Regional** as the **Location type**, then select your preferred **Region** (e.g. `europe-west1`).
-* In the default **Node pool**, specify `1` for the **number of nodes**.
-* Select `n1-standard-2` as the **Machine type**.
+* Select your preferred **Region** (e.g. `europe-west1`).
 * Click **Create**.
 
 In the side menu, go to **VPC network > External IP addresses**:
@@ -44,23 +42,32 @@ In the side menu, go to **Kubernetes Engine > Workloads** to monitor the deploym
 Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or anywhere the [Cloud SDK](https://cloud.google.com/sdk/) is installed:
 
     # Set variables, adjust them as needed
+    PROJECT_ID=$(gcloud config get-value project)
     REGION=$(gcloud config get-value compute/region)
+    NAMESPACE=default
 
     # Create GKE cluster, if necessary
-    gcloud container clusters create karaplan-gke-cluster --region=$REGION --machine-type=n1-standard-2 --num-nodes=1
+    gcloud container clusters create-auto karaplan-gke-cluster --region=$REGION
 
     # Create IP address
     gcloud compute addresses create karaplan-gke-ip --global
     gcloud compute addresses list
+
+    # Create service account and grant access to the SQL database
+    gcloud iam service-accounts create karaplan
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
+
+    # Configure Workload Identity
+    gcloud iam service-accounts add-iam-policy-binding karaplan@$PROJECT_ID.iam.gserviceaccount.com --member="serviceAccount:$PROJECT_ID.svc.id.goog[$NAMESPACE/karaplan]" --role=roles/iam.workloadIdentityUser
 
 If you have a custom domain name, add the created IP address in a **A record**, then:
 
     DOMAIN=your.custom.domain
 
     # Create SSL certificate
-    gcloud beta compute ssl-certificates create karaplan-gke-ssl-cert --domains=$DOMAIN --global
+    gcloud compute ssl-certificates create karaplan-gke-ssl-cert --domains=$DOMAIN --global
 
-If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `karaplan.yaml` file prepared in *Prerequisites* to your current session.
+If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `values.yaml` file prepared in *Prerequisites* to your current session.
 
 **Deploy** the application to Kubernetes:
 
@@ -68,10 +75,10 @@ If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `kar
     gcloud container clusters get-credentials karaplan-gke-cluster --region=$REGION
 
     # Preview template before installing it
-    helm template -f karaplan.yaml  ../../helm/karaplan
+    helm template karaplan ../../helm/karaplan -f values.yaml
 
     # Install application
-    helm install -f karaplan.yaml ../../helm/karaplan
+    helm upgrade -i karaplan ../../helm/karaplan -f values.yaml
 
 After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
 

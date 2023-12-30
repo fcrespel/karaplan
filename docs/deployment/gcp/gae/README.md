@@ -4,13 +4,9 @@ This example uses [App Engine](https://cloud.google.com/appengine/) to run the a
 
 ## Prerequisites
 
-Before starting, follow the [SQL](../sql) and [Memorystore](../memorystore) guides to create the database and Redis instance.
-
-Then, configure [Serverless VPC Access](https://cloud.google.com/vpc/docs/configure-serverless-vpc-access#creating_a_connector) as described in the official documentation, to allow communication between App Engine and the Memorystore (Redis) instance.
+Before starting, follow the [SQL](../sql) guide to create the database.
 
 ## Configure the application
-
-Open the `src/main/appengine/app.yaml` file with your preferred editor, uncomment and configure the `vpc_access_connector` block accordingly.
 
 Copy the `src/main/appengine/files/application.example.yml` as `application.yml` in the same directory. Open it with your preferred editor and replace `toComplete` with appropriate values. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
 

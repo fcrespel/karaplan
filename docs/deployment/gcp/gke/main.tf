@@ -38,26 +38,20 @@ resource "google_compute_managed_ssl_certificate" "karaplan-ssl-cert" {
   }
 }
 
-// Environment secret
-resource "kubernetes_secret" "karaplan-env-secret" {
-  metadata {
-    name      = "${var.name}-env-secret"
-    namespace = var.namespace
-  }
-  data = {
-    SPRING_DATASOURCE_USERNAME                                       = var.db_username
-    SPRING_DATASOURCE_PASSWORD                                       = var.db_password
-    SPRING_DATASOURCE_URL                                            = "jdbc:mysql:///${var.db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${var.db_instance}"
-    SPRING_JPA_DATABASEPLATFORM                                      = "org.hibernate.dialect.MySQL5InnoDBDialect"
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID       = var.google_oauth_clientid
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET   = var.google_oauth_clientsecret
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID     = var.facebook_oauth_clientid
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET = var.facebook_oauth_clientsecret
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID       = var.github_oauth_clientid
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET   = var.github_oauth_clientsecret
-    SPRING_SESSION_STORETYPE                                         = "redis"
-    SPRING_REDIS_HOST                                                = var.redis_host
-  }
+// Service account
+resource "google_service_account" "karaplan-sa" {
+  project    = var.project_id
+  account_id = var.name
+}
+resource "google_service_account_iam_member" "karaplan-sa-workload-identity" {
+  service_account_id = google_service_account.karaplan-sa.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace}/${var.name}]"
+}
+resource "google_project_iam_member" "karaplan-sa-sql-client" {
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
 }
 
 // Helm release
@@ -66,55 +60,22 @@ resource "helm_release" "karaplan-helm-release" {
   chart     = "${path.module}/../../helm/karaplan"
   namespace = var.namespace
 
-  set {
-    name  = "replicaCount"
-    value = var.replica_count
-  }
-  set {
-    name  = "ingress.enabled"
-    value = var.http_enabled || var.https_enabled
-  }
-  set {
-    name  = "ingress.annotations.kubernetes\\.io/ingress\\.allow-http"
-    type  = "string"
-    value = var.http_enabled
-  }
-  set {
-    name  = "ingress.annotations.kubernetes\\.io/ingress\\.global-static-ip-name"
-    type  = "string"
-    value = google_compute_global_address.karaplan-ip.name
-  }
-  set {
-    name  = "ingress.annotations.ingress\\.gcp\\.kubernetes\\.io/pre-shared-cert"
-    type  = "string"
-    value = var.https_enabled ? google_compute_managed_ssl_certificate.karaplan-ssl-cert[0].name : ""
-  }
-  set {
-    name  = "backendConfig.enabled"
-    value = true
-  }
-  set {
-    name  = "application.enabled"
-    value = var.application_enabled
-  }
-  set {
-    name  = "resources.limits.cpu"
-    value = "1000m"
-  }
-  set {
-    name  = "resources.limits.memory"
-    value = "1Gi"
-  }
-  set {
-    name  = "resources.requests.cpu"
-    value = "500m"
-  }
-  set {
-    name  = "resources.requests.memory"
-    value = "512Mi"
-  }
-  set {
-    name  = "envFromSecret"
-    value = kubernetes_secret.karaplan-env-secret.metadata[0].name
-  }
+  values = [templatefile("${path.module}/values.yaml", {
+    replica_count               = var.replica_count
+    gcp_service_account         = google_service_account.karaplan-sa.email
+    gcp_ip_address              = google_compute_global_address.karaplan-ip.name
+    gcp_ssl_cert                = var.https_enabled ? google_compute_managed_ssl_certificate.karaplan-ssl-cert[0].name : ""
+    ingress_enabled             = var.http_enabled || var.https_enabled
+    ingress_allow_http          = var.http_enabled
+    db_instance                 = var.db_instance
+    db_name                     = var.db_name
+    db_username                 = var.db_username
+    db_password                 = var.db_password
+    google_oauth_clientid       = var.google_oauth_clientid
+    google_oauth_clientsecret   = var.google_oauth_clientsecret
+    facebook_oauth_clientid     = var.facebook_oauth_clientid
+    facebook_oauth_clientsecret = var.facebook_oauth_clientsecret
+    github_oauth_clientid       = var.github_oauth_clientid
+    github_oauth_clientsecret   = var.github_oauth_clientsecret
+  })]
 }
