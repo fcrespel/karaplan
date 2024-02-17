@@ -72,10 +72,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "karaplan:build:production"
+              "buildTarget": "karaplan:build:production"
             },
             "development": {
-              "browserTarget": "karaplan:build:development"
+              "buildTarget": "karaplan:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "karaplan:build"
+            "buildTarget": "karaplan:build"
           }
         },
         "test": {
@@ -105,5 +105,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
