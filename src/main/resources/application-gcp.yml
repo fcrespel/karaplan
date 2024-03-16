@@ -1,0 +1,31 @@
+spring:
+  cloud:
+    gcp:
+      core:
+        enabled: true
+      logging:
+        enabled: true
+      secretmanager:
+        enabled: true
+      sql:
+        enabled: true
+        instance-connection-name: "${sm://${SECRET_PREFIX:karaplan}-db-instance}"
+        database-name: "${sm://${SECRET_PREFIX:karaplan}-db-name}"
+  config:
+    import: sm://
+  datasource:
+    username: "${sm://${SECRET_PREFIX:karaplan}-db-username}"
+    password: "${sm://${SECRET_PREFIX:karaplan}-db-password}"
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "${sm://${SECRET_PREFIX:karaplan}-google-client-id}"
+            client-secret: "${sm://${SECRET_PREFIX:karaplan}-google-client-secret}"
+          github:
+            client-id: "${sm://${SECRET_PREFIX:karaplan}-github-client-id}"
+            client-secret: "${sm://${SECRET_PREFIX:karaplan}-github-client-secret}"
+          facebook:
+            client-id: "${sm://${SECRET_PREFIX:karaplan}-facebook-client-id}"
+            client-secret: "${sm://${SECRET_PREFIX:karaplan}-facebook-client-secret}"

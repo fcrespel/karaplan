@@ -21,7 +21,7 @@ handlers:
     script: auto
 env_variables:
   JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m -Xverify:none -XX:+TieredCompilation -XX:TieredStopAtLevel=1"
-  SPRING_PROFILES_ACTIVE: "gcp,appengine"
+  SPRING_PROFILES_ACTIVE: "gcp"
 automatic_scaling:
   min_instances: 0
   max_instances: 3

@@ -4,6 +4,16 @@ spring:
   cache:
     jcache:
       config: classpath:ehcache.xml
+  cloud:
+    gcp:
+      core:
+        enabled: false
+      logging:
+        enabled: false
+      secretmanager:
+        enabled: false
+      sql:
+        enabled: false
   h2:
     console:
       enabled: false
