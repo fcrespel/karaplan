@@ -30,7 +30,9 @@
 		<docker.image.repository>${docker.image.prefix}/${project.artifactId}</docker.image.repository>
 		<docker.image.tag>${project.version}</docker.image.tag>
 		<appengine.src.directory>${basedir}/src/main/appengine</appengine.src.directory>
-		<appengine.build.directory>${project.build.directory}/appengine-staging</appengine.build.directory>
+		<appengine.build.directory>${project.build.directory}/appengine-build</appengine.build.directory>
+		<appengine.staging.directory>${project.build.directory}/appengine-staging</appengine.staging.directory>
+		<appengine.secret.prefix>karaplan</appengine.secret.prefix>
 
 		<!-- Plugin properties -->
 		<appengine-maven-plugin.version>2.5.0</appengine-maven-plugin.version>
@@ -494,7 +496,7 @@
 								<configuration>
 									<artifactItems>
 										<artifactItem>
-											<outputDirectory>${appengine.build.directory}</outputDirectory>
+											<outputDirectory>${appengine.staging.directory}</outputDirectory>
 											<groupId>${project.groupId}</groupId>
 											<artifactId>${project.artifactId}</artifactId>
 											<version>${project.version}</version>
@@ -515,6 +517,28 @@
 						</executions>
 					</plugin>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>appengine-resources</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${appengine.build.directory}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${appengine.src.directory}</directory>
+											<filtering>true</filtering>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<groupId>com.google.cloud.tools</groupId>
 						<artifactId>appengine-maven-plugin</artifactId>
 						<version>${appengine-maven-plugin.version}</version>
@@ -528,6 +552,7 @@
 							</execution>
 						</executions>
 						<configuration>
+							<appEngineDirectory>${appengine.build.directory}</appEngineDirectory>
 							<artifact>${project.build.directory}/${project.build.finalName}-thin.jar</artifact>
 							<version>GCLOUD_CONFIG</version>
 							<projectId>GCLOUD_CONFIG</projectId>

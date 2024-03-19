@@ -22,14 +22,15 @@ handlers:
 env_variables:
   JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -Xms512m -Xmx512m -Xverify:none -XX:+TieredCompilation -XX:TieredStopAtLevel=1"
   SPRING_PROFILES_ACTIVE: "gcp"
+  SECRET_PREFIX: "@appengine.secret.prefix@"
 automatic_scaling:
   min_instances: 0
   max_instances: 3
-  min_idle_instances: 1
+  min_idle_instances: 0
   max_idle_instances: 1
   min_pending_latency: 1000ms
   max_pending_latency: 10000ms
-  max_concurrent_requests: 80
+  max_concurrent_requests: 200
   target_throughput_utilization: 0.9
   target_cpu_utilization: 0.9
 inbound_services:
