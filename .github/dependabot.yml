@@ -7,6 +7,12 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      spring:
+        patterns:
+          - "org.springframework.boot:*"
+          - "org.springdoc:*"
+          - "com.google.cloud:spring-cloud-gcp-dependencies"
     ignore:
       - dependency-name: "io.socket:socket.io-client"
       - dependency-name: "*"
@@ -15,6 +21,10 @@ updates:
     directory: "/src/main/nodejs"
     schedule:
       interval: "monthly"
+    groups:
+      angular:
+        patterns:
+          - "@angular*"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
