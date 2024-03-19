@@ -25,6 +25,11 @@ updates:
       angular:
         patterns:
           - "@angular*"
+      testing:
+        patterns:
+          - "@types/jasmine"
+          - "jasmine*"
+          - "karma*"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
