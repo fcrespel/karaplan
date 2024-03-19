@@ -4,13 +4,11 @@ This example uses [Compute Engine](https://cloud.google.com/compute/) to run the
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the WAR file and database.
+Before starting, follow the [Build](../build), [SQL](../sql) and [Secret Manager](../secret-manager) guides to create the WAR file, database and configuration.
 
-Then, if you are _not_ going to use Terraform:
-* Update the `${...}` variables in the `karaplan-startup.sh` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
-* In the side menu, go to **Cloud Storage > Browser**:
-  * Select your bucket and enter the `karaplan` folder.
-  * Click **Upload file** and select the `karaplan-startup.sh` file.
+Then, if you are _not_ going to use Terraform, in the side menu go to **Cloud Storage > Browser**:
+* Select your bucket and enter the `karaplan` folder.
+* Click **Upload file** and select the `karaplan-startup.sh` file.
 
 Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
@@ -18,10 +16,23 @@ Finally, to expose the application over HTTPS, you will need to obtain a **domai
 
 Go to [Cloud Console](https://console.cloud.google.com) and make sure the appropriate project is selected in the header menu.
 
+In the side menu, go to **IAM & Admin > Service Accounts**:
+* Click **Create Service Account**.
+* Set `karaplan` as the Service Account **name** and **ID**.
+* Click **Create and continue**.
+* Select the following **Roles**:
+  * Logs Writer
+  * Monitoring Metric Writer
+  * Storage Object Viewer
+  * Secret Manager Secret Accessor
+  * Cloud SQL Client
+* Click **Done**.
+
 In the side menu, go to **Compute Engine > Instance templates**:
 * Click **Create instance template**.
 * Enter `karaplan-classic-template-1` as the template **name**.
 * Select `e2-medium` as the **Machine type** and **Debian GNU/Linux 12 (bookworm)** as the distribution.
+* Select the previously created `karaplan` **Service Account**.
 * Select **Allow full access to all Cloud APIs** under **Access scopes**.
 * Expand the advanced options at the bottom.
 * In the **Management > Metadata** section, enter `startup-script-url` as the key and `gs://YOUR_BUCKET_NAME/karaplan/karaplan-startup.sh` as the value (replace `YOUR_BUCKET_NAME` as needed).
@@ -73,8 +84,16 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     REGION=$(gcloud config get-value compute/region)
     BUCKET_NAME=$PROJECT_ID
 
+    # Create Service Account and grant permissions
+    gcloud iam service-accounts create karaplan
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/logging.logWriter
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/monitoring.metricWriter
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/storage.objectViewer
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/secretmanager.secretAccessor
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
+
     # Create Instance template
-    gcloud compute instance-templates create karaplan-classic-template-1 --machine-type=e2-medium --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh --scopes=https://www.googleapis.com/auth/cloud-platform
+    gcloud compute instance-templates create karaplan-classic-template-1 --machine-type=e2-medium --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform
 
     # Create Instance group
     gcloud compute instance-groups managed create karaplan-classic-ig --size=3 --template=karaplan-classic-template-1 --region=$REGION

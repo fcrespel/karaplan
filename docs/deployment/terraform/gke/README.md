@@ -1,6 +1,6 @@
 # Terraform for Google Kubernetes Engine Deployment
 
-This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Kubernetes Engine](../gcp/gke) guide. See the `main.tf` and `variables.tf` files for more information.
+This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Kubernetes Engine](../../gcp/gke) guide. See the `main.tf` and `variables.tf` files for more information.
 
 ## Prerequisites
 

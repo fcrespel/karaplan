@@ -158,6 +158,7 @@ resource "google_compute_instance_template" "karaplan-template" {
   }
 
   service_account {
+    email  = google_service_account.karaplan-sa.email
     scopes = ["cloud-platform"]
   }
 }
@@ -167,16 +168,7 @@ resource "google_storage_bucket_object" "karaplan-startup" {
   name   = "${var.name}/karaplan-startup.sh"
   bucket = var.bucket
   content = templatefile("${path.module}/karaplan-startup.sh", {
-    db_instance                 = var.db_instance
-    db_name                     = var.db_name
-    db_username                 = var.db_username
-    db_password                 = var.db_password
-    google_oauth_clientid       = var.google_oauth_clientid
-    google_oauth_clientsecret   = var.google_oauth_clientsecret
-    facebook_oauth_clientid     = var.facebook_oauth_clientid
-    facebook_oauth_clientsecret = var.facebook_oauth_clientsecret
-    github_oauth_clientid       = var.github_oauth_clientid
-    github_oauth_clientsecret   = var.github_oauth_clientsecret
+    SECRET_PREFIX = var.name
   })
 }
 
@@ -184,4 +176,35 @@ resource "google_storage_bucket_object" "karaplan-startup" {
 data "google_compute_image" "karaplan-image" {
   family  = "debian-12"
   project = "debian-cloud"
+}
+
+// Service account
+resource "google_service_account" "karaplan-sa" {
+  project    = var.project_id
+  account_id = var.name
+}
+resource "google_project_iam_member" "karaplan-sa-log-writer" {
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
+}
+resource "google_project_iam_member" "karaplan-sa-metric-writer" {
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
+}
+resource "google_project_iam_member" "karaplan-sa-object-viewer" {
+  project = var.project_id
+  role    = "roles/storage.objectViewer"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
+}
+resource "google_project_iam_member" "karaplan-sa-secret-accessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
+}
+resource "google_project_iam_member" "karaplan-sa-sql-client" {
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
 }

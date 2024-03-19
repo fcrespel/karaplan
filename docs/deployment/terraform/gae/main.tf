@@ -5,33 +5,6 @@ provider "google" {
   region      = var.region
 }
 
-// Google Cloud client config
-data "google_client_config" "default" {
-}
-
-// GKE cluster
-data "google_container_cluster" "karaplan-cluster" {
-  name     = var.gke_cluster_name
-  project  = var.project_id
-  location = var.region
-}
-
-// Kubernetes provider
-provider "kubernetes" {
-  host                   = "https://${data.google_container_cluster.karaplan-cluster.endpoint}"
-  token                  = data.google_client_config.default.access_token
-  cluster_ca_certificate = base64decode(data.google_container_cluster.karaplan-cluster.master_auth[0].cluster_ca_certificate)
-}
-
-// Helm provider
-provider "helm" {
-  kubernetes {
-    host                   = "https://${data.google_container_cluster.karaplan-cluster.endpoint}"
-    token                  = data.google_client_config.default.access_token
-    cluster_ca_certificate = base64decode(data.google_container_cluster.karaplan-cluster.master_auth[0].cluster_ca_certificate)
-  }
-}
-
 // Cloud SQL module
 module "sql" {
   source     = "../../gcp/sql"
@@ -58,19 +31,13 @@ module "secret-manager" {
   github_oauth_clientsecret   = var.github_oauth_clientsecret
 }
 
-// GKE module
-module "gke" {
-  source          = "../../gcp/gke"
+// App Engine service
+module "gae" {
+  source          = "../../gcp/gae"
   name            = var.name
   project_id      = var.project_id
   region          = var.region
   dns_project_id  = var.dns_project_id != "" ? var.dns_project_id : var.project_id
   dns_zone        = var.dns_zone
   dns_name_prefix = var.name
-  http_enabled    = var.http_enabled
-  https_enabled   = var.https_enabled
-  namespace       = var.gke_namespace
-  replica_count   = var.replica_count
-
-  depends_on = [module.secret-manager]
 }

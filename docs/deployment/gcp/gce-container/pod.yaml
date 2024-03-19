@@ -11,22 +11,6 @@ spec:
       env:
         - name: SPRING_PROFILES_ACTIVE
           value: "gcp"
-        - name: SPRING_DATASOURCE_USERNAME
-          value: "${db_username}"
-        - name: SPRING_DATASOURCE_PASSWORD
-          value: "${db_password}"
-        - name: SPRING_DATASOURCE_URL
-          value: "jdbc:mysql:///${db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${db_instance}"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
-          value: "${google_oauth_clientid}"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
-          value: "${google_oauth_clientsecret}"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID
-          value: "${facebook_oauth_clientid}"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET
-          value: "${facebook_oauth_clientsecret}"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
-          value: "${github_oauth_clientid}"
-        - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
-          value: "${github_oauth_clientsecret}"
+        - name: SECRET_PREFIX
+          value: "${secret_prefix}"
   restartPolicy: Always

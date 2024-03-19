@@ -4,9 +4,9 @@ This example uses [Kubernetes Engine](https://cloud.google.com/kubernetes-engine
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
+Before starting, follow the [Build](../build), [SQL](../sql) and [Secret Manager](../secret-manager) guides to create the container image, database and configuration.
 
-Then, download and install **Helm** from the official [releases](https://github.com/helm/helm/releases) page. If you are not going to use Terraform, update the `${...}` variables in the `values.yaml` file with appropriate values using your preferred editor. Refer to the deployment [README](../../README.md) file for information about configuring identity providers.
+Then, download and install **Helm** from the official [releases](https://github.com/helm/helm/releases) page. If you are not going to use Terraform, update the `${...}` variables in the `values.yaml` file with appropriate values using your preferred editor.
 
 Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
@@ -25,6 +25,16 @@ In the side menu, go to **VPC network > External IP addresses**:
 * Enter `karaplan-gke-ip` as the address **name**.
 * Select **Global** as the **type**.
 
+In the side menu, go to **IAM & Admin > Service Accounts**:
+* Click **Create Service Account**.
+* Set `karaplan` as the Service Account **name** and **ID**.
+* Click **Create and continue**.
+* Select the following **Roles**:
+  * Secret Manager Secret Accessor
+  * Cloud SQL Client
+* Click **Done**.
+* Refer to the *Configure Workload Identity* commands in the *Using Cloud Shell / SDK* section below to add the necessary IAM policy binding.
+
 If you have a custom domain name, add this IP address in a **A record**, then in the side menu go to **Network services > Load balancing**:
 * At the bottom, click to the link to go to the **advanced menu**.
 * In the **Certificates** tab, click **Create SSL certificate**.
@@ -33,9 +43,7 @@ If you have a custom domain name, add this IP address in a **A record**, then in
 * Enter your custom domain name.
 * Click **Create**.
 
-For the rest of this guide, you will need to switch to **Cloud Shell / SDK** to perform additional commands (see below, *Deploy the application to Kubernetes*).
-
-In the side menu, go to **Kubernetes Engine > Workloads** to monitor the deployment status. After several minutes, the application should become available at the reserved IP address and/or at the custom domain name.
+Finally, follow the instructions in the *Deploy the application* section below.
 
 ## Using Cloud Shell / SDK
 
@@ -53,8 +61,9 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     gcloud compute addresses create karaplan-gke-ip --global
     gcloud compute addresses list
 
-    # Create service account and grant access to the SQL database
+    # Create Service Account and grant permissions
     gcloud iam service-accounts create karaplan
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/secretmanager.secretAccessor
     gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
 
     # Configure Workload Identity
@@ -67,9 +76,11 @@ If you have a custom domain name, add the created IP address in a **A record**, 
     # Create SSL certificate
     gcloud compute ssl-certificates create karaplan-gke-ssl-cert --domains=$DOMAIN --global
 
-If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `values.yaml` file prepared in *Prerequisites* to your current session.
+Finally, follow the instructions in the *Deploy the application* section below.
 
-**Deploy** the application to Kubernetes:
+# Deploy the application
+
+If you are using **Cloud Shell**, you may use the 3-dots menu to upload the `values.yaml` file prepared in *Prerequisites* to your current session.
 
     # Get Kubernetes cluster config
     gcloud container clusters get-credentials karaplan-gke-cluster --region=$REGION

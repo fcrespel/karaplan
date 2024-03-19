@@ -1,6 +1,6 @@
 # Terraform for Google Compute Engine - Container deployment
 
-This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Compute Engine - Container deployment](../gcp/gce-container) guide. See the `main.tf` and `variables.tf` files for more information.
+This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Compute Engine - Container deployment](../../gcp/gce-container) guide. See the `main.tf` and `variables.tf` files for more information.
 
 ## Prerequisites
 

@@ -29,12 +29,4 @@ backendConfig:
 
 env:
   SPRING_PROFILES_ACTIVE: "gcp"
-  SPRING_DATASOURCE_USERNAME: "${db_username}"
-  SPRING_DATASOURCE_PASSWORD: "${db_password}"
-  SPRING_DATASOURCE_URL: "jdbc:mysql:///${db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${db_instance}"
-  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID: "${google_oauth_clientid}"
-  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET: "${google_oauth_clientsecret}"
-  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID: "${facebook_oauth_clientid}"
-  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET: "${facebook_oauth_clientsecret}"
-  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID: "${github_oauth_clientid}"
-  SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET: "${github_oauth_clientsecret}"
+  SECRET_PREFIX: "${secret_prefix}"

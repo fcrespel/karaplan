@@ -4,9 +4,7 @@ This example uses [Compute Engine](https://cloud.google.com/compute/) to run the
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
-
-Then, refer to the deployment [README](../../README.md) file for information about configuring identity providers.
+Before starting, follow the [Build](../build), [SQL](../sql) and [Secret Manager](../secret-manager) guides to create the container image, database and configuration.
 
 Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
 
@@ -14,28 +12,26 @@ Finally, to expose the application over HTTPS, you will need to obtain a **domai
 
 Go to [Cloud Console](https://console.cloud.google.com) and make sure the appropriate project is selected in the header menu.
 
+In the side menu, go to **IAM & Admin > Service Accounts**:
+* Click **Create Service Account**.
+* Set `karaplan` as the Service Account **name** and **ID**.
+* Click **Create and continue**.
+* Select the following **Roles**:
+  * Logs Writer
+  * Monitoring Metric Writer
+  * Secret Manager Secret Accessor
+  * Cloud SQL Client
+* Click **Done**.
+
 In the side menu, go to **Compute Engine > Instance templates**:
 * Click **Create instance template**.
 * Enter `karaplan-container-template-1` as the template **name**.
 * Select `e2-medium` as the **Machine type**.
 * Click **Deploy container**
 * Enter the container image name, e.g. `europe-west1-docker.pkg.dev/YOUR_PROJECT_ID/docker/karaplan:master`, or the official image `ghcr.io/fcrespel/karaplan:master`.
-* Add the following **Environment variables** (replace `toComplete` with appropriate values):
-
-| Name | Value |
-| ---- | ----- |
-| SPRING_PROFILES_ACTIVE | gcp |
-| SPRING_DATASOURCE_USERNAME | karaplan |
-| SPRING_DATASOURCE_PASSWORD | toComplete |
-| SPRING_DATASOURCE_URL | jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete |
-| SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID | toComplete |
-| SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET | toComplete |
-| SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID | toComplete |
-| SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET | toComplete |
-| SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID | toComplete |
-| SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET | toComplete |
-
+* Add a `SPRING_PROFILES_ACTIVE` **Environment variable** with value `gcp`.
 * Click **Select**.
+* Select the previously created `karaplan` **Service Account**.
 * Select **Allow full access to all Cloud APIs** under **Access scopes**.
 * Click **Create**.
 
@@ -84,22 +80,15 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     PROJECT_ID=$(gcloud config get-value project)
     REGION=$(gcloud config get-value compute/region)
 
-    # Create environment variables (replace 'toComplete' with appropriate values)
-    cat - > karaplan.env <<EOF
-    SPRING_PROFILES_ACTIVE=gcp
-    SPRING_DATASOURCE_USERNAME=karaplan
-    SPRING_DATASOURCE_PASSWORD=toComplete
-    SPRING_DATASOURCE_URL=jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=$PROJECT_ID:$REGION:toComplete
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID=toComplete
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET=toComplete
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID=toComplete
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET=toComplete
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID=toComplete
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET=toComplete
-    EOF
+    # Create Service Account and grant permissions
+    gcloud iam service-accounts create karaplan
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/logging.logWriter
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/monitoring.metricWriter
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/secretmanager.secretAccessor
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
 
     # Create Instance template
-    gcloud compute instance-templates create-with-container karaplan-container-template-1 --machine-type=e2-medium --image-family=cos-stable --image-project=cos-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --container-image=$REGION-docker.pkg.dev/$PROJECT_ID/docker/karaplan:master --container-env-file=karaplan.env --scopes=https://www.googleapis.com/auth/cloud-platform
+    gcloud compute instance-templates create-with-container karaplan-container-template-1 --machine-type=e2-medium --image-family=cos-stable --image-project=cos-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --container-image=$REGION-docker.pkg.dev/$PROJECT_ID/docker/karaplan:master --container-env="SPRING_PROFILES_ACTIVE=gcp" --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform
 
     # Create Instance group
     gcloud compute instance-groups managed create karaplan-container-ig --size=3 --template=karaplan-container-template-1 --region=$REGION

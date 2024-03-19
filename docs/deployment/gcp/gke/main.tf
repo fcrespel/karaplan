@@ -48,6 +48,11 @@ resource "google_service_account_iam_member" "karaplan-sa-workload-identity" {
   role               = "roles/iam.workloadIdentityUser"
   member             = "serviceAccount:${var.project_id}.svc.id.goog[${var.namespace}/${var.name}]"
 }
+resource "google_project_iam_member" "karaplan-sa-secret-accessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
+}
 resource "google_project_iam_member" "karaplan-sa-sql-client" {
   project = var.project_id
   role    = "roles/cloudsql.client"
@@ -61,21 +66,12 @@ resource "helm_release" "karaplan-helm-release" {
   namespace = var.namespace
 
   values = [templatefile("${path.module}/values.yaml", {
-    replica_count               = var.replica_count
-    gcp_service_account         = google_service_account.karaplan-sa.email
-    gcp_ip_address              = google_compute_global_address.karaplan-ip.name
-    gcp_ssl_cert                = var.https_enabled ? google_compute_managed_ssl_certificate.karaplan-ssl-cert[0].name : ""
-    ingress_enabled             = var.http_enabled || var.https_enabled
-    ingress_allow_http          = var.http_enabled
-    db_instance                 = var.db_instance
-    db_name                     = var.db_name
-    db_username                 = var.db_username
-    db_password                 = var.db_password
-    google_oauth_clientid       = var.google_oauth_clientid
-    google_oauth_clientsecret   = var.google_oauth_clientsecret
-    facebook_oauth_clientid     = var.facebook_oauth_clientid
-    facebook_oauth_clientsecret = var.facebook_oauth_clientsecret
-    github_oauth_clientid       = var.github_oauth_clientid
-    github_oauth_clientsecret   = var.github_oauth_clientsecret
+    replica_count       = var.replica_count
+    gcp_service_account = google_service_account.karaplan-sa.email
+    gcp_ip_address      = google_compute_global_address.karaplan-ip.name
+    gcp_ssl_cert        = var.https_enabled ? google_compute_managed_ssl_certificate.karaplan-ssl-cert[0].name : ""
+    ingress_enabled     = var.http_enabled || var.https_enabled
+    ingress_allow_http  = var.http_enabled
+    secret_prefix       = var.name
   })]
 }

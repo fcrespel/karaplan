@@ -30,12 +30,14 @@ resource "google_cloud_run_service" "karaplan-service" {
   template {
     metadata {
       annotations = {
-        "autoscaling.knative.dev/minScale" = var.min_instances_count
-        "autoscaling.knative.dev/maxScale" = var.max_instances_count
-        "run.googleapis.com/client-name"   = "terraform"
+        "autoscaling.knative.dev/minScale"     = var.min_instances_count
+        "autoscaling.knative.dev/maxScale"     = var.max_instances_count
+        "run.googleapis.com/client-name"       = "terraform"
+        "run.googleapis.com/startup-cpu-boost" = "true"
       }
     }
     spec {
+      service_account_name = google_service_account.karaplan-sa.email
       containers {
         image = "${var.region}-docker.pkg.dev/${var.project_id}/docker/karaplan:master"
         resources {
@@ -49,45 +51,29 @@ resource "google_cloud_run_service" "karaplan-service" {
           value = "gcp"
         }
         env {
-          name  = "SPRING_DATASOURCE_USERNAME"
-          value = var.db_username
-        }
-        env {
-          name  = "SPRING_DATASOURCE_PASSWORD"
-          value = var.db_password
-        }
-        env {
-          name  = "SPRING_DATASOURCE_URL"
-          value = "jdbc:mysql:///${var.db_name}?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=${var.db_instance}"
-        }
-        env {
-          name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID"
-          value = var.google_oauth_clientid
-        }
-        env {
-          name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET"
-          value = var.google_oauth_clientsecret
-        }
-        env {
-          name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID"
-          value = var.facebook_oauth_clientid
-        }
-        env {
-          name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET"
-          value = var.facebook_oauth_clientsecret
-        }
-        env {
-          name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID"
-          value = var.github_oauth_clientid
-        }
-        env {
-          name  = "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET"
-          value = var.github_oauth_clientsecret
+          name  = "SECRET_PREFIX"
+          value = var.name
         }
       }
     }
   }
   autogenerate_revision_name = true
+}
+
+// Service account
+resource "google_service_account" "karaplan-sa" {
+  project    = var.project_id
+  account_id = var.name
+}
+resource "google_project_iam_member" "karaplan-sa-secret-accessor" {
+  project = var.project_id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
+}
+resource "google_project_iam_member" "karaplan-sa-sql-client" {
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.karaplan-sa.email}"
 }
 
 // Public access

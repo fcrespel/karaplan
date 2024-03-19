@@ -1,6 +1,6 @@
-# Terraform for Google Cloud Run
+# Terraform for Google App Engine
 
-This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Cloud Run](../../gcp/cloudrun) guide. See the `main.tf` and `variables.tf` files for more information.
+This example uses [Terraform](https://terraform.io) to provision some of the resources described in the [Google App Engine](../../gcp/gae) guide. See the `main.tf` and `variables.tf` files for more information.
 
 ## Configuration
 
@@ -30,8 +30,4 @@ If everything looks right, execute the following command to provision all resour
 
     terraform apply
 
-After several minutes, the application should become available at the generated service URL and/or at the custom domain name.
-
-## Architecture diagram
-
-![Architecture](../../gcp/cloudrun/architecture.png)
+Additional steps are required to deploy the application itself. Please refer to the *Deploy the application* section of the [Google App Engine](../../gcp/gae) guide.

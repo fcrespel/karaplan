@@ -4,13 +4,20 @@ This example uses [Cloud Run](https://cloud.google.com/run) to run the Docker im
 
 ## Prerequisites
 
-Before starting, follow the [Build](../build) and [SQL](../sql) guides to create the container image and database.
-
-Then, refer to the deployment [README](../../README.md) file for information about configuring identity providers.
+Before starting, follow the [Build](../build), [SQL](../sql) and [Secret Manager](../secret-manager) guides to create the container image, database and configuration.
 
 ## Using Cloud Console
 
 Go to [Cloud Console](https://console.cloud.google.com) and make sure the appropriate project is selected in the header menu.
+
+In the side menu, go to **IAM & Admin > Service Accounts**:
+* Click **Create Service Account**.
+* Set `karaplan` as the Service Account **name** and **ID**.
+* Click **Create and continue**.
+* Select the following **Roles**:
+  * Secret Manager Secret Accessor
+  * Cloud SQL Client
+* Click **Done**.
 
 In the side menu, go to **Cloud Run**:
 * Click **Create service**.
@@ -21,21 +28,8 @@ In the side menu, go to **Cloud Run**:
 * Select **Allow unauthenticated invocations**.
 * Expand additional settings at the bottom.
   * In the **Container** tab, set **Memory** to `1 GiB`.
-  * In the **Variables and secrets** tab, add the following **Environment variables** (replace `toComplete` with appropriate values):
-
-  | Name | Value |
-  | ---- | ----- |
-  | SPRING_DATASOURCE_USERNAME | karaplan |
-  | SPRING_DATASOURCE_PASSWORD | toComplete |
-  | SPRING_DATASOURCE_URL | jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=toComplete |
-  | SPRING_PROFILES_ACTIVE | gcp |
-  | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID | toComplete |
-  | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET | toComplete |
-  | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID | toComplete |
-  | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET | toComplete |
-  | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID | toComplete |
-  | SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET | toComplete |
-
+  * In the **Variables and secrets** tab, add a `SPRING_PROFILES_ACTIVE` **Environment variable** with value `gcp`.
+  * In the **Security** tab, select the previously created `karaplan` **Service Account**.
 * Click **Create**.
 
 If you have a custom domain name:
@@ -55,21 +49,13 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     PROJECT_ID=$(gcloud config get-value project)
     REGION=$(gcloud config get-value compute/region)
 
-    # Create environment variables (replace 'toComplete' with appropriate values)
-    ENV_VARS="\
-    SPRING_DATASOURCE_USERNAME=karaplan,\
-    SPRING_DATASOURCE_PASSWORD=toComplete,\
-    SPRING_DATASOURCE_URL=jdbc:mysql:///karaplan?useSSL=false&socketFactory=com.google.cloud.sql.mysql.SocketFactory&cloudSqlInstance=$PROJECT_ID:$REGION:toComplete,\
-    SPRING_PROFILES_ACTIVE=gcp,\
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID=toComplete,\
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET=toComplete,\
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTID=toComplete,\
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_FACEBOOK_CLIENTSECRET=toComplete,\
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID=toComplete,\
-    SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET=toComplete
+    # Create Service Account and grant permissions
+    gcloud iam service-accounts create karaplan
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/secretmanager.secretAccessor
+    gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
 
     # Deploy Cloud Run service
-    gcloud run deploy karaplan --image $REGION-docker.pkg.dev/$PROJECT_ID/docker/karaplan:master --cpu=1 --memory=1Gi --min-instances=0 --max-instances=5 --allow-unauthenticated --region=$REGION --set-env-vars="$ENV_VARS"
+    gcloud run deploy karaplan --image $REGION-docker.pkg.dev/$PROJECT_ID/docker/karaplan:master --cpu=1 --memory=1Gi --min-instances=0 --max-instances=5 --allow-unauthenticated --region=$REGION --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --set-env-vars="SPRING_PROFILES_ACTIVE=gcp"
 
 If you have a custom domain name:
 

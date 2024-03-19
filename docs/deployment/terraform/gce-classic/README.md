@@ -1,6 +1,6 @@
 # Terraform for Google Compute Engine - Classic deployment
 
-This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Compute Engine - Classic deployment](../gcp/gce-classic) guide. See the `main.tf` and `variables.tf` files for more information.
+This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Compute Engine - Classic deployment](../../gcp/gce-classic) guide. See the `main.tf` and `variables.tf` files for more information.
 
 ## Prerequisites
 
