@@ -13,6 +13,8 @@ updates:
           - "org.springframework.boot:*"
           - "org.springdoc:*"
           - "com.google.cloud:spring-cloud-gcp-dependencies"
+        update-types:
+          - patch
     ignore:
       - dependency-name: "io.socket:socket.io-client"
       - dependency-name: "*"
