@@ -312,7 +312,7 @@
 									<outputDirectory>${project.build.outputDirectory}</outputDirectory>
 									<resources>
 										<resource>
-											<directory>${nodejs.build.directory}/dist/karaplan</directory>
+											<directory>${nodejs.build.directory}/dist/karaplan/browser</directory>
 											<targetPath>static</targetPath>
 											<filtering>false</filtering>
 											<excludes>
@@ -320,7 +320,7 @@
 											</excludes>
 										</resource>
 										<resource>
-											<directory>${nodejs.build.directory}/dist/karaplan</directory>
+											<directory>${nodejs.build.directory}/dist/karaplan/browser</directory>
 											<targetPath>templates</targetPath>
 											<filtering>false</filtering>
 											<includes>

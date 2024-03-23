@@ -31,7 +31,7 @@ public class SecurityConfig {
 		return http
 			.authorizeHttpRequests(requests -> requests
 				.requestMatchers("/", "/home").permitAll()
-				.requestMatchers("/*.css", "/*.js", "/*.js.map", "/*.jpg", "/*.png", "/*.svg", "/*.ico", "/assets/**", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
+				.requestMatchers("/*.css", "/*.js", "/*.js.map", "/*.jpg", "/*.png", "/*.svg", "/*.ico", "/assets/**", "/media/**", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
 				.requestMatchers("/api", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/csrf").permitAll()
 				.requestMatchers("/api/v1/account/**").permitAll()
 				.requestMatchers("/actuator/health", "/actuator/health/liveness", "/actuator/health/readiness", "/actuator/info").permitAll()
