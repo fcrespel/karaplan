@@ -1,7 +1,7 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import * as Plyr from 'plyr';
+import Plyr from 'plyr';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlaylistSong } from '../../models/playlist-song';

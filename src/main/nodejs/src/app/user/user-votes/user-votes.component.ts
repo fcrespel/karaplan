@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PlaylistSong } from 'src/app/models/playlist-song';
-import { SongsService } from 'src/app/services/songs.service';
+import { PlaylistSong } from '../../models/playlist-song';
+import { SongsService } from '../../services/songs.service';
 
 @Component({
   selector: 'app-user-votes',

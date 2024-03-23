@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import * as Plyr from 'plyr';
+import Plyr from 'plyr';
 import { Subject, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { CatalogSongFile } from '../../models/catalog-song-file';

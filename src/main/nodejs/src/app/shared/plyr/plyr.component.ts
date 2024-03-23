@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import * as Plyr from 'plyr';
+import Plyr from 'plyr';
 
 @Component({
   selector: 'app-plyr, [plyr]',
