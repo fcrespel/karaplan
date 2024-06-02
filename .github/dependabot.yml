@@ -13,10 +13,11 @@ updates:
           - "org.springframework.boot:*"
           - "org.springdoc:*"
           - "com.google.cloud:spring-cloud-gcp-dependencies"
-        update-types:
-          - patch
     ignore:
-      - dependency-name: "io.socket:socket.io-client"
+      - dependency-name: "org.springframework.boot:*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "org.springdoc:*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
   - package-ecosystem: "npm"
