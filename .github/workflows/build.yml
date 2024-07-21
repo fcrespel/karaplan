@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
@@ -28,7 +28,7 @@ jobs:
     - name: Test webapp
       run: ./mvnw ${MAVEN_CLI_OPTS} test
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: webapp
         path: target/karaplan.war
@@ -39,7 +39,7 @@ jobs:
         GITHUB_TOKEN: ${{ github.token }}
     - name: Login to Docker registry
       if: startsWith(github.ref, 'refs/tags') || github.ref == 'refs/heads/master'
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ${{ env.DOCKER_REGISTRY }}
         username: ${{ github.actor }}
