@@ -1,5 +1,8 @@
 package me.crespel.karaplan.service.impl;
 
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,10 +24,16 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.google.common.hash.Hashing;
 
 import lombok.extern.slf4j.Slf4j;
 import me.crespel.karaplan.config.KarafunConfig.KarafunWebProperties;
@@ -73,6 +82,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 	public KarafunWebCatalogServiceImpl() {
 		conversionService = new DefaultConversionService();
+		conversionService.addConverter(new MultiValueMapToStringConverter());
 		conversionService.addConverter(new KarafunToCatalogArtistConverter());
 		conversionService.addConverter(new KarafunToCatalogStyleConverter());
 		conversionService.addConverter(new KarafunToCatalogSongConverter());
@@ -125,24 +135,38 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 	protected <T extends KarafunWebResponse> T callApi(KarafunWebSession session, String resource, String action, Map<String, Object> params, Class<T> responseType) {
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(session.getLocale()))
+			// Build URI
+			URI uri = UriComponentsBuilder.fromHttpUrl(getEndpoint(session.getLocale()))
 					.path(properties.getBasePath())
 					.pathSegment(resource)
 					.pathSegment(action + ".php")
-					.queryParam("sk", session.getSessionKey())
-					.queryParam("qk", session.getNextQueryKey());
-			for (Entry<String, Object> param : params.entrySet()) {
-				builder.queryParam(param.getKey(), param.getValue());
-			}
+					.build().encode().toUri();
 
-			if (log.isTraceEnabled()) {
-				log.trace("KaraFun Web API request: {}", builder.build().encode().toUri());
+			// Build body
+			MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+			for (Entry<String, Object> param : params.entrySet()) {
+				body.add(param.getKey(), param.getValue());
 			}
-			T response = restTemplate.getForObject(builder.build().encode().toUri(), responseType);
+			body.add("sk", session.getSessionKey());
+
+			// Build headers
+			HttpHeaders headers = new HttpHeaders();
+			String timestamp = Long.toString(System.currentTimeMillis() / 1000L);
+			String bodyString = conversionService.convert(body, String.class);
+			String signature = Hashing.sha256().hashString(String.join("|", "kfun-v1.5", uri.toString(), bodyString, timestamp, session.getSessionKey()), StandardCharsets.UTF_8).toString();
+			headers.add("X-Request-Timestamp", timestamp);
+			headers.add("X-Request-Signature", signature);
+
+			// Call API
+			if (log.isTraceEnabled()) {
+				log.trace("KaraFun Web API request: {}?{}", uri, bodyString);
+			}
+			T response = restTemplate.postForEntity(uri, new HttpEntity<>(body, headers), responseType).getBody();
 			if (log.isTraceEnabled()) {
 				log.trace("KaraFun Web API response: {}", response);
 			}
 
+			// Check error
 			if (response.isError()) {
 				log.warn("KaraFun Web API error: {}", response);
 				if (response.shouldRestart() || response.shouldDisconnect()) {
@@ -298,7 +322,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 		} else {
 			Map<String, Object> params = new HashMap<>();
-			params.put("limit", 100);
+			params.put("limit", 200);
 			switch (type) {
 			case theme:
 				params.put("type", "theme");
@@ -349,6 +373,28 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		} else {
 			return null;
 		}
+	}
+
+	public class MultiValueMapToStringConverter implements Converter<MultiValueMap<String, Object>, String> {
+
+		@Override
+		public String convert(MultiValueMap<String, Object> source) {
+			StringBuilder sb = new StringBuilder();
+			source.forEach((name, values) -> {
+				values.forEach(value -> {
+					if (sb.length() != 0) {
+						sb.append('&');
+					}
+					sb.append(URLEncoder.encode(name, StandardCharsets.UTF_8));
+					if (value != null) {
+						sb.append('=');
+						sb.append(URLEncoder.encode(String.valueOf(value), StandardCharsets.UTF_8));
+					}
+				});
+			});
+			return sb.toString();
+		}
+
 	}
 
 	public class KarafunToCatalogArtistConverter implements Converter<KarafunWebArtist, CatalogArtist> {

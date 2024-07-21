@@ -22,7 +22,7 @@ public class RestTemplateConfig {
 	@Value("${spring.rest-template.read-timeout:30000}")
 	private int readTimeout;
 
-	@Value("${spring.rest-template.user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0}")
+	@Value("${spring.rest-template.user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0}")
 	private String userAgent;
 
 	@Bean

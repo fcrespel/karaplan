@@ -42,7 +42,7 @@ public class KarafunConfig {
 		private Map<String, String> endpointForLocale = new HashMap<>();
 		private String basePath = "/api/";
 		private Integer clientId = 7;
-		private String clientVersion = "1.0.0";
+		private String clientVersion = "2.1.0";
 		private Integer protocol = 1;
 		private String key = "zS@nfy_j";
 	}
