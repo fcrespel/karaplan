@@ -45,7 +45,7 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 			List<Long> songIds = playlist.getSongs().stream().map(it -> it.getSong().getCatalogId()).collect(Collectors.toList());
 			WebSocketConnectionManager wsConn = new WebSocketConnectionManager(new StandardWebSocketClient(), new KarafunWebSocketHandler(songIds, completable), URI.create(target));
 			try {
-				wsConn.setSubProtocols(Arrays.asList("kcpj+emuping"));
+				wsConn.setSubProtocols(Arrays.asList("kcpj~v2+emuping"));
 				wsConn.start();
 				completable.get(30, TimeUnit.SECONDS);
 			} catch (Throwable e) {
@@ -118,8 +118,7 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 			Map<String, Object> song = new HashMap<>();
 			song.put("type", 1);
 			song.put("id", songId);
-			message.getPayload().put("identifier", song);
-			message.getPayload().put("position", 99999);
+			message.getPayload().put("song", song);
 			return message;
 		}
 	}
