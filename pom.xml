@@ -21,6 +21,7 @@
 		<!-- Project properties -->
 		<java.version>17</java.version>
 		<start-class>me.crespel.karaplan.KaraplanApplication</start-class>
+		<project.build.outputTimestamp>${git.commit.time}</project.build.outputTimestamp>
 		<nodejs.src.directory>${basedir}/src/main/nodejs</nodejs.src.directory>
 		<nodejs.build.directory>${project.build.directory}/nodejs</nodejs.build.directory>
 		<docker.src.directory>${basedir}/src/main/docker</docker.src.directory>
@@ -262,6 +263,11 @@
 				<artifactId>git-commit-id-maven-plugin</artifactId>
 				<configuration>
 					<failOnNoGitDirectory>false</failOnNoGitDirectory>
+					<dateFormatTimeZone>UTC</dateFormatTimeZone>
+					<excludeProperties>
+						<excludeProperty>git.build.*</excludeProperty>
+						<excludeProperty>git.commit.user.*</excludeProperty>
+					</excludeProperties>
 				</configuration>
 			</plugin>
 			<plugin>
