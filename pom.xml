@@ -42,7 +42,7 @@
 
 		<!-- Dependency properties -->
 		<commons-csv.version>1.11.0</commons-csv.version>
-		<guava.version>33.3.0-jre</guava.version>
+		<guava.version>33.3.1-jre</guava.version>
 		<node.version>v18.19.0</node.version>
 		<npm.version>10.2.3</npm.version>
 		<socketio-client.version>1.0.1</socketio-client.version>
