@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -86,6 +87,8 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 		@SuppressWarnings("unchecked")
 		protected KarafunWebSocketMessage handleKarafunMessage(KarafunWebSocketMessage message) {
 			switch (message.getType()) {
+				case "core.AuthenticatedEvent":
+					return buildUpdateUsernameMessage(1, "KaraPlan " + UUID.randomUUID().toString());
 				case "core.PingRequest":
 					return new KarafunWebSocketMessage().setId(message.getId()).setType("core.PingResponse");
 				case "remote.PermissionsUpdateEvent":
@@ -111,6 +114,12 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 					break;
 			}
 			return null;
+		}
+
+		protected KarafunWebSocketMessage buildUpdateUsernameMessage(int index, String username) {
+			KarafunWebSocketMessage message = new KarafunWebSocketMessage().setId(index + 1).setType("remote.UpdateUsernameRequest");
+			message.getPayload().put("username", username);
+			return message;
 		}
 
 		protected KarafunWebSocketMessage buildAddToQueueMessage(int index, long songId) {
