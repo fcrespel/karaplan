@@ -9,6 +9,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,29 +54,34 @@ public class SongController {
 	protected PlaylistService playlistService;
 
 	@GetMapping
+	@Transactional(readOnly = true)
 	@Operation(summary = "Get all songs")
 	public Set<Song> getSongs(@ParameterObject @PageableDefault Pageable pageable) {
 		return songService.findAll(pageable);
 	}
 
 	@GetMapping("/user")
+	@Transactional(readOnly = true)
 	@Operation(summary = "Get all songs of current user")
 	public Set<Song> getUserSongs(@ParameterObject @PageableDefault Pageable pageable, @AuthenticationPrincipal(expression = "user") User user) {
 		return songService.findAllByUserId(user.getId(), pageable);
 	}
 
 	@GetMapping("/search")
+	@Transactional(readOnly = true)
 	@Operation(summary = "Search songs in the catalog")
 	public Set<Song> searchSongs(@RequestParam CatalogSongListType type, @RequestParam String query, @ParameterObject @PageableDefault Pageable pageable, @AuthenticationPrincipal(expression = "user") User user) {
 		return songService.search(type, query, pageable, user.getLocaleParsed());
 	}
 
+	@Transactional(readOnly = true)
 	@GetMapping("/selections/{selectionType}")
 	@Operation(summary = "Get song selections in the catalog")
 	public Set<CatalogSelection> getSelections(@PathVariable CatalogSelectionType selectionType, @AuthenticationPrincipal(expression = "user") User user) {
 		return catalogService.getSelectionList(selectionType, user.getLocaleParsed()).getSelections();
 	}
 
+	@Transactional(readOnly = true)
 	@GetMapping("/selections/{selectionType}/{selectionId}")
 	@Operation(summary = "Get song selection information from the catalog")
 	public CatalogSelection getSelection(@PathVariable CatalogSelectionType selectionType, @PathVariable Long selectionId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -83,11 +89,13 @@ public class SongController {
 	}
 
 	@GetMapping("/{catalogId}")
+	@Transactional(readOnly = true)
 	@Operation(summary = "Get a song")
 	public Song getSong(@PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
 		return songService.findByCatalogId(catalogId, user.getLocaleParsed()).orElseThrow(() -> new BusinessException("Invalid song ID"));
 	}
 
+	@Transactional
 	@PostMapping("/{catalogId}")
 	@ResponseStatus(HttpStatus.CREATED)
 	@Operation(summary = "Import a song from the catalog")
@@ -96,6 +104,7 @@ public class SongController {
 		return songService.save(song);
 	}
 
+	@Transactional(readOnly = true)
 	@GetMapping("/{catalogId}/lyrics")
 	@Operation(summary = "Get a song's lyrics")
 	public SongLyrics getSongLyrics(@PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -103,12 +112,14 @@ public class SongController {
 		return lyricsService.getSongLyrics(song);
 	}
 
+	@Transactional(readOnly = true)
 	@GetMapping("/{catalogId}/files")
 	@Operation(summary = "Get a song's files")
 	public Set<CatalogSongFile> getSongFiles(@PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
 		return catalogService.getSongFileList(catalogId, user.getLocaleParsed()).getSongFiles();
 	}
 
+	@Transactional
 	@PostMapping("/{catalogId}/vote")
 	@Operation(summary = "Vote for a song")
 	public Song voteSong(@PathVariable Long catalogId, @RequestParam(defaultValue = "0") int score, @AuthenticationPrincipal(expression = "user") User user) {
@@ -116,6 +127,7 @@ public class SongController {
 		return songService.vote(song, user, score);
 	}
 
+	@Transactional
 	@PostMapping("/{catalogId}/comment")
 	@Operation(summary = "Add a comment to a song")
 	public Song addCommentToSong(@PathVariable Long catalogId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
@@ -123,6 +135,7 @@ public class SongController {
 		return songService.addComment(song, user, comment);
 	}
 
+	@Transactional
 	@DeleteMapping("/{catalogId}/comment/{commentId}")
 	@Operation(summary = "Remove a comment from a song")
 	public Song removeCommentFromSong(@PathVariable Long catalogId, @PathVariable Long commentId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -130,6 +143,7 @@ public class SongController {
 		return songService.removeComment(song, user, commentId);
 	}
 
+	@Transactional
 	@PostMapping("/{catalogId}/playlist/{playlistId}")
 	@Operation(summary = "Add a song to a playlist")
 	public Song addSongToPlaylist(@PathVariable Long catalogId, @PathVariable Long playlistId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -139,6 +153,7 @@ public class SongController {
 		return song;
 	}
 
+	@Transactional
 	@DeleteMapping("/{catalogId}/playlist/{playlistId}")
 	@Operation(summary = "Remove a song from a playlist")
 	public Song removeSongFromPlaylist(@PathVariable Long catalogId, @PathVariable Long playlistId, @AuthenticationPrincipal(expression = "user") User user) {

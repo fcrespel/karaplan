@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,12 +67,14 @@ public class PlaylistController {
 	protected ExportService csvExportService;
 
 	@GetMapping
+	@Transactional(readOnly = true)
 	@Operation(summary = "Get all playlists")
 	public Set<Playlist> getPlaylists(@ParameterObject @PageableDefault Pageable pageable, @AuthenticationPrincipal(expression = "user") User user) {
 		return playlistService.findAll(pageable, user);
 	}
 
 	@PostMapping
+	@Transactional
 	@ResponseStatus(HttpStatus.CREATED)
 	@Operation(summary = "Create a playlist")
 	public Playlist createPlaylist(@RequestParam String name, @AuthenticationPrincipal(expression = "user") User user) {
@@ -79,11 +82,13 @@ public class PlaylistController {
 	}
 
 	@GetMapping("/{playlistId}")
+	@Transactional(readOnly = true)
 	@Operation(summary = "Get a playlist")
 	public Playlist getPlaylist(@PathVariable Long playlistId, @RequestParam(required = false) String accessKey, @AuthenticationPrincipal(expression = "user") User user) {
 		return playlistService.findById(playlistId, true, user, accessKey).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 	}
 
+	@Transactional
 	@PutMapping("/{playlistId}")
 	@Operation(summary = "Save a playlist")
 	public Playlist savePlaylist(@PathVariable Long playlistId, @RequestBody Playlist playlist, @AuthenticationPrincipal(expression = "user") User user) {
@@ -93,6 +98,7 @@ public class PlaylistController {
 		return playlistService.save(playlistToSave, user);
 	}
 
+	@Transactional
 	@PostMapping("/{playlistId}/join")
 	@Operation(summary = "Add the current user to a playlist with the given access key")
 	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @RequestParam String accessKey, @AuthenticationPrincipal(expression = "user") User user) {
@@ -100,6 +106,7 @@ public class PlaylistController {
 		return playlistService.addUser(playlist, user, accessKey);
 	}
 
+	@Transactional
 	@PostMapping("/{playlistId}/leave")
 	@Operation(summary = "Remove the current user from a playlist")
 	public Playlist addUserToPlaylist(@PathVariable Long playlistId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -107,6 +114,7 @@ public class PlaylistController {
 		return playlistService.removeUser(playlist, user);
 	}
 
+	@Transactional
 	@PostMapping("/{playlistId}/song/{catalogId}")
 	@Operation(summary = "Add a song to a playlist")
 	public Playlist addSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -115,6 +123,7 @@ public class PlaylistController {
 		return playlistService.addSong(playlist, song, user);
 	}
 
+	@Transactional
 	@DeleteMapping("/{playlistId}/song/{catalogId}")
 	@Operation(summary = "Remove a song from a playlist")
 	public Playlist removeSongFromPlaylist(@PathVariable Long playlistId, @PathVariable Long catalogId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -123,6 +132,7 @@ public class PlaylistController {
 		return playlistService.removeSong(playlist, song, user);
 	}
 
+	@Transactional
 	@PostMapping("/{playlistId}/comment")
 	@Operation(summary = "Add a comment to a playlist")
 	public Playlist addCommentToPlaylist(@PathVariable Long playlistId, @RequestBody String comment, @AuthenticationPrincipal(expression = "user") User user) {
@@ -130,6 +140,7 @@ public class PlaylistController {
 		return playlistService.addComment(playlist, user, comment);
 	}
 
+	@Transactional
 	@DeleteMapping("/{playlistId}/comment/{commentId}")
 	@Operation(summary = "Remove a comment from a playlist")
 	public Playlist removeCommentFromPlaylist(@PathVariable Long playlistId, @PathVariable Long commentId, @AuthenticationPrincipal(expression = "user") User user) {
@@ -137,13 +148,15 @@ public class PlaylistController {
 		return playlistService.removeComment(playlist, user, commentId);
 	}
 
+	@Transactional
 	@PostMapping("/{playlistId}/sort")
 	@Operation(summary = "Sort a playlist's songs according to a type and direction")
 	public Playlist sortPlaylist(@PathVariable Long playlistId, @RequestParam PlaylistSortType sortType, @RequestParam(defaultValue = "asc") PlaylistSortDirection sortDirection, @AuthenticationPrincipal(expression = "user") User user) {
 		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		return playlistService.sort(playlist, sortType, sortDirection, user);
 	}
-	
+
+	@Transactional
 	@PostMapping("/{playlistId}/sort/custom")
 	@Operation(summary = "Sort a playlist's song by a custom order")
 	public Playlist sortPlaylistCustom(@PathVariable Long playlistId, @RequestBody List<Long> songIdList, @AuthenticationPrincipal(expression = "user") User user) {
@@ -151,6 +164,7 @@ public class PlaylistController {
 		return playlistService.sortCustom(playlist, songIdList, user);
 	}
 
+	@Transactional(readOnly = true)
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Operation(summary = "Export a playlist to Karafun Remote")
@@ -159,6 +173,7 @@ public class PlaylistController {
 		karafunRemoteExportService.exportPlaylist(playlist, remoteId);
 	}
 
+	@Transactional(readOnly = true)
 	@PostMapping("/{playlistId}/export/karafunbar/{bookingId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Operation(summary = "Export a playlist to Karafun Bar")
@@ -167,6 +182,7 @@ public class PlaylistController {
 		karafunBarExportService.exportPlaylist(playlist, bookingId);
 	}
 
+	@Transactional(readOnly = true)
 	@GetMapping("/{playlistId}/export/csv")
 	@Operation(summary = "Export a playlist to a CSV file")
 	public ResponseEntity<Resource> exportPlaylistToCSV(@PathVariable Long playlistId) {

@@ -21,7 +21,7 @@ spring:
     default-property-inclusion: non-empty
   jpa:
     generate-ddl: true
-    open-in-view: true
+    open-in-view: false
     properties:
       hibernate.globally_quoted_identifiers: true
       hibernate.id.db_structure_naming_strategy: legacy
