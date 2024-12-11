@@ -26,6 +26,3 @@ spring:
           github:
             client-id: "${sm://${SECRET_PREFIX:karaplan}-github-client-id}"
             client-secret: "${sm://${SECRET_PREFIX:karaplan}-github-client-secret}"
-          facebook:
-            client-id: "${sm://${SECRET_PREFIX:karaplan}-facebook-client-id}"
-            client-secret: "${sm://${SECRET_PREFIX:karaplan}-facebook-client-secret}"

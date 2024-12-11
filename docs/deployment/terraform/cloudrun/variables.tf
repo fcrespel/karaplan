@@ -25,12 +25,6 @@ variable "google_oauth_clientid" {
 variable "google_oauth_clientsecret" {
   description = "Google OAuth 2.0 client secret"
 }
-variable "facebook_oauth_clientid" {
-  description = "Facebook OAuth 2.0 client ID"
-}
-variable "facebook_oauth_clientsecret" {
-  description = "Facebook OAuth 2.0 client secret"
-}
 variable "github_oauth_clientid" {
   description = "GitHub OAuth 2.0 client ID"
 }

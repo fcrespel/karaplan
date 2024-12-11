@@ -18,8 +18,6 @@ In the side menu, go to **Security > Secret Manager**:
   * karaplan-google-client-secret
   * karaplan-github-client-id
   * karaplan-github-client-secret
-  * karaplan-facebook-client-id
-  * karaplan-facebook-client-secret
 * Check **Manually manage locations for this secret** and select your preferred **Region** (e.g. `europe-west1`).
 
 ## Using Cloud Shell / SDK
@@ -38,8 +36,6 @@ Use the following commands in [Cloud Shell](https://cloud.google.com/shell/) or 
     echo "toComplete" | gcloud secrets create karaplan-google-client-secret --data-file=- --replication-policy=user-managed --locations=$REGION
     echo "toComplete" | gcloud secrets create karaplan-github-client-id --data-file=- --replication-policy=user-managed --locations=$REGION
     echo "toComplete" | gcloud secrets create karaplan-github-client-secret --data-file=- --replication-policy=user-managed --locations=$REGION
-    echo "toComplete" | gcloud secrets create karaplan-facebook-client-id --data-file=- --replication-policy=user-managed --locations=$REGION
-    echo "toComplete" | gcloud secrets create karaplan-facebook-client-secret --data-file=- --replication-policy=user-managed --locations=$REGION
 
 ## Using Terraform
 

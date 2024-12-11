@@ -20,8 +20,6 @@ Create a `terraform.tfvars` file in this directory, providing appropriate values
     region = "europe-west1"
     google_oauth_clientid = "toComplete"
     google_oauth_clientsecret = "toComplete"
-    facebook_oauth_clientid = "toComplete"
-    facebook_oauth_clientsecret = "toComplete"
     github_oauth_clientid = "toComplete"
     github_oauth_clientsecret = "toComplete"
 

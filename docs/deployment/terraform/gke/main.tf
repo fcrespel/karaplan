@@ -52,8 +52,6 @@ module "secret-manager" {
   db_password                 = module.sql.db_password
   google_oauth_clientid       = var.google_oauth_clientid
   google_oauth_clientsecret   = var.google_oauth_clientsecret
-  facebook_oauth_clientid     = var.facebook_oauth_clientid
-  facebook_oauth_clientsecret = var.facebook_oauth_clientsecret
   github_oauth_clientid       = var.github_oauth_clientid
   github_oauth_clientsecret   = var.github_oauth_clientsecret
 }

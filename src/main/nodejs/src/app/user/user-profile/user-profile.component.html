@@ -23,7 +23,6 @@
         Your user profile is linked to your
         <ng-container [ngSwitch]="user.provider">
           <a href="https://accounts.google.com" *ngSwitchCase="'google'">Google account</a>
-          <a href="https://www.facebook.com/settings?tab=account" *ngSwitchCase="'facebook'">Facebook account</a>
           <a href="https://github.com/settings/profile" *ngSwitchCase="'github'">GitHub account</a>
         </ng-container>. You may choose a different display name to use here.
       </p>

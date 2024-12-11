@@ -7,8 +7,6 @@ locals {
     "${var.name}-db-password"            = var.db_password
     "${var.name}-google-client-id"       = var.google_oauth_clientid
     "${var.name}-google-client-secret"   = var.google_oauth_clientsecret
-    "${var.name}-facebook-client-id"     = var.facebook_oauth_clientid
-    "${var.name}-facebook-client-secret" = var.facebook_oauth_clientsecret
     "${var.name}-github-client-id"       = var.github_oauth_clientid
     "${var.name}-github-client-secret"   = var.github_oauth_clientsecret
   }
