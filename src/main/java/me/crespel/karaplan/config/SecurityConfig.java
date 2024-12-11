@@ -30,7 +30,7 @@ public class SecurityConfig {
 		csrfHandler.setCsrfRequestAttributeName(null); // Force loading CSRF token on every request
 		return http
 			.authorizeHttpRequests(requests -> requests
-				.requestMatchers("/", "/home").permitAll()
+				.requestMatchers("/", "/home", "/about").permitAll()
 				.requestMatchers("/*.css", "/*.js", "/*.js.map", "/*.jpg", "/*.png", "/*.svg", "/*.ico", "/assets/**", "/media/**", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
 				.requestMatchers("/api", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui/**", "/csrf").permitAll()
 				.requestMatchers("/api/v1/account/**").permitAll()
