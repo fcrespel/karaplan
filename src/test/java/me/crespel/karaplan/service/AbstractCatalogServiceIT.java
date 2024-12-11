@@ -1,9 +1,10 @@
 package me.crespel.karaplan.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assumptions.*;
+
 import java.util.Locale;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import me.crespel.karaplan.model.CatalogArtist;
@@ -61,168 +62,157 @@ public abstract class AbstractCatalogServiceIT {
 
 	@Test
 	public void testGetArtist() {
-		Assumptions.assumeTrue(testGetArtistEnabled);
+		assumeThat(testGetArtistEnabled).isTrue();
 		CatalogArtist artist = catalogService.getArtist(ARTIST_ID);
-		Assertions.assertNotNull(artist);
-		Assertions.assertEquals(ARTIST_ID, artist.getId());
-		Assertions.assertEquals(ARTIST_NAME, artist.getName());
+		assertThat(artist).isNotNull();
+		assertThat(artist.getId()).isEqualTo(ARTIST_ID);
+		assertThat(artist.getName()).isEqualTo(ARTIST_NAME);
 	}
 
 	@Test
 	public void testGetSong() {
-		Assumptions.assumeTrue(testGetSongEnabled);
+		assumeThat(testGetSongEnabled).isTrue();
 		CatalogSong song = catalogService.getSong(SONG_ID, locale);
-		Assertions.assertNotNull(song);
-		Assertions.assertEquals(SONG_ID, song.getId());
-		Assertions.assertEquals(SONG_NAME, song.getName());
-		Assertions.assertNotNull(song.getArtist());
-		Assertions.assertEquals(ARTIST_ID, song.getArtist().getId());
+		assertThat(song).isNotNull();
+		assertThat(song.getId()).isEqualTo(SONG_ID);
+		assertThat(song.getName()).isEqualTo(SONG_NAME);
+		assertThat(song.getArtist()).isNotNull();
+		assertThat(song.getArtist().getId()).isEqualTo(ARTIST_ID);
 	}
 
 	@Test
 	public void testGetSongListQuery() {
-		Assumptions.assumeTrue(testGetSongListEnabled && testGetSongListQueryEnabled);
+		assumeThat(testGetSongListEnabled && testGetSongListQueryEnabled).isTrue();
 		CatalogSongList list = catalogService.getSongList(CatalogSongListType.query, ARTIST_NAME, 10, 0L, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getCount() > 0);
-		Assertions.assertNotNull(list.getSongs());
-		Assertions.assertTrue(list.getSongs().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getCount()).isPositive();
+		assertThat(list.getSongs()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSongListArtist() {
-		Assumptions.assumeTrue(testGetSongListEnabled && testGetSongListArtistEnabled);
+		assumeThat(testGetSongListEnabled && testGetSongListArtistEnabled).isTrue();
 		CatalogSongList list = catalogService.getSongList(CatalogSongListType.artist, String.valueOf(ARTIST_ID), 10, 0L, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getCount() > 0);
-		Assertions.assertNotNull(list.getSongs());
-		Assertions.assertTrue(list.getSongs().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getCount()).isPositive();
+		assertThat(list.getSongs()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSongListStyles() {
-		Assumptions.assumeTrue(testGetSongListEnabled && testGetSongListStylesEnabled);
+		assumeThat(testGetSongListEnabled && testGetSongListStylesEnabled).isTrue();
 		CatalogSongList list = catalogService.getSongList(CatalogSongListType.styles, String.valueOf(STYLE_ID), 10, 0L, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getCount() > 0);
-		Assertions.assertNotNull(list.getSongs());
-		Assertions.assertTrue(list.getSongs().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getCount()).isPositive();
+		assertThat(list.getSongs()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSongListTheme() {
-		Assumptions.assumeTrue(testGetSongListEnabled && testGetSongListThemeEnabled);
+		assumeThat(testGetSongListEnabled && testGetSongListThemeEnabled).isTrue();
 		CatalogSongList list = catalogService.getSongList(CatalogSongListType.theme, String.valueOf(THEME_ID), 10, 0L, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getCount() > 0);
-		Assertions.assertNotNull(list.getSongs());
-		Assertions.assertTrue(list.getSongs().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getCount()).isPositive();
+		assertThat(list.getSongs()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSongListTop() {
-		Assumptions.assumeTrue(testGetSongListEnabled && testGetSongListTopEnabled);
+		assumeThat(testGetSongListEnabled && testGetSongListTopEnabled).isTrue();
 		CatalogSongList list = catalogService.getSongList(CatalogSongListType.top, String.valueOf(TOP_ID), 10, 0L, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getCount() > 0);
-		Assertions.assertNotNull(list.getSongs());
-		Assertions.assertTrue(list.getSongs().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getCount()).isPositive();
+		assertThat(list.getSongs()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSongListNews() {
-		Assumptions.assumeTrue(testGetSongListEnabled && testGetSongListNewsEnabled);
+		assumeThat(testGetSongListEnabled && testGetSongListNewsEnabled).isTrue();
 		CatalogSongList list = catalogService.getSongList(CatalogSongListType.news, String.valueOf(NEWS_ID), 10, 0L, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getCount() > 0);
-		Assertions.assertNotNull(list.getSongs());
-		Assertions.assertTrue(list.getSongs().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getCount()).isPositive();
+		assertThat(list.getSongs()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSongFileList() {
-		Assumptions.assumeTrue(testGetSongFileListEnabled);
+		assumeThat(testGetSongFileListEnabled).isTrue();
 		CatalogSongFileList list = catalogService.getSongFileList(SONG_ID, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertTrue(list.getLength() > 0);
-		Assertions.assertNotNull(list.getSongFiles());
-		Assertions.assertTrue(list.getSongFiles().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getLength()).isPositive();
+		assertThat(list.getSongFiles()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionStyles() {
-		Assumptions.assumeTrue(testGetSelectionEnabled && testGetSelectionStylesEnabled);
+		assumeThat(testGetSelectionEnabled && testGetSelectionStylesEnabled).isTrue();
 		CatalogSelection selection = catalogService.getSelection(CatalogSelectionType.styles, STYLE_ID, locale);
-		Assertions.assertNotNull(selection);
-		Assertions.assertEquals(STYLE_ID, selection.getId());
-		Assertions.assertFalse(selection.getName().isEmpty());
+		assertThat(selection).isNotNull();
+		assertThat(selection.getId()).isEqualTo(STYLE_ID);
+		assertThat(selection.getName()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionTheme() {
-		Assumptions.assumeTrue(testGetSelectionEnabled && testGetSelectionThemeEnabled);
+		assumeThat(testGetSelectionEnabled && testGetSelectionThemeEnabled).isTrue();
 		CatalogSelection selection = catalogService.getSelection(CatalogSelectionType.theme, THEME_ID, locale);
-		Assertions.assertNotNull(selection);
-		Assertions.assertEquals(THEME_ID, selection.getId());
-		Assertions.assertFalse(selection.getName().isEmpty());
+		assertThat(selection).isNotNull();
+		assertThat(selection.getId()).isEqualTo(THEME_ID);
+		assertThat(selection.getName()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionTop() {
-		Assumptions.assumeTrue(testGetSelectionEnabled && testGetSelectionTopEnabled);
+		assumeThat(testGetSelectionEnabled && testGetSelectionTopEnabled).isTrue();
 		CatalogSelection selection = catalogService.getSelection(CatalogSelectionType.top, TOP_ID, locale);
-		Assertions.assertNotNull(selection);
-		Assertions.assertEquals(TOP_ID, selection.getId());
-		Assertions.assertFalse(selection.getName().isEmpty());
+		assertThat(selection).isNotNull();
+		assertThat(selection.getId()).isEqualTo(TOP_ID);
+		assertThat(selection.getName()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionNews() {
-		Assumptions.assumeTrue(testGetSelectionEnabled && testGetSelectionNewsEnabled);
+		assumeThat(testGetSelectionEnabled && testGetSelectionNewsEnabled).isTrue();
 		CatalogSelection selection = catalogService.getSelection(CatalogSelectionType.news, NEWS_ID, locale);
-		Assertions.assertNotNull(selection);
-		Assertions.assertEquals(NEWS_ID, selection.getId());
-		Assertions.assertFalse(selection.getName().isEmpty());
+		assertThat(selection).isNotNull();
+		assertThat(selection.getId()).isEqualTo(NEWS_ID);
+		assertThat(selection.getName()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionListStyles() {
-		Assumptions.assumeTrue(testGetSelectionListEnabled && testGetSelectionListStylesEnabled);
+		assumeThat(testGetSelectionListEnabled && testGetSelectionListStylesEnabled).isTrue();
 		CatalogSelectionList list = catalogService.getSelectionList(CatalogSelectionType.styles, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertEquals(list.getType(), CatalogSelectionType.styles);
-		Assertions.assertNotNull(list.getSelections());
-		Assertions.assertTrue(list.getSelections().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getType()).isEqualTo(CatalogSelectionType.styles);
+		assertThat(list.getSelections()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionListTheme() {
-		Assumptions.assumeTrue(testGetSelectionListEnabled && testGetSelectionListThemeEnabled);
+		assumeThat(testGetSelectionListEnabled && testGetSelectionListThemeEnabled).isTrue();
 		CatalogSelectionList list = catalogService.getSelectionList(CatalogSelectionType.theme, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertEquals(list.getType(), CatalogSelectionType.theme);
-		Assertions.assertNotNull(list.getSelections());
-		Assertions.assertTrue(list.getSelections().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getType()).isEqualTo(CatalogSelectionType.theme);
+		assertThat(list.getSelections()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionListTop() {
-		Assumptions.assumeTrue(testGetSelectionListEnabled && testGetSelectionListTopEnabled);
+		assumeThat(testGetSelectionListEnabled && testGetSelectionListTopEnabled).isTrue();
 		CatalogSelectionList list = catalogService.getSelectionList(CatalogSelectionType.top, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertEquals(list.getType(), CatalogSelectionType.top);
-		Assertions.assertNotNull(list.getSelections());
-		Assertions.assertTrue(list.getSelections().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getType()).isEqualTo(CatalogSelectionType.top);
+		assertThat(list.getSelections()).isNotEmpty();
 	}
 
 	@Test
 	public void testGetSelectionListNews() {
-		Assumptions.assumeTrue(testGetSelectionListEnabled && testGetSelectionListNewsEnabled);
+		assumeThat(testGetSelectionListEnabled && testGetSelectionListNewsEnabled).isTrue();
 		CatalogSelectionList list = catalogService.getSelectionList(CatalogSelectionType.news, locale);
-		Assertions.assertNotNull(list);
-		Assertions.assertEquals(list.getType(), CatalogSelectionType.news);
-		Assertions.assertNotNull(list.getSelections());
-		Assertions.assertTrue(list.getSelections().size() > 0);
+		assertThat(list).isNotNull();
+		assertThat(list.getType()).isEqualTo(CatalogSelectionType.news);
+		assertThat(list.getSelections()).isNotEmpty();
 	}
 
 }
