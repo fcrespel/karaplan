@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.catalog;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -18,7 +18,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
@@ -71,35 +70,29 @@ import me.crespel.karaplan.service.CatalogService;
 @CacheConfig(cacheNames = "karafunWebCatalogCache")
 public class KarafunWebCatalogServiceImpl implements CatalogService {
 
-	@Autowired
-	private KarafunWebProperties properties;
+	private final KarafunWebProperties properties;
+	private final RestTemplate restTemplate;
+	private final ConfigurableConversionService conversionService;
+	private final Map<String, KarafunWebSession> sessions = new ConcurrentHashMap<>();
 
-	@Autowired
-	private RestTemplate restTemplate;
-
-	protected final ConfigurableConversionService conversionService;
-	protected final Map<String, KarafunWebSession> sessions = new ConcurrentHashMap<>();
-
-	public KarafunWebCatalogServiceImpl() {
-		conversionService = new DefaultConversionService();
-		conversionService.addConverter(new MultiValueMapToStringConverter());
-		conversionService.addConverter(new KarafunToCatalogArtistConverter());
-		conversionService.addConverter(new KarafunToCatalogStyleConverter());
-		conversionService.addConverter(new KarafunToCatalogSongConverter());
-		conversionService.addConverter(new KarafunToCatalogSongListConverter());
-		conversionService.addConverter(new KarafunFileToCatalogSelectionConverter());
-		conversionService.addConverter(new KarafunFileToCatalogSelectionListConverter());
-		conversionService.addConverter(new KarafunStyleToCatalogSelectionConverter());
-		conversionService.addConverter(new KarafunStyleToCatalogSelectionListConverter());
-		conversionService.addConverter(new KarafunPlaylistToCatalogSelectionConverter());
-		conversionService.addConverter(new KarafunPlaylistToCatalogSelectionListConverter());
+	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestTemplate restTemplate) {
+		this.properties = properties;
+		this.restTemplate = restTemplate;
+		this.conversionService = new DefaultConversionService();
+		this.conversionService.addConverter(new MultiValueMapToStringConverter());
+		this.conversionService.addConverter(new KarafunToCatalogArtistConverter());
+		this.conversionService.addConverter(new KarafunToCatalogStyleConverter());
+		this.conversionService.addConverter(new KarafunToCatalogSongConverter());
+		this.conversionService.addConverter(new KarafunToCatalogSongListConverter());
+		this.conversionService.addConverter(new KarafunFileToCatalogSelectionConverter());
+		this.conversionService.addConverter(new KarafunFileToCatalogSelectionListConverter());
+		this.conversionService.addConverter(new KarafunStyleToCatalogSelectionConverter());
+		this.conversionService.addConverter(new KarafunStyleToCatalogSelectionListConverter());
+		this.conversionService.addConverter(new KarafunPlaylistToCatalogSelectionConverter());
+		this.conversionService.addConverter(new KarafunPlaylistToCatalogSelectionListConverter());
 	}
 
-	protected String getEndpoint() {
-		return getEndpoint(null);
-	}
-
-	protected String getEndpoint(Locale locale) {
+	private String getEndpoint(Locale locale) {
 		String endpoint = null;
 		if (locale != null) {
 			endpoint = properties.getEndpointForLocale().get(locale.getLanguage());
@@ -110,7 +103,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		return endpoint;
 	}
 
-	protected KarafunWebSession getSession(Locale locale) {
+	private KarafunWebSession getSession(Locale locale) {
 		String sessionKey = locale != null ? locale.getLanguage() : "";
 		KarafunWebSession session = sessions.computeIfAbsent(sessionKey, k -> new KarafunWebSession(locale));
 		if (!session.isValid()) {
@@ -133,7 +126,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		return session;
 	}
 
-	protected <T extends KarafunWebResponse> T callApi(KarafunWebSession session, String resource, String action, Map<String, Object> params, Class<T> responseType) {
+	private <T extends KarafunWebResponse> T callApi(KarafunWebSession session, String resource, String action, Map<String, Object> params, Class<T> responseType) {
 		try {
 			// Build URI
 			URI uri = UriComponentsBuilder.fromHttpUrl(getEndpoint(session.getLocale()))
@@ -185,7 +178,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		}
 	}
 
-	protected <T extends KarafunWebResponse> T callApi(Locale locale, String resource, String action, Map<String, Object> params, Class<T> responseType) {
+	private <T extends KarafunWebResponse> T callApi(Locale locale, String resource, String action, Map<String, Object> params, Class<T> responseType) {
 		KarafunWebSession session = getSession(locale);
 		try {
 			return callApi(session, resource, action, params, responseType);
@@ -317,7 +310,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 			return new CatalogSelectionList().setType(type).setSelections(new LinkedHashSet<>(Stream
 					.of(catalogSelectionList1.getSelections(), catalogSelectionList2.getSelections())
 					.flatMap(Collection::stream)
-					.collect(Collectors.toMap(CatalogSelection::getId, Function.identity(), (s1, s2) -> mergeCatalogSelections(s1, s2), LinkedHashMap::new))
+					.collect(Collectors.toMap(CatalogSelection::getId, Function.identity(), this::mergeCatalogSelections, LinkedHashMap::new))
 					.values()));
 
 		} else {
@@ -339,7 +332,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		}
 	}
 
-	protected CatalogSelection mergeCatalogSelections(CatalogSelection selection1, CatalogSelection selection2) {
+	private CatalogSelection mergeCatalogSelections(CatalogSelection selection1, CatalogSelection selection2) {
 		if (selection1 != null) {
 			if (selection2 != null) {
 				if (selection1.getName() == null)
@@ -357,7 +350,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		}
 	}
 
-	protected CatalogStyle mergeCatalogStyles(CatalogStyle style1, CatalogStyle style2) {
+	private CatalogStyle mergeCatalogStyles(CatalogStyle style1, CatalogStyle style2) {
 		if (style1 != null) {
 			if (style2 != null) {
 				if (style1.getName() == null)

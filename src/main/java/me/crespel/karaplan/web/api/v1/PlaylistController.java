@@ -49,22 +49,22 @@ import me.crespel.karaplan.service.SongService;
 public class PlaylistController {
 
 	@Autowired
-	protected PlaylistService playlistService;
+	private PlaylistService playlistService;
 
 	@Autowired
-	protected SongService songService;
+	private SongService songService;
 
 	@Autowired
 	@Qualifier("karafunRemoteExport")
-	protected ExportService karafunRemoteExportService;
+	private ExportService karafunRemoteExportService;
 
 	@Autowired
 	@Qualifier("karafunBarExport")
-	protected ExportService karafunBarExportService;
+	private ExportService karafunBarExportService;
 
 	@Autowired
 	@Qualifier("csvExport")
-	protected ExportService csvExportService;
+	private ExportService csvExportService;
 
 	@GetMapping
 	@Transactional(readOnly = true)

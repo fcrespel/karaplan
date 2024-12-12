@@ -19,8 +19,8 @@ public class OidcUserWrapper implements OidcUser, UserWrapper, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	protected final OidcUser delegate;
-	protected final User user;
+	private final OidcUser delegate;
+	private final User user;
 
 	public OidcUserWrapper(OidcUser delegate, User user) {
 		this.delegate = delegate;

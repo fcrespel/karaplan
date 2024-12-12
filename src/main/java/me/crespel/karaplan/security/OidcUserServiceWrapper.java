@@ -1,6 +1,5 @@
 package me.crespel.karaplan.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -13,13 +12,12 @@ import me.crespel.karaplan.service.UserService;
 
 public class OidcUserServiceWrapper implements OAuth2UserService<OidcUserRequest, OidcUser> {
 
-	protected final OAuth2UserService<OidcUserRequest, OidcUser> delegate;
+	private final OAuth2UserService<OidcUserRequest, OidcUser> delegate;
+	private final UserService userService;
 
-	@Autowired
-	protected UserService userService;
-
-	public OidcUserServiceWrapper(OAuth2UserService<OidcUserRequest, OidcUser> delegate) {
+	public OidcUserServiceWrapper(OAuth2UserService<OidcUserRequest, OidcUser> delegate, UserService userService) {
 		this.delegate = delegate;
+		this.userService = userService;
 	}
 
 	@Override
@@ -29,7 +27,7 @@ public class OidcUserServiceWrapper implements OAuth2UserService<OidcUserRequest
 		return new OidcUserWrapper(oidcUser, user);
 	}
 
-	protected User syncUser(OidcUserRequest userRequest, OidcUser oidcUser) {
+	private User syncUser(OidcUserRequest userRequest, OidcUser oidcUser) {
 		User user = userService.findByProviderAndUsername(userRequest.getClientRegistration().getRegistrationId(), oidcUser.getSubject())
 				.orElse(new User().setProvider(userRequest.getClientRegistration().getRegistrationId()).setUsername(oidcUser.getSubject()))
 				.setFirstName(oidcUser.getGivenName())

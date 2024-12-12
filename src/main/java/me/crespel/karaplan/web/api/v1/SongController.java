@@ -42,16 +42,16 @@ import me.crespel.karaplan.service.SongService;
 public class SongController {
 
 	@Autowired
-	protected SongService songService;
+	private SongService songService;
 
 	@Autowired
-	protected CatalogService catalogService;
+	private CatalogService catalogService;
 
 	@Autowired
-	protected LyricsService lyricsService;
+	private LyricsService lyricsService;
 
 	@Autowired
-	protected PlaylistService playlistService;
+	private PlaylistService playlistService;
 
 	@GetMapping
 	@Transactional(readOnly = true)

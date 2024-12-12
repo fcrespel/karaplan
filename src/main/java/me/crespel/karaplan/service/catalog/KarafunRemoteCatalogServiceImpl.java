@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.catalog;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -6,9 +6,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Sets;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
@@ -22,6 +19,8 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.model.CatalogArtist;
@@ -46,28 +45,22 @@ import me.crespel.karaplan.service.CatalogService;
 @CacheConfig(cacheNames = "karafunRemoteCatalogCache")
 public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 
-	@Autowired
-	private KarafunRemoteProperties properties;
+	private final KarafunRemoteProperties properties;
+	private final RestTemplate restTemplate;
+	private final ConfigurableConversionService conversionService;
 
-	@Autowired
-	private RestTemplate restTemplate;
-
-	protected final ConfigurableConversionService conversionService;
-
-	public KarafunRemoteCatalogServiceImpl() {
-		conversionService = new DefaultConversionService();
-		conversionService.addConverter(new KarafunToCatalogArtistConverter());
-		conversionService.addConverter(new KarafunToCatalogStyleConverter());
-		conversionService.addConverter(new KarafunToCatalogSongConverter());
-		conversionService.addConverter(new KarafunToCatalogSongListConverter());
-		conversionService.addConverter(new KarafunToCatalogSelectionConverter());
+	public KarafunRemoteCatalogServiceImpl(KarafunRemoteProperties properties, RestTemplate restTemplate) {
+		this.properties = properties;
+		this.restTemplate = restTemplate;
+		this.conversionService = new DefaultConversionService();
+		this.conversionService.addConverter(new KarafunToCatalogArtistConverter());
+		this.conversionService.addConverter(new KarafunToCatalogStyleConverter());
+		this.conversionService.addConverter(new KarafunToCatalogSongConverter());
+		this.conversionService.addConverter(new KarafunToCatalogSongListConverter());
+		this.conversionService.addConverter(new KarafunToCatalogSelectionConverter());
 	}
 
-	protected String getEndpoint() {
-		return getEndpoint(null);
-	}
-
-	protected String getEndpoint(Locale locale) {
+	private String getEndpoint(Locale locale) {
 		String endpoint = null;
 		if (locale != null) {
 			endpoint = properties.getEndpointForLocale().get(locale.getLanguage());
@@ -185,8 +178,8 @@ public class KarafunRemoteCatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	@Cacheable
+	@SuppressWarnings("unchecked")
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type, Locale locale) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))

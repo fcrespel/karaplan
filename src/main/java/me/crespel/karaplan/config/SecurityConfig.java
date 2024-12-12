@@ -20,12 +20,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import me.crespel.karaplan.security.OAuth2UserServiceWrapper;
 import me.crespel.karaplan.security.OidcUserServiceWrapper;
+import me.crespel.karaplan.service.UserService;
 
 @Configuration
 public class SecurityConfig {
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
 		CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
 		csrfHandler.setCsrfRequestAttributeName(null); // Force loading CSRF token on every request
 		return http
@@ -45,21 +46,21 @@ public class SecurityConfig {
 			.oauth2Login(login -> login
 				.loginPage("/login")
 				.userInfoEndpoint(userinfo -> userinfo
-					.userService(oauth2UserService())
-					.oidcUserService(oidcUserService())))
+					.userService(oauth2UserService(userService))
+					.oidcUserService(oidcUserService(userService))))
 			.exceptionHandling(handling -> handling
 				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**")))
 			.build();
 	}
 
 	@Bean
-	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
-		return new OAuth2UserServiceWrapper(new DefaultOAuth2UserService());
+	public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService(UserService userService) {
+		return new OAuth2UserServiceWrapper(new DefaultOAuth2UserService(), userService);
 	}
 
 	@Bean
-	public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
-		return new OidcUserServiceWrapper(new OidcUserService());
+	public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService(UserService userService) {
+		return new OidcUserServiceWrapper(new OidcUserService(), userService);
 	}
 
 	@Bean

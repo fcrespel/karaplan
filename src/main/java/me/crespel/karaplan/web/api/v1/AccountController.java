@@ -27,7 +27,7 @@ import me.crespel.karaplan.service.UserService;
 public class AccountController {
 
 	@Autowired
-	protected UserService userService;
+	private UserService userService;
 
 	@GetMapping("/authentication")
 	@Operation(summary = "Get authentication info")

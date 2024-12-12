@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.export;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import me.crespel.karaplan.service.ExportService;
 @Service("karafunRemoteV2Export")
 public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 
-	protected final Pattern remoteTargetPattern = Pattern.compile("wss://.*");
+	private static final Pattern remoteTargetPattern = Pattern.compile("wss://.*");
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
@@ -85,7 +85,7 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 		}
 
 		@SuppressWarnings("unchecked")
-		protected KarafunWebSocketMessage handleKarafunMessage(KarafunWebSocketMessage message) {
+		private KarafunWebSocketMessage handleKarafunMessage(KarafunWebSocketMessage message) {
 			switch (message.getType()) {
 				case "core.AuthenticatedEvent":
 					return buildUpdateUsernameMessage(1, "KaraPlan " + UUID.randomUUID().toString());
@@ -116,13 +116,13 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 			return null;
 		}
 
-		protected KarafunWebSocketMessage buildUpdateUsernameMessage(int index, String username) {
+		private KarafunWebSocketMessage buildUpdateUsernameMessage(int index, String username) {
 			KarafunWebSocketMessage message = new KarafunWebSocketMessage().setId(index + 1).setType("remote.UpdateUsernameRequest");
 			message.getPayload().put("username", username);
 			return message;
 		}
 
-		protected KarafunWebSocketMessage buildAddToQueueMessage(int index, long songId) {
+		private KarafunWebSocketMessage buildAddToQueueMessage(int index, long songId) {
 			KarafunWebSocketMessage message = new KarafunWebSocketMessage().setId(index + 1).setType("remote.AddToQueueRequest");
 			Map<String, Object> song = new HashMap<>();
 			song.put("type", 1);

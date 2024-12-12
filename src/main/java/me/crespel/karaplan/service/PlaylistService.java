@@ -19,7 +19,7 @@ public interface PlaylistService {
 	Set<Playlist> findAll(Pageable pageable);
 
 	Set<Playlist> findAll(User user);
-	
+
 	Set<Playlist> findAll(Pageable pageable, User user);
 
 	Optional<Playlist> findById(Long id);
@@ -51,7 +51,7 @@ public interface PlaylistService {
 	Playlist removeComment(Playlist playlist, User user, long commentId);
 
 	Playlist sort(Playlist playlist, PlaylistSortType sortType, PlaylistSortDirection sortDirection, User user);
-	
+
 	Playlist sortCustom(Playlist playlist, List<Long> songIdList, User user);
 
 	void delete(Playlist playlist, User user);

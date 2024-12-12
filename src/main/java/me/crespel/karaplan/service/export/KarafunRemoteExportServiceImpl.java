@@ -1,9 +1,8 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.export;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -19,23 +18,21 @@ import me.crespel.karaplan.service.ExportService;
 @Service("karafunRemoteExport")
 public class KarafunRemoteExportServiceImpl implements ExportService {
 
-	@Autowired
-	@Qualifier("karafunRemoteV1Export")
-	protected ExportService karafunRemoteV1ExportService;
+	private static final Pattern remoteTargetPattern = Pattern.compile("\\d+");
+	private static final Pattern remoteDisconnectedPattern = Pattern.compile("reactivate the remote control feature");
+	private static final Pattern remoteV2UrlPattern = Pattern.compile("\"kcs_url\":\"([^\"]+)\"");
 
-	@Autowired
-	@Qualifier("karafunRemoteV2Export")
-	protected ExportService karafunRemoteV2ExportService;
+	private final KarafunRemoteProperties properties;
+	private final RestTemplate restTemplate;
+	private final ExportService karafunRemoteV1ExportService;
+	private final ExportService karafunRemoteV2ExportService;
 
-	@Autowired
-	private KarafunRemoteProperties properties;
-
-	@Autowired
-	private RestTemplate restTemplate;
-
-	protected final Pattern remoteTargetPattern = Pattern.compile("[0-9]+");
-	protected final Pattern remoteDisconnectedPattern = Pattern.compile("reactivate the remote control feature");
-	protected final Pattern remoteV2UrlPattern = Pattern.compile("\"kcs_url\":\"([^\"]+)\"");
+	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplate restTemplate, @Qualifier("karafunRemoteV1Export") ExportService karafunRemoteV1ExportService, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
+		this.properties = properties;
+		this.restTemplate = restTemplate;
+		this.karafunRemoteV1ExportService = karafunRemoteV1ExportService;
+		this.karafunRemoteV2ExportService = karafunRemoteV2ExportService;
+	}
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {

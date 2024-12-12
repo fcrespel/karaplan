@@ -1,9 +1,8 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.artist;
 
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
@@ -22,17 +21,15 @@ import me.crespel.karaplan.service.CatalogService;
 @Service
 public class ArtistServiceImpl implements ArtistService {
 
-	@Autowired
-	protected ArtistRepo artistRepo;
+	private final ArtistRepo artistRepo;
+	private final CatalogService catalogService;
+	private final ConfigurableConversionService conversionService;
 
-	@Autowired
-	protected CatalogService catalogService;
-
-	protected final ConfigurableConversionService conversionService;
-
-	public ArtistServiceImpl() {
-		conversionService = new DefaultConversionService();
-		conversionService.addConverter(new CatalogArtistToArtistConverter());
+	public ArtistServiceImpl(ArtistRepo artistRepo, CatalogService catalogService) {
+		this.artistRepo = artistRepo;
+		this.catalogService = catalogService;
+		this.conversionService = new DefaultConversionService();
+		this.conversionService.addConverter(new CatalogArtistToArtistConverter());
 	}
 
 	@Override

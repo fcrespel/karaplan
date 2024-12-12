@@ -1,8 +1,7 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.catalog;
 
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,13 @@ import me.crespel.karaplan.service.CatalogService;
 @Service("recisioCatalog")
 public class RecisioCatalogServiceImpl implements CatalogService {
 
-	@Autowired
-	@Qualifier("karafunWebCatalog")
-	protected CatalogService karafunWebCatalog;
+	private final CatalogService karafunWebCatalog;
+	private final CatalogService kvCatalog;
 
-	@Autowired
-	@Qualifier("kvCatalog")
-	protected CatalogService kvCatalog;
+	public RecisioCatalogServiceImpl(@Qualifier("karafunWebCatalog") CatalogService karafunWebCatalog, @Qualifier("kvCatalog") CatalogService kvCatalog) {
+		this.karafunWebCatalog = karafunWebCatalog;
+		this.kvCatalog = kvCatalog;
+	}
 
 	@Override
 	public CatalogArtist getArtist(long artistId) {

@@ -1,11 +1,10 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.catalog;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
@@ -45,30 +44,23 @@ import me.crespel.karaplan.service.CatalogService;
 @CacheConfig(cacheNames = "kvCatalogCache")
 public class KvCatalogServiceImpl implements CatalogService {
 
-	@Autowired
-	private KvProperties properties;
+	private final KvProperties properties;
+	private final RestTemplate restTemplate;
+	private final ObjectMapper jsonMapper = new ObjectMapper();
+	private final ConfigurableConversionService conversionService;
 
-	@Autowired
-	private RestTemplate restTemplate;
-
-	protected final ConfigurableConversionService conversionService;
-
-	protected final ObjectMapper jsonMapper = new ObjectMapper();
-
-	public KvCatalogServiceImpl() {
-		conversionService = new DefaultConversionService();
-		conversionService.addConverter(new KvToCatalogArtistConverter());
-		conversionService.addConverter(new KvToCatalogSongConverter());
-		conversionService.addConverter(new KvToCatalogSongListConverter());
-		conversionService.addConverter(new KvToCatalogSongFileConverter());
-		conversionService.addConverter(new KvToCatalogSongFileListConverter());
+	public KvCatalogServiceImpl(KvProperties properties, RestTemplate restTemplate) {
+		this.properties = properties;
+		this.restTemplate = restTemplate;
+		this.conversionService = new DefaultConversionService();
+		this.conversionService.addConverter(new KvToCatalogArtistConverter());
+		this.conversionService.addConverter(new KvToCatalogSongConverter());
+		this.conversionService.addConverter(new KvToCatalogSongListConverter());
+		this.conversionService.addConverter(new KvToCatalogSongFileConverter());
+		this.conversionService.addConverter(new KvToCatalogSongFileListConverter());
 	}
 
-	protected String getEndpoint() {
-		return getEndpoint(null);
-	}
-
-	protected String getEndpoint(Locale locale) {
+	private String getEndpoint(Locale locale) {
 		String endpoint = null;
 		if (locale != null) {
 			endpoint = properties.getEndpointForLocale().get(locale.getLanguage());
@@ -88,7 +80,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("get")
 					.setParameters(new KvQuery.ArtistGet().setId(artistId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(null))
 					.path("/artist/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -217,7 +209,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogSelectionList getSelectionList(CatalogSelectionType type) {
-		return getSelectionList(null);
+		return getSelectionList(type, null);
 	}
 
 	@Override

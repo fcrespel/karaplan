@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.export;
 
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.socket.client.Ack;
@@ -30,17 +29,19 @@ import me.crespel.karaplan.service.ExportService;
 @Service("karafunRemoteV1Export")
 public class KarafunRemoteV1ExportServiceImpl implements ExportService {
 
-	public static final String EVENT_AUTHENTICATE = "authenticate";
-	public static final String EVENT_PERMISSIONS = "permissions";
-	public static final String EVENT_PREFERENCES = "preferences";
-	public static final String EVENT_STATUS = "status";
-	public static final String EVENT_QUEUE = "queue";
-	public static final String EVENT_QUEUE_ADD = "queueAdd";
+	private static final String EVENT_AUTHENTICATE = "authenticate";
+	private static final String EVENT_PERMISSIONS = "permissions";
+	private static final String EVENT_PREFERENCES = "preferences";
+	private static final String EVENT_STATUS = "status";
+	private static final String EVENT_QUEUE = "queue";
+	private static final String EVENT_QUEUE_ADD = "queueAdd";
+	private static final Pattern remoteTargetPattern = Pattern.compile("\\d+");
 
-	@Autowired
-	protected KarafunRemoteProperties properties;
+	private final KarafunRemoteProperties properties;
 
-	protected final Pattern remoteTargetPattern = Pattern.compile("[0-9]+");
+	public KarafunRemoteV1ExportServiceImpl(KarafunRemoteProperties properties) {
+		this.properties = properties;
+	}
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
@@ -76,7 +77,7 @@ public class KarafunRemoteV1ExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected Socket buildSocket(String remoteId) {
+	private Socket buildSocket(String remoteId) {
 		try {
 			IO.Options opts = new IO.Options();
 			opts.forceNew = true;
@@ -88,7 +89,7 @@ public class KarafunRemoteV1ExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected JSONObject buildAuthenticateEvent(String remoteId) {
+	private JSONObject buildAuthenticateEvent(String remoteId) {
 		try {
 			JSONObject obj = new JSONObject();
 			obj.put("login", "KaraPlan");
@@ -102,7 +103,7 @@ public class KarafunRemoteV1ExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected JSONObject buildQueueAddEvent(Long songId) {
+	private JSONObject buildQueueAddEvent(Long songId) {
 		try {
 			JSONObject obj = new JSONObject();
 			obj.put("songId", songId);
@@ -114,15 +115,15 @@ public class KarafunRemoteV1ExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected void logSendEvent(String eventName, Object... args) {
+	private void logSendEvent(String eventName, Object... args) {
 		log.debug("Sending event {}: {}", eventName, args);
 	}
 
-	protected void logReceivedEvent(String eventName, Object... args) {
+	private void logReceivedEvent(String eventName, Object... args) {
 		log.debug("Received event {}: {}", eventName, args);
 	}
 
-	protected void logReceivedAck(String eventName, Object... args) {
+	private void logReceivedAck(String eventName, Object... args) {
 		log.debug("Received ack for {}: {}", eventName, args);
 	}
 

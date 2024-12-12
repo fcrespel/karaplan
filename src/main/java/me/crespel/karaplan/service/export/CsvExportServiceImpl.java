@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.export;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,7 +16,7 @@ import me.crespel.karaplan.service.ExportService;
 @Service("csvExport")
 public class CsvExportServiceImpl implements ExportService {
 
-	private static final String header[] = {
+	private static final String[] header = {
 		"ArtistID",
 		"ArtistName",
 		"SongID",

@@ -1,9 +1,8 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.user;
 
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,15 +18,16 @@ import me.crespel.karaplan.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	protected UserRepo userRepo;
-	
-	@Autowired
-	protected SongService songService;
+	private final UserRepo userRepo;
+	private final SongService songService;
+	private final PlaylistService playlistService;
 
-	@Autowired
-	protected PlaylistService playlistService;
-	
+	public UserServiceImpl(UserRepo userRepo, SongService songService, PlaylistService playlistService) {
+		this.userRepo = userRepo;
+		this.songService = songService;
+		this.playlistService = playlistService;
+	}
+
 	@Override
 	@Transactional(readOnly = true)
 	public Set<User> findAll() {

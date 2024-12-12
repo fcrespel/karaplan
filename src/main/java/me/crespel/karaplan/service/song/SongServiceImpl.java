@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.song;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -10,15 +10,14 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.common.collect.Sets;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.collect.Sets;
 
 import me.crespel.karaplan.domain.Song;
 import me.crespel.karaplan.domain.SongComment;
@@ -39,27 +38,22 @@ import me.crespel.karaplan.service.SongService;
 @Service
 public class SongServiceImpl implements SongService {
 
-	@Autowired
-	protected SongRepo songRepo;
+	private final SongRepo songRepo;
+	private final SongVoteRepo songVoteRepo;
+	private final SongCommentRepo songCommentRepo;
+	private final CatalogService catalogService;
+	private final ArtistService artistService;
+	private final ConfigurableConversionService conversionService;
 
-	@Autowired
-	protected SongVoteRepo songVoteRepo;
-
-	@Autowired
-	protected SongCommentRepo songCommentRepo;
-
-	@Autowired
-	protected CatalogService catalogService;
-
-	@Autowired
-	protected ArtistService artistService;
-
-	protected final ConfigurableConversionService conversionService;
-
-	public SongServiceImpl() {
-		conversionService = new DefaultConversionService();
-		conversionService.addConverter(new CatalogSongToSongConverter());
-		conversionService.addConverter(new CatalogStyleToStyleConverter());
+	public SongServiceImpl(SongRepo songRepo, SongVoteRepo songVoteRepo, SongCommentRepo songCommentRepo, CatalogService catalogService, ArtistService artistService) {
+		this.songRepo = songRepo;
+		this.songVoteRepo = songVoteRepo;
+		this.songCommentRepo = songCommentRepo;
+		this.catalogService = catalogService;
+		this.artistService = artistService;
+		this.conversionService = new DefaultConversionService();
+		this.conversionService.addConverter(new CatalogSongToSongConverter());
+		this.conversionService.addConverter(new CatalogStyleToStyleConverter());
 	}
 
 	@Override
@@ -148,7 +142,7 @@ public class SongServiceImpl implements SongService {
 			song = songRepo.save(song);
 		}
 
-		SongVote songVote = songVoteRepo.findBySongAndUser(song, user).orElseGet(() -> new SongVote()).setSong(song).setUser(user);
+		SongVote songVote = songVoteRepo.findBySongAndUser(song, user).orElseGet(SongVote::new).setSong(song).setUser(user);
 		if (songVote.getId() != null) {
 			song.getVotes().remove(songVote);
 		}
@@ -208,7 +202,7 @@ public class SongServiceImpl implements SongService {
 		}
 	}
 
-	protected Optional<Song> mergeSongs(Optional<Song> song1, Optional<Song> song2) {
+	private Optional<Song> mergeSongs(Optional<Song> song1, Optional<Song> song2) {
 		if (song1.isPresent()) {
 			if (song2.isPresent()) {
 				Song s1 = song1.get();

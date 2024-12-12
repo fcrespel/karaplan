@@ -3,26 +3,24 @@ package me.crespel.karaplan.security;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.google.common.base.Strings;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import com.google.common.base.Strings;
 
 import me.crespel.karaplan.domain.User;
 import me.crespel.karaplan.service.UserService;
 
 public class OAuth2UserServiceWrapper implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-	protected final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate;
+	private final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate;
+	private final UserService userService;
 
-	@Autowired
-	protected UserService userService;
-
-	public OAuth2UserServiceWrapper(OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate) {
+	public OAuth2UserServiceWrapper(OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate, UserService userService) {
 		this.delegate = delegate;
+		this.userService = userService;
 	}
 
 	@Override
@@ -32,7 +30,7 @@ public class OAuth2UserServiceWrapper implements OAuth2UserService<OAuth2UserReq
 		return new OAuth2UserWrapper(oauth2User, user);
 	}
 
-	protected User syncUser(OAuth2UserRequest userRequest, OAuth2User oauth2User) {
+	private User syncUser(OAuth2UserRequest userRequest, OAuth2User oauth2User) {
 		User user = userService.findByProviderAndUsername(userRequest.getClientRegistration().getRegistrationId(), oauth2User.getName())
 				.orElse(new User().setProvider(userRequest.getClientRegistration().getRegistrationId()).setUsername(oauth2User.getName()));
 		user.setEmail(getAttributeValue(oauth2User, "email"));
@@ -46,7 +44,7 @@ public class OAuth2UserServiceWrapper implements OAuth2UserService<OAuth2UserReq
 		return userService.save(user);
 	}
 
-	protected String getAttributeValue(OAuth2User oauth2User, String attributeName) {
+	private String getAttributeValue(OAuth2User oauth2User, String attributeName) {
 		Object value = oauth2User.getAttributes().get(attributeName);
 		if (value instanceof String) {
 			return (String) value;

@@ -1,4 +1,4 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.playlist;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,20 +26,18 @@ import me.crespel.karaplan.model.PlaylistSortType;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.repository.PlaylistRepo;
 import me.crespel.karaplan.repository.SongRepo;
-import me.crespel.karaplan.repository.UserRepo;
 import me.crespel.karaplan.service.PlaylistService;
 
 @Service
 public class PlaylistServiceImpl implements PlaylistService {
 
-	@Autowired
-	protected UserRepo userRepo;
+	private final SongRepo songRepo;
+	private final PlaylistRepo playlistRepo;
 
-	@Autowired
-	protected PlaylistRepo playlistRepo;
-
-	@Autowired
-	protected SongRepo songRepo;
+	public PlaylistServiceImpl(SongRepo songRepo, PlaylistRepo playlistRepo) {
+		this.songRepo = songRepo;
+		this.playlistRepo = playlistRepo;
+	}
 
 	@Override
 	@Transactional(readOnly = true)
@@ -53,7 +50,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	public Set<Playlist> findAll(Pageable pageable) {
 		return Sets.newLinkedHashSet(playlistRepo.findAll(pageable));
 	}
-	
+
 	@Override
 	@Transactional(readOnly = true)
 	public Set<Playlist> findAll(User user) {
@@ -308,7 +305,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 		return save(playlist, user);
 	}
-	
+
 	@Override
 	@Transactional
 	public void delete(Playlist playlist, User user) {
@@ -333,7 +330,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 	}
 
-	protected void setSongPositions(Collection<PlaylistSong> playlistSongs) {
+	private void setSongPositions(Collection<PlaylistSong> playlistSongs) {
 		int pos = 1;
 		for (PlaylistSong playlistSong : playlistSongs) {
 			playlistSong.setPosition(pos++);

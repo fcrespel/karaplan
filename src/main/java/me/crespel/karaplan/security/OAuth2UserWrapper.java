@@ -17,8 +17,8 @@ public class OAuth2UserWrapper implements OAuth2User, UserWrapper, Serializable 
 
 	private static final long serialVersionUID = 1L;
 
-	protected final OAuth2User delegate;
-	protected final User user;
+	private final OAuth2User delegate;
+	private final User user;
 
 	public OAuth2UserWrapper(OAuth2User delegate, User user) {
 		this.delegate = delegate;

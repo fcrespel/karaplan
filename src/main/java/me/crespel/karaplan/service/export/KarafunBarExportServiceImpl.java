@@ -1,9 +1,8 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.export;
 
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,11 +33,13 @@ public class KarafunBarExportServiceImpl implements ExportService {
 
 	private static final String PLAYLIST_HASH_HEADER = "X-Playlist-Hash";
 
-	@Autowired
-	protected KarafunBarProperties properties;
+	private final KarafunBarProperties properties;
+	private final RestTemplate restTemplate;
 
-	@Autowired
-	private RestTemplate restTemplate;
+	public KarafunBarExportServiceImpl(KarafunBarProperties properties, RestTemplate restTemplate) {
+		this.properties = properties;
+		this.restTemplate = restTemplate;
+	}
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
@@ -72,7 +73,7 @@ public class KarafunBarExportServiceImpl implements ExportService {
 		}
 	}
 
-	protected List<SongAndSinger> buildSongList(Set<PlaylistSong> playlistSongs) {
+	private List<SongAndSinger> buildSongList(Set<PlaylistSong> playlistSongs) {
 		List<SongAndSinger> list = Lists.newArrayList();
 		for (PlaylistSong playlistSong : playlistSongs) {
 			list.add(new SongAndSinger(playlistSong.getSong().getCatalogId(), ""));

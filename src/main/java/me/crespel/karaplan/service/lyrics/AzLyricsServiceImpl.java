@@ -1,9 +1,8 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.lyrics;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -23,13 +22,16 @@ import me.crespel.karaplan.service.LyricsService;
 @CacheConfig(cacheNames = "azLyricsCache")
 public class AzLyricsServiceImpl implements LyricsService {
 
-	protected static final String SOURCE_NAME = "AZLyrics";
-	protected static final String BASE_URL = "https://www.azlyrics.com";
-	protected static final String SEARCH_URL = "https://search.azlyrics.com/suggest.php";
-	protected static final Pattern LYRICS_HTML_PATTERN = Pattern.compile("<div>\\s*<!-- Usage of [^\n]+ -->\\s*(.*?)\\s*</div>", Pattern.DOTALL);
+	private static final String SOURCE_NAME = "AZLyrics";
+	private static final String BASE_URL = "https://www.azlyrics.com";
+	private static final String SEARCH_URL = "https://search.azlyrics.com/suggest.php";
+	private static final Pattern LYRICS_HTML_PATTERN = Pattern.compile("<div>\\s*<!-- Usage of [^\n]+ -->\\s*(.*?)\\s*</div>", Pattern.DOTALL);
 
-	@Autowired
-	private RestTemplate restTemplate;
+	private final RestTemplate restTemplate;
+
+	public AzLyricsServiceImpl(RestTemplate restTemplate) {
+		this.restTemplate = restTemplate;
+	}
 
 	@Override
 	@Cacheable
@@ -51,7 +53,7 @@ public class AzLyricsServiceImpl implements LyricsService {
 		return lyrics;
 	}
 
-	protected AzLyricsSuggestResponse getSuggestions(Song song) {
+	private AzLyricsSuggestResponse getSuggestions(Song song) {
 		try {
 			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(SEARCH_URL)
 					.queryParam("q", song.getName() + " - " + song.getArtist().getName());
