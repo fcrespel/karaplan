@@ -17,6 +17,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SortComparator;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -100,6 +101,9 @@ public class User implements Serializable {
 	public Locale getLocaleParsed() {
 		if (locale != null) {
 			localeParsed = Locale.forLanguageTag(locale);
+		}
+		if (locale == null) {
+			localeParsed = LocaleContextHolder.getLocale();
 		}
 		return localeParsed;
 	}
