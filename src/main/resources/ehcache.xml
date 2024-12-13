@@ -13,7 +13,6 @@
 	</cache-template>
 
 	<cache alias="azLyricsCache" uses-template="default" />
-	<cache alias="karafunRemoteCatalogCache" uses-template="default" />
 	<cache alias="karafunWebCatalogCache" uses-template="default" />
 	<cache alias="kvCatalogCache" uses-template="default" />
 

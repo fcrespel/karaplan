@@ -24,7 +24,6 @@ import me.crespel.karaplan.config.KarafunConfig.KarafunBarProperties;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.PlaylistSong;
 import me.crespel.karaplan.model.exception.TechnicalException;
-import me.crespel.karaplan.model.karafunremote.KarafunRemoteSong;
 import me.crespel.karaplan.service.ExportService;
 
 @Slf4j
@@ -86,7 +85,15 @@ public class KarafunBarExportServiceImpl implements ExportService {
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	public static class PlaylistEntry {
 		private Integer rank;
-		private KarafunRemoteSong song;
+		private PlaylistEntrySong song;
+	}
+
+	@Data
+	@Accessors(chain = true)
+	@JsonIgnoreProperties(ignoreUnknown = true)
+	public static class PlaylistEntrySong {
+		private Long id;
+		private String name;
 	}
 
 	@Data
