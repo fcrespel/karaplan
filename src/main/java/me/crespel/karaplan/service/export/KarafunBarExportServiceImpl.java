@@ -1,8 +1,10 @@
 package me.crespel.karaplan.service.export;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
-import me.crespel.karaplan.config.KarafunConfig.KarafunBarProperties;
+import me.crespel.karaplan.config.KarafunBarConfig.KarafunBarProperties;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.domain.PlaylistSong;
 import me.crespel.karaplan.model.exception.TechnicalException;
@@ -35,9 +37,13 @@ public class KarafunBarExportServiceImpl implements ExportService {
 	private final KarafunBarProperties properties;
 	private final RestTemplate restTemplate;
 
-	public KarafunBarExportServiceImpl(KarafunBarProperties properties, RestTemplate restTemplate) {
+	public KarafunBarExportServiceImpl(KarafunBarProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplate;
+		this.restTemplate = restTemplateBuilder
+				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
+				.build();
 	}
 
 	@Override

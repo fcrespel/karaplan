@@ -94,14 +94,14 @@ karaplan:
         it: https://www.karafun.it
         nl: https://www.karafun.nl
     web:
-      endpoint: https://www.karafun.com
+      endpoint: https://www.karafun.com/api
       endpoint-for-locale:
-        de: https://www.karafun.de
-        en: https://www.karafun.com
-        es: https://www.karafun.es
-        fr: https://www.karafun.fr
-        it: https://www.karafun.it
-        nl: https://www.karafun.nl
+        de: https://www.karafun.de/api
+        en: https://www.karafun.com/api
+        es: https://www.karafun.es/api
+        fr: https://www.karafun.fr/api
+        it: https://www.karafun.it/api
+        nl: https://www.karafun.nl/api
   kv:
     endpoint: https://www.karaoke-version.com/api
     endpoint-for-locale:

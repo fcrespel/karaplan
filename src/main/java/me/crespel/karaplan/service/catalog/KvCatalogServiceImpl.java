@@ -1,15 +1,18 @@
 package me.crespel.karaplan.service.catalog;
 
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
@@ -49,9 +52,13 @@ public class KvCatalogServiceImpl implements CatalogService {
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 	private final ConfigurableConversionService conversionService;
 
-	public KvCatalogServiceImpl(KvProperties properties, RestTemplate restTemplate) {
+	public KvCatalogServiceImpl(KvProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplate;
+		this.restTemplate = restTemplateBuilder
+				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
+				.build();
 		this.conversionService = new DefaultConversionService();
 		this.conversionService.addConverter(new KvToCatalogArtistConverter());
 		this.conversionService.addConverter(new KvToCatalogSongConverter());

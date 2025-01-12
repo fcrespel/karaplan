@@ -1,7 +1,7 @@
-package me.crespel.karaplan.service;
+package me.crespel.karaplan.service.catalog;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.Assumptions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
 
 import java.util.Locale;
 
@@ -15,10 +15,13 @@ import me.crespel.karaplan.model.CatalogSong;
 import me.crespel.karaplan.model.CatalogSongFileList;
 import me.crespel.karaplan.model.CatalogSongList;
 import me.crespel.karaplan.model.CatalogSongListType;
+import me.crespel.karaplan.service.CatalogService;
 
-public abstract class AbstractCatalogServiceIT {
+public abstract class AbstractCatalogServiceTest<T extends CatalogService> {
 
-	protected static final Locale DEFAULT_LOCALE = Locale.FRANCE;
+	protected static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+	protected static final int LIST_LIMIT = 10;
+	protected static final long LIST_OFFSET = 0;
 	protected static final long SONG_ID = 19237;
 	protected static final String SONG_NAME = "Feeling Good";
 	protected static final long ARTIST_ID = 3888;
@@ -28,7 +31,7 @@ public abstract class AbstractCatalogServiceIT {
 	protected static final long TOP_ID = 100;  // Global Top
 	protected static final long NEWS_ID = 123; // Top Hits
 
-	protected CatalogService catalogService;
+	protected T catalogService;
 	protected Locale locale;
 	protected boolean testGetArtistEnabled = true;
 	protected boolean testGetSongEnabled = true;
@@ -51,11 +54,11 @@ public abstract class AbstractCatalogServiceIT {
 	protected boolean testGetSelectionListTopEnabled = true;
 	protected boolean testGetSelectionListNewsEnabled = true;
 
-	public AbstractCatalogServiceIT(CatalogService catalogService) {
+	public AbstractCatalogServiceTest(T catalogService) {
 		this(catalogService, DEFAULT_LOCALE);
 	}
 
-	public AbstractCatalogServiceIT(CatalogService catalogService, Locale locale) {
+	public AbstractCatalogServiceTest(T catalogService, Locale locale) {
 		this.catalogService = catalogService;
 		this.locale = locale;
 	}
@@ -83,7 +86,7 @@ public abstract class AbstractCatalogServiceIT {
 	@Test
 	public void testGetSongListQuery() {
 		assumeThat(testGetSongListEnabled && testGetSongListQueryEnabled).isTrue();
-		CatalogSongList list = catalogService.getSongList(CatalogSongListType.query, ARTIST_NAME, 10, 0L, locale);
+		CatalogSongList list = catalogService.getSongList(CatalogSongListType.query, ARTIST_NAME, LIST_LIMIT, LIST_OFFSET, locale);
 		assertThat(list).isNotNull();
 		assertThat(list.getCount()).isPositive();
 		assertThat(list.getSongs()).isNotEmpty();
@@ -92,7 +95,7 @@ public abstract class AbstractCatalogServiceIT {
 	@Test
 	public void testGetSongListArtist() {
 		assumeThat(testGetSongListEnabled && testGetSongListArtistEnabled).isTrue();
-		CatalogSongList list = catalogService.getSongList(CatalogSongListType.artist, String.valueOf(ARTIST_ID), 10, 0L, locale);
+		CatalogSongList list = catalogService.getSongList(CatalogSongListType.artist, String.valueOf(ARTIST_ID), LIST_LIMIT, LIST_OFFSET, locale);
 		assertThat(list).isNotNull();
 		assertThat(list.getCount()).isPositive();
 		assertThat(list.getSongs()).isNotEmpty();
@@ -101,7 +104,7 @@ public abstract class AbstractCatalogServiceIT {
 	@Test
 	public void testGetSongListStyles() {
 		assumeThat(testGetSongListEnabled && testGetSongListStylesEnabled).isTrue();
-		CatalogSongList list = catalogService.getSongList(CatalogSongListType.styles, String.valueOf(STYLE_ID), 10, 0L, locale);
+		CatalogSongList list = catalogService.getSongList(CatalogSongListType.styles, String.valueOf(STYLE_ID), LIST_LIMIT, LIST_OFFSET, locale);
 		assertThat(list).isNotNull();
 		assertThat(list.getCount()).isPositive();
 		assertThat(list.getSongs()).isNotEmpty();
@@ -110,7 +113,7 @@ public abstract class AbstractCatalogServiceIT {
 	@Test
 	public void testGetSongListTheme() {
 		assumeThat(testGetSongListEnabled && testGetSongListThemeEnabled).isTrue();
-		CatalogSongList list = catalogService.getSongList(CatalogSongListType.theme, String.valueOf(THEME_ID), 10, 0L, locale);
+		CatalogSongList list = catalogService.getSongList(CatalogSongListType.theme, String.valueOf(THEME_ID), LIST_LIMIT, LIST_OFFSET, locale);
 		assertThat(list).isNotNull();
 		assertThat(list.getCount()).isPositive();
 		assertThat(list.getSongs()).isNotEmpty();
@@ -119,7 +122,7 @@ public abstract class AbstractCatalogServiceIT {
 	@Test
 	public void testGetSongListTop() {
 		assumeThat(testGetSongListEnabled && testGetSongListTopEnabled).isTrue();
-		CatalogSongList list = catalogService.getSongList(CatalogSongListType.top, String.valueOf(TOP_ID), 10, 0L, locale);
+		CatalogSongList list = catalogService.getSongList(CatalogSongListType.top, String.valueOf(TOP_ID), LIST_LIMIT, LIST_OFFSET, locale);
 		assertThat(list).isNotNull();
 		assertThat(list.getCount()).isPositive();
 		assertThat(list.getSongs()).isNotEmpty();
@@ -128,7 +131,7 @@ public abstract class AbstractCatalogServiceIT {
 	@Test
 	public void testGetSongListNews() {
 		assumeThat(testGetSongListEnabled && testGetSongListNewsEnabled).isTrue();
-		CatalogSongList list = catalogService.getSongList(CatalogSongListType.news, String.valueOf(NEWS_ID), 10, 0L, locale);
+		CatalogSongList list = catalogService.getSongList(CatalogSongListType.news, String.valueOf(NEWS_ID), LIST_LIMIT, LIST_OFFSET, locale);
 		assertThat(list).isNotNull();
 		assertThat(list.getCount()).isPositive();
 		assertThat(list.getSongs()).isNotEmpty();

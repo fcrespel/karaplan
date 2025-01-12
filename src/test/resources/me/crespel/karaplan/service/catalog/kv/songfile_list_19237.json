@@ -1,0 +1,247 @@
+{
+    "length": 22,
+    "songfiles": [
+        {
+            "id": 31551,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/mp3-backingtrack/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/31551/",
+            "format": "mp3",
+            "trackType": "nbv",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 31553,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/mp3-backingtrack/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/31553/",
+            "format": "mp3",
+            "trackType": "nbv-ld",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 46515,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/karaoke/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/46515/",
+            "format": "kfn",
+            "trackType": "kfn",
+            "price": 2.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 46519,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/karaoke/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/46519/",
+            "format": "wmv",
+            "trackType": "wmv",
+            "price": 2.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 36318,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/karaoke/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/36318/",
+            "format": "wmv",
+            "trackType": "wmv",
+            "price": 2.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 36384,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/karaoke/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/36384/",
+            "format": "zip",
+            "trackType": "cdg",
+            "price": 2.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 187733,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/guitar-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/187733/",
+            "format": "mp3",
+            "trackType": "ngt-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 187734,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/guitar-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/187734/",
+            "format": "mp3",
+            "trackType": "ngt",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 187736,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/guitar-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/187736/",
+            "format": "mp3",
+            "trackType": "ngt-gt-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 187735,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/guitar-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/187735/",
+            "format": "mp3",
+            "trackType": "gt",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 277213,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/drums-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/277213/",
+            "format": "mp3",
+            "trackType": "ndr-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 277214,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/drums-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/277214/",
+            "format": "mp3",
+            "trackType": "ndr",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 277216,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/drums-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/277216/",
+            "format": "mp3",
+            "trackType": "ndr-dr-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 277215,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/drums-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/277215/",
+            "format": "mp3",
+            "trackType": "dr",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 393739,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/bass-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/393739/",
+            "format": "mp3",
+            "trackType": "nba-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 393740,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/bass-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/393740/",
+            "format": "mp3",
+            "trackType": "nba",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 393742,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/bass-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/393742/",
+            "format": "mp3",
+            "trackType": "nba-ba-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 393741,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/bass-backing-track/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/393741/",
+            "format": "mp3",
+            "trackType": "ba",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 419756,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/backing-track-piano/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/419756/",
+            "format": "mp3",
+            "trackType": "npi-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 419757,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/backing-track-piano/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/419757/",
+            "format": "mp3",
+            "trackType": "npi",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 419759,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/backing-track-piano/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/419759/",
+            "format": "mp3",
+            "trackType": "npi-pi-voc",
+            "price": 1.99,
+            "currency": "EUR"
+        },
+        {
+            "id": 419758,
+            "songId": 19237,
+            "artistId": 3888,
+            "songUrl": "https://www.karaoke-version.com/backing-track-piano/muse/feeling-good.html?aff=77",
+            "previewUrl": "https://www.karaoke-version.com/preview/419758/",
+            "format": "mp3",
+            "trackType": "pi",
+            "price": 1.99,
+            "currency": "EUR"
+        }
+    ]
+}

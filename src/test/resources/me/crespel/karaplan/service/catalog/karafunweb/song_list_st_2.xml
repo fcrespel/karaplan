@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <list count="10" total="13098">
+        <song id="49375" len="289" pop="1" bgcolor="483A94" nbStreams="1280204">
+            <title>Tennessee Whiskey</title>
+            <artist id="10701">Chris Stapleton</artist>
+            <year>2015</year>
+            <imagePath>https://cdnaws.recis.io/i/img/00/52/d1/2c_266ba1_sq100.jpg</imagePath>
+            <bpm>-51</bpm>
+        </song>
+        <song id="14609" len="252" pop="0.96142054111863" bgcolor="4D1215" nbStreams="870707">
+            <title>Don't Stop Believin' (Small Town Girl)</title>
+            <artist id="2733">Journey</artist>
+            <year>1981</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/72/51/ff_7cc5a2_sq100.jpg</imagePath>
+            <bpm>-120</bpm>
+        </song>
+        <song id="12543" len="239" pop="0.95760725981039" bgcolor="B3613B" nbStreams="568574" explicit_lyrics="1">
+            <title>Creep</title>
+            <artist id="4075">Radiohead</artist>
+            <year>1992</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/26/77_fbf97a_sq100.jpg</imagePath>
+            <bpm>-92</bpm>
+        </song>
+        <song id="12617" len="362" pop="0.95329706592758" bgcolor="CA694E" nbStreams="990062">
+            <title>Bohemian Rhapsody</title>
+            <artist id="2225">Queen</artist>
+            <year>1975</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/8b/3d/b1_ec2660_sq100.jpg</imagePath>
+            <bpm>-93</bpm>
+        </song>
+        <song id="5632" len="223" pop="0.94951897136227" bgcolor="601DA0" nbStreams="419261">
+            <title>Mr. Brightside</title>
+            <artist id="2314">The Killers</artist>
+            <year>2003</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/60/01_34fc7b_sq100.jpg</imagePath>
+            <bpm>-148</bpm>
+        </song>
+        <song id="6475" len="295" pop="0.94311250723559" bgcolor="79274C" nbStreams="432224">
+            <title>What's Up?</title>
+            <artist id="2692">4 Non Blondes</artist>
+            <year>1993</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/74/28/4a_ca7bdc_sq100.jpg</imagePath>
+            <bpm>-67</bpm>
+        </song>
+        <song id="14236" len="306" pop="0.9357210328581" bgcolor="931612" nbStreams="558929">
+            <title>Zombie</title>
+            <artist id="2553">The Cranberries</artist>
+            <year>1994</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a2/0b/76_db81af_sq100.jpg</imagePath>
+            <bpm>-84</bpm>
+        </song>
+        <song id="7383" len="235" pop="0.92741594162125" bgcolor="467CE0" nbStreams="282431">
+            <title>Kryptonite</title>
+            <artist id="2308">3 Doors Down</artist>
+            <year>2000</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/b7/12/41_ed75fd_sq100.jpg</imagePath>
+            <bpm>-99</bpm>
+        </song>
+        <song id="27932" len="185" pop="0.92575320410445" bgcolor="F77A09" nbStreams="291652">
+            <title>Santeria</title>
+            <artist id="7384">Sublime</artist>
+            <year>1996</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/c4/b0/35_b78c07_sq100.jpg</imagePath>
+            <bpm>-91</bpm>
+        </song>
+        <song id="8203" len="293" pop="0.92422218010983" bgcolor="3F248B" nbStreams="385982">
+            <title>Black Velvet</title>
+            <artist id="3145">Alannah Myles</artist>
+            <year>1989</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/9d/05/34_5f0cbb_sq100.jpg</imagePath>
+            <bpm>-91</bpm>
+        </song>
+    </list>
+</response>

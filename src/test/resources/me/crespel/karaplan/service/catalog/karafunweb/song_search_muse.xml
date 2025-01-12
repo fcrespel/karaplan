@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <list count="10">
+        <song id="24472" len="306" bgcolor="3D12C7">
+            <title>Uprising</title>
+            <artist id="3888">Muse</artist>
+            <year>2009</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2c_68ea4a_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Warner Chappell Music Publishing Limited / Loosechord Limited (PRS)</item>
+            </legal>
+            <bpm>128</bpm>
+        </song>
+        <song id="12552" len="240" bgcolor="2A1595">
+            <title>Starlight</title>
+            <artist id="3888">Muse</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2d_d47a0e_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Warner Chappell Music Publishing Limited / Loosechord Limited (PRS)</item>
+            </legal>
+            <bpm>-121</bpm>
+        </song>
+        <song id="41552" len="279" bgcolor="4742A9">
+            <title>Madness</title>
+            <artist id="3888">Muse</artist>
+            <year>2012</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2f_ca09b3_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Hewrate Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>90</bpm>
+        </song>
+        <song id="19933" len="237" bgcolor="3C030D">
+            <title>Time is Running Out</title>
+            <artist id="3888">Muse</artist>
+            <year>2003</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/30_0721d2_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy / Dominic Howard / Chris Wolstenholme</item>
+                <item id="2" type="publishing">Hewrate Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>118.305</bpm>
+        </song>
+        <song id="12553" len="209" bgcolor="6C131B">
+            <title>Supermassive Black Hole</title>
+            <artist id="3888">Muse</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2e_79b346_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Loosechord Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>120</bpm>
+        </song>
+        <song id="19237" len="195" bgcolor="BD470F">
+            <title>Feeling Good</title>
+            <artist id="3888">Muse</artist>
+            <year>2005</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2b_54c769_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Anthony George Newley / Leslie Bricusse</item>
+                <item id="2" type="publishing">Concord Music LTD / Tro The Richmond Organization Editions Essex / Universal Music Publishing Group</item>
+            </legal>
+            <bpm>-73</bpm>
+        </song>
+        <song id="14683" len="226" bgcolor="5F1702">
+            <title>Hysteria</title>
+            <artist id="3888">Muse</artist>
+            <year>2003</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/ac/fe_7233d7_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Hewrate Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>93.15</bpm>
+        </song>
+        <song id="21683" len="367" bgcolor="933132">
+            <title>Knights of Cydonia</title>
+            <artist id="3888">Muse</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/00/52/d7/2f_c170cb_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Loosechord Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>-138</bpm>
+        </song>
+        <song id="26289" len="216" bgcolor="4C5CE4">
+            <title>Plug In Baby</title>
+            <artist id="3888">Muse</artist>
+            <year>2001</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/ac/46_1a8eca_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Hewrate Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>136</bpm>
+        </song>
+        <song id="19934" len="238" bgcolor="6D12AB">
+            <title>Unintended</title>
+            <artist id="3888">Muse</artist>
+            <year>2000</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/31_1ce9b0_sq100.jpg</imagePath>
+            <legal>
+                <item id="1" type="writing">Matthew Bellamy</item>
+                <item id="2" type="publishing">Hewrate Limited (PRS) / Warner Chappell Music France</item>
+            </legal>
+            <bpm>70</bpm>
+        </song>
+    </list>
+</response>

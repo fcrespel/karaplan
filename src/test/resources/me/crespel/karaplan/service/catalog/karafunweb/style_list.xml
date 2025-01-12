@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <styles count="41">
+        <style filter="st_6" count="8683" image_id="000370f05e8d44">Country</style>
+        <style filter="st_28" count="20686" image_id="000370eb1fc293">Pop</style>
+        <style filter="st_2" count="13098" image_id="000370f20664bf">Rock</style>
+        <style filter="st_23" count="1484" image_id="000370c8a15074">Christmas</style>
+        <style filter="st_38" count="3857" image_id="000370e7c28d8c">Film &amp; TV Soundtracks</style>
+        <style filter="st_12" count="3766" image_id="000370dd7a51a7">Soul</style>
+        <style filter="st_39" count="3299" image_id="000370c7a1d725">Alternative</style>
+        <style filter="st_3" count="2507" image_id="000370f31b847b">Soft Rock</style>
+        <style filter="st_50" count="3936" image_id="000370c9094180">Love Songs</style>
+        <style filter="st_52" count="1170" image_id="000370d6e1d3f1">Teen Pop</style>
+        <style filter="st_20" count="3436" image_id="000370e3a167cc">Jazz</style>
+        <style filter="st_11" count="2556" image_id="000370de7a09c2">Rap &amp; Hip-Hop</style>
+        <style filter="st_4" count="1867" image_id="000370f5228ef8">Synthpop</style>
+        <style filter="st_71" count="1342" image_id="000370f638eb58">Blues</style>
+        <style filter="st_5" count="2817" image_id="000370f1bf35f5">Folk</style>
+        <style filter="st_24" count="4492" image_id="000370cc2daa21">Duet</style>
+        <style filter="st_8" count="2807" image_id="000370e0830223">R&amp;B</style>
+        <style filter="st_18" count="1628" image_id="000370e44383f3">Rock &amp; Roll</style>
+        <style filter="st_7" count="2586" image_id="000370ef543e09">Hard Rock &amp; Metal</style>
+        <style filter="st_14" count="868" image_id="000370dbacd7e6">Disco</style>
+        <style filter="st_56" count="1862" image_id="000370cdcb57ad">Musicals &amp; Broadway</style>
+        <style filter="st_15" count="3160" image_id="000370da5c72fc">Dance</style>
+        <style filter="st_13" count="1010" image_id="000370dcbc5bb5">Funk</style>
+        <style filter="st_32" count="2302" image_id="000370ec6e6071">Latin Music</style>
+        <style filter="st_55" count="625" image_id="000370f74aedf4">Punk</style>
+        <style filter="st_10" count="609" image_id="000370df33d34d">Reggae</style>
+        <style filter="st_21" count="804" image_id="000370e5f9a55f">Children's Music</style>
+        <style filter="st_16" count="2653" image_id="000370d9dce053">Electro</style>
+        <style filter="st_22" count="771" image_id="000378973e7b17">Comedy</style>
+        <style filter="st_68" count="681" image_id="0003789b356d9a">Christian Music</style>
+        <style filter="st_19" count="294" image_id="00037888e15d50">Traditional music</style>
+        <style filter="st_34" count="7672" image_id="000370cb351602">French Pop Music</style>
+        <style filter="st_31" count="465" image_id="000370c629c23b">Celtic</style>
+        <style filter="st_37" count="159" image_id="000370e6a15b63">Ska</style>
+        <style filter="st_59" count="2092" image_id="000370f41fa88a">Schlager</style>
+        <style filter="st_58" count="382" image_id="000370f8c9790b">Gospel</style>
+        <style filter="st_57" count="270" image_id="0003789867752b">Afro-Caribbean</style>
+        <style filter="st_29" count="112" image_id="000370ce673ea3">Classical Music</style>
+        <style filter="st_35" count="193" image_id="000370e96c14a7">World Music</style>
+        <style filter="st_51" count="100" image_id="000370fae21219">Middle East</style>
+        <style filter="st_1" count="58" image_id="000370d8646b56">Musette</style>
+    </styles>
+</response>

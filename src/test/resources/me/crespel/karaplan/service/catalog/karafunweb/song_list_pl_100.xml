@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <list count="10" total="198">
+        <song id="56442" len="215" pop="0.95842638970169" bgcolor="B43B19" nbStreams="1263682">
+            <title>Shallow</title>
+            <artist id="11757">A Star is Born (Lady Gaga &amp; Bradley Cooper)</artist>
+            <year>2018</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a5/a6/ee_d8dd4b_sq100.jpg</imagePath>
+            <bpm>-96</bpm>
+        </song>
+        <song id="6534" len="213" pop="0.97653561484466" bgcolor="DF689E" nbStreams="1152469">
+            <title>Sweet Caroline</title>
+            <artist id="2586">Neil Diamond</artist>
+            <year>1969</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a4/ac/b4_cbab61_sq100.jpg</imagePath>
+            <bpm>-128</bpm>
+        </song>
+        <song id="7300" len="237" pop="0.94094076397791" bgcolor="D76C57" nbStreams="626101">
+            <title>Dancing Queen</title>
+            <artist id="2175">ABBA</artist>
+            <year>1976</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/5f/48_ae14e6_sq100.jpg</imagePath>
+            <bpm>-101</bpm>
+        </song>
+        <song id="12617" len="362" pop="0.95329706592758" bgcolor="CA694E" nbStreams="990062">
+            <title>Bohemian Rhapsody</title>
+            <artist id="2225">Queen</artist>
+            <year>1975</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/8b/3d/b1_ec2660_sq100.jpg</imagePath>
+            <bpm>-93</bpm>
+        </song>
+        <song id="73087" len="199" pop="0.93355351492359" bgcolor="C86A83" nbStreams="389718">
+            <title>Flowers</title>
+            <artist id="3864">Miley Cyrus</artist>
+            <year>2023</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/72/51/23_b75c66_sq100.jpg</imagePath>
+            <bpm>118</bpm>
+        </song>
+        <song id="8530" len="215" pop="0.94712015340954" bgcolor="D16042" nbStreams="656802">
+            <title>I Want It That Way</title>
+            <artist id="2088">Backstreet Boys</artist>
+            <year>1999</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/60/78_2e5916_sq100.jpg</imagePath>
+            <bpm>99.04</bpm>
+        </song>
+        <song id="14121" len="192" pop="0.95344728345122" bgcolor="8D8836" nbStreams="697392">
+            <title>Take Me Home, Country Roads</title>
+            <artist id="2241">John Denver</artist>
+            <year>1971</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/8e/84/3e_179f32_sq100.jpg</imagePath>
+            <bpm>-82</bpm>
+        </song>
+        <song id="49375" len="289" pop="1" bgcolor="483A94" nbStreams="1280204">
+            <title>Tennessee Whiskey</title>
+            <artist id="10701">Chris Stapleton</artist>
+            <year>2015</year>
+            <imagePath>https://cdnaws.recis.io/i/img/00/52/d1/2c_266ba1_sq100.jpg</imagePath>
+            <bpm>-51</bpm>
+        </song>
+        <song id="53998" len="220" pop="0.93820341021899" bgcolor="893A62" nbStreams="511022">
+            <title>Valerie</title>
+            <artist id="3828">Amy Winehouse &amp; Mark Ronson</artist>
+            <year>2007</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/60/33_4c7e15_sq100.jpg</imagePath>
+            <bpm>-106</bpm>
+        </song>
+        <song id="5103" len="276" pop="0.93897358464186" bgcolor="9521E0" nbStreams="615835">
+            <title>My Way</title>
+            <artist id="2032">Frank Sinatra</artist>
+            <year>1969</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/5f/a3_5048c9_sq100.jpg</imagePath>
+            <bpm>-76</bpm>
+        </song>
+    </list>
+</response>

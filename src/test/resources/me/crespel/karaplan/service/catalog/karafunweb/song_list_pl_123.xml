@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <list count="10" total="50">
+        <song id="80845" len="172" pop="0.93661294029843" bgcolor="446281" nbStreams="64553" explicit_lyrics="1">
+            <title>A Bar Song (Tipsy)</title>
+            <artist id="15773">Shaboozey</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/bb/af/e0_f8f9f4_sq100.jpg</imagePath>
+            <bpm>162</bpm>
+        </song>
+        <song id="80539" len="250" pop="0.91413851922107" bgcolor="6F1709" nbStreams="41522">
+            <title>Too Sweet</title>
+            <artist id="10491">Hozier</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/bb/f8/f2_7db28e_sq100.jpg</imagePath>
+            <bpm>117</bpm>
+        </song>
+        <song id="80846" len="220" pop="0.91083905178008" bgcolor="A36BAC" nbStreams="28115">
+            <title>Good Luck, Babe!</title>
+            <artist id="14977">Chappell Roan</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/c0/97/22_5422ed_sq100.jpg</imagePath>
+            <bpm>-117</bpm>
+        </song>
+        <song id="83192" len="250" pop="0.92648360220922" bgcolor="8EB0C3" nbStreams="36955">
+            <title>Die with a Smile</title>
+            <artist id="5995">Lady Gaga &amp; Bruno Mars</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/d5/55/dc_c4f3fe_sq100.jpg</imagePath>
+            <bpm>52.667</bpm>
+        </song>
+        <song id="81319" len="177" pop="0.90762496500722" bgcolor="6E311F" nbStreams="19076" explicit_lyrics="1">
+            <title>I Had Some Help</title>
+            <artist id="11253">Morgan Wallen &amp; Post Malone</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/c2/0e/f5_14c17f_sq100.jpg</imagePath>
+            <bpm>128</bpm>
+        </song>
+        <song id="81981" len="199" pop="0.90915300213546" bgcolor="644561" nbStreams="16179">
+            <title>I Am Not Okay</title>
+            <artist id="12692">Jelly Roll</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/c8/8b/e8_51f1df_sq100.jpg</imagePath>
+            <bpm>77</bpm>
+        </song>
+        <song id="81318" len="276" pop="0.90583009143592" bgcolor="8F74BB" nbStreams="16376" explicit_lyrics="1">
+            <title>Not Like Us</title>
+            <artist id="9921">Kendrick Lamar</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/c2/a4/30_41b63a_sq100.jpg</imagePath>
+            <bpm>101</bpm>
+        </song>
+        <song id="82032" len="219" pop="0.90953976490608" bgcolor="695D8F" nbStreams="8585">
+            <title>I Never Lie</title>
+            <artist id="15487">Zach Top</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/c8/db/2f_f93b8b_sq100.jpg</imagePath>
+            <bpm>108</bpm>
+        </song>
+        <song id="80682" len="150" pop="0.90232940390663" bgcolor="6A4686" nbStreams="9029" explicit_lyrics="1">
+            <title>Get It Sexyy</title>
+            <artist id="14874">Sexyy Red</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/bb/4c/e4_72ff5b_sq100.jpg</imagePath>
+            <bpm>145</bpm>
+        </song>
+        <song id="84342" len="172" pop="0.93642141659831" bgcolor="D4468C" nbStreams="25135">
+            <title>APT.</title>
+            <artist id="15658">Rosé (로제) &amp; Bruno Mars</artist>
+            <year>2024</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/e1/64/39_73aa77_sq100.jpg</imagePath>
+            <bpm>149</bpm>
+        </song>
+    </list>
+</response>

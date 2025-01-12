@@ -1,15 +1,18 @@
 package me.crespel.karaplan.service.export;
 
+import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
+import me.crespel.karaplan.config.KarafunRemoteConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.model.exception.TechnicalException;
@@ -27,9 +30,13 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	private final ExportService karafunRemoteV1ExportService;
 	private final ExportService karafunRemoteV2ExportService;
 
-	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplate restTemplate, @Qualifier("karafunRemoteV1Export") ExportService karafunRemoteV1ExportService, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
+	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplateBuilder restTemplateBuilder, @Qualifier("karafunRemoteV1Export") ExportService karafunRemoteV1ExportService, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
 		this.properties = properties;
-		this.restTemplate = restTemplate;
+		this.restTemplate = restTemplateBuilder
+				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
+				.build();
 		this.karafunRemoteV1ExportService = karafunRemoteV1ExportService;
 		this.karafunRemoteV2ExportService = karafunRemoteV2ExportService;
 	}

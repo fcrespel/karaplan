@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <list count="10" total="297">
+        <song id="49375" len="289" pop="1" bgcolor="483A94" nbStreams="1280204">
+            <title>Tennessee Whiskey</title>
+            <artist id="10701">Chris Stapleton</artist>
+            <year>2015</year>
+            <imagePath>https://cdnaws.recis.io/i/img/00/52/d1/2c_266ba1_sq100.jpg</imagePath>
+            <bpm>-51</bpm>
+        </song>
+        <song id="13469" len="200" pop="0.96012132709504" bgcolor="844214" nbStreams="630408">
+            <title>Before He Cheats</title>
+            <artist id="2328">Carrie Underwood</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/60/15_3a37c0_sq100.jpg</imagePath>
+            <bpm>74</bpm>
+        </song>
+        <song id="7064" len="301" pop="0.95640792368443" bgcolor="2E3055" nbStreams="465835">
+            <title>Picture</title>
+            <artist id="2865">Kid Rock &amp; Sheryl Crow</artist>
+            <year>2001</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/5f/e7_723106_sq100.jpg</imagePath>
+            <bpm>97.96</bpm>
+        </song>
+        <song id="6534" len="213" pop="0.97653561484466" bgcolor="DF689E" nbStreams="1152469">
+            <title>Sweet Caroline</title>
+            <artist id="2586">Neil Diamond</artist>
+            <year>1969</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a4/ac/b4_cbab61_sq100.jpg</imagePath>
+            <bpm>-128</bpm>
+        </song>
+        <song id="12543" len="239" pop="0.95760725981039" bgcolor="B3613B" nbStreams="568574" explicit_lyrics="1">
+            <title>Creep</title>
+            <artist id="4075">Radiohead</artist>
+            <year>1992</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/26/77_fbf97a_sq100.jpg</imagePath>
+            <bpm>-92</bpm>
+        </song>
+        <song id="14609" len="252" pop="0.96142054111863" bgcolor="4D1215" nbStreams="870707">
+            <title>Don't Stop Believin' (Small Town Girl)</title>
+            <artist id="2733">Journey</artist>
+            <year>1981</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/72/51/ff_7cc5a2_sq100.jpg</imagePath>
+            <bpm>-120</bpm>
+        </song>
+        <song id="7125" len="254" pop="0.94565156220724" bgcolor="563B28" nbStreams="602051">
+            <title>Friends in Low Places</title>
+            <artist id="2428">Garth Brooks</artist>
+            <year>1990</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/ae/63/d9_91ce01_sq100.jpg</imagePath>
+            <bpm>109.025</bpm>
+        </song>
+        <song id="56442" len="215" pop="0.95842638970169" bgcolor="B43B19" nbStreams="1263682">
+            <title>Shallow</title>
+            <artist id="11757">A Star is Born (Lady Gaga &amp; Bradley Cooper)</artist>
+            <year>2018</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a5/a6/ee_d8dd4b_sq100.jpg</imagePath>
+            <bpm>-96</bpm>
+        </song>
+        <song id="6229" len="243" pop="0.93878322654813" bgcolor="104713" nbStreams="405100">
+            <title>Neon Moon</title>
+            <artist id="2321">Brooks &amp; Dunn</artist>
+            <year>1991</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/a6/64/e5_1a9938_sq100.jpg</imagePath>
+            <bpm>102.39</bpm>
+        </song>
+        <song id="6475" len="295" pop="0.94311250723559" bgcolor="79274C" nbStreams="432224">
+            <title>What's Up?</title>
+            <artist id="2692">4 Non Blondes</artist>
+            <year>1993</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/74/28/4a_ca7bdc_sq100.jpg</imagePath>
+            <bpm>-67</bpm>
+        </song>
+    </list>
+</response>

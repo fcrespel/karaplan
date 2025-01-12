@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <list count="10" total="61">
+        <song id="24472" len="306" pop="0.90080104623664" bgcolor="3D12C7" nbStreams="23589">
+            <title>Uprising</title>
+            <artist id="3888">Muse</artist>
+            <year>2009</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2c_68ea4a_sq100.jpg</imagePath>
+            <bpm>128</bpm>
+        </song>
+        <song id="12552" len="240" pop="0.90069534759209" bgcolor="2A1595" nbStreams="22590">
+            <title>Starlight</title>
+            <artist id="3888">Muse</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2d_d47a0e_sq100.jpg</imagePath>
+            <bpm>-121</bpm>
+        </song>
+        <song id="41552" len="279" pop="0.90035211293514" bgcolor="4742A9" nbStreams="14692">
+            <title>Madness</title>
+            <artist id="3888">Muse</artist>
+            <year>2012</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2f_ca09b3_sq100.jpg</imagePath>
+            <bpm>90</bpm>
+        </song>
+        <song id="19933" len="237" pop="0.90023744640642" bgcolor="3C030D" nbStreams="18508">
+            <title>Time is Running Out</title>
+            <artist id="3888">Muse</artist>
+            <year>2003</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/30_0721d2_sq100.jpg</imagePath>
+            <bpm>118.305</bpm>
+        </song>
+        <song id="12553" len="209" pop="0.90019668369392" bgcolor="6C131B" nbStreams="11637">
+            <title>Supermassive Black Hole</title>
+            <artist id="3888">Muse</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2e_79b346_sq100.jpg</imagePath>
+            <bpm>120</bpm>
+        </song>
+        <song id="19237" len="195" pop="0.90000515489426" bgcolor="BD470F" nbStreams="33591">
+            <title>Feeling Good</title>
+            <artist id="3888">Muse</artist>
+            <year>2005</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2b_54c769_sq100.jpg</imagePath>
+            <bpm>-73</bpm>
+        </song>
+        <song id="14683" len="226" pop="0.87193561978176" bgcolor="5F1702" nbStreams="6399">
+            <title>Hysteria</title>
+            <artist id="3888">Muse</artist>
+            <year>2003</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/ac/fe_7233d7_sq100.jpg</imagePath>
+            <bpm>93.15</bpm>
+        </song>
+        <song id="21683" len="367" pop="0.82475960879245" bgcolor="933132" nbStreams="3914">
+            <title>Knights of Cydonia</title>
+            <artist id="3888">Muse</artist>
+            <year>2006</year>
+            <imagePath>https://cdnaws.recis.io/i/img/00/52/d7/2f_c170cb_sq100.jpg</imagePath>
+            <bpm>-138</bpm>
+        </song>
+        <song id="26289" len="216" pop="0.81792095573112" bgcolor="4C5CE4" nbStreams="6013">
+            <title>Plug In Baby</title>
+            <artist id="3888">Muse</artist>
+            <year>2001</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/ac/46_1a8eca_sq100.jpg</imagePath>
+            <bpm>136</bpm>
+        </song>
+        <song id="19934" len="238" pop="0.78939669214384" bgcolor="6D12AB" nbStreams="10482">
+            <title>Unintended</title>
+            <artist id="3888">Muse</artist>
+            <year>2000</year>
+            <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/31_1ce9b0_sq100.jpg</imagePath>
+            <bpm>70</bpm>
+        </song>
+    </list>
+</response>

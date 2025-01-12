@@ -1,19 +1,15 @@
-package me.crespel.karaplan.service.impl;
+package me.crespel.karaplan.service.catalog;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import me.crespel.karaplan.service.AbstractCatalogServiceIT;
-import me.crespel.karaplan.service.CatalogService;
-
 @SpringBootTest
 @ActiveProfiles("test")
-public class KvCatalogServiceImplIT extends AbstractCatalogServiceIT {
+public class KvCatalogServiceImplIT extends AbstractCatalogServiceTest<KvCatalogServiceImpl> {
 
-	public KvCatalogServiceImplIT(@Qualifier("kvCatalog") CatalogService catalogService) {
+	public KvCatalogServiceImplIT(@Autowired KvCatalogServiceImpl catalogService) {
 		super(catalogService);
-		this.testGetSongListQueryEnabled = false;
 		this.testGetSongListStylesEnabled = false;
 		this.testGetSongListThemeEnabled = false;
 		this.testGetSongListTopEnabled = false;

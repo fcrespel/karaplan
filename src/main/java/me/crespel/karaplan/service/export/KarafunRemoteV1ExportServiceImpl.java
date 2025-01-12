@@ -19,7 +19,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.crespel.karaplan.config.KarafunConfig.KarafunRemoteProperties;
+import me.crespel.karaplan.config.KarafunRemoteConfig.KarafunRemoteProperties;
 import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.model.exception.TechnicalException;

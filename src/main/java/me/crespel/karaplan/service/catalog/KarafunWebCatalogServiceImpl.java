@@ -3,6 +3,7 @@ package me.crespel.karaplan.service.catalog;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
@@ -25,6 +27,7 @@ import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -35,7 +38,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.google.common.hash.Hashing;
 
 import lombok.extern.slf4j.Slf4j;
-import me.crespel.karaplan.config.KarafunConfig.KarafunWebProperties;
+import me.crespel.karaplan.config.KarafunWebConfig.KarafunWebProperties;
 import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSelection;
 import me.crespel.karaplan.model.CatalogSelectionList;
@@ -75,9 +78,13 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	private final ConfigurableConversionService conversionService;
 	private final Map<String, KarafunWebSession> sessions = new ConcurrentHashMap<>();
 
-	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestTemplate restTemplate) {
+	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplate;
+		this.restTemplate = restTemplateBuilder
+				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
+				.build();
 		this.conversionService = new DefaultConversionService();
 		this.conversionService.addConverter(new MultiValueMapToStringConverter());
 		this.conversionService.addConverter(new KarafunToCatalogArtistConverter());
@@ -126,11 +133,14 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 		return session;
 	}
 
+	protected void clearSessions() {
+		sessions.clear();
+	}
+
 	private <T extends KarafunWebResponse> T callApi(KarafunWebSession session, String resource, String action, Map<String, Object> params, Class<T> responseType) {
 		try {
 			// Build URI
 			URI uri = UriComponentsBuilder.fromHttpUrl(getEndpoint(session.getLocale()))
-					.path(properties.getBasePath())
 					.pathSegment(resource)
 					.pathSegment(action + ".php")
 					.build().encode().toUri();
@@ -144,6 +154,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 			// Build headers
 			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			String timestamp = Long.toString(System.currentTimeMillis() / 1000L);
 			String bodyString = conversionService.convert(body, String.class);
 			String signature = Hashing.sha256().hashString(String.join("|", "kfun-v1.5", uri.toString(), bodyString, timestamp, session.getSessionKey()), StandardCharsets.UTF_8).toString();

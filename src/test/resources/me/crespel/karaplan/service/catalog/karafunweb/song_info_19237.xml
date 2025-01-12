@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response status="OK">
+    <song id="19237" len="195" pop="0.90000515489426" bgcolor="BD470F" preview="1" preview-len="40">
+        <title>Feeling Good</title>
+        <artist id="3888">Muse</artist>
+        <year>2005</year>
+        <imagePath>https://cdnaws.recis.io/i/img/01/82/aa/2b_54c769_sq100.jpg</imagePath>
+        <legal>
+            <item id="1" type="writing">Anthony George Newley / Leslie Bricusse</item>
+            <item id="2" type="publishing">Concord Music LTD / Tro The Richmond Organization Editions Essex / Universal Music Publishing Group</item>
+        </legal>
+        <styles>2,39</styles>
+        <bpm>-73</bpm>
+    </song>
+</response>
