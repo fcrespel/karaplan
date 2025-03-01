@@ -7,7 +7,8 @@ import { Playlist } from '../../models/playlist';
 @Component({
   selector: 'app-playlist-leave-modal',
   templateUrl: './playlist-leave-modal.component.html',
-  styleUrls: ['./playlist-leave-modal.component.css']
+  styleUrls: ['./playlist-leave-modal.component.css'],
+  standalone: false
 })
 export class PlaylistLeaveModalComponent implements OnInit {
 

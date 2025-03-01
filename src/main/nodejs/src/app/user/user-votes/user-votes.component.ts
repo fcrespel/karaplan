@@ -7,7 +7,8 @@ import { SongsService } from '../../services/songs.service';
 @Component({
   selector: 'app-user-votes',
   templateUrl: './user-votes.component.html',
-  styleUrls: ['./user-votes.component.css']
+  styleUrls: ['./user-votes.component.css'],
+  standalone: false
 })
 export class UserVotesComponent implements OnInit, OnDestroy {
 

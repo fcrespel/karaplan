@@ -9,7 +9,8 @@ import { SongsService } from '../services/songs.service';
 @Component({
   selector: 'app-songs',
   templateUrl: './songs.component.html',
-  styleUrls: ['./songs.component.css']
+  styleUrls: ['./songs.component.css'],
+  standalone: false
 })
 export class SongsComponent implements OnInit {
 

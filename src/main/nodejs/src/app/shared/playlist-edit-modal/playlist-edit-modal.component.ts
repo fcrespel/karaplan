@@ -5,7 +5,8 @@ import { Playlist } from '../../models/playlist';
 @Component({
   selector: 'app-playlist-edit-modal',
   templateUrl: './playlist-edit-modal.component.html',
-  styleUrls: ['./playlist-edit-modal.component.css']
+  styleUrls: ['./playlist-edit-modal.component.css'],
+  standalone: false
 })
 export class PlaylistEditModalComponent implements OnInit {
 

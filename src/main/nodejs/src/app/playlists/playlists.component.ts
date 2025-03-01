@@ -11,7 +11,8 @@ import { PlaylistLeaveModalComponent } from '../shared/playlist-leave-modal/play
 @Component({
   selector: 'app-playlists',
   templateUrl: './playlists.component.html',
-  styleUrls: ['./playlists.component.css']
+  styleUrls: ['./playlists.component.css'],
+  standalone: false
 })
 export class PlaylistsComponent implements OnInit, OnDestroy {
 

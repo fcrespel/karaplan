@@ -16,7 +16,8 @@ import { SongsService } from '../../services/songs.service';
 @Component({
   selector: 'app-song-detail',
   templateUrl: './song-detail.component.html',
-  styleUrls: ['./song-detail.component.css']
+  styleUrls: ['./song-detail.component.css'],
+  standalone: false
 })
 export class SongDetailComponent implements OnInit, OnDestroy {
 

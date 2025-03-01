@@ -13,7 +13,8 @@ import { SongsService } from '../../services/songs.service';
 @Component({
   selector: 'app-song-list',
   templateUrl: './song-list.component.html',
-  styleUrls: ['./song-list.component.css']
+  styleUrls: ['./song-list.component.css'],
+  standalone: false
 })
 export class SongListComponent implements OnInit, OnDestroy {
 

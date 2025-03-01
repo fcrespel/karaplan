@@ -17,7 +17,8 @@ import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit
 @Component({
   selector: 'app-song-actions',
   templateUrl: './song-actions.component.html',
-  styleUrls: ['./song-actions.component.css']
+  styleUrls: ['./song-actions.component.css'],
+  standalone: false
 })
 export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
 
