@@ -81,8 +81,8 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
 		this.restTemplate = restTemplateBuilder
-				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 		this.conversionService = new DefaultConversionService();
@@ -140,7 +140,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 	private <T extends KarafunWebResponse> T callApi(KarafunWebSession session, String resource, String action, Map<String, Object> params, Class<T> responseType) {
 		try {
 			// Build URI
-			URI uri = UriComponentsBuilder.fromHttpUrl(getEndpoint(session.getLocale()))
+			URI uri = UriComponentsBuilder.fromUriString(getEndpoint(session.getLocale()))
 					.pathSegment(resource)
 					.pathSegment(action + ".php")
 					.build().encode().toUri();

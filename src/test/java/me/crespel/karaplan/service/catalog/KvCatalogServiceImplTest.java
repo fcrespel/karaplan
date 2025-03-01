@@ -91,7 +91,7 @@ public class KvCatalogServiceImplTest extends AbstractCatalogServiceTest<KvCatal
 					.setAffiliateId(properties.getAffiliateId())
 					.setFunction(function)
 					.setParameters(params);
-			URI uri = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			URI uri = UriComponentsBuilder.fromUriString(properties.getEndpoint())
 					.path("/" + path + "/")
 					.queryParam("query", jsonMapper.writeValueAsString(query))
 					.build().encode().toUri();

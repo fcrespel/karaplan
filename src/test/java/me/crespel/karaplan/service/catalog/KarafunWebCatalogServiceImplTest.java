@@ -161,7 +161,7 @@ public class KarafunWebCatalogServiceImplTest extends AbstractCatalogServiceTest
 	}
 
 	private void addMockResponse(String path, String action, Object... id) {
-		URI uri = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+		URI uri = UriComponentsBuilder.fromUriString(properties.getEndpoint())
 				.pathSegment(path)
 				.pathSegment(action + ".php")
 				.build().encode().toUri();

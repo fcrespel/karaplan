@@ -33,8 +33,8 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplateBuilder restTemplateBuilder, @Qualifier("karafunRemoteV1Export") ExportService karafunRemoteV1ExportService, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
 		this.properties = properties;
 		this.restTemplate = restTemplateBuilder
-				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 		this.karafunRemoteV1ExportService = karafunRemoteV1ExportService;
@@ -49,7 +49,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
 			// Retrieve remote page content
 			String remotePage;
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint()).path(target);
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint()).path(target);
 			try {
 				remotePage = restTemplate.getForObject(builder.toUriString(), String.class);
 				if (remoteDisconnectedPattern.matcher(remotePage).find()) {

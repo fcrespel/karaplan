@@ -55,8 +55,8 @@ public class KvCatalogServiceImpl implements CatalogService {
 	public KvCatalogServiceImpl(KvProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
 		this.restTemplate = restTemplateBuilder
-				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 		this.conversionService = new DefaultConversionService();
@@ -87,7 +87,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("get")
 					.setParameters(new KvQuery.ArtistGet().setId(artistId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(null))
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(null))
 					.path("/artist/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -114,7 +114,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("get")
 					.setParameters(new KvQuery.SongGet().setId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
 					.path("/song/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -165,7 +165,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 				throw new UnsupportedOperationException("Unsupported song list type '" + type + "'");
 			}
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
 					.path(path)
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
@@ -192,7 +192,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.setFunction("list")
 					.setParameters(new KvQuery.SongFileList().setSongId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(getEndpoint(locale))
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
 					.path("/songfile/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 

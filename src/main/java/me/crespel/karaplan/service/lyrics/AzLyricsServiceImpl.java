@@ -39,8 +39,8 @@ public class AzLyricsServiceImpl implements LyricsService {
 	public AzLyricsServiceImpl(AzLyricsProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
 		this.restTemplate = restTemplateBuilder
-				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.additionalMessageConverters(jacksonMessageConverter())
 				.build();
@@ -74,7 +74,7 @@ public class AzLyricsServiceImpl implements LyricsService {
 
 	private AzLyricsSuggestResponse getSuggestions(Song song) {
 		try {
-			UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint())
 					.queryParam("q", song.getName() + " - " + song.getArtist().getName());
 			return restTemplate.getForObject(builder.build().encode().toUri(), AzLyricsSuggestResponse.class);
 		} catch (RestClientException e) {

@@ -40,8 +40,8 @@ public class KarafunBarExportServiceImpl implements ExportService {
 	public KarafunBarExportServiceImpl(KarafunBarProperties properties, RestTemplateBuilder restTemplateBuilder) {
 		this.properties = properties;
 		this.restTemplate = restTemplateBuilder
-				.setConnectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.setReadTimeout(Duration.ofMillis(properties.getReadTimeout()))
+				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
+				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 	}
@@ -50,7 +50,7 @@ public class KarafunBarExportServiceImpl implements ExportService {
 	public void exportPlaylist(Playlist playlist, String target) {
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
 			try {
-				UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(properties.getEndpoint())
+				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint())
 						.path("/" + target + "/playlist/list");
 
 				log.debug("Getting current playlist for ID {}", target);

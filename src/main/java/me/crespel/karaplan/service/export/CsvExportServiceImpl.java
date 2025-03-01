@@ -30,7 +30,7 @@ public class CsvExportServiceImpl implements ExportService {
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
-			try (CSVPrinter printer = CSVFormat.DEFAULT.builder().setDelimiter(';').setHeader(header).build().print(new FileWriter(target))) {
+			try (CSVPrinter printer = CSVFormat.DEFAULT.builder().setDelimiter(';').setHeader(header).get().print(new FileWriter(target))) {
 				for (PlaylistSong playlistSong : playlist.getSongs()) {
 					Song song = playlistSong.getSong();
 					printer.printRecord(
