@@ -4,25 +4,27 @@
 
 To run the application as a Docker container, execute the following command:
 
-    docker run -d --name karaplan -p 8080:8080 ghcr.io/fcrespel/karaplan:latest
+```sh
+docker run -d --name karaplan -p 8080:8080 ghcr.io/fcrespel/karaplan:latest
+```
 
 The application will then be available at [http://localhost:8080](http://localhost:8080)
 
 All configuration values may be overridden with environment variables (as supported by Spring Boot), such as the following:
 
-- SPRING_DATASOURCE_USERNAME
-- SPRING_DATASOURCE_PASSWORD
-- SPRING_DATASOURCE_URL
-- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID
-- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET
-- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID
-- SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET
+* `SPRING_DATASOURCE_USERNAME`
+* `SPRING_DATASOURCE_PASSWORD`
+* `SPRING_DATASOURCE_URL`
+* `SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTID`
+* `SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENTSECRET`
+* `SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTID`
+* `SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENTSECRET`
 
 ## Docker Compose
 
 To run the application using [Docker Compose](https://docs.docker.com/compose/), you may use and adapt the following example:
 
-```
+```yaml
 version: '3.5'
 services:
   mysql:

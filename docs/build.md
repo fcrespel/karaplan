@@ -4,7 +4,9 @@
 
 To build the application and Docker image locally, execute the following command, from the project directory:
 
-    ./mvnw -DskipTests -Dfrontend-build -Ddocker-build -Ddocker.image.tag=latest clean package dockerfile:build
+```sh
+./mvnw -DskipTests -Dfrontend-build -Ddocker-build -Ddocker.image.tag=latest clean package dockerfile:build
+```
 
 A Docker image tagged `ghcr.io/fcrespel/karaplan:latest` will then be created.
 
@@ -23,7 +25,7 @@ Required environment variables:
 
 Optional environment variables:
 
-* `MVN_ENV_OPTS`: Maven environment options (known as MAVEN_OPTS)
+* `MVN_ENV_OPTS`: Maven environment options (known as `MAVEN_OPTS`)
 * `MVN_BUILD_OPTS`: Maven build options (arguments, profiles, system properties)
 * `MVN_GOALS`: Maven build goals
 * `DOCKER_REPO`: Docker image registry/repository
@@ -37,10 +39,10 @@ The pipeline will produce a WAR file and a Docker image, and push it to a Docker
 
 Optional parameters:
 
-* `mvn_env_opts`: Maven environment options (known as MAVEN_OPTS)
+* `mvn_env_opts`: Maven environment options (known as `MAVEN_OPTS`)
 * `mvn_build_opts`: Maven build options (arguments, profiles, system properties)
 * `mvn_goals`: Maven build goals
 
 ## Using Google Cloud Build
 
-See the Google Cloud Platform [deployment](deployment/gcp/build) documentation.
+See the Google Cloud Platform [deployment](deployment/gcp/build/README.md) documentation.
