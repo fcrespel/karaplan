@@ -1,0 +1,64 @@
+site_name: KaraPlan docs
+site_url: https://fcrespel.github.io/karaplan/
+repo_url: https://github.com/fcrespel/karaplan
+repo_name: fcrespel/karaplan
+nav:
+  - Home: README.md
+  - Development: development.md
+  - Build: build.md
+  - Deployment:
+      - deployment/README.md
+      - Docker: deployment/docker/README.md
+      - Helm: deployment/helm/README.md
+      - Google Cloud:
+          - deployment/gcp/README.md
+          - Build: deployment/gcp/build/README.md
+          - SQL: deployment/gcp/sql/README.md
+          - Secret Manager: deployment/gcp/secret-manager/README.md
+          - GCE Classic: deployment/gcp/gce-classic/README.md
+          - GCE Container: deployment/gcp/gce-container/README.md
+          - GKE: deployment/gcp/gke/README.md
+          - GAE: deployment/gcp/gae/README.md
+          - Cloud Run: deployment/gcp/cloudrun/README.md
+      - Terraform:
+          - deployment/terraform/README.md
+          - GCE Classic: deployment/terraform/gce-classic/README.md
+          - GCE Container: deployment/terraform/gce-container/README.md
+          - GKE: deployment/terraform/gke/README.md
+          - GKE Cluster: deployment/terraform/gke-cluster/README.md
+          - GAE: deployment/terraform/gae/README.md
+          - Cloud Run: deployment/terraform/cloudrun/README.md
+theme:
+  name: material
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: pink
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: pink
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: pink
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    - navigation.indexes
+    - content.action.edit
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+markdown_extensions:
+  - toc:
+      permalink: "#"
+  - pymdownx.highlight
+  - pymdownx.superfences 

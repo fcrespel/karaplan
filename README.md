@@ -1,4 +1,4 @@
-[![Build status](https://github.com/fcrespel/karaplan/workflows/CI/badge.svg)](https://github.com/fcrespel/karaplan/actions?query=workflow%3ACI)
+[![Build status](https://github.com/fcrespel/karaplan/workflows/Build/badge.svg)](https://github.com/fcrespel/karaplan/actions?query=workflow%3ABuild)
 [![License](https://img.shields.io/github/license/fcrespel/karaplan.svg)](https://opensource.org/licenses/MIT)
 
 # KaraPlan
@@ -11,7 +11,7 @@ A sample deployment is available at https://karaplan.crespel.me, but you are fre
 
 ## Documentation
 
-Development, build and deployment documentation is available in the [docs](docs) directory of this repository.
+Development, build and deployment documentation is available at [fcrespel.github.io/karaplan/](https://fcrespel.github.io/karaplan/) and in the [docs](docs) directory of this repository.
 
 ## Legal notice
 
