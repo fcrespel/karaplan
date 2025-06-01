@@ -44,7 +44,7 @@
 		<!-- Dependency properties -->
 		<commons-csv.version>1.14.0</commons-csv.version>
 		<guava.version>33.4.8-jre</guava.version>
-		<opentelemetry-instrumentation.version>2.15.0</opentelemetry-instrumentation.version>
+		<opentelemetry-instrumentation.version>2.16.0</opentelemetry-instrumentation.version>
 		<node.version>v20.18.0</node.version>
 		<npm.version>10.9.0</npm.version>
 		<socketio-client.version>1.0.1</socketio-client.version>
