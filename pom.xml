@@ -42,7 +42,7 @@
 		<jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
 
 		<!-- Dependency properties -->
-		<commons-csv.version>1.14.0</commons-csv.version>
+		<commons-csv.version>1.14.1</commons-csv.version>
 		<guava.version>33.4.8-jre</guava.version>
 		<opentelemetry-instrumentation.version>2.20.0</opentelemetry-instrumentation.version>
 		<node.version>v22.17.0</node.version>
