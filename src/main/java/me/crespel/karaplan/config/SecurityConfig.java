@@ -1,5 +1,6 @@
 package me.crespel.karaplan.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -19,6 +20,8 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import io.opentelemetry.instrumentation.spring.security.config.v6_0.EnduserAttributesCapturer;
+import io.opentelemetry.instrumentation.spring.security.config.v6_0.servlet.EnduserAttributesHttpSecurityCustomizer;
 import me.crespel.karaplan.security.OAuth2UserServiceWrapper;
 import me.crespel.karaplan.security.OidcUserServiceWrapper;
 import me.crespel.karaplan.service.UserService;
@@ -27,11 +30,14 @@ import me.crespel.karaplan.service.UserService;
 @EnableJpaAuditing
 public class SecurityConfig {
 
+	@Value("${otel.instrumentation.common.enduser.id.enabled:false}")
+	private boolean otelEndUserIdEnabled = false;
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http, UserService userService) throws Exception {
 		CsrfTokenRequestAttributeHandler csrfHandler = new CsrfTokenRequestAttributeHandler();
 		csrfHandler.setCsrfRequestAttributeName(null); // Force loading CSRF token on every request
-		return http
+		http
 			.authorizeHttpRequests(requests -> requests
 				.requestMatchers("/", "/home", "/about").permitAll()
 				.requestMatchers("/*.css", "/*.js", "/*.js.map", "/*.jpg", "/*.png", "/*.svg", "/*.ico", "/assets/**", "/media/**", "/webjars/**", "/site.webmanifest", "/browserconfig.xml").permitAll()
@@ -51,8 +57,15 @@ public class SecurityConfig {
 					.userService(oauth2UserService(userService))
 					.oidcUserService(oidcUserService(userService))))
 			.exceptionHandling(handling -> handling
-				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**")))
-			.build();
+				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**")));
+
+		if (otelEndUserIdEnabled) {
+			EnduserAttributesCapturer capturer = new EnduserAttributesCapturer();
+			capturer.setEnduserIdEnabled(true);
+			new EnduserAttributesHttpSecurityCustomizer(capturer).customize(http);
+		}
+
+		return http.build();
 	}
 
 	@Bean
