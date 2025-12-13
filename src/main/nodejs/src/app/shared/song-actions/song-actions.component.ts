@@ -85,14 +85,6 @@ export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
     this.loading = false;
   }
 
-  trackByCommentId(index: number, comment: SongComment): number {
-    return comment.id;
-  }
-
-  trackByPlaylistId(index: number, playlist: Playlist): number {
-    return playlist.id;
-  }
-
   voteUp() {
     let score = (this.vote && this.vote.score) == 1 ? 0 : 1;
     this.loading = true;

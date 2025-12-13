@@ -48,10 +48,6 @@ export class SongListComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  trackBySongCatalogId(index: number, playlistSong: PlaylistSong): number {
-    return playlistSong.song.catalogId;
-  }
-
   gotoSong(song: Song) {
     if (!this.dragging) {
       this.router.navigate(['/songs', song.catalogId]);

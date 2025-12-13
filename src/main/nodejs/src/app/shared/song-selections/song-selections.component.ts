@@ -16,8 +16,4 @@ export class SongSelectionsComponent implements OnInit {
   ngOnInit() {
   }
 
-  trackBySelectionId(index: number, selection: CatalogSelection): number {
-    return selection.id;
-  }
-
 }

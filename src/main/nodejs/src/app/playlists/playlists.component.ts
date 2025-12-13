@@ -41,10 +41,6 @@ export class PlaylistsComponent implements OnInit, OnDestroy {
       });
   }
 
-  trackByPlaylistId(index: number, playlist: Playlist): number {
-    return playlist.id;
-  }
-
   gotoPlaylist(playlist: Playlist) {
     this.router.navigate(['/playlists', playlist.id]);
   }

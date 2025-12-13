@@ -35,51 +35,68 @@
 </ul>
 
 <!-- Search bar -->
-<div class="row my-3" *ngIf="queryContext.type == 'query'">
-  <div class="col">
-    <form (ngSubmit)="onSearch(queryField)">
-      <div class="input-group shadow">
-        <input type="text" class="form-control" name="query" [(ngModel)]="queryField" placeholder="Song or artist name">
-        <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
-      </div>
-    </form>
+@if (queryContext.type == 'query') {
+  <div class="row my-3">
+    <div class="col">
+      <form (ngSubmit)="onSearch(queryField)">
+        <div class="input-group shadow">
+          <input type="text" class="form-control" name="query" [(ngModel)]="queryField" placeholder="Song or artist name">
+          <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
+}
 
 <!-- Selection info -->
-<div class="card mb-3" *ngIf="queryContext.selection">
-  <div class="card-body px-3 py-2 text-dark">
-    <div class="row align-items-center g-0">
-      <div class="col-auto">
-        <img src="{{ queryContext.selection.img || 'https://via.placeholder.com/50?text=?' }}" class="rounded" style="width: 50px; height: 50px;">
-      </div>
-      <div class="col px-3">
-        <h5 class="card-title mb-1">{{ queryContext.selection.name || '...' }}</h5>
+@if (queryContext.selection) {
+  <div class="card mb-3">
+    <div class="card-body px-3 py-2 text-dark">
+      <div class="row align-items-center g-0">
+        <div class="col-auto">
+          <img src="{{ queryContext.selection.img || 'https://via.placeholder.com/50?text=?' }}" class="rounded" style="width: 50px; height: 50px;">
+        </div>
+        <div class="col px-3">
+          <h5 class="card-title mb-1">{{ queryContext.selection.name || '...' }}</h5>
+        </div>
       </div>
     </div>
   </div>
-</div>
+}
 
 <!-- Loading indicator -->
-<div class="d-flex justify-content-center" *ngIf="queryContext.loading">
-  <div class="spinner-border spinner-border-lg" role="status">
-    <span class="sr-only">Loading...</span>
+@if (queryContext.loading) {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border spinner-border-lg" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
   </div>
-</div>
+}
 
 <!-- No results -->
-<p class="lead text-center mt-4" *ngIf="queryContext.songs.length == 0 && (queryContext.type == 'query' || queryContext.type == 'votes') && !queryContext.loading">
-  <i class="fas fa-frown"></i> No results found.
-</p>
+@if (queryContext.songs.length == 0 && (queryContext.type == 'query' || queryContext.type == 'votes') && !queryContext.loading) {
+  <p class="lead text-center mt-4">
+    <i class="fas fa-frown"></i> No results found.
+  </p>
+}
 
 <!-- Selections -->
-<app-song-selections *ngIf="queryContext.selections.length > 0" [selections]="queryContext.selections"></app-song-selections>
+@if (queryContext.selections.length > 0) {
+  <app-song-selections [selections]="queryContext.selections"></app-song-selections>
+}
 
 <!-- Songs -->
-<app-song-list *ngIf="queryContext.songs.length > 0" [songs]="queryContext.songs"></app-song-list>
-<div class="text-center my-3" *ngIf="queryContext.hasMoreSongs">
-  <button type="button" (click)="loadMoreSongs()" [disabled]="queryContext.hasMoreSongsLoading" class="btn btn-lg btn-outline-light w-50">
-    <span *ngIf="!queryContext.hasMoreSongsLoading">Load more ...</span>
-    <span *ngIf="queryContext.hasMoreSongsLoading"><span class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span> Loading ...</span>
-  </button>
-</div>
+@if (queryContext.songs.length > 0) {
+  <app-song-list [songs]="queryContext.songs"></app-song-list>
+}
+@if (queryContext.hasMoreSongs) {
+  <div class="text-center my-3">
+    <button type="button" (click)="loadMoreSongs()" [disabled]="queryContext.hasMoreSongsLoading" class="btn btn-lg btn-outline-light w-50">
+      @if (!queryContext.hasMoreSongsLoading) {
+        <span>Load more ...</span>
+      } @else {
+        <span><span class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span> Loading ...</span>
+      }
+    </button>
+  </div>
+}

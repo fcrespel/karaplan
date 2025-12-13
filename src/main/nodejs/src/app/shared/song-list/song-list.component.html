@@ -1,13 +1,19 @@
-<ul class="list-group shadow" *ngIf="songs" cdkDropList cdkDropListLockAxis="y" [cdkDropListDisabled]="!allowMove" (cdkDropListDropped)="moveSong($event)">
-  <li *ngFor="let playlistSong of songs; trackBy: trackBySongCatalogId" (click)="gotoSong(playlistSong.song)" class="list-group-item list-group-item-action align-items-center g-0 px-3 py-2" 
-    cdkDrag (cdkDragStarted)="dragging = true" (cdkDragDropped)="dragging = false">
-    <div class="list-group-item py-2" *cdkDragPlaceholder></div>
-    <div class="col-auto px-2" cdkDragHandle *ngIf="allowMove">
-      <i class="fas fa-grip-lines-vertical"></i>
-    </div>
-    <ng-container *ngTemplateOutlet="songItem; context: { song: playlistSong.song, playlistSong: playlistSong }"></ng-container>
-  </li>
-</ul>
+@if (songs) {
+  <ul class="list-group shadow" cdkDropList cdkDropListLockAxis="y" [cdkDropListDisabled]="!allowMove" (cdkDropListDropped)="moveSong($event)">
+    @for (playlistSong of songs; track playlistSong.song.catalogId) {
+      <li (click)="gotoSong(playlistSong.song)" class="list-group-item list-group-item-action align-items-center g-0 px-3 py-2"
+        cdkDrag (cdkDragStarted)="dragging = true" (cdkDragDropped)="dragging = false">
+        <div class="list-group-item py-2" *cdkDragPlaceholder></div>
+        @if (allowMove) {
+          <div class="col-auto px-2" cdkDragHandle>
+            <i class="fas fa-grip-lines-vertical"></i>
+          </div>
+        }
+        <ng-container *ngTemplateOutlet="songItem; context: { song: playlistSong.song, playlistSong: playlistSong }"></ng-container>
+      </li>
+    }
+  </ul>
+}
 
 <ng-template #songItem let-song="song" let-playlistSong="playlistSong">
   <div class="col-auto">
@@ -17,19 +23,31 @@
     <p class="m-0"><a href="#" [routerLink]="['/songs', song.catalogId]" class="link-dark">{{ song.name }}</a></p>
     <p class="m-0"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" (click)="$event.stopPropagation()" class="link-secondary"><small>{{ song.artist.name }}</small></a></p>
   </div>
-  <div class="col-auto d-none d-md-block" *ngIf="playlistSong?.createdBy">
-    <span class="badge text-dark" ngbTooltip="Added by {{ playlistSong.createdBy.displayName }} on {{ playlistSong.createdDate | date:'short' }}" placement="top top-left top-right auto" container="body"><i class="fas fa-info-circle"></i></span>
-  </div>
-  <div class="col-auto" *ngIf="showDuration && song.duration">
-    <span class="badge text-bg-secondary" title="Duration">{{ song.duration | duration }}</span>
-  </div>
+  @if (playlistSong?.createdBy) {
+    <div class="col-auto d-none d-md-block">
+      <span class="badge text-dark" ngbTooltip="Added by {{ playlistSong.createdBy.displayName }} on {{ playlistSong.createdDate | date:'short' }}" placement="top top-left top-right auto" container="body"><i class="fas fa-info-circle"></i></span>
+    </div>
+  }
+  @if (showDuration && song.duration) {
+    <div class="col-auto">
+      <span class="badge text-bg-secondary" title="Duration">{{ song.duration | duration }}</span>
+    </div>
+  }
   <div class="col-auto d-none d-sm-block ms-2">
-    <ng-container [ngSwitch]="song.previewStatus">
-      <button *ngSwitchDefault type="button" class="btn btn-outline-dark" title="Play audio preview" (click)="$event.stopPropagation(); playSong(song)"><i class="fas fa-play"></i></button>
-      <button *ngSwitchCase="'waiting'" type="button" class="btn btn-outline-dark" (click)="$event.stopPropagation(); stopSong()"><i class="fas fa-spinner fa-spin"></i></button>
-      <button *ngSwitchCase="'playing'" type="button" class="btn btn-dark" title="Stop audio preview" (click)="$event.stopPropagation(); stopSong()"><i class="fas fa-stop"></i></button>
-      <button *ngSwitchCase="'notfound'" type="button" class="btn btn-dark" title="Not available" disabled><i class="fas fa-ban"></i></button>
-    </ng-container>
+    @switch (song.previewStatus) {
+      @default {
+        <button type="button" class="btn btn-outline-dark" title="Play audio preview" (click)="$event.stopPropagation(); playSong(song)"><i class="fas fa-play"></i></button>
+      }
+      @case ('waiting') {
+        <button type="button" class="btn btn-outline-dark" (click)="$event.stopPropagation(); stopSong()"><i class="fas fa-spinner fa-spin"></i></button>
+      }
+      @case ('playing') {
+        <button type="button" class="btn btn-dark" title="Stop audio preview" (click)="$event.stopPropagation(); stopSong()"><i class="fas fa-stop"></i></button>
+      }
+      @case ('notfound') {
+        <button type="button" class="btn btn-dark" title="Not available" disabled><i class="fas fa-ban"></i></button>
+      }
+    }
   </div>
   <div class="col-auto d-none d-sm-block ms-2">
     <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists" [showRemove]="showRemove"

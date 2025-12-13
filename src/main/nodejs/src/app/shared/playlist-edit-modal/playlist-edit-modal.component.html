@@ -8,12 +8,14 @@
       <label class="form-label" for="playlistName">Name</label>
       <input type="text" class="form-control" id="playlistName" name="playlistName" [(ngModel)]="playlist.name" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" placeholder="Playlist name" required>
     </div>
-    <div class="mb-3" *ngIf="playlist.id">
-      <div class="form-check form-switch">
-        <input type="checkbox" class="form-check-input" id="playlistReadOnly" name="playlistReadOnly" [(ngModel)]="playlist.readOnly" #playlistReadOnlyField="ngModel">
-        <label class="form-check-label" for="playlistReadOnly">Read-only <i class="small fas fa-info-circle" ngbTooltip="Prevent songs from being added/removed" placement="right" container="body"></i></label>
+    @if (playlist.id) {
+      <div class="mb-3">
+        <div class="form-check form-switch">
+          <input type="checkbox" class="form-check-input" id="playlistReadOnly" name="playlistReadOnly" [(ngModel)]="playlist.readOnly" #playlistReadOnlyField="ngModel">
+          <label class="form-check-label" for="playlistReadOnly">Read-only <i class="small fas fa-info-circle" ngbTooltip="Prevent songs from being added/removed" placement="right" container="body"></i></label>
+        </div>
       </div>
-    </div>
+    }
   </form>
 </div>
 <div class="modal-footer">

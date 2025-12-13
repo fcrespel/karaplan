@@ -4,13 +4,12 @@
       <h1 class="display-4 logo text-shadow-20 mt-5 mb-2">KaraPlan</h1>
       <p class="lead text-shadow-10 mb-5">Plan your Karaoke sessions with song search, ratings, comments, playlists and more!</p>
       <p class="mb-5">
-        <ng-container *ngIf="!user">
+        @if (!user) {
           <a href="#" routerLink="/login" class="btn btn-lg btn-outline-light shadow">Get Started <i class="fas fa-chevron-right"></i></a>
-        </ng-container>
-        <ng-container *ngIf="user">
+        } @else {
           <a href="#" routerLink="/songs" class="btn btn-lg btn-outline-light shadow mx-2"><i class="fas fa-music"></i> Songs</a>
           <a href="#" routerLink="/playlists" class="btn btn-lg btn-outline-light shadow mx-2"><i class="fas fa-list"></i> Playlists</a>
-        </ng-container>
+        }
       </p>
     </div>
   </div>

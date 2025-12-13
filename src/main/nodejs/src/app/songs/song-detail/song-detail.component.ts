@@ -115,14 +115,6 @@ export class SongDetailComponent implements OnInit, OnDestroy {
     this.stopSongFile();
   }
 
-  trackByCommentId(index: number, comment: SongComment): number {
-    return comment.id;
-  }
-
-  trackBySongFileId(index: number, songFile: CatalogSongFile): number {
-    return songFile.id;
-  }
-
   addComment(comment: string, commentForm: NgForm) {
     this.songsService.addCommentToSong(this.song!.catalogId, comment)
       .pipe(takeUntil(this.destroy$))

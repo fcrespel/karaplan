@@ -8,21 +8,35 @@
 </div>
 
 <!-- Playlists list -->
-<div class="row" *ngIf="playlists; else playlistsLoading">
-  <div class="col">
-    <div class="list-group shadow mb-3" *ngIf="playlistsRW.length > 0">
-      <ng-container *ngFor="let p of playlistsRW; trackBy: trackByPlaylistId">
-        <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }"></ng-container>
-      </ng-container>
+@if (playlists) {
+  <div class="row">
+    <div class="col">
+      @if (playlistsRW.length > 0) {
+        <div class="list-group shadow mb-3">
+          @for (p of playlistsRW; track p.id) {
+            <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }"></ng-container>
+          }
+        </div>
+      }
+      @if (playlistsRO.length > 0) {
+        <div class="list-group shadow mb-3">
+          @for (p of playlistsRO; track p.id) {
+            <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }"></ng-container>
+          }
+        </div>
+      }
+      @if (playlists.length == 0) {
+        <p>No playlist has been created yet.</p>
+      }
     </div>
-    <div class="list-group shadow mb-3" *ngIf="playlistsRO.length > 0">
-      <ng-container *ngFor="let p of playlistsRO; trackBy: trackByPlaylistId">
-        <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }"></ng-container>
-      </ng-container>
-    </div>
-    <p *ngIf="playlists.length == 0">No playlist has been created yet.</p>
   </div>
-</div>
+} @else {
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border spinner-border-lg" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+}
 
 <!-- Playlist template -->
 <ng-template #playlistItem let-p="playlist">
@@ -34,22 +48,19 @@
       </p>
     </div>
     <div class="col-auto d-none d-sm-block">
-      <span class="badge text-bg-secondary mx-1 d-none d-md-inline" *ngIf="p.members" title="Members"><i class="fas fa-users d-none d-md-inline"></i> {{ p.members.length }} member{{ p.members.length > 1 ? 's' : '' }}</span>
-      <span class="badge text-bg-secondary mx-1" *ngIf="p.songsCount" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ p.songsCount }} song{{ p.songsCount > 1 ? 's' : '' }}</span>
-      <span class="badge text-bg-secondary mx-1" *ngIf="p.duration" title="Duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ p.duration | duration }}</span>
+      @if (p.members) {
+        <span class="badge text-bg-secondary mx-1 d-none d-md-inline" title="Members"><i class="fas fa-users d-none d-md-inline"></i> {{ p.members.length }} member{{ p.members.length > 1 ? 's' : '' }}</span>
+      }
+      @if (p.songsCount) {
+        <span class="badge text-bg-secondary mx-1" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ p.songsCount }} song{{ p.songsCount > 1 ? 's' : '' }}</span>
+      }
+      @if (p.duration) {
+        <span class="badge text-bg-secondary mx-1" title="Duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ p.duration | duration }}</span>
+      }
     </div>
     <div class="col-auto ms-2">
       <button type="button" class="btn btn-outline-secondary mx-1" title="Edit playlist" (click)="$event.stopPropagation(); editPlaylist(p)"><i class="fas fa-edit"></i></button>
       <button type="button" class="btn btn-outline-danger mx-1" title="Leave playlist" (click)="$event.stopPropagation(); leavePlaylist(p)"><i class="fas fa-sign-out-alt"></i></button>
     </div>
   </li>
-</ng-template>
-
-<!-- Loading indicator -->
-<ng-template #playlistsLoading>
-  <div class="d-flex justify-content-center">
-    <div class="spinner-border spinner-border-lg" role="status">
-      <span class="sr-only">Loading...</span>
-    </div>
-  </div>
 </ng-template>

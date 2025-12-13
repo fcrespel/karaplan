@@ -16,73 +16,77 @@
 </ul>
 
 <!-- Profile -->
-<ng-container *ngIf="user; else userLoading">
+@if (user) {
   <div class="card">
     <div class="card-body text-dark">
       <p>
         Your user profile is linked to your
-        <ng-container [ngSwitch]="user.provider">
-          <a href="https://accounts.google.com" *ngSwitchCase="'google'">Google account</a>
-          <a href="https://github.com/settings/profile" *ngSwitchCase="'github'">GitHub account</a>
-        </ng-container>. You may choose a different display name to use here.
+        @switch (user.provider) {
+          @case ('google') {
+            <a href="https://accounts.google.com">Google account</a>
+          }
+          @case ('github') {
+            <a href="https://github.com/settings/profile">GitHub account</a>
+          }
+        }
+        . You may choose a different display name to use here.
       </p>
-      <form #userProfileForm="ngForm" *ngIf="user" (ngSubmit)="updateUser(user)">
-        <div class="row mb-3">
-          <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
-          <div class="col-sm-6">
-            <input type="text" class="form-control" id="displayName" name="displayName" [(ngModel)]="user.displayName" #displayNameField="ngModel" [class.is-invalid]="displayNameField.dirty && displayNameField.invalid" required>
+      @if (user) {
+        <form #userProfileForm="ngForm" (ngSubmit)="updateUser(user)">
+          <div class="row mb-3">
+            <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="displayName" name="displayName" [(ngModel)]="user.displayName" #displayNameField="ngModel" [class.is-invalid]="displayNameField.dirty && displayNameField.invalid" required>
+            </div>
           </div>
+          <div class="row mb-3">
+            <label for="email" class="col-sm-2 col-form-label">Email address</label>
+            <div class="col-sm-6">
+              <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" disabled readonly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-sm-6 offset-md-2">
+              <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Update profile</button>
+            </div>
+          </div>
+        </form>
+      }
+      <hr>
+        <div class="text-end">
+          <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete account</button>
         </div>
-        <div class="row mb-3">
-          <label for="email" class="col-sm-2 col-form-label">Email address</label>
-          <div class="col-sm-6">
-            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" disabled readonly>
-          </div>
+      </div>
+    </div>
+  } @else {
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border spinner-border-lg" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+  }
+
+  <!-- Deletion confirmation modal -->
+  <ng-template #deleteAccountModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Delete account</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <form #accountDeletionForm="ngForm">
+        <p class="text-danger"><strong>You are going to delete your account and all your votes.</strong></p>
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="deleteComments" name="deleteComments" [(ngModel)]="deleteComments">
+          <label class="form-check-label" for="deleteComments">Delete all comments as well</label>
         </div>
-        <div class="row mb-3">
-          <div class="col-sm-6 offset-md-2">
-            <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Update profile</button>
-          </div>
+        <p>Please type <strong>delete my account</strong> below to confirm:</p>
+        <div class="mb-3">
+          <input type="text" class="form-control" id="confirmDeletion" name="confirmDeletion" [(ngModel)]="confirmDeletion"
+            #confirmDeletionField="ngModel" pattern="delete my account" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
         </div>
       </form>
-      <hr>
-      <div class="text-end">
-        <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete account</button>
-      </div>
     </div>
-  </div>
-</ng-container>
-
-<!-- Loading indicator -->
-<ng-template #userLoading>
-  <div class="d-flex justify-content-center">
-    <div class="spinner-border spinner-border-lg" role="status">
-      <span class="sr-only">Loading...</span>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-danger" [disabled]="!accountDeletionForm.form.valid" (click)="modal.close()">Delete my account</button>
     </div>
-  </div>
-</ng-template>
-
-<!-- Deletion confirmation modal -->
-<ng-template #deleteAccountModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Delete account</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-  </div>
-  <div class="modal-body">
-    <form #accountDeletionForm="ngForm">
-      <p class="text-danger"><strong>You are going to delete your account and all your votes.</strong></p>
-      <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="deleteComments" name="deleteComments" [(ngModel)]="deleteComments">
-        <label class="form-check-label" for="deleteComments">Delete all comments as well</label>
-      </div>
-      <p>Please type <strong>delete my account</strong> below to confirm:</p>
-      <div class="mb-3">
-        <input type="text" class="form-control" id="confirmDeletion" name="confirmDeletion" [(ngModel)]="confirmDeletion" 
-          #confirmDeletionField="ngModel" pattern="delete my account" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
-      </div>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-danger" [disabled]="!accountDeletionForm.form.valid" (click)="modal.close()">Delete my account</button>
-  </div>
-</ng-template>
+  </ng-template>

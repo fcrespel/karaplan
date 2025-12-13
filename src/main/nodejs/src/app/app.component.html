@@ -1,9 +1,12 @@
 <app-navbar></app-navbar>
 <app-alert></app-alert>
-<div class="container-fluid text-light" *ngIf="currentRoute == '/home'">
-  <router-outlet></router-outlet>
-</div>
-<div class="container-md text-light mt-4" *ngIf="currentRoute != '/home'">
-  <router-outlet></router-outlet>
-</div>
+@if (currentRoute == '/home') {
+  <div class="container-fluid text-light">
+    <router-outlet></router-outlet>
+  </div>
+} @else {
+  <div class="container-md text-light mt-4">
+    <router-outlet></router-outlet>
+  </div>
+}
 <app-footer></app-footer>

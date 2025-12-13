@@ -3,20 +3,34 @@
   <div class="col">
     <h1>{{ playlist?.name || '...' }}</h1>
   </div>
-  <div class="col-auto d-none d-sm-block" *ngIf="playlist">
-    <span class="badge text-bg-light mx-1" *ngIf="playlist.members" title="Members" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ playlist.members.length }} member{{ playlist.members.length > 1 ? 's' : '' }}</span>
-    <span class="badge text-bg-light mx-1" *ngIf="playlist.songsCount" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
-    <span class="badge text-bg-light mx-1" *ngIf="playlist.duration" title="Total duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
-  </div>
+  @if (playlist) {
+    <div class="col-auto d-none d-sm-block">
+      @if (playlist.members) {
+        <span class="badge text-bg-light mx-1" title="Members" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ playlist.members.length }} member{{ playlist.members.length > 1 ? 's' : '' }}</span>
+      }
+      @if (playlist.songsCount) {
+        <span class="badge text-bg-light mx-1" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
+      }
+      @if (playlist.duration) {
+        <span class="badge text-bg-light mx-1" title="Total duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
+      }
+    </div>
+  }
 </div>
 
 <!-- Toolbar -->
-<ng-container *ngIf="playlist">
+@if (playlist) {
   <div class="row justify-content-between align-items-center g-0 mb-2">
     <div class="col mb-1">
-      <a href="#" routerLink="/songs" class="btn btn-pink shadow" *ngIf="!playlist.readOnly"><i class="fas fa-search"></i><span class="d-sm-none"> Songs</span><span class="d-none d-sm-inline"> Find songs</span></a>
-      <button type="button" class="btn btn-outline-light shadow" disabled *ngIf="playlist.readOnly && isMember(user, playlist)"><i class="fas fa-lock"></i><span class="d-sm-none"> Locked</span><span class="d-none d-sm-inline"> Locked playlist</span></button>
-      <button type="button" class="btn btn-pink shadow" title="Join playlist" (click)="joinPlaylist(playlist)" *ngIf="!isMember(user, playlist)"><i class="fas fa-sign-in-alt"></i> Join<span class="d-none d-sm-inline"> playlist</span></button>
+      @if (!playlist.readOnly) {
+        <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i><span class="d-sm-none"> Songs</span><span class="d-none d-sm-inline"> Find songs</span></a>
+      }
+      @if (playlist.readOnly && isMember(user, playlist)) {
+        <button type="button" class="btn btn-outline-light shadow" disabled><i class="fas fa-lock"></i><span class="d-sm-none"> Locked</span><span class="d-none d-sm-inline"> Locked playlist</span></button>
+      }
+      @if (!isMember(user, playlist)) {
+        <button type="button" class="btn btn-pink shadow" title="Join playlist" (click)="joinPlaylist(playlist)"><i class="fas fa-sign-in-alt"></i> Join<span class="d-none d-sm-inline"> playlist</span></button>
+      }
     </div>
     <div class="col-auto mb-1">
       <div class="row gx-2 gy-1">
@@ -26,7 +40,9 @@
             <div ngbDropdown placement="bottom-left bottom bottom-right" container="body" class="btn-group">
               <button type="button" class="btn btn-light" title="Comments" ngbDropdownToggle>
                 <i class="far fa-comment"></i>
-                <span class="badge text-bg-secondary ms-1" *ngIf="playlist.commentsCount">{{ playlist.commentsCount }}</span>
+                @if (playlist.commentsCount) {
+                  <span class="badge text-bg-secondary ms-1">{{ playlist.commentsCount }}</span>
+                }
               </button>
               <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
                 <form #commentForm="ngForm" (ngSubmit)="addComment(playlist, commentText, commentForm)" class="mx-3 my-2 text-end">
@@ -35,15 +51,17 @@
                   </div>
                   <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
                 </form>
-                <ng-container *ngFor="let comment of playlist.comments; trackBy: trackByCommentId">
+                @for (comment of playlist.comments; track comment.id) {
                   <div class="dropdown-divider"></div>
                   <div class="d-flex mx-3 mt-2 mb-0 align-items-center justify-content-between">
                     <small class="text-muted flex-grow-1">{{ comment.user?.displayName }}</small>
                     <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
-                    <button type="button" class="btn btn-sm btn-danger ms-2" *ngIf="comment.user?.id == user?.id" (click)="removeComment(playlist, comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+                    @if (comment.user?.id == user?.id) {
+                      <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeComment(playlist, comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+                    }
                   </div>
                   <p class="mx-3 mt-0 mb-2 comment-text">{{ comment.comment }}</p>
-                </ng-container>
+                }
               </div>
             </div>
             <!-- Share -->
@@ -58,21 +76,23 @@
               </div>
             </div>
             <!-- Sort -->
-            <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group" *ngIf="!playlist.readOnly">
-              <button type="button" class="btn btn-light" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
-              <div class="dropdown-menu shadow" ngbDropdownMenu>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'asc')"><i class="fas fa-sort-alpha-down me-1"></i> By name, ascending</button>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'desc')"><i class="fas fa-sort-alpha-up me-1"></i> By name, descending</button>
-                <div class="dropdown-divider"></div>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'asc')"><i class="fas fa-sort-numeric-down me-1"></i> By votes, ascending</button>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'desc')"><i class="fas fa-sort-numeric-up me-1"></i> By votes, descending</button>
-                <div class="dropdown-divider"></div>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'asc')"><i class="fas fa-sort-numeric-down me-1"></i> By date added, ascending</button>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'desc')"><i class="fas fa-sort-numeric-up me-1"></i> By date added, descending</button>
-                <div class="dropdown-divider"></div>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'random')"><i class="fas fa-random me-1"></i> Random</button>
+            @if (!playlist.readOnly) {
+              <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
+                <button type="button" class="btn btn-light" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
+                <div class="dropdown-menu shadow" ngbDropdownMenu>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'asc')"><i class="fas fa-sort-alpha-down me-1"></i> By name, ascending</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'desc')"><i class="fas fa-sort-alpha-up me-1"></i> By name, descending</button>
+                  <div class="dropdown-divider"></div>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'asc')"><i class="fas fa-sort-numeric-down me-1"></i> By votes, ascending</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'desc')"><i class="fas fa-sort-numeric-up me-1"></i> By votes, descending</button>
+                  <div class="dropdown-divider"></div>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'asc')"><i class="fas fa-sort-numeric-down me-1"></i> By date added, ascending</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'desc')"><i class="fas fa-sort-numeric-up me-1"></i> By date added, descending</button>
+                  <div class="dropdown-divider"></div>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'random')"><i class="fas fa-random me-1"></i> Random</button>
+                </div>
               </div>
-            </div>
+            }
             <!-- Export -->
             <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
               <button type="button" class="btn btn-light" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i></button>
@@ -85,30 +105,35 @@
           </div>
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-light shadow" title="Edit playlist" (click)="editPlaylist(playlist)" *ngIf="isMember(user, playlist)"><i class="fas fa-edit"></i></button>
+          @if (isMember(user, playlist)) {
+            <button type="button" class="btn btn-light shadow" title="Edit playlist" (click)="editPlaylist(playlist)"><i class="fas fa-edit"></i></button>
+          }
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-danger shadow" title="Leave playlist" (click)="leavePlaylist(playlist)" *ngIf="isMember(user, playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Leave</span></button>
+          @if (isMember(user, playlist)) {
+            <button type="button" class="btn btn-danger shadow" title="Leave playlist" (click)="leavePlaylist(playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Leave</span></button>
+          }
         </div>
       </div>
     </div>
   </div>
-</ng-container>
+}
 
 <!-- Song list -->
-<ng-container *ngIf="playlist; else playlistLoading">
-  <app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" [allowMove]="!playlist.readOnly" (songMoved)="onSongMoved(playlist, $event)" (playlistRemoved)="onPlaylistRemoved(playlist, $event)" (songRemoved)="onSongRemoved(playlist, $event)" *ngIf="playlist.songs && playlist.songs.length > 0"></app-song-list>
-  <p *ngIf="!playlist.songs || playlist.songs.length == 0">No song has been added to this playlist yet.</p>
-</ng-container>
-
-<!-- Loading indicator -->
-<ng-template #playlistLoading>
+@if (playlist) {
+  @if (playlist.songs && playlist.songs.length > 0) {
+    <app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" [allowMove]="!playlist.readOnly" (songMoved)="onSongMoved(playlist, $event)" (playlistRemoved)="onPlaylistRemoved(playlist, $event)" (songRemoved)="onSongRemoved(playlist, $event)"></app-song-list>
+  }
+  @if (!playlist.songs || playlist.songs.length == 0) {
+    <p>No song has been added to this playlist yet.</p>
+  }
+} @else {
   <div class="d-flex justify-content-center">
     <div class="spinner-border spinner-border-lg" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-</ng-template>
+}
 
 <!-- KaraFun Remote export modal -->
 <ng-template #karafunRemoteExportModal let-modal>

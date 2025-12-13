@@ -104,10 +104,6 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  trackByCommentId(index: number, comment: PlaylistComment): number {
-    return comment.id;
-  }
-
   removeComment(playlist: Playlist, comment: PlaylistComment) {
     this.playlistsService.removeCommentFromPlaylist(playlist.id, comment.id)
       .pipe(takeUntil(this.destroy$))
