@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Playlist } from '../../models/playlist';
 
@@ -8,15 +8,9 @@ import { Playlist } from '../../models/playlist';
   styleUrls: ['./playlist-edit-modal.component.css'],
   standalone: false
 })
-export class PlaylistEditModalComponent implements OnInit {
+export class PlaylistEditModalComponent {
+  activeModal = inject(NgbActiveModal);
 
   @Input() playlist!: Playlist;
-
-  constructor(
-    public activeModal: NgbActiveModal
-  ) { }
-
-  ngOnInit() {
-  }
 
 }

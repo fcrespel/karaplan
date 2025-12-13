@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -24,6 +24,13 @@ import { PlaylistLeaveModalComponent } from '../../shared/playlist-leave-modal/p
   standalone: false
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private location = inject(Location);
+  private modalService = inject(NgbModal);
+  private accountService = inject(AccountService);
+  private playlistsService = inject(PlaylistsService);
+  private alertService = inject(AlertService);
 
   user?: User;
   playlist?: Playlist;
@@ -33,16 +40,6 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
   karafunBarId: string = '';
   shareUrl: string = '';
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private modalService: NgbModal,
-    private accountService: AccountService,
-    private playlistsService: PlaylistsService,
-    private alertService: AlertService
-  ) { }
 
   ngOnInit() {
     this.accountService.getUser()

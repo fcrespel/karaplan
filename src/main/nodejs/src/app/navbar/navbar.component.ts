@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -14,18 +14,15 @@ import { ActuatorService } from '../services/actuator.service';
   standalone: false
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  private cookieService = inject(CookieService);
+  private actuatorService = inject(ActuatorService);
+  private accountService = inject(AccountService);
 
   navbarOpen: boolean = false;
   xsrfToken: string = '';
   actuatorInfo?: ActuatorInfo;
   user?: User;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private cookieService: CookieService,
-    private actuatorService: ActuatorService,
-    private accountService: AccountService
-  ) { }
 
   ngOnInit() {
     this.xsrfToken = this.cookieService.get('XSRF-TOKEN');

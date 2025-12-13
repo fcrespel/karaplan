@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -21,6 +21,10 @@ import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit
   standalone: false
 })
 export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
+  private accountService = inject(AccountService);
+  private songsService = inject(SongsService);
+  private playlistsService = inject(PlaylistsService);
+  private modalService = inject(NgbModal);
 
   @Input() song!: Song;
   @Input() showVotes: boolean = true;
@@ -46,13 +50,6 @@ export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
   commentText: string = '';
   loading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private accountService: AccountService,
-    private songsService: SongsService,
-    private playlistsService: PlaylistsService,
-    private modalService: NgbModal
-  ) { }
 
   ngOnInit() {
     this.accountService.getUser()

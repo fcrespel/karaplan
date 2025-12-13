@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { shareReplay, switchMapTo } from 'rxjs/operators';
@@ -9,15 +9,13 @@ import { User } from '../models/user';
   providedIn: 'root'
 })
 export class AccountService {
+  private http = inject(HttpClient);
+
   private accountUrl = 'api/v1/account';
   private principal$?: Observable<Principal>;
   private principalRefresh$ = new BehaviorSubject<void>(undefined);
   private user$?: Observable<User>;
   private userRefresh$ = new BehaviorSubject<void>(undefined);
-
-  constructor(
-    private http: HttpClient
-  ) { }
 
   getPrincipal(cache: boolean = true): Observable<Principal> {
     const url = `${this.accountUrl}/principal`;

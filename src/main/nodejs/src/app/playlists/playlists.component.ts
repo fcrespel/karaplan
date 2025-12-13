@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -15,17 +15,14 @@ import { PlaylistLeaveModalComponent } from '../shared/playlist-leave-modal/play
   standalone: false
 })
 export class PlaylistsComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private modalService = inject(NgbModal);
+  private playlistsService = inject(PlaylistsService);
 
   playlists: Playlist[] = [];
   playlistsRW: Playlist[] = [];
   playlistsRO: Playlist[] = [];
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private router: Router,
-    private modalService: NgbModal,
-    private playlistsService: PlaylistsService
-  ) { }
 
   ngOnInit() {
     this.refreshPlaylists();

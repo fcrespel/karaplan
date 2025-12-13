@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { User } from '../models/user';
@@ -11,13 +11,10 @@ import { AccountService } from '../services/account.service';
   standalone: false
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  private accountService = inject(AccountService);
 
   user?: User;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private accountService: AccountService
-  ) { }
 
   ngOnInit() {
     this.accountService.getUser()

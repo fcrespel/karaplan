@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, concat, of } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
@@ -13,16 +13,13 @@ import { SongsService } from '../services/songs.service';
   standalone: false
 })
 export class SongsComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private songsService = inject(SongsService);
 
   queryContext: QueryContext = new QueryContext();
   queryField: string = '';
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private songsService: SongsService
-  ) { }
 
   ngOnInit() {
     this.route.queryParamMap

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlaylistSong } from '../../models/playlist-song';
@@ -11,6 +11,7 @@ import { SongsService } from '../../services/songs.service';
   standalone: false
 })
 export class UserVotesComponent implements OnInit, OnDestroy {
+  private songsService = inject(SongsService);
 
   songs: PlaylistSong[] = [];
   songsPage: number = 0;
@@ -20,10 +21,6 @@ export class UserVotesComponent implements OnInit, OnDestroy {
   hasMoreSongs: boolean = false;
   hasMoreSongsLoading: boolean = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private songsService: SongsService
-  ) { }
 
   ngOnInit() {
     this.songsLoading = true;

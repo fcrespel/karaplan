@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Playlist } from '../models/playlist';
@@ -7,11 +7,9 @@ import { Playlist } from '../models/playlist';
   providedIn: 'root'
 })
 export class PlaylistsService {
-  private playlistsUrl = 'api/v1/playlists';
+  private http = inject(HttpClient);
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  private playlistsUrl = 'api/v1/playlists';
 
   getPlaylists(page: number = 0, size: number = 10, sort: string[] = []): Observable<Playlist[]> {
     let params = new HttpParams().appendAll({

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -13,15 +13,12 @@ import { AlertService } from '../services/alert.service';
   standalone: false
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private accountService = inject(AccountService);
+  private alertService = inject(AlertService);
 
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private accountService: AccountService,
-    private alertService: AlertService
-  ) { }
 
   ngOnInit() {
     if (this.route.snapshot.queryParamMap.has('error')) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,15 +11,12 @@ import { Playlist } from '../../models/playlist';
   standalone: false
 })
 export class PlaylistLeaveModalComponent implements OnInit {
+  activeModal = inject(NgbActiveModal);
+  private router = inject(Router);
+  private location = inject(Location);
 
   @Input() playlist!: Playlist;
   shareUrl: string = '';
-
-  constructor(
-    public activeModal: NgbActiveModal,
-    private router: Router,
-    private location: Location
-  ) { }
 
   ngOnInit() {
     let urlTree = this.router.createUrlTree(['/playlists', this.playlist.id], {

@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import Plyr from 'plyr';
 import { Subject } from 'rxjs';
@@ -17,6 +17,8 @@ import { SongsService } from '../../services/songs.service';
   standalone: false
 })
 export class SongListComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private songsService = inject(SongsService);
 
   @Input() songs: PlaylistSong[] = [];
   @Input() showDuration: boolean = false;
@@ -39,11 +41,6 @@ export class SongListComponent implements OnInit, OnDestroy {
   songPlyrSources: Plyr.Source[] = [];
   songPlyrCurrent?: Song;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private router: Router,
-    private songsService: SongsService
-  ) { }
 
   ngOnInit() {
   }

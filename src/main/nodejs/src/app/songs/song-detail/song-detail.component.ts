@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import Plyr from 'plyr';
@@ -20,6 +20,9 @@ import { SongsService } from '../../services/songs.service';
   standalone: false
 })
 export class SongDetailComponent implements OnInit, OnDestroy {
+  private route = inject(ActivatedRoute);
+  private accountService = inject(AccountService);
+  private songsService = inject(SongsService);
 
   user?: User;
   song?: Song;
@@ -62,12 +65,6 @@ export class SongDetailComponent implements OnInit, OnDestroy {
     'npi-pi-voc': 'Piano + vocals',
     'pi': 'Piano only',
   };
-
-  constructor(
-    private route: ActivatedRoute,
-    private accountService: AccountService,
-    private songsService: SongsService
-  ) { }
 
   ngOnInit() {
     this.accountService.getUser()

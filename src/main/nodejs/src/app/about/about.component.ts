@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ActuatorInfo } from '../models/actuator-info';
@@ -11,13 +11,10 @@ import { ActuatorService } from '../services/actuator.service';
   standalone: false
 })
 export class AboutComponent implements OnInit, OnDestroy {
+  private actuatorService = inject(ActuatorService);
 
   actuatorInfo?: ActuatorInfo;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private actuatorService: ActuatorService
-  ) { }
 
   ngOnInit() {
     this.actuatorService.getInfo()

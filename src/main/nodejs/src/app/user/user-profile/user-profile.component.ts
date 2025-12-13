@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -15,18 +15,15 @@ import { AlertService } from '../../services/alert.service';
   standalone: false
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+  private router = inject(Router);
+  private accountService = inject(AccountService);
+  private modalService = inject(NgbModal);
+  private alertService = inject(AlertService);
 
   user?: User;
   deleteComments: boolean = false;
   confirmDeletion: string = '';
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  constructor(
-    private router: Router,
-    private accountService: AccountService,
-    private modalService: NgbModal,
-    private alertService: AlertService
-  ) { }
 
   ngOnInit() {
     this.accountService.getUser(false)
