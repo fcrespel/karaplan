@@ -122,7 +122,7 @@
 <!-- Song list -->
 @if (playlist) {
   @if (playlist.songs && playlist.songs.length > 0) {
-    <app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" [allowMove]="!playlist.readOnly" (songMoved)="onSongMoved(playlist, $event)" (playlistRemoved)="onPlaylistRemoved(playlist, $event)" (songRemoved)="onSongRemoved(playlist, $event)"></app-song-list>
+    <app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" [allowMove]="!playlist.readOnly" (songMoved)="onSongMoved(playlist, $event)" (playlistRemoved)="onPlaylistRemoved(playlist, $event)" (songRemoved)="onSongRemoved(playlist, $event)" />
   }
   @if (!playlist.songs || playlist.songs.length == 0) {
     <p>No song has been added to this playlist yet.</p>

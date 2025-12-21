@@ -14,14 +14,14 @@
       @if (playlistsRW.length > 0) {
         <div class="list-group shadow mb-3">
           @for (p of playlistsRW; track p.id) {
-            <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }"></ng-container>
+            <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }" />
           }
         </div>
       }
       @if (playlistsRO.length > 0) {
         <div class="list-group shadow mb-3">
           @for (p of playlistsRO; track p.id) {
-            <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }"></ng-container>
+            <ng-container *ngTemplateOutlet="playlistItem; context: { playlist: p }" />
           }
         </div>
       }

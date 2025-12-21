@@ -82,12 +82,12 @@
 
 <!-- Selections -->
 @if (queryContext.selections.length > 0) {
-  <app-song-selections [selections]="queryContext.selections"></app-song-selections>
+  <app-song-selections [selections]="queryContext.selections" />
 }
 
 <!-- Songs -->
 @if (queryContext.songs.length > 0) {
-  <app-song-list [songs]="queryContext.songs"></app-song-list>
+  <app-song-list [songs]="queryContext.songs" />
 }
 @if (queryContext.hasMoreSongs) {
   <div class="text-center my-3">

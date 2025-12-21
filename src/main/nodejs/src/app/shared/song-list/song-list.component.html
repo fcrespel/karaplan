@@ -9,7 +9,7 @@
             <i class="fas fa-grip-lines-vertical"></i>
           </div>
         }
-        <ng-container *ngTemplateOutlet="songItem; context: { song: playlistSong.song, playlistSong: playlistSong }"></ng-container>
+        <ng-container *ngTemplateOutlet="songItem; context: { song: playlistSong.song, playlistSong: playlistSong }" />
       </li>
     }
   </ul>
@@ -52,8 +52,7 @@
   <div class="col-auto d-none d-sm-block ms-2">
     <app-song-actions [song]="song" [showVotes]="showVotes()" [showComments]="showComments()" [showPlaylists]="showPlaylists()" [showRemove]="showRemove()"
       (voteAdded)="voteAdded.emit($event)" (voteRemoved)="voteRemoved.emit($event)" (commentAdded)="commentAdded.emit($event)" (commentRemoved)="commentRemoved.emit($event)"
-      (playlistAdded)="playlistAdded.emit($event)" (playlistRemoved)="playlistRemoved.emit($event)" (songRemoved)="songRemoved.emit($event)">
-    </app-song-actions>
+      (playlistAdded)="playlistAdded.emit($event)" (playlistRemoved)="playlistRemoved.emit($event)" (songRemoved)="songRemoved.emit($event)" />
   </div>
 </ng-template>
 

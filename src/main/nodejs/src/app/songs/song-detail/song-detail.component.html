@@ -71,7 +71,7 @@
                     <a href="#" class="badge text-bg-primary ms-1" title="Style" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
                   }
                 </p>
-                <app-song-actions [(song)]="song" [showComments]="false" [loadingPosition]="'last'" [class]="'justify-content-center justify-content-sm-start'"></app-song-actions>
+                <app-song-actions [(song)]="song" [showComments]="false" [loadingPosition]="'last'" [class]="'justify-content-center justify-content-sm-start'" />
               </div>
               @if (preview && preview.previewUrl) {
                 <div class="col-12 col-lg-auto mt-3 mt-lg-0">
@@ -135,7 +135,7 @@
   @if (tab == 'related') {
     <div class="row">
       <div class="col">
-        <app-song-list [songs]="relatedSongs"></app-song-list>
+        <app-song-list [songs]="relatedSongs" />
         @if (hasMoreRelatedSongs) {
           <div class="text-center my-3">
             <button type="button" (click)="loadMoreRelatedSongs()" class="btn btn-lg btn-outline-light w-50">Load more ...</button>
