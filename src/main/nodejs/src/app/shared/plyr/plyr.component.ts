@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, SimpleChanges, input, output, viewChild } from '@angular/core';
 import Plyr from 'plyr';
 
 @Component({
@@ -9,22 +9,22 @@ import Plyr from 'plyr';
 })
 export class PlyrComponent implements AfterViewInit, OnChanges, OnDestroy {
 
-  @ViewChild('target') target!: ElementRef<HTMLMediaElement>;
+  readonly target = viewChild.required<ElementRef<HTMLMediaElement>>('target');
 
-  @Input() plyrOptions: Plyr.Options = {};
-  @Input() plyrType: Plyr.MediaType = 'video';
-  @Input() plyrTitle?: string;
-  @Input() plyrPoster?: string;
-  @Input() plyrSources: Plyr.Source[] = [];
-  @Input() plyrTracks: Plyr.Track[] = [];
-  @Output() plyrInit = new EventEmitter<Plyr>;
-  @Output() plyrEvent = new EventEmitter<Plyr.PlyrEvent | Plyr.PlyrStateChangeEvent>;
+  readonly plyrOptions = input<Plyr.Options>({});
+  readonly plyrType = input<Plyr.MediaType>('video');
+  readonly plyrTitle = input<string>();
+  readonly plyrPoster = input<string>();
+  readonly plyrSources = input<Plyr.Source[]>([]);
+  readonly plyrTracks = input<Plyr.Track[]>([]);
+  readonly plyrInit = output<Plyr>();
+  readonly plyrEvent = output<Plyr.PlyrEvent | Plyr.PlyrStateChangeEvent>();
 
   private plyr!: Plyr;
   private events: (Plyr.StandardEvent | Plyr.Html5Event | Plyr.YoutubeEvent)[] = ['waiting', 'canplay', 'playing', 'pause', 'ended'];
 
   ngAfterViewInit() {
-    this.plyr = new Plyr(this.target.nativeElement, this.plyrOptions);
+    this.plyr = new Plyr(this.target().nativeElement, this.plyrOptions());
     this.events.forEach(name => this.plyr.on(name, event => this.plyrEvent.emit(event)));
     this.plyrInit.emit(this.plyr);
     this.updateSource();
@@ -45,11 +45,11 @@ export class PlyrComponent implements AfterViewInit, OnChanges, OnDestroy {
   private updateSource() {
     if (this.plyr) {
       this.plyr.source = {
-        type: this.plyrType,
-        title: this.plyrTitle,
-        poster: this.plyrPoster,
-        sources: this.plyrSources,
-        tracks: this.plyrTracks,
+        type: this.plyrType(),
+        title: this.plyrTitle(),
+        poster: this.plyrPoster(),
+        sources: this.plyrSources(),
+        tracks: this.plyrTracks(),
       }
     }
   }

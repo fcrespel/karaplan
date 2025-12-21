@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import { Component, OnDestroy, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 import Plyr from 'plyr';
 import { Subject } from 'rxjs';
@@ -16,34 +16,31 @@ import { SongsService } from '../../services/songs.service';
   styleUrls: ['./song-list.component.css'],
   standalone: false
 })
-export class SongListComponent implements OnInit, OnDestroy {
+export class SongListComponent implements OnDestroy {
   private router = inject(Router);
   private songsService = inject(SongsService);
 
-  @Input() songs: PlaylistSong[] = [];
-  @Input() showDuration: boolean = false;
-  @Input() showVotes: boolean = true;
-  @Input() showComments: boolean = true;
-  @Input() showPlaylists: boolean = true;
-  @Input() showRemove: boolean = false;
-  @Input() allowMove: boolean = false;
-  @Output() voteAdded = new EventEmitter<SongVote>();
-  @Output() voteRemoved = new EventEmitter<SongVote>();
-  @Output() commentAdded = new EventEmitter<SongComment>();
-  @Output() commentRemoved = new EventEmitter<SongComment>();
-  @Output() playlistAdded = new EventEmitter<PlaylistSong>();
-  @Output() playlistRemoved = new EventEmitter<PlaylistSong>();
-  @Output() songMoved = new EventEmitter<PlaylistSong[]>();
-  @Output() songRemoved = new EventEmitter<Song>();
+  readonly songs = input<PlaylistSong[]>([]);
+  readonly showDuration = input<boolean>(false);
+  readonly showVotes = input<boolean>(true);
+  readonly showComments = input<boolean>(true);
+  readonly showPlaylists = input<boolean>(true);
+  readonly showRemove = input<boolean>(false);
+  readonly allowMove = input<boolean>(false);
+  readonly voteAdded = output<SongVote>();
+  readonly voteRemoved = output<SongVote>();
+  readonly commentAdded = output<SongComment>();
+  readonly commentRemoved = output<SongComment>();
+  readonly playlistAdded = output<PlaylistSong>();
+  readonly playlistRemoved = output<PlaylistSong>();
+  readonly songMoved = output<PlaylistSong[]>();
+  readonly songRemoved = output<Song>();
 
   dragging: boolean = false;
   songPlyr?: Plyr;
   songPlyrSources: Plyr.Source[] = [];
   songPlyrCurrent?: Song;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  ngOnInit() {
-  }
 
   gotoSong(song: Song) {
     if (!this.dragging) {
@@ -52,8 +49,9 @@ export class SongListComponent implements OnInit, OnDestroy {
   }
 
   moveSong(event: CdkDragDrop<PlaylistSong[]>) {
-    moveItemInArray<PlaylistSong>(this.songs, event.previousIndex, event.currentIndex);
-    this.songMoved.emit(this.songs);
+    const songs = this.songs();
+    moveItemInArray<PlaylistSong>(songs, event.previousIndex, event.currentIndex);
+    this.songMoved.emit(songs);
   }
 
   playSong(song: Song) {
@@ -90,8 +88,8 @@ export class SongListComponent implements OnInit, OnDestroy {
   }
 
   songPlyrEvent(event: Plyr.PlyrEvent | Plyr.PlyrStateChangeEvent) {
-    var plyr = event.detail.plyr;
-    var song = this.songPlyrCurrent;
+    const plyr = event.detail.plyr;
+    const song = this.songPlyrCurrent;
     if (song && song.previewUrl == ""+plyr.source) {
       switch (event.type) {
         case 'canplay':

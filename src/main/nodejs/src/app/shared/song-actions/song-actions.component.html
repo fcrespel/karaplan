@@ -1,7 +1,7 @@
-<div class="row align-items-center gx-2" [ngClass]="class">
+<div class="row align-items-center gx-2" [ngClass]="class()">
   <!-- Loading indicator -->
   @if (loading) {
-    <div class="col-auto" [ngClass]="'order-' + loadingPosition">
+    <div class="col-auto" [ngClass]="'order-' + loadingPosition()">
       <div class="d-inline-block text-secondary">
         <div class="spinner-border spinner-border-sm" role="status">
           <span class="sr-only">Loading...</span>
@@ -11,19 +11,19 @@
   }
 
   <!-- Votes -->
-  @if (showVotes) {
+  @if (showVotes()) {
     <div class="col-auto">
       <div class="btn-group" role="group">
         <button type="button" class="btn btn-outline-success" (click)="$event.stopPropagation(); voteUp()" [disabled]="loading" title="Vote up" placement="top top-left top-right auto" ngbTooltip="{{voteUpUsers}}">
           <i class="fa-thumbs-up" [class.far]="vote?.score != 1" [class.fas]="vote?.score == 1"></i>
-          @if (song.scoreUp) {
-            <span class="badge text-bg-success ms-1">{{ song.scoreUp }}</span>
+          @if (song().scoreUp) {
+            <span class="badge text-bg-success ms-1">{{ song().scoreUp }}</span>
           }
         </button>
         <button type="button" class="btn btn-outline-danger" (click)="$event.stopPropagation(); voteDown()" [disabled]="loading" title="Vote down" placement="top top-left top-right auto" ngbTooltip="{{voteDownUsers}}">
           <i class="fa-thumbs-down" [class.far]="vote?.score != -1" [class.fas]="vote?.score == -1"></i>
-          @if (song.scoreDown) {
-            <span class="badge text-bg-danger ms-1">{{ song.scoreDown }}</span>
+          @if (song().scoreDown) {
+            <span class="badge text-bg-danger ms-1">{{ song().scoreDown }}</span>
           }
         </button>
       </div>
@@ -31,13 +31,13 @@
   }
 
   <!-- Comments -->
-  @if (showComments) {
+  @if (showComments()) {
     <div class="col-auto d-none d-md-inline-block">
       <div ngbDropdown placement="bottom-left bottom bottom-right top-left top top-right" container="body">
         <button type="button" class="btn btn-outline-secondary" (click)="$event.stopPropagation()" ngbDropdownToggle title="Comments">
           <i class="far fa-comment"></i>
-          @if (song.commentsCount) {
-            <span class="badge text-bg-secondary ms-1">{{ song.commentsCount }}</span>
+          @if (song().commentsCount) {
+            <span class="badge text-bg-secondary ms-1">{{ song().commentsCount }}</span>
           }
         </button>
         <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
@@ -47,7 +47,7 @@
             </div>
             <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid || loading">Add comment</button>
           </form>
-          @for (comment of song.comments; track comment.id) {
+          @for (comment of song().comments; track comment.id) {
             <div class="dropdown-divider"></div>
             <div class="d-flex mx-3 mt-2 mb-0 align-items-center justify-content-between">
               <small class="text-muted flex-grow-1">{{ comment.user?.displayName }}</small>
@@ -64,13 +64,13 @@
   }
 
   <!-- Playlists -->
-  @if (showPlaylists) {
+  @if (showPlaylists()) {
     <div class="col-auto">
       <div ngbDropdown #playlistDropdown="ngbDropdown" [autoClose]="'outside'" placement="bottom-left bottom bottom-right top-left top top-right" container="body" class="d-inline-block" (openChange)="onPlaylistOpen()">
         <button type="button" class="btn btn-outline-primary" (click)="$event.stopPropagation()" ngbDropdownToggle [disabled]="loading" title="Add to playlist">
           <i class="fas fa-list"></i>
-          @if (song.playlists) {
-            <span class="badge text-bg-primary ms-1">{{ song.playlistsCount }}</span>
+          @if (song().playlists) {
+            <span class="badge text-bg-primary ms-1">{{ song().playlistsCount }}</span>
           }
         </button>
         <div class="dropdown-menu shadow" ngbDropdownMenu>
@@ -109,9 +109,9 @@
   }
 
   <!-- Remove -->
-  @if (showRemove) {
+  @if (showRemove()) {
     <div class="col-auto">
-      <button type="button" class="btn btn-outline-danger" title="Remove song" (click)="$event.stopPropagation(); songRemoved.emit(song)">
+      <button type="button" class="btn btn-outline-danger" title="Remove song" (click)="$event.stopPropagation(); songRemoved.emit(song())">
         <i class="far fa-trash-alt"></i>
       </button>
     </div>

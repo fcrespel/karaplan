@@ -74,7 +74,7 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
 
   leavePlaylist(playlist: Playlist) {
     let modal = this.modalService.open(PlaylistLeaveModalComponent);
-    modal.componentInstance.playlist = playlist;
+    modal.componentInstance.playlist.set(playlist);
     modal.result.then((result: Playlist) => {
       this.playlistsService.leavePlaylist(result.id)
         .pipe(takeUntil(this.destroy$))
@@ -84,7 +84,7 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
 
   editPlaylist(playlist: Playlist) {
     let modal = this.modalService.open(PlaylistEditModalComponent);
-    modal.componentInstance.playlist = {id: playlist.id, name: playlist.name, readOnly: playlist.readOnly};
+    modal.componentInstance.playlist.set({id: playlist.id, name: playlist.name, readOnly: playlist.readOnly});
     modal.result.then((result: Playlist) => {
       this.playlistsService.savePlaylist(result)
         .pipe(takeUntil(this.destroy$))

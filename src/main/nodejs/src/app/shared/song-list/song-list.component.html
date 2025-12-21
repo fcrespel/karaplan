@@ -1,10 +1,10 @@
-@if (songs) {
-  <ul class="list-group shadow" cdkDropList cdkDropListLockAxis="y" [cdkDropListDisabled]="!allowMove" (cdkDropListDropped)="moveSong($event)">
-    @for (playlistSong of songs; track playlistSong.song.catalogId) {
+@if (songs()) {
+  <ul class="list-group shadow" cdkDropList cdkDropListLockAxis="y" [cdkDropListDisabled]="!allowMove()" (cdkDropListDropped)="moveSong($event)">
+    @for (playlistSong of songs(); track playlistSong.song.catalogId) {
       <li (click)="gotoSong(playlistSong.song)" class="list-group-item list-group-item-action align-items-center g-0 px-3 py-2"
         cdkDrag (cdkDragStarted)="dragging = true" (cdkDragDropped)="dragging = false">
         <div class="list-group-item py-2" *cdkDragPlaceholder></div>
-        @if (allowMove) {
+        @if (allowMove()) {
           <div class="col-auto px-2" cdkDragHandle>
             <i class="fas fa-grip-lines-vertical"></i>
           </div>
@@ -28,7 +28,7 @@
       <span class="badge text-dark" ngbTooltip="Added by {{ playlistSong.createdBy.displayName }} on {{ playlistSong.createdDate | date:'short' }}" placement="top top-left top-right auto" container="body"><i class="fas fa-info-circle"></i></span>
     </div>
   }
-  @if (showDuration && song.duration) {
+  @if (showDuration() && song.duration) {
     <div class="col-auto">
       <span class="badge text-bg-secondary" title="Duration">{{ song.duration | duration }}</span>
     </div>
@@ -50,7 +50,7 @@
     }
   </div>
   <div class="col-auto d-none d-sm-block ms-2">
-    <app-song-actions [song]="song" [showVotes]="showVotes" [showComments]="showComments" [showPlaylists]="showPlaylists" [showRemove]="showRemove"
+    <app-song-actions [song]="song" [showVotes]="showVotes()" [showComments]="showComments()" [showPlaylists]="showPlaylists()" [showRemove]="showRemove()"
       (voteAdded)="voteAdded.emit($event)" (voteRemoved)="voteRemoved.emit($event)" (commentAdded)="commentAdded.emit($event)" (commentRemoved)="commentRemoved.emit($event)"
       (playlistAdded)="playlistAdded.emit($event)" (playlistRemoved)="playlistRemoved.emit($event)" (songRemoved)="songRemoved.emit($event)">
     </app-song-actions>

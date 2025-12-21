@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CatalogSelection } from '../../models/catalog-selection';
 
 @Component({
@@ -7,13 +7,8 @@ import { CatalogSelection } from '../../models/catalog-selection';
   styleUrls: ['./song-selections.component.css'],
   standalone: false
 })
-export class SongSelectionsComponent implements OnInit {
+export class SongSelectionsComponent {
 
-  @Input() selections: CatalogSelection[] = [];
-
-  constructor() { }
-
-  ngOnInit() {
-  }
+  readonly selections = input<CatalogSelection[]>([]);
 
 }

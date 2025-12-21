@@ -4,7 +4,7 @@
 </div>
 <div class="modal-body">
   <p>Are you sure you want to leave this playlist?</p>
-  @if (playlist.members!.length > 1) {
+  @if (playlist().members!.length > 1) {
     <p>Other members will still be able to access it, and you can join it again with the following link:</p>
   } @else {
     <p>You can join it again with the following link:</p>
@@ -16,5 +16,5 @@
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Cancel</button>
-  <button type="button" class="btn btn-danger" (click)="activeModal.close(playlist)">Leave</button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.close(playlist())">Leave</button>
 </div>
