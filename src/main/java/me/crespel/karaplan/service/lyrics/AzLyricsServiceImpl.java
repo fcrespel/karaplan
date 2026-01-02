@@ -31,6 +31,7 @@ import me.crespel.karaplan.service.LyricsService;
 public class AzLyricsServiceImpl implements LyricsService {
 
 	private static final String SOURCE_NAME = "AZLyrics";
+	private static final Pattern TOKEN_HTML_PATTERN = Pattern.compile("\"value\", \"([^\"]+)\"");
 	private static final Pattern LYRICS_HTML_PATTERN = Pattern.compile("<div>\\s*<!-- Usage of [^\n]+ -->\\s*(.*?)\\s*</div>", Pattern.DOTALL);
 
 	private final AzLyricsProperties properties;
@@ -59,7 +60,7 @@ public class AzLyricsServiceImpl implements LyricsService {
 		AzLyricsSuggestResponse suggestions = getSuggestions(song);
 		if (suggestions != null && suggestions.getSongs() != null && !suggestions.getSongs().isEmpty()) {
 			AzLyricsSuggestion suggestion = suggestions.getSongs().get(0);
-			if (suggestion.getUrl() != null && suggestion.getUrl().startsWith(properties.getBaseUrl())) {
+			if (suggestion.getUrl() != null && suggestion.getUrl().startsWith(properties.getEndpoint())) {
 				String lyricsHtml = restTemplate.getForObject(suggestion.getUrl(), String.class);
 				Matcher lyricsMatcher = LYRICS_HTML_PATTERN.matcher(lyricsHtml);
 				if (lyricsMatcher.find()) {
@@ -72,10 +73,23 @@ public class AzLyricsServiceImpl implements LyricsService {
 		return lyrics;
 	}
 
+	private String getToken() {
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint()).path("/geo.js");
+		String remotePage = restTemplate.getForObject(builder.build().encode().toUri(), String.class);
+		Matcher tokenMatcher = TOKEN_HTML_PATTERN.matcher(remotePage);
+		if (tokenMatcher.find()) {
+			return tokenMatcher.group(1);
+		}
+		return null;
+	}
+
 	private AzLyricsSuggestResponse getSuggestions(Song song) {
 		try {
+			String token = getToken();
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint())
-					.queryParam("q", song.getName() + " - " + song.getArtist().getName());
+					.path("/suggest/")
+					.queryParam("q", song.getName() + " - " + song.getArtist().getName())
+					.queryParam("x", token);
 			return restTemplate.getForObject(builder.build().encode().toUri(), AzLyricsSuggestResponse.class);
 		} catch (RestClientException e) {
 			log.error("Failed to retrieve lyrics from AZLyrics for {}", song, e);
