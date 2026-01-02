@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, SimpleChanges, input, output, viewChild } from '@angular/core';
-import Plyr from 'plyr';
+import * as Plyr from 'plyr';
 
 @Component({
   selector: 'app-plyr, [plyr]',
@@ -23,7 +23,7 @@ export class PlyrComponent implements AfterViewInit, OnChanges, OnDestroy {
   private events: (Plyr.StandardEvent | Plyr.Html5Event | Plyr.YoutubeEvent)[] = ['waiting', 'canplay', 'playing', 'pause', 'ended'];
 
   ngAfterViewInit() {
-    this.plyr = new Plyr(this.target().nativeElement, this.plyrOptions());
+    this.plyr = new Plyr.default(this.target().nativeElement, this.plyrOptions());
     this.events.forEach(name => this.plyr.on(name, event => this.plyrEvent.emit(event)));
     this.plyrInit.emit(this.plyr);
     this.updateSource();
