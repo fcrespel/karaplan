@@ -3,12 +3,13 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Playlist } from '../../models/playlist';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-playlist-leave-modal',
   templateUrl: './playlist-leave-modal.component.html',
   styleUrls: ['./playlist-leave-modal.component.css'],
-  standalone: false
+  imports: [FormsModule]
 })
 export class PlaylistLeaveModalComponent implements OnInit {
   activeModal = inject(NgbActiveModal);

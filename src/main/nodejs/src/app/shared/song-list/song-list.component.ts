@@ -1,6 +1,6 @@
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, CdkDropList, CdkDrag, CdkDragPlaceholder, CdkDragHandle } from '@angular/cdk/drag-drop';
 import { Component, OnDestroy, inject, input, output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import Plyr from 'plyr';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -9,12 +9,17 @@ import { Song } from '../../models/song';
 import { SongComment } from '../../models/song-comment';
 import { SongVote } from '../../models/song-vote';
 import { SongsService } from '../../services/songs.service';
+import { NgTemplateOutlet, DatePipe } from '@angular/common';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
+import { SongActionsComponent } from '../song-actions/song-actions.component';
+import { PlyrComponent } from '../plyr/plyr.component';
+import { DurationPipe } from '../pipes/duration.pipe';
 
 @Component({
   selector: 'app-song-list',
   templateUrl: './song-list.component.html',
   styleUrls: ['./song-list.component.css'],
-  standalone: false
+  imports: [CdkDropList, CdkDrag, CdkDragPlaceholder, CdkDragHandle, NgTemplateOutlet, RouterLink, NgbTooltip, SongActionsComponent, PlyrComponent, DatePipe, DurationPipe]
 })
 export class SongListComponent implements OnDestroy {
   private router = inject(Router);

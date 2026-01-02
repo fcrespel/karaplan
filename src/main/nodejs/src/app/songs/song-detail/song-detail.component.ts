@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { NgForm, FormsModule } from '@angular/forms';
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import Plyr from 'plyr';
 import { Subject, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
@@ -12,12 +12,17 @@ import { SongLyrics } from '../../models/song-lyrics';
 import { User } from '../../models/user';
 import { AccountService } from '../../services/account.service';
 import { SongsService } from '../../services/songs.service';
+import { SongActionsComponent } from '../../shared/song-actions/song-actions.component';
+import { PlyrComponent } from '../../shared/plyr/plyr.component';
+import { SongListComponent } from '../../shared/song-list/song-list.component';
+import { DatePipe } from '@angular/common';
+import { DurationPipe } from '../../shared/pipes/duration.pipe';
 
 @Component({
   selector: 'app-song-detail',
   templateUrl: './song-detail.component.html',
   styleUrls: ['./song-detail.component.css'],
-  standalone: false
+  imports: [RouterLink, SongActionsComponent, PlyrComponent, FormsModule, SongListComponent, DatePipe, DurationPipe]
 })
 export class SongDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

@@ -3,12 +3,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { User } from '../models/user';
 import { AccountService } from '../services/account.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  standalone: false
+  imports: [RouterLink]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private accountService = inject(AccountService);

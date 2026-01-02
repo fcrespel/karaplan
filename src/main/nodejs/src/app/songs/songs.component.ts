@@ -1,16 +1,19 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, concat, of } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { CatalogSelection } from '../models/catalog-selection';
 import { PlaylistSong } from '../models/playlist-song';
 import { SongsService } from '../services/songs.service';
+import { FormsModule } from '@angular/forms';
+import { SongSelectionsComponent } from '../shared/song-selections/song-selections.component';
+import { SongListComponent } from '../shared/song-list/song-list.component';
 
 @Component({
   selector: 'app-songs',
   templateUrl: './songs.component.html',
   styleUrls: ['./songs.component.css'],
-  standalone: false
+  imports: [RouterLink, FormsModule, SongSelectionsComponent, SongListComponent]
 })
 export class SongsComponent implements OnInit {
   private route = inject(ActivatedRoute);

@@ -8,7 +8,7 @@ describe('PlaylistEditModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlaylistEditModalComponent ]
+      imports: [PlaylistEditModalComponent]
     })
     .compileComponents();
   });

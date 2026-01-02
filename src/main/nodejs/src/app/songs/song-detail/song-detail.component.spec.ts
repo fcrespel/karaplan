@@ -8,7 +8,7 @@ describe('SongDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SongDetailComponent ]
+      imports: [SongDetailComponent]
     })
     .compileComponents();
   });

@@ -3,12 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ActuatorInfo } from '../models/actuator-info';
 import { ActuatorService } from '../services/actuator.service';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.css'],
-  standalone: false
+  imports: [RouterLink, DatePipe]
 })
 export class AboutComponent implements OnInit, OnDestroy {
   private actuatorService = inject(ActuatorService);

@@ -8,7 +8,7 @@ describe('PlaylistLeaveModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlaylistLeaveModalComponent ]
+      imports: [PlaylistLeaveModalComponent]
     })
     .compileComponents();
   });

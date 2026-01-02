@@ -3,12 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ActuatorInfo } from '../models/actuator-info';
 import { ActuatorService } from '../services/actuator.service';
+import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css'],
-  standalone: false
+  imports: [RouterLink, DatePipe]
 })
 export class FooterComponent implements OnInit, OnDestroy {
   private actuatorService = inject(ActuatorService);

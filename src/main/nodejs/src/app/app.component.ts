@@ -1,13 +1,16 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { NavbarComponent } from './navbar/navbar.component';
+import { AlertComponent } from './alert/alert.component';
+import { FooterComponent } from './footer/footer.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  standalone: false
+  imports: [NavbarComponent, AlertComponent, RouterOutlet, FooterComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
   private router = inject(Router);

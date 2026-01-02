@@ -1,35 +1,30 @@
-import { Injectable, inject } from '@angular/core';
+import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AlertService } from './services/alert.service';
 import { AlertMessage } from './models/alert-message';
+import { AlertService } from './services/alert.service';
 
-@Injectable()
-export class HttpErrorInterceptor implements HttpInterceptor {
-  private router = inject(Router);
-  private alertService = inject(AlertService);
-
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      catchError((err: any) => {
-        if (err instanceof HttpErrorResponse) {
-          if (err.status == 401) {
-            this.router.navigate(['/login']);
-          } else {
-            let message: AlertMessage = {
-              severity: 'danger',
-              title: err.error?.error || 'Error',
-              text: err.error?.message || err.message,
-              code: err.error?.status || err.status
-            }
-            this.alertService.addMessage(message);
+export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
+  const alertService = inject(AlertService);
+  return next(req).pipe(
+    catchError((err: any) => {
+      if (err instanceof HttpErrorResponse) {
+        if (err.status == 401) {
+          router.navigate(['/login']);
+        } else {
+          let message: AlertMessage = {
+            severity: 'danger',
+            title: err.error?.error || 'Error',
+            text: err.error?.message || err.message,
+            code: err.error?.status || err.status
           }
+          alertService.addMessage(message);
         }
-        return throwError(err);
-      })
-    );
-  }
-
+      }
+      return throwError(() => err);
+    })
+  );
 }

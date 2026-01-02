@@ -7,12 +7,14 @@ import { Playlist } from '../models/playlist';
 import { PlaylistsService } from '../services/playlists.service';
 import { PlaylistEditModalComponent } from '../shared/playlist-edit-modal/playlist-edit-modal.component';
 import { PlaylistLeaveModalComponent } from '../shared/playlist-leave-modal/playlist-leave-modal.component';
+import { NgTemplateOutlet, NgClass } from '@angular/common';
+import { DurationPipe } from '../shared/pipes/duration.pipe';
 
 @Component({
   selector: 'app-playlists',
   templateUrl: './playlists.component.html',
   styleUrls: ['./playlists.component.css'],
-  standalone: false
+  imports: [NgTemplateOutlet, NgClass, DurationPipe]
 })
 export class PlaylistsComponent implements OnInit, OnDestroy {
   private router = inject(Router);

@@ -4,8 +4,7 @@ import Plyr from 'plyr';
 @Component({
   selector: 'app-plyr, [plyr]',
   templateUrl: './plyr.component.html',
-  styleUrls: ['./plyr.component.css'],
-  standalone: false
+  styleUrls: ['./plyr.component.css']
 })
 export class PlyrComponent implements AfterViewInit, OnChanges, OnDestroy {
 

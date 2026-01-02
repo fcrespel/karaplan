@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AlertMessage } from '../models/alert-message';
@@ -10,7 +10,7 @@ import { AlertService } from '../services/alert.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  standalone: false
+  imports: [RouterLink]
 })
 export class LoginComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

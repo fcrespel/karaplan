@@ -3,12 +3,14 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlaylistSong } from '../../models/playlist-song';
 import { SongsService } from '../../services/songs.service';
+import { RouterLink } from '@angular/router';
+import { SongListComponent } from '../../shared/song-list/song-list.component';
 
 @Component({
   selector: 'app-user-votes',
   templateUrl: './user-votes.component.html',
   styleUrls: ['./user-votes.component.css'],
-  standalone: false
+  imports: [RouterLink, SongListComponent]
 })
 export class UserVotesComponent implements OnInit, OnDestroy {
   private songsService = inject(SongsService);

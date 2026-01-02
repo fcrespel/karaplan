@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -7,12 +7,13 @@ import { AlertMessage } from '../../models/alert-message';
 import { User } from '../../models/user';
 import { AccountService } from '../../services/account.service';
 import { AlertService } from '../../services/alert.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
-  standalone: false
+  imports: [RouterLink, FormsModule]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   private router = inject(Router);

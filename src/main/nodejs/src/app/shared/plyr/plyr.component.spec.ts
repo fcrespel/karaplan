@@ -8,7 +8,7 @@ describe('PlyrComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlyrComponent ]
+      imports: [PlyrComponent]
     })
     .compileComponents();
 

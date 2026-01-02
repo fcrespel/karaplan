@@ -1,7 +1,7 @@
-import { Location } from '@angular/common';
+import { Location, DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm, FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -16,12 +16,16 @@ import { AlertService } from '../../services/alert.service';
 import { PlaylistsService } from '../../services/playlists.service';
 import { PlaylistEditModalComponent } from '../../shared/playlist-edit-modal/playlist-edit-modal.component';
 import { PlaylistLeaveModalComponent } from '../../shared/playlist-leave-modal/playlist-leave-modal.component';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
+import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownButtonItem, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
+import { SongListComponent } from '../../shared/song-list/song-list.component';
+import { DurationPipe } from '../../shared/pipes/duration.pipe';
 
 @Component({
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
-  standalone: false
+  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DatePipe, DurationPipe]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
