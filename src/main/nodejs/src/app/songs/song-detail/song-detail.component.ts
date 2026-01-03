@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
-import Plyr from 'plyr';
+import * as Plyr from 'plyr';
 import { Subject, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
 import { CatalogSongFile } from '../../models/catalog-song-file';
@@ -78,7 +78,7 @@ export class SongDetailComponent implements OnInit, OnDestroy {
     this.route.paramMap
       .pipe(takeUntil(this.destroy$))
       .pipe(switchMap((params: ParamMap) => 
-        this.songsService.getSong(+params.get('catalogId')!).pipe(catchError(err => of(undefined)))
+        this.songsService.getSong(+params.get('catalogId')!).pipe(catchError(err => of({} as Song)))
       ))
       .subscribe(song => {
         this.relatedSongsPage = 0;
