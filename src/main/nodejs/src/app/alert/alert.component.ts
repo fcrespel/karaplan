@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { AlertService } from '../services/alert.service';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { AlertMessage } from '../models/alert-message';
-import { NgbAlert } from '@ng-bootstrap/ng-bootstrap/alert';
+import { AlertService } from '../services/alert.service';
 
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.css'],
-  imports: [NgbAlert]
+  imports: [NgbToast]
 })
 export class AlertComponent {
   alertService = inject(AlertService);
