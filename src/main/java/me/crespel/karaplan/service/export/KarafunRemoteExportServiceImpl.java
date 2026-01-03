@@ -27,17 +27,15 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 
 	private final KarafunRemoteProperties properties;
 	private final RestTemplate restTemplate;
-	private final ExportService karafunRemoteV1ExportService;
 	private final ExportService karafunRemoteV2ExportService;
 
-	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplateBuilder restTemplateBuilder, @Qualifier("karafunRemoteV1Export") ExportService karafunRemoteV1ExportService, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
+	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplateBuilder restTemplateBuilder, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
 		this.properties = properties;
 		this.restTemplate = restTemplateBuilder
 				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
 				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
-		this.karafunRemoteV1ExportService = karafunRemoteV1ExportService;
 		this.karafunRemoteV2ExportService = karafunRemoteV2ExportService;
 	}
 
@@ -65,7 +63,7 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 				String remoteV2Url = remoteV2UrlMatcher.group(1).replace("\\/", "/");
 				karafunRemoteV2ExportService.exportPlaylist(playlist, remoteV2Url);
 			} else {
-				karafunRemoteV1ExportService.exportPlaylist(playlist, target);
+				throw new TechnicalException("Unsupported KaraFun Remote version, please update KaraFun application");
 			}
 		}
 	}

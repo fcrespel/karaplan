@@ -47,7 +47,6 @@
 		<opentelemetry-instrumentation.version>2.23.0-alpha</opentelemetry-instrumentation.version>
 		<node.version>v22.17.0</node.version>
 		<npm.version>11.4.2</npm.version>
-		<socketio-client.version>1.0.1</socketio-client.version>
 		<spring-cloud-gcp.version>7.4.2</spring-cloud-gcp.version>
 		<springdoc.version>2.8.15</springdoc.version>
 	</properties>
@@ -192,10 +191,6 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>io.socket</groupId>
-			<artifactId>socket.io-client</artifactId>
-		</dependency>
 
 		<!-- Databases -->
 		<dependency>
@@ -246,11 +241,6 @@
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.socket</groupId>
-				<artifactId>socket.io-client</artifactId>
-				<version>${socketio-client.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>
