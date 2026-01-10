@@ -1,15 +1,16 @@
-import { Component, OnInit, inject, model } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, OnInit, inject, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Playlist } from '../../models/playlist';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-playlist-leave-modal',
   templateUrl: './playlist-leave-modal.component.html',
   styleUrls: ['./playlist-leave-modal.component.css'],
-  imports: [FormsModule]
+  imports: [FormsModule, TranslatePipe]
 })
 export class PlaylistLeaveModalComponent implements OnInit {
   activeModal = inject(NgbActiveModal);

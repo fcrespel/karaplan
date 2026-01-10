@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-pink shadow fixed-top">
   <div class="container-md">
-    <a class="navbar-brand logo" href="#" routerLink="/home">KaraPlan</a>
+    <a class="navbar-brand logo" href="#" routerLink="/home">{{ 'app.name' | translate }}</a>
     <button class="navbar-toggler" type="button" (click)="navbarOpen = !navbarOpen" [attr.aria-expanded]="navbarOpen" aria-controls="navbarSupportedContent" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -8,10 +8,10 @@
       <ul class="navbar-nav me-auto">
         @if (user) {
           <li class="nav-item">
-            <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active" (click)="navbarOpen = false">Songs</a>
+            <a class="nav-link" href="#" routerLink="/songs" routerLinkActive="active" (click)="navbarOpen = false">{{ 'navbar.songs' | translate }}</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active" (click)="navbarOpen = false">Playlists</a>
+            <a class="nav-link" href="#" routerLink="/playlists" routerLinkActive="active" (click)="navbarOpen = false">{{ 'navbar.playlists' | translate }}</a>
           </li>
         }
       </ul>
@@ -21,20 +21,20 @@
             <a class="nav-link" href="#" (click)="$event.preventDefault()" ngbDropdownToggle>{{ user.displayName }}</a>
             <div class="dropdown-menu shadow" ngbDropdownMenu>
               <a class="dropdown-item" href="#" routerLink="/user/profile" (click)="navbarOpen = false">
-                <i class="fas fa-user me-1"></i> Profile
+                <i class="fas fa-user fa-fw"></i> {{ 'navbar.profile' | translate }}
               </a>
               <a class="dropdown-item" href="#" routerLink="/about" (click)="navbarOpen = false">
-                <i class="fas fa-info-circle me-1"></i> About
+                <i class="fas fa-info-circle fa-fw"></i> {{ 'navbar.about' | translate }}
               </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="logout" (click)="$event.preventDefault(); navbarOpen = false; logoutForm.submit()">
-                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                <i class="fas fa-sign-out-alt fa-fw"></i> {{ 'navbar.logout' | translate }}
               </a>
             </div>
           </li>
         </ul>
       } @else {
-        <a class="btn btn-outline-light" href="login" routerLink="/login" (click)="navbarOpen = false">Login</a>
+        <a class="btn btn-outline-light" href="login" routerLink="/login" (click)="navbarOpen = false">{{ 'navbar.login' | translate }}</a>
       }
     </div>
   </div>

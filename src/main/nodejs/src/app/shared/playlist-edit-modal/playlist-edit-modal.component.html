@@ -1,23 +1,23 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">{{ playlist().id ? 'Edit' : 'Create' }} playlist</h4>
+  <h4 class="modal-title" id="modal-basic-title">{{ 'playlists.editModal.' + (playlist().id ? 'editTitle' : 'createTitle') | translate }}</h4>
   <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
   <form #playlistEditForm="ngForm">
     <div class="mb-3">
-      <label class="form-label" for="playlistName">Name</label>
-      <input type="text" class="form-control" id="playlistName" name="playlistName" [(ngModel)]="playlist().name" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" placeholder="Playlist name" required>
+      <label class="form-label" for="playlistName">{{ 'playlists.editModal.nameLabel' | translate }}</label>
+      <input type="text" class="form-control" id="playlistName" name="playlistName" [(ngModel)]="playlist().name" #playlistNameField="ngModel" [class.is-invalid]="playlistNameField.dirty && playlistNameField.invalid" [placeholder]="'playlists.editModal.namePlaceholder' | translate" required>
     </div>
     @if (playlist().id) {
       <div class="mb-3">
         <div class="form-check form-switch">
           <input type="checkbox" class="form-check-input" id="playlistReadOnly" name="playlistReadOnly" [(ngModel)]="playlist().readOnly" #playlistReadOnlyField="ngModel">
-          <label class="form-check-label" for="playlistReadOnly">Read-only <i class="small fas fa-info-circle" ngbTooltip="Prevent songs from being added/removed" placement="right" container="body"></i></label>
+          <label class="form-check-label" for="playlistReadOnly">{{ 'playlists.editModal.readOnlyLabel' | translate }} <i class="small fas fa-info-circle" [ngbTooltip]="'playlists.editModal.readOnlyTooltip' | translate" placement="right" container="body"></i></label>
         </div>
       </div>
     }
   </form>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-pink" [disabled]="!playlistEditForm.form.valid" (click)="activeModal.close(playlist())">{{ playlist().id ? 'Save' : 'Create' }} playlist</button>
+  <button type="button" class="btn btn-pink" [disabled]="!playlistEditForm.form.valid" (click)="activeModal.close(playlist())">{{ 'playlists.editModal.' + (playlist().id ? 'editButton' : 'createButton') | translate }}</button>
 </div>

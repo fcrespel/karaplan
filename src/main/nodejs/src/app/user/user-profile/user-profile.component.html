@@ -1,16 +1,16 @@
 <!-- Title -->
-<h1>User account</h1>
+<h1>{{ 'user.title' | translate }}</h1>
 
 <!-- Navigation pills -->
 <ul class="nav nav-pills my-3">
   <li class="nav-item">
-    <a class="nav-link active" href="#" routerLink="/user/profile" title="Profile">
-      <i class="fas fa-user"></i><span class="d-md-inline"> Profile</span>
+    <a class="nav-link active" href="#" routerLink="/user/profile" [title]="'user.profile.title' | translate">
+      <i class="fas fa-user"></i><span class="d-md-inline"> {{ 'user.profile.title' | translate }}</span>
     </a>
   </li>
   <li>
-    <a class="nav-link" href="#" routerLink="/user/votes" title="Votes">
-      <i class="fas fa-thumbs-up"></i><span class="d-md-inline d-none"> Votes</span>
+    <a class="nav-link" href="#" routerLink="/user/votes" [title]="'user.votes.title' | translate">
+      <i class="fas fa-thumbs-up"></i><span class="d-md-inline d-none"> {{ 'user.votes.title' | translate }}</span>
     </a>
   </li>
 </ul>
@@ -19,42 +19,32 @@
 @if (user) {
   <div class="card">
     <div class="card-body text-dark">
-      <p>
-        Your user profile is linked to your
-        @switch (user.provider) {
-          @case ('google') {
-            <a href="https://accounts.google.com">Google account</a>
-          }
-          @case ('github') {
-            <a href="https://github.com/settings/profile">GitHub account</a>
-          }
-        }
-        . You may choose a different display name to use here.
-      </p>
+      <p [innerHTML]="'user.profile.providerText.' + user.provider | translate"></p>
+      <p [innerHTML]="'user.profile.displayNameText' | translate"></p>
       @if (user) {
         <form #userProfileForm="ngForm" (ngSubmit)="updateUser(user)">
           <div class="row mb-3">
-            <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
+            <label for="displayName" class="col-sm-2 col-form-label">{{ 'user.profile.displayNameLabel' | translate }}</label>
             <div class="col-sm-6">
               <input type="text" class="form-control" id="displayName" name="displayName" [(ngModel)]="user.displayName" #displayNameField="ngModel" [class.is-invalid]="displayNameField.dirty && displayNameField.invalid" required>
             </div>
           </div>
           <div class="row mb-3">
-            <label for="email" class="col-sm-2 col-form-label">Email address</label>
+            <label for="email" class="col-sm-2 col-form-label">{{ 'user.profile.emailLabel' | translate }}</label>
             <div class="col-sm-6">
               <input type="email" class="form-control" id="email" name="email" [(ngModel)]="user.email" disabled readonly>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-sm-6 offset-md-2">
-              <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">Update profile</button>
+              <button type="submit" class="btn btn-pink" [disabled]="!userProfileForm.form.valid">{{ 'user.profile.updateButton' | translate }}</button>
             </div>
           </div>
         </form>
       }
       <hr>
         <div class="text-end">
-          <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete account</button>
+          <button type="button" (click)="deleteAccount(deleteAccountModal)" class="btn btn-danger"><i class="fas fa-trash-alt"></i> {{ 'user.profile.deleteAccountButton' | translate }}</button>
         </div>
       </div>
     </div>
@@ -69,24 +59,24 @@
   <!-- Deletion confirmation modal -->
   <ng-template #deleteAccountModal let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-basic-title">Delete account</h4>
+      <h4 class="modal-title" id="modal-basic-title">{{ 'user.profile.deleteAccountModal.title' | translate }}</h4>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
     <div class="modal-body">
       <form #accountDeletionForm="ngForm">
-        <p class="text-danger"><strong>You are going to delete your account and all your votes.</strong></p>
+        <p class="text-danger"><strong>{{ 'user.profile.deleteAccountModal.text' | translate }}</strong></p>
         <div class="mb-3 form-check">
           <input type="checkbox" class="form-check-input" id="deleteComments" name="deleteComments" [(ngModel)]="deleteComments">
-          <label class="form-check-label" for="deleteComments">Delete all comments as well</label>
+          <label class="form-check-label" for="deleteComments">{{ 'user.profile.deleteAccountModal.deleteCommentsLabel' | translate }}</label>
         </div>
-        <p>Please type <strong>delete my account</strong> below to confirm:</p>
+        <p [innerHTML]="'user.profile.deleteAccountModal.confirmText' | translate"></p>
         <div class="mb-3">
           <input type="text" class="form-control" id="confirmDeletion" name="confirmDeletion" [(ngModel)]="confirmDeletion"
-            #confirmDeletionField="ngModel" pattern="delete my account" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
+            #confirmDeletionField="ngModel" [pattern]="'user.profile.deleteAccountModal.confirmPattern' | translate" [class.is-invalid]="confirmDeletionField.dirty && confirmDeletionField.invalid" required>
         </div>
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-danger" [disabled]="!accountDeletionForm.form.valid" (click)="modal.close()">Delete my account</button>
+      <button type="button" class="btn btn-danger" [disabled]="!accountDeletionForm.form.valid" (click)="modal.close()">{{ 'user.profile.deleteAccountModal.confirmButton' | translate }}</button>
     </div>
   </ng-template>

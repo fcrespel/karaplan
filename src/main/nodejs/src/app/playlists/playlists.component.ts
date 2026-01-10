@@ -1,20 +1,21 @@
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Playlist } from '../models/playlist';
 import { PlaylistsService } from '../services/playlists.service';
+import { DurationPipe } from '../shared/pipes/duration.pipe';
 import { PlaylistEditModalComponent } from '../shared/playlist-edit-modal/playlist-edit-modal.component';
 import { PlaylistLeaveModalComponent } from '../shared/playlist-leave-modal/playlist-leave-modal.component';
-import { NgTemplateOutlet, NgClass } from '@angular/common';
-import { DurationPipe } from '../shared/pipes/duration.pipe';
 
 @Component({
   selector: 'app-playlists',
   templateUrl: './playlists.component.html',
   styleUrls: ['./playlists.component.css'],
-  imports: [NgTemplateOutlet, NgClass, DurationPipe]
+  imports: [NgTemplateOutlet, NgClass, DurationPipe, TranslatePipe]
 })
 export class PlaylistsComponent implements OnInit, OnDestroy {
   private router = inject(Router);

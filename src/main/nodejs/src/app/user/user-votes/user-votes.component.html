@@ -1,16 +1,16 @@
 <!-- Title -->
-<h1>User account</h1>
+<h1>{{ 'user.title' | translate }}</h1>
 
 <!-- Navigation pills -->
 <ul class="nav nav-pills my-3">
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/user/profile" title="Profile">
-      <i class="fas fa-user"></i><span class="d-md-inline d-none"> Profile</span>
+    <a class="nav-link" href="#" routerLink="/user/profile" [title]="'user.profile.title' | translate">
+      <i class="fas fa-user"></i><span class="d-md-inline d-none"> {{ 'user.profile.title' | translate }}</span>
     </a>
   </li>
   <li>
-    <a class="nav-link active" href="#" routerLink="/user/votes" title="Votes">
-      <i class="fas fa-thumbs-up"></i><span class="d-md-inline"> Votes</span>
+    <a class="nav-link active" href="#" routerLink="/user/votes" [title]="'user.votes.title' | translate">
+      <i class="fas fa-thumbs-up"></i><span class="d-md-inline"> {{ 'user.votes.title' | translate }}</span>
     </a>
   </li>
 </ul>
@@ -19,7 +19,7 @@
 @if (songsLoading) {
   <div class="d-flex justify-content-center">
     <div class="spinner-border spinner-border-lg" role="status">
-      <span class="sr-only">Loading...</span>
+      <span class="sr-only">{{ 'user.votes.loading' | translate }}</span>
     </div>
   </div>
 }
@@ -27,7 +27,7 @@
 <!-- No results -->
 @if (songs.length == 0 && !songsLoading) {
   <p class="lead text-center mt-4">
-    <i class="fas fa-frown"></i> No results found.
+    <i class="fas fa-frown"></i> {{ 'user.votes.noResults' | translate }}
   </p>
 }
 
@@ -39,10 +39,10 @@
   <div class="text-center my-3">
     <button type="button" (click)="loadMoreSongs()" [disabled]="hasMoreSongsLoading" class="btn btn-lg btn-outline-light w-50">
       @if (!hasMoreSongsLoading) {
-        <span>Load more ...</span>
+        <span>{{ 'user.votes.loadMore' | translate }}</span>
       }
       @if (hasMoreSongsLoading) {
-        <span><span class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span> Loading ...</span>
+        <span><span class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span> {{ 'user.votes.loading' | translate }}</span>
       }
     </button>
   </div>

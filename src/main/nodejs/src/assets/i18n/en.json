@@ -1,0 +1,240 @@
+{
+  "app": {
+    "name": "KaraPlan"
+  },
+  "navbar": {
+    "songs": "Songs",
+    "playlists": "Playlists",
+    "profile": "Profile",
+    "about": "About",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "footer": {
+    "about": "About",
+    "terms": "Terms of use",
+    "privacy": "Privacy",
+    "api": "API"
+  },
+  "login": {
+    "title": "Please sign in!",
+    "text": "Pick an identity provider to login with:",
+    "terms": "By continuing, you agree with the <a href=\"about\">Terms of use</a> of <strong>KaraPlan</strong>.",
+    "errorTitle": "Error",
+    "errorText": "Authentication failed",
+    "logoutTitle": "Success",
+    "logoutText": "You have been signed out"
+  },
+  "home": {
+    "text": "Plan your Karaoke sessions with song search, ratings, comments, playlists and more!",
+    "loginButton": "Get Started",
+    "songsButton": "Songs",
+    "playlistsButton": "Playlists"
+  },
+  "user": {
+    "title": "User account",
+    "profile": {
+      "title": "Profile",
+      "providerText": {
+        "google": "Your user profile is linked to your <a href=\"https://accounts.google.com\">Google account</a>.",
+        "github": "Your user profile is linked to your <a href=\"https://github.com/settings/profile\">GitHub account</a>."
+      },
+      "displayNameText": "You may choose a different display name to use here.",
+      "displayNameLabel": "Display name",
+      "emailLabel": "Email address",
+      "updateButton": "Update profile",
+      "deleteAccountButton": "Delete account",
+      "deleteAccountModal": {
+        "title": "Delete account",
+        "text": "You are going to delete your account and all your votes.",
+        "deleteCommentsLabel": "Delete all comments as well",
+        "confirmText": "Please type <strong>delete my account</strong> below to confirm:",
+        "confirmPattern": "delete my account",
+        "confirmButton": "Delete my account"
+      }
+    },
+    "votes": {
+      "title": "Votes",
+      "noResults": "You have not voted for any song.",
+      "loading": "Loading ...",
+      "loadMore": "Load more ..."
+    }
+  },
+  "songs": {
+    "title": "Songs",
+    "searchTab": "Search",
+    "selectionsTab": "Selections",
+    "genresTab": "Genres",
+    "topTab": "Top",
+    "newsTab": "New",
+    "votesTab": "Votes",
+    "searchPlaceholder": "Song or artist name",
+    "searchButton": "Search",
+    "noResults": "No songs found.",
+    "loading": "Loading ...",
+    "loadMore": "Load more ...",
+    "list": {
+      "durationTooltip": "Duration",
+      "addedByTooltip": "Added by {name} on {date, date, short} at {date, time, short}",
+      "previewPlayTooltip": "Play audio preview",
+      "previewPlayingTooltip": "Stop audio preview",
+      "previewNotFoundTooltip": "Not available"
+    },
+    "actions": {
+      "voteUpTooltip": "Vote up",
+      "voteDownTooltip": "Vote down",
+      "commentsTooltip": "Comments",
+      "commentPlaceholder": "Your comment ...",
+      "commentAddButton": "Add comment",
+      "commentRemoveButton": "Remove comment",
+      "commentDate": "{date, date, short} at {date, time, short}",
+      "playlistAddTooltip": "Add to playlist",
+      "playlistCreateButton": "New playlist",
+      "removeTooltip": "Remove song"
+    },
+    "detail": {
+      "infoTab": "Info",
+      "infoDurationTooltip": "Duration",
+      "infoYearTooltip": "Year",
+      "infoStyleTooltip": "Genre",
+      "lyricsTab": "Lyrics",
+      "lyricsNotAvailable": "Lyrics are not available.",
+      "lyricsSourceLabel": "Source:",
+      "commentsTab": "Comments",
+      "commentPlaceholder": "Your comment ...",
+      "commentAddButton": "Add comment",
+      "commentRemoveButton": "Remove comment",
+      "commentDate": "{date, date, short} at {date, time, short}",
+      "relatedTab": "Related",
+      "relatedLoadMore": "Load more ...",
+      "filesTab": "Files",
+      "filePreviewLabel": "Preview",
+      "filePreviewTooltip": "Play audio preview",
+      "fileLoadingLabel": "Loading",
+      "filePlayingLabel": "Playing",
+      "filePlayingTooltip": "Stop audio preview",
+      "fileDownloadLabel": "Download",
+      "fileDownloadTooltip": "Download full version",
+      "fileTypeLabel": {
+        "ba": "Bass only",
+        "cdg": "Karaoke CDG file",
+        "dr": "Drums only",
+        "gt": "Guitar only",
+        "kfn": "KaraFun format",
+        "mp4": "Karaoke video",
+        "nba": "No bass",
+        "nba-ba-voc": "Bass + vocals",
+        "nba-voc": "No bass + vocals",
+        "nbv": "Instrumental",
+        "nbv-gm": "Instrumental + backing vocals",
+        "nbv-ld": "Cover version",
+        "ndr": "No drums",
+        "ndr-dr-voc": "Drums + vocals",
+        "ndr-voc": "No drums + vocals",
+        "ngt": "No guitar",
+        "ngt-gt-voc": "Guitar + vocals",
+        "ngt-voc": "No guitar + vocals",
+        "npi": "No piano",
+        "npi-pi-voc": "Piano + vocals",
+        "npi-voc": "No piano + vocals",
+        "pi": "Piano only",
+        "wmv": "Karaoke video"
+      },
+      "errorTitle": "Oops!",
+      "errorText": "Something went wrong, please try again.",
+      "errorBackButton": "Go back",
+      "errorOr": "or",
+      "errorHomeButton": "Go home"
+    }
+  },
+  "playlists": {
+    "title": "Playlists",
+    "createButton": "Create",
+    "noResults": "No playlist has been created yet.",
+    "membersLabel": "{count, plural, one {# member} other {# members}}",
+    "membersTooltip": "Members",
+    "countLabel": "{count, plural, one {# song} other {# songs}}",
+    "countTooltip": "Songs count",
+    "durationTooltip": "Duration",
+    "editTooltip": "Edit playlist",
+    "leaveTooltip": "Leave playlist",
+    "detail": {
+      "searchButton": "Songs",
+      "searchTooltip": "Find songs",
+      "lockedButton": "Locked",
+      "lockedTooltip": "Locked playlist",
+      "joinButton": "Join",
+      "joinTooltip": "Join playlist",
+      "commentsTooltip": "Comments",
+      "commentPlaceholder": "Your comment ...",
+      "commentAddButton": "Add comment",
+      "commentRemoveButton": "Remove comment",
+      "commentDate": "{date, date, short} at {date, time, short}",
+      "shareTooltip": "Share playlist",
+      "shareText": "Share this playlist with your friends by copying this link:",
+      "copyTooltip": "Copy to clipboard",
+      "sortTooltip": "Sort playlist",
+      "sortAlphaAsc": "By name, ascending",
+      "sortAlphaDesc": "By name, descending",
+      "sortScoreAsc": "By votes, ascending",
+      "sortScoreDesc": "By votes, descending",
+      "sortDateAsc": "By date added, ascending",
+      "sortDateDesc": "By date added, descending",
+      "sortRandom": "Random",
+      "exportTooltip": "Export playlist",
+      "exportKarafunRemote": "KaraFun Remote",
+      "exportKarafunRemoteModal": {
+        "title": "Export to KaraFun Remote",
+        "text": "Enter your <strong>KaraFun Remote</strong> ID below to load the playlist.",
+        "remoteIdLabel": "Remote ID",
+        "instructions": "Example: enter <strong>123456</strong> if your remote URL is www.karafun.com/<strong>123456</strong>",
+        "confirmButton": "Export to KaraFun Remote"
+      },
+      "exportKarafunBar": "KaraFun Bar",
+      "exportKarafunBarModal": {
+        "title": "Export to KaraFun Bar",
+        "text": "Enter your <strong>KaraFun Bar</strong> Booking ID below to load the playlist.",
+        "bookingIdLabel": "Booking ID",
+        "instructions": "Example: enter <strong>123456789</strong> if your booking URL is https://www.karafunbar.com/fr/lille/book/<strong>123456789</strong>/",
+        "confirmButton": "Export to KaraFun Bar"
+      },
+      "exportCsvFile": "CSV file",
+      "editTooltip": "Edit playlist",
+      "leaveButton": "Leave",
+      "leaveTooltip": "Leave playlist",
+      "noResults": "No song has been added to this playlist yet."
+    },
+    "editModal": {
+      "createTitle": "Create playlist",
+      "createButton": "Create playlist",
+      "editTitle": "Edit playlist",
+      "editButton": "Save playlist",
+      "nameLabel": "Name",
+      "namePlaceholder": "Playlist name",
+      "readOnlyLabel": "Read-only",
+      "readOnlyTooltip": "Prevent songs from being added/removed"
+    },
+    "leaveModal": {
+      "title": "Leave playlist",
+      "text": "Are you sure you want to leave this playlist?",
+      "instructionsSingle": "You can join it again with the following link:",
+      "instructionsMultiple": "Other members will still be able to access it, and you can join it again with the following link:",
+      "copyTooltip": "Copy to clipboard",
+      "confirmButton": "Leave playlist"
+    }
+  },
+  "about": {
+    "title": "About KaraPlan",
+    "text": "<strong>KaraPlan</strong> is a Karaoke Planner web application with song search, ratings, comments, playlists and more.",
+    "versionLabel": "Version:",
+    "sourceCodeLabel": "Source code:",
+    "licenseLabel": "License:",
+    "termsTitle": "Terms of use",
+    "termsText": "<strong>KaraPlan</strong> is provided \"as is\" with no warranty of any kind, express or implied. Please refer to the license terms for more information.",
+    "privacyTitle": "Privacy",
+    "privacyText": "By using <strong>KaraPlan</strong> as a hosted service, you agree to share your basic profile information (first name, last name, display name, email address) with the service provider. This information will solely be used for the proper operation of the service, and will not be shared with any third-party.",
+    "privacyProfileDeletion": "You may delete your profile and any associated content created by you on your <a href=\"user/profile\">user profile</a> page.",
+    "disclaimerTitle": "Disclaimer",
+    "disclaimerText": "<strong>KaraPlan</strong> makes use of the <a href=\"https://www.recisio.com\">Recisio</a> song catalog, the <a href=\"https://www.karafun.com\">KaraFun</a>, <a href=\"https://www.karafunbar.com\">KaraFun Bar</a> and <a href=\"https://www.karaoke-version.com\">Karaoke Version</a> APIs on a \"fair use\" basis. It is not affiliated in any way with Recisio or its subsidiaries. All trademarks are the property of their respective owner."
+  }
+}

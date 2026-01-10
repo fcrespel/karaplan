@@ -1,35 +1,35 @@
-<h1>Songs</h1>
+<h1>{{ 'songs.title' | translate }}</h1>
 
 <!-- Navigation pills -->
 <ul class="nav nav-pills my-3">
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'query' }" [class.active]="queryContext.type == 'query'" title="Search">
-      <i class="fas fa-search"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'query'"> Search</span>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'query' }" [class.active]="queryContext.type == 'query'" [title]="'songs.searchTab' | translate">
+      <i class="fas fa-search"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'query'"> {{ 'songs.searchTab' | translate }}</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'theme' }" [class.active]="queryContext.type == 'theme'" title="Selections">
-      <i class="fas fa-music"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'theme'"> Selections</span>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'theme' }" [class.active]="queryContext.type == 'theme'" [title]="'songs.selectionsTab' | translate">
+      <i class="fas fa-music"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'theme'"> {{ 'songs.selectionsTab' | translate }}</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'styles' }" [class.active]="queryContext.type == 'styles'" title="Genres">
-      <i class="fas fa-guitar"></i><span class=" d-md-inline" [class.d-none]="queryContext.type != 'styles'"> Genres</span>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'styles' }" [class.active]="queryContext.type == 'styles'" [title]="'songs.genresTab' | translate">
+      <i class="fas fa-guitar"></i><span class=" d-md-inline" [class.d-none]="queryContext.type != 'styles'"> {{ 'songs.genresTab' | translate }}</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'top' }" [class.active]="queryContext.type == 'top'" title="Top">
-      <i class="fas fa-trophy"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'top'"> Top</span>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'top' }" [class.active]="queryContext.type == 'top'" [title]="'songs.topTab' | translate">
+      <i class="fas fa-trophy"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'top'"> {{ 'songs.topTab' | translate }}</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="queryContext.type == 'news'" title="New releases">
-      <i class="fas fa-calendar-alt"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'news'"> New</span>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'news' }" [class.active]="queryContext.type == 'news'" [title]="'songs.newsTab' | translate">
+      <i class="fas fa-calendar-alt"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'news'"> {{ 'songs.newsTab' | translate }}</span>
     </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'votes' }" [class.active]="queryContext.type == 'votes'" title="Most voted">
-      <i class="fas fa-thumbs-up"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'votes'"> Votes</span>
+    <a class="nav-link" href="#" routerLink="/songs" [queryParams]="{ type: 'votes' }" [class.active]="queryContext.type == 'votes'" [title]="'songs.votesTab' | translate">
+      <i class="fas fa-thumbs-up"></i><span class="d-md-inline" [class.d-none]="queryContext.type != 'votes'"> {{ 'songs.votesTab' | translate }}</span>
     </a>
   </li>
 </ul>
@@ -40,8 +40,8 @@
     <div class="col">
       <form (ngSubmit)="onSearch(queryField)">
         <div class="input-group shadow">
-          <input type="text" class="form-control" name="query" [(ngModel)]="queryField" placeholder="Song or artist name">
-          <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> Search</button>
+          <input type="text" class="form-control" name="query" [(ngModel)]="queryField" [placeholder]="'songs.searchPlaceholder' | translate">
+          <button type="submit" class="btn btn-pink"><i class="fas fa-search"></i> {{ 'songs.searchButton' | translate }}</button>
         </div>
       </form>
     </div>
@@ -76,7 +76,7 @@
 <!-- No results -->
 @if (queryContext.songs.length == 0 && (queryContext.type == 'query' || queryContext.type == 'votes') && !queryContext.loading) {
   <p class="lead text-center mt-4">
-    <i class="fas fa-frown"></i> No results found.
+    <i class="fas fa-frown"></i> {{ 'songs.noResults' | translate }}
   </p>
 }
 
@@ -93,9 +93,9 @@
   <div class="text-center my-3">
     <button type="button" (click)="loadMoreSongs()" [disabled]="queryContext.hasMoreSongsLoading" class="btn btn-lg btn-outline-light w-50">
       @if (!queryContext.hasMoreSongsLoading) {
-        <span>Load more ...</span>
+        <span>{{ 'songs.loadMore' | translate }}</span>
       } @else {
-        <span><span class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span> Loading ...</span>
+        <span><span class="spinner-border spinner-border-md" role="status" aria-hidden="true"></span> {{ 'songs.loading' | translate }}</span>
       }
     </button>
   </div>

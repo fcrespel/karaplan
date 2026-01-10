@@ -1,14 +1,14 @@
 <div class="carousel shadow">
   <div class="carousel-inner">
     <div class="carousel-item bg-home text-center text-white active px-2 py-4 py-md-5">
-      <h1 class="display-4 logo text-shadow-20 mt-5 mb-2">KaraPlan</h1>
-      <p class="lead text-shadow-10 mb-5">Plan your Karaoke sessions with song search, ratings, comments, playlists and more!</p>
+      <h1 class="display-4 logo text-shadow-20 mt-5 mb-2">{{ 'app.name' | translate }}</h1>
+      <p class="lead text-shadow-10 mb-5">{{ 'home.text' | translate }}</p>
       <p class="mb-5">
         @if (!user) {
-          <a href="#" routerLink="/login" class="btn btn-lg btn-outline-light shadow">Get Started <i class="fas fa-chevron-right"></i></a>
+          <a href="#" routerLink="/login" class="btn btn-lg btn-outline-light shadow">{{ 'home.loginButton' | translate }} <i class="fas fa-chevron-right"></i></a>
         } @else {
-          <a href="#" routerLink="/songs" class="btn btn-lg btn-outline-light shadow mx-2"><i class="fas fa-music"></i> Songs</a>
-          <a href="#" routerLink="/playlists" class="btn btn-lg btn-outline-light shadow mx-2"><i class="fas fa-list"></i> Playlists</a>
+          <a href="#" routerLink="/songs" class="btn btn-lg btn-outline-light shadow mx-2"><i class="fas fa-music"></i> {{ 'home.songsButton' | translate }}</a>
+          <a href="#" routerLink="/playlists" class="btn btn-lg btn-outline-light shadow mx-2"><i class="fas fa-list"></i> {{ 'home.playlistsButton' | translate }}</a>
         }
       </p>
     </div>

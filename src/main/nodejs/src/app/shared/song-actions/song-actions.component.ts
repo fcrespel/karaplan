@@ -1,6 +1,10 @@
+import { DatePipe, NgClass } from '@angular/common';
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input, model, output } from '@angular/core';
-import { NgForm, FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdown, NgbDropdownButtonItem, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap/dropdown';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Playlist } from '../../models/playlist';
@@ -13,15 +17,12 @@ import { AccountService } from '../../services/account.service';
 import { PlaylistsService } from '../../services/playlists.service';
 import { SongsService } from '../../services/songs.service';
 import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit-modal.component';
-import { NgClass, DatePipe } from '@angular/common';
-import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
-import { NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, NgbDropdownButtonItem, NgbDropdownItem } from '@ng-bootstrap/ng-bootstrap/dropdown';
 
 @Component({
   selector: 'app-song-actions',
   templateUrl: './song-actions.component.html',
   styleUrls: ['./song-actions.component.css'],
-  imports: [NgClass, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, DatePipe]
+  imports: [NgClass, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, DatePipe, TranslatePipe]
 })
 export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
   private accountService = inject(AccountService);

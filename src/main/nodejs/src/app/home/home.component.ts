@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { User } from '../models/user';
 import { AccountService } from '../services/account.service';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [RouterLink]
+  imports: [RouterLink, TranslatePipe]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   private accountService = inject(AccountService);

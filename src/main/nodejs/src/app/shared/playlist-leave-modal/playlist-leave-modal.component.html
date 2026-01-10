@@ -1,20 +1,19 @@
 <div class="modal-header">
-  <h4 class="modal-title" id="modal-basic-title">Leave playlist</h4>
+  <h4 class="modal-title" id="modal-basic-title">{{'playlists.leaveModal.title' | translate}}</h4>
   <button type="button" class="btn-close" aria-label="Close" (click)="activeModal.dismiss()"></button>
 </div>
 <div class="modal-body">
-  <p>Are you sure you want to leave this playlist?</p>
+  <p>{{'playlists.leaveModal.text' | translate}}</p>
   @if (playlist().members!.length > 1) {
-    <p>Other members will still be able to access it, and you can join it again with the following link:</p>
+    <p>{{'playlists.leaveModal.instructionsMultiple' | translate}}</p>
   } @else {
-    <p>You can join it again with the following link:</p>
+    <p>{{'playlists.leaveModal.instructionsSingle' | translate}}</p>
   }
   <div class="input-group">
     <input type="text" class="form-control form-control-sm" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
-    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+    <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" [title]="'playlists.leaveModal.copyTooltip' | translate"><i class="fas fa-copy"></i></button>
   </div>
 </div>
 <div class="modal-footer">
-  <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">Cancel</button>
-  <button type="button" class="btn btn-danger" (click)="activeModal.close(playlist())">Leave</button>
+  <button type="button" class="btn btn-danger" (click)="activeModal.close(playlist())">{{'playlists.leaveModal.confirmButton' | translate}}</button>
 </div>

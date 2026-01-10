@@ -1,5 +1,5 @@
 <p class="mt-5 mb-2 text-center text-light small">
-  <strong title="{{ actuatorInfo?.build?.version }} {{ actuatorInfo?.git?.branch }} {{ actuatorInfo?.git?.commit?.id }} {{ actuatorInfo?.build?.time | date:'yyyy-MM-dd HH:mm' }}">KaraPlan</strong> - 
-  <a href="#" routerLink="/about" class="link-light">About - Terms of use - Privacy</a> - 
-  <a href="/api" class="link-light">API</a>
+  <strong title="{{ actuatorInfo?.build?.version }} {{ actuatorInfo?.git?.branch }} {{ actuatorInfo?.git?.commit?.id }} {{ actuatorInfo?.build?.time | date:'yyyy-MM-dd HH:mm' }}">{{ 'app.name' | translate }}</strong> - 
+  <a href="#" routerLink="/about" class="link-light">{{ 'footer.about' | translate }} - {{ 'footer.terms' | translate }} - {{ 'footer.privacy' | translate }}</a> - 
+  <a href="/api" class="link-light">{{ 'footer.api' | translate }}</a>
 </p>

@@ -1,31 +1,22 @@
-<h1>About KaraPlan</h1>
+<h1>{{ 'about.title' | translate }}</h1>
 
 <div class="card">
   <div class="card-body text-dark">
-    <p><strong>KaraPlan</strong> is a Karaoke Planner web application with song search, ratings, comments, playlists and more.</p>
+    <p [innerHTML]="'about.text' | translate"></p>
     <ul>
-      <li>Version: <span title="{{ actuatorInfo?.git?.branch }} {{ actuatorInfo?.git?.commit?.id }}">{{ actuatorInfo?.build?.version }} ({{ actuatorInfo?.build?.time | date:'yyyy-MM-dd HH:mm' }})</span></li>
-      <li>Source code: <a href="https://github.com/fcrespel/karaplan">https://github.com/fcrespel/karaplan</a></li>
-      <li>License: <a href="https://opensource.org/licenses/MIT">MIT License</a></li>
+      <li>{{ 'about.versionLabel' | translate }} <span title="{{ actuatorInfo?.git?.branch }} {{ actuatorInfo?.git?.commit?.id }}">{{ actuatorInfo?.build?.version }} ({{ actuatorInfo?.build?.time | date:'yyyy-MM-dd HH:mm' }})</span></li>
+      <li>{{ 'about.sourceCodeLabel' | translate }} <a href="https://github.com/fcrespel/karaplan">https://github.com/fcrespel/karaplan</a></li>
+      <li>{{ 'about.licenseLabel' | translate }} <a href="https://opensource.org/licenses/MIT">MIT License</a></li>
     </ul>
 
-    <h3 class="mt-4">Terms of use</h3>
-    <p><strong>KaraPlan</strong> is provided "as is" with no warranty of any kind, express or implied. Please refer to the license terms for more information.</p>
+    <h3 class="mt-4">{{ 'about.termsTitle' | translate }}</h3>
+    <p [innerHTML]="'about.termsText' | translate"></p>
 
-    <h3 class="mt-4">Privacy</h3>
-    <p>
-      By using <strong>KaraPlan</strong> as a hosted service, you agree to share your basic profile information (first name, last name, display name, email address) with the service provider.
-      This information will solely be used for the proper operation of the service, and will not be shared with any third-party.
-    </p>
-    <p>You may delete your profile and any associated content created by you on your <a href="#" routerLink="/user/profile">user profile</a> page.</p>
+    <h3 class="mt-4">{{ 'about.privacyTitle' | translate }}</h3>
+    <p [innerHTML]="'about.privacyText' | translate"></p>
+    <p [innerHTML]="'about.privacyProfileDeletion' | translate"></p>
 
-    <h3 class="mt-4">Disclaimer</h3>
-    <p>
-      <strong>KaraPlan</strong> makes use of the <a href="https://www.recisio.com">Recisio</a> song catalog, the 
-      <a href="https://www.karafun.com">KaraFun</a>,
-      <a href="https://www.karafunbar.com">KaraFun Bar</a> and
-      <a href="https://www.karaoke-version.com">Karaoke Version</a> APIs on a fair use basis.
-      It is not affiliated in any way with Recisio or its subsidiaries. All trademarks are the property of their respective owner.
-    </p>
+    <h3 class="mt-4">{{ 'about.disclaimerTitle' | translate }}</h3>
+    <p [innerHTML]="'about.disclaimerText' | translate"></p>
   </div>
 </div>

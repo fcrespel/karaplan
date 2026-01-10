@@ -1,6 +1,8 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { NgForm, FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import * as Plyr from 'plyr';
 import { Subject, of } from 'rxjs';
 import { catchError, switchMap, takeUntil } from 'rxjs/operators';
@@ -12,17 +14,16 @@ import { SongLyrics } from '../../models/song-lyrics';
 import { User } from '../../models/user';
 import { AccountService } from '../../services/account.service';
 import { SongsService } from '../../services/songs.service';
-import { SongActionsComponent } from '../../shared/song-actions/song-actions.component';
-import { PlyrComponent } from '../../shared/plyr/plyr.component';
-import { SongListComponent } from '../../shared/song-list/song-list.component';
-import { DatePipe } from '@angular/common';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
+import { PlyrComponent } from '../../shared/plyr/plyr.component';
+import { SongActionsComponent } from '../../shared/song-actions/song-actions.component';
+import { SongListComponent } from '../../shared/song-list/song-list.component';
 
 @Component({
   selector: 'app-song-detail',
   templateUrl: './song-detail.component.html',
   styleUrls: ['./song-detail.component.css'],
-  imports: [RouterLink, SongActionsComponent, PlyrComponent, FormsModule, SongListComponent, DatePipe, DurationPipe]
+  imports: [RouterLink, SongActionsComponent, PlyrComponent, FormsModule, SongListComponent, DatePipe, DurationPipe, TranslatePipe]
 })
 export class SongDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
@@ -44,32 +45,6 @@ export class SongDetailComponent implements OnInit, OnDestroy {
   songFilePlyrSources: Plyr.Source[] = [];
   songFilePlyrCurrent?: CatalogSongFile;
   destroy$: Subject<boolean> = new Subject<boolean>();
-
-  trackTypeLabels: any = {
-    'nbv': 'Instrumental',
-    'nbv-gm': 'Instrumental + backing vocals',
-    'nbv-ld': 'Cover version',
-    'wmv': 'Karaoke video',
-    'mp4': 'Karaoke video',
-    'cdg': 'Karaoke CDG file',
-    'kfn': 'KaraFun format',
-    'ngt': 'No guitar',
-    'ngt-voc': 'No guitar + vocals',
-    'ngt-gt-voc': 'Guitar + vocals',
-    'gt': 'Guitar only',
-    'ndr': 'No drums',
-    'ndr-voc': 'No drums + vocals',
-    'ndr-dr-voc': 'Drums + vocals',
-    'dr': 'Drums only',
-    'nba': 'No bass',
-    'nba-voc': 'No bass + vocals',
-    'nba-ba-voc': 'Bass + vocals',
-    'ba': 'Bass only',
-    'npi': 'No piano',
-    'npi-voc': 'No piano + vocals',
-    'npi-pi-voc': 'Piano + vocals',
-    'pi': 'Piano only',
-  };
 
   ngOnInit() {
     this.accountService.getUser()
@@ -140,14 +115,6 @@ export class SongDetailComponent implements OnInit, OnDestroy {
           songs.filter(song => song.catalogId != this.song!.catalogId).forEach(song => this.relatedSongs.push({song: song}));
           this.hasMoreRelatedSongs = songs.length == this.relatedSongsLimit;
         });
-    }
-  }
-
-  getSongFileTrackTypeLabel(songFile: CatalogSongFile): string {
-    if (songFile.trackType in this.trackTypeLabels) {
-      return this.trackTypeLabels[songFile.trackType];
-    } else {
-      return 'Unknown';
     }
   }
 

@@ -1,16 +1,17 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlaylistSong } from '../../models/playlist-song';
 import { SongsService } from '../../services/songs.service';
-import { RouterLink } from '@angular/router';
 import { SongListComponent } from '../../shared/song-list/song-list.component';
 
 @Component({
   selector: 'app-user-votes',
   templateUrl: './user-votes.component.html',
   styleUrls: ['./user-votes.component.css'],
-  imports: [RouterLink, SongListComponent]
+  imports: [RouterLink, SongListComponent, TranslatePipe]
 })
 export class UserVotesComponent implements OnInit, OnDestroy {
   private songsService = inject(SongsService);

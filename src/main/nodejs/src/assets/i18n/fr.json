@@ -1,0 +1,240 @@
+{
+  "app": {
+    "name": "KaraPlan"
+  },
+  "navbar": {
+    "songs": "Chansons",
+    "playlists": "Playlists",
+    "profile": "Profil",
+    "about": "À propos",
+    "login": "Connexion",
+    "logout": "Déconnexion"
+  },
+  "footer": {
+    "about": "À propos",
+    "terms": "Conditions d'utilisation",
+    "privacy": "Confidentialité",
+    "api": "API"
+  },
+  "login": {
+    "title": "Connectez-vous !",
+    "text": "Choisissez un fournisseur d'identité pour vous connecter :",
+    "terms": "En continuant, vous acceptez les <a href=\"about\">Conditions d'utilisation</a> de <strong>KaraPlan</strong>.",
+    "errorTitle": "Erreur",
+    "errorText": "Échec de l'authentification",
+    "logoutTitle": "Succès",
+    "logoutText": "Vous avez été déconnecté(e)"
+  },
+  "home": {
+    "text": "Planifiez vos séances de karaoké avec la recherche de chansons, les votes, commentaires, playlists et plus encore !",
+    "loginButton": "Commencer",
+    "songsButton": "Chansons",
+    "playlistsButton": "Playlists"
+  },
+  "user": {
+    "title": "Compte utilisateur",
+    "profile": {
+      "title": "Profil",
+      "providerText": {
+        "google": "Votre profil utilisateur est lié à votre <a href=\"https://accounts.google.com\">compte Google</a>.",
+        "github": "Votre profil utilisateur est lié à votre <a href=\"https://github.com/settings/profile\">compte GitHub</a>."
+      },
+      "displayNameText": "Vous pouvez choisir un nom d'affichage différent à utiliser ici :",
+      "displayNameLabel": "Nom d'affichage",
+      "emailLabel": "Adresse e-mail",
+      "updateButton": "Mettre à jour le profil",
+      "deleteAccountButton": "Supprimer le compte",
+      "deleteAccountModal": {
+        "title": "Supprimer le compte",
+        "text": "Vous allez supprimer votre compte et tous vos votes.",
+        "deleteCommentsLabel": "Supprimer également tous mes commentaires",
+        "confirmText": "Veuillez taper <strong>supprimer mon compte</strong> ci-dessous pour confirmer :",
+        "confirmPattern": "supprimer mon compte",
+        "confirmButton": "Supprimer mon compte"
+      }
+    },
+    "votes": {
+      "title": "Votes",
+      "noResults": "Vous n'avez voté pour aucune chanson.",
+      "loading": "Chargement ...",
+      "loadMore": "Charger plus ..."
+    }
+  },
+  "songs": {
+    "title": "Chansons",
+    "searchTab": "Recherche",
+    "selectionsTab": "Sélections",
+    "genresTab": "Genres",
+    "topTab": "Top",
+    "newsTab": "Nouveautés",
+    "votesTab": "Votes",
+    "searchPlaceholder": "Chanson ou artiste",
+    "searchButton": "Rechercher",
+    "noResults": "Aucune chanson trouvée.",
+    "loading": "Chargement ...",
+    "loadMore": "Charger plus ...",
+    "list": {
+      "durationTooltip": "Durée",
+      "addedByTooltip": "Ajoutée par {name} le {date, date, short} à {date, time, short}",
+      "previewPlayTooltip": "Écouter un aperçu audio",
+      "previewPlayingTooltip": "Stopper l'aperçu audio",
+      "previewNotFoundTooltip": "Non disponible"
+    },
+    "actions": {
+      "voteUpTooltip": "Voter pour",
+      "voteDownTooltip": "Voter contre",
+      "commentsTooltip": "Commentaires",
+      "commentPlaceholder": "Votre commentaire ...",
+      "commentAddButton": "Ajouter un commentaire",
+      "commentRemoveButton": "Supprimer le commentaire",
+      "commentDate": "{date, date, short} à {date, time, short}",
+      "playlistAddTooltip": "Ajouter à la playlist",
+      "playlistCreateButton": "Créer une playlist",
+      "removeTooltip": "Supprimer la chanson"
+    },
+    "detail": {
+      "infoTab": "Infos",
+      "infoDurationTooltip": "Durée",
+      "infoYearTooltip": "Année",
+      "infoStyleTooltip": "Genre",
+      "lyricsTab": "Paroles",
+      "lyricsNotAvailable": "Les paroles ne sont pas disponibles.",
+      "lyricsSourceLabel": "Source :",
+      "commentsTab": "Commentaires",
+      "commentPlaceholder": "Votre commentaire ...",
+      "commentAddButton": "Ajouter un commentaire",
+      "commentRemoveButton": "Supprimer le commentaire",
+      "commentDate": "{date, date, short} à {date, time, short}",
+      "relatedTab": "Similaires",
+      "relatedLoadMore": "Charger plus ...",
+      "filesTab": "Fichiers",
+      "filePreviewLabel": "Écouter",
+      "filePreviewTooltip": "Écouter un aperçu audio",
+      "fileLoadingLabel": "Chargement ...",
+      "filePlayingLabel": "Lecture",
+      "filePlayingTooltip": "Stopper l'aperçu audio",
+      "fileDownloadLabel": "Télécharger",
+      "fileDownloadTooltip": "Télécharger la version complète",
+      "fileTypeLabel": {
+        "ba": "Basse seule",
+        "cdg": "Fichier Karaoké CDG",
+        "dr": "Batterie seule",
+        "gt": "Guitare seule",
+        "kfn": "Format KaraFun",
+        "mp4": "Vidéo Karaoké",
+        "nba": "Sans basse",
+        "nba-ba-voc": "Basse + voix",
+        "nba-voc": "Sans basse + voix",
+        "nbv": "Version instrumentale",
+        "nbv-gm": "Version instrumentale + choeurs",
+        "nbv-ld": "Version cover",
+        "ndr": "Sans batterie",
+        "ndr-dr-voc": "Batterie + voix",
+        "ndr-voc": "Sans batterie + voix",
+        "ngt": "Sans guitare",
+        "ngt-gt-voc": "Guitare + voix",
+        "ngt-voc": "Sans guitare + voix",
+        "npi": "Sans piano",
+        "npi-pi-voc": "Piano + voix",
+        "npi-voc": "Sans piano + voix",
+        "pi": "Piano seul",
+        "wmv": "Vidéo Karaoké"
+      },
+      "errorTitle": "Oups !",
+      "errorText": "Une erreur est survenue, veuillez réessayer.",
+      "errorBackButton": "Retour",
+      "errorOr": "ou",
+      "errorHomeButton": "Accueil"
+    }
+  },
+  "playlists": {
+    "title": "Playlists",
+    "createButton": "Créer",
+    "noResults": "Aucune playlist n'a encore été créée.",
+    "membersLabel": "{count, plural, one {# membre} other {# membres}}",
+    "membersTooltip": "Membres",
+    "countLabel": "{count, plural, one {# chanson} other {# chansons}}",
+    "countTooltip": "Nombre de chansons",
+    "durationTooltip": "Durée",
+    "editTooltip": "Modifier la playlist",
+    "leaveTooltip": "Quitter la playlist",
+    "detail": {
+      "searchButton": "Chansons",
+      "searchTooltip": "Rechercher des chansons",
+      "lockedButton": "Verrouillée",
+      "lockedTooltip": "Playlist verrouillée",
+      "joinButton": "Rejoindre",
+      "joinTooltip": "Rejoindre la playlist",
+      "commentsTooltip": "Commentaires",
+      "commentPlaceholder": "Votre commentaire ...",
+      "commentAddButton": "Ajouter un commentaire",
+      "commentRemoveButton": "Supprimer le commentaire",
+      "commentDate": "{date, date, short} à {date, time, short}",
+      "shareTooltip": "Partager la playlist",
+      "shareText": "Partagez cette playlist avec vos amis en copiant ce lien :",
+      "copyTooltip": "Copier dans le presse-papiers",
+      "sortTooltip": "Trier la playlist",
+      "sortAlphaAsc": "Par nom, croissant",
+      "sortAlphaDesc": "Par nom, décroissant",
+      "sortScoreAsc": "Par votes, croissant",
+      "sortScoreDesc": "Par votes, décroissant",
+      "sortDateAsc": "Par date d'ajout, croissant",
+      "sortDateDesc": "Par date d'ajout, décroissant",
+      "sortRandom": "Aléatoire",
+      "exportTooltip": "Exporter la playlist",
+      "exportKarafunRemote": "Télécommande KaraFun",
+      "exportKarafunRemoteModal": {
+        "title": "Exporter vers la Télécommande KaraFun",
+        "text": "Entrez votre ID de <strong>Télécommande KaraFun</strong> ci-dessous pour charger la playlist.",
+        "remoteIdLabel": "ID de Télécommande",
+        "instructions": "Exemple: entrez <strong>123456</strong> si votre URL de télécommande est www.karafun.fr/<strong>123456</strong>",
+        "confirmButton": "Exporter vers la Télécommande KaraFun"
+      },
+      "exportKarafunBar": "KaraFun Bar",
+      "exportKarafunBarModal": {
+        "title": "Exporter vers KaraFun Bar",
+        "text": "Entrez votre ID de réservation <strong>KaraFun Bar</strong> ci-dessous pour charger la playlist.",
+        "bookingIdLabel": "ID de réservation",
+        "instructions": "Exemple: entrez <strong>123456789</strong> si votre URL de réservation est https://www.karafunbar.com/fr/lille/book/<strong>123456789</strong>/",
+        "confirmButton": "Exporter vers KaraFun Bar"
+      },
+      "exportCsvFile": "Fichier CSV",
+      "editTooltip": "Modifier la playlist",
+      "leaveButton": "Quitter",
+      "leaveTooltip": "Quitter la playlist",
+      "noResults": "Aucune chanson n'a encore été ajoutée dans cette playlist."
+    },
+    "editModal": {
+      "createTitle": "Créer une playlist",
+      "createButton": "Créer la playlist",
+      "editTitle": "Modifier la playlist",
+      "editButton": "Sauvegarder la playlist",
+      "nameLabel": "Nom",
+      "namePlaceholder": "Nom de la playlist",
+      "readOnlyLabel": "Lecture seule",
+      "readOnlyTooltip": "Empêcher l'ajout/suppression de chansons"
+    },
+    "leaveModal": {
+      "title": "Quitter la playlist",
+      "text": "Êtes-vous sûr de vouloir quitter cette playlist ?",
+      "instructionsSingle": "Vous pourrez la rejoindre à nouveau avec le lien suivant :",
+      "instructionsMultiple": "D'autres membres pourront toujours y accéder, et vous pourrez la rejoindre à nouveau avec le lien suivant :",
+      "copyTooltip": "Copier dans le presse-papiers",
+      "confirmButton": "Quitter la playlist"
+    }
+  },
+  "about": {
+    "title": "À propos de KaraPlan",
+    "text": "<strong>KaraPlan</strong> est une application web de planification de sessions de karaoké avec recherche de chansons, votes, commentaires, playlists et plus encore.",
+    "versionLabel": "Version :",
+    "sourceCodeLabel": "Code source :",
+    "licenseLabel": "Licence :",
+    "termsTitle": "Conditions d'utilisation",
+    "termsText": "<strong>KaraPlan</strong> est fourni \"tel quel\" sans aucune garantie, expresse ou implicite. Veuillez vous référer aux conditions de licence pour plus d'informations.",
+    "privacyTitle": "Confidentialité",
+    "privacyText": "En utilisant <strong>KaraPlan</strong> en tant que service hébergé, vous acceptez de partager vos informations de profil de base (prénom, nom, nom d'affichage, adresse e-mail) avec le fournisseur du service. Ces informations seront uniquement utilisées pour le bon fonctionnement du service et ne seront pas partagées avec des tiers.",
+    "privacyProfileDeletion": "Vous pouvez supprimer votre profil et tout contenu associé créé par vous sur votre page de <a href=\"user/profile\">profil utilisateur</a>.",
+    "disclaimerTitle": "Mentions légales",
+    "disclaimerText": "<strong>KaraPlan</strong> utilise le catalogue de chansons <a href=\"https://www.recisio.com\">Recisio</a>, les API de <a href=\"https://www.karafun.com\">KaraFun</a>, <a href=\"https://www.karafunbar.com\">KaraFun Bar</a> et <a href=\"https://www.karaoke-version.com\">Karaoke Version</a> sur la base d'un \"usage acceptable\". Il n'est en aucun cas affilié à Recisio ou à ses filiales. Toutes les marques sont la propriété de leurs détenteurs respectifs."
+  }
+}

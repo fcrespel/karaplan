@@ -1,4 +1,4 @@
-<p class="small mb-0"><a href="#" routerLink="/playlists" class="link-light">Playlists</a> //</p>
+<p class="small mb-0"><a href="#" routerLink="/playlists" class="link-light">{{ 'playlists.title' | translate }}</a> //</p>
 <div class="row justify-content-between align-items-center g-0">
   <div class="col">
     <h1>{{ playlist?.name || '...' }}</h1>
@@ -6,13 +6,13 @@
   @if (playlist) {
     <div class="col-auto d-none d-sm-block">
       @if (playlist.members) {
-        <span class="badge text-bg-light mx-1" title="Members" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ playlist.members.length }} member{{ playlist.members.length > 1 ? 's' : '' }}</span>
+        <span class="badge text-bg-light mx-1" [title]="'playlists.membersTooltip' | translate" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ 'playlists.membersLabel'| translate:{count: playlist.members.length} }}</span>
       }
       @if (playlist.songsCount) {
-        <span class="badge text-bg-light mx-1" title="Songs count"><i class="fas fa-music d-none d-md-inline"></i> {{ playlist.songsCount }} song{{ playlist.songsCount > 1 ? 's' : '' }}</span>
+        <span class="badge text-bg-light mx-1" [title]="'playlists.countTooltip' | translate"><i class="fas fa-music d-none d-md-inline"></i> {{ 'playlists.countLabel' | translate:{count: playlist.songsCount} }}</span>
       }
       @if (playlist.duration) {
-        <span class="badge text-bg-light mx-1" title="Total duration"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
+        <span class="badge text-bg-light mx-1" [title]="'playlists.durationTooltip' | translate"><i class="fas fa-clock d-none d-md-inline"></i> {{ playlist.duration | duration }}</span>
       }
     </div>
   }
@@ -23,13 +23,13 @@
   <div class="row justify-content-between align-items-center g-0 mb-2">
     <div class="col mb-1">
       @if (!playlist.readOnly) {
-        <a href="#" routerLink="/songs" class="btn btn-pink shadow"><i class="fas fa-search"></i><span class="d-sm-none"> Songs</span><span class="d-none d-sm-inline"> Find songs</span></a>
+        <a href="#" routerLink="/songs" class="btn btn-pink shadow" [title]="'playlists.detail.searchTooltip' | translate"><i class="fas fa-search"></i><span class="d-sm-none"> {{ 'playlists.detail.searchButton' | translate }}</span><span class="d-none d-sm-inline"> {{ 'playlists.detail.searchTooltip' | translate }}</span></a>
       }
       @if (playlist.readOnly && isMember(user, playlist)) {
-        <button type="button" class="btn btn-outline-light shadow" disabled><i class="fas fa-lock"></i><span class="d-sm-none"> Locked</span><span class="d-none d-sm-inline"> Locked playlist</span></button>
+        <button type="button" class="btn btn-outline-light shadow" disabled><i class="fas fa-lock"></i><span class="d-sm-none"> {{ 'playlists.detail.lockedButton' | translate }}</span><span class="d-none d-sm-inline"> {{ 'playlists.detail.lockedTooltip' | translate }}</span></button>
       }
       @if (!isMember(user, playlist)) {
-        <button type="button" class="btn btn-pink shadow" title="Join playlist" (click)="joinPlaylist(playlist)"><i class="fas fa-sign-in-alt"></i> Join<span class="d-none d-sm-inline"> playlist</span></button>
+        <button type="button" class="btn btn-pink shadow" [title]="'playlists.detail.joinTooltip' | translate" (click)="joinPlaylist(playlist)"><i class="fas fa-sign-in-alt"></i><span class="d-sm-none"> {{ 'playlists.detail.joinButton' | translate }}</span><span class="d-none d-sm-inline"> {{ 'playlists.joinTooltip' | translate }}</span></button>
       }
     </div>
     <div class="col-auto mb-1">
@@ -38,7 +38,7 @@
           <div class="btn-group shadow" role="group">
             <!-- Comments -->
             <div ngbDropdown placement="bottom-left bottom bottom-right" container="body" class="btn-group">
-              <button type="button" class="btn btn-light" title="Comments" ngbDropdownToggle>
+              <button type="button" class="btn btn-light" [title]="'playlists.detail.commentsTooltip' | translate" ngbDropdownToggle>
                 <i class="far fa-comment"></i>
                 @if (playlist.commentsCount) {
                   <span class="badge text-bg-secondary ms-1">{{ playlist.commentsCount }}</span>
@@ -47,17 +47,17 @@
               <div class="dropdown-menu comment-menu shadow" ngbDropdownMenu>
                 <form #commentForm="ngForm" (ngSubmit)="addComment(playlist, commentText, commentForm)" class="mx-3 my-2 text-end">
                   <div class="mb-2">
-                    <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" placeholder="Your comment ..." required></textarea>
+                    <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="1" [placeholder]="'playlists.detail.commentPlaceholder' | translate" required></textarea>
                   </div>
-                  <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
+                  <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">{{ 'playlists.detail.commentAddButton' | translate }}</button>
                 </form>
                 @for (comment of playlist.comments; track comment.id) {
                   <div class="dropdown-divider"></div>
                   <div class="d-flex mx-3 mt-2 mb-0 align-items-center justify-content-between">
                     <small class="text-muted flex-grow-1">{{ comment.user?.displayName }}</small>
-                    <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
+                    <small class="text-muted">{{ 'playlists.detail.commentDate' | translate:{date: comment.createdDate} }}</small>
                     @if (comment.user?.id == user?.id) {
-                      <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeComment(playlist, comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+                      <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeComment(playlist, comment)" [title]="'playlists.detail.commentRemoveButton' | translate"><i class="fas fa-trash-alt"></i></button>
                     }
                   </div>
                   <p class="mx-3 mt-0 mb-2 comment-text">{{ comment.comment }}</p>
@@ -66,52 +66,52 @@
             </div>
             <!-- Share -->
             <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
-              <button type="button" class="btn btn-light" title="Share playlist" ngbDropdownToggle><i class="fas fa-share"></i></button>
+              <button type="button" class="btn btn-light" [title]="'playlists.detail.shareTooltip' | translate" ngbDropdownToggle><i class="fas fa-share"></i></button>
               <div class="dropdown-menu share-menu shadow p-3" ngbDropdownMenu>
-                <p>Share this playlist with your friends by copying this link:</p>
+                <p>{{ 'playlists.detail.shareText' | translate }}</p>
                 <div class="input-group">
                   <input type="text" class="form-control form-control-sm" readonly id="shareUrl" name="shareUrl" [(ngModel)]="shareUrl" #shareUrlField>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" title="Copy to clipboard"><i class="fas fa-copy"></i></button>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyToClipboard(shareUrlField)" [title]="'playlists.detail.copyTooltip' | translate"><i class="fas fa-copy"></i></button>
                 </div>
               </div>
             </div>
             <!-- Sort -->
             @if (!playlist.readOnly) {
               <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
-                <button type="button" class="btn btn-light" title="Sort playlist" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
+                <button type="button" class="btn btn-light" [title]="'playlists.detail.sortTooltip' | translate" ngbDropdownToggle><i class="fas fa-sort-amount-down"></i></button>
                 <div class="dropdown-menu shadow" ngbDropdownMenu>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'asc')"><i class="fas fa-sort-alpha-down me-1"></i> By name, ascending</button>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'desc')"><i class="fas fa-sort-alpha-up me-1"></i> By name, descending</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'asc')"><i class="fas fa-sort-alpha-down fa-fw"></i> {{ 'playlists.detail.sortAlphaAsc' | translate }}</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'alpha', 'desc')"><i class="fas fa-sort-alpha-up fa-fw"></i> {{ 'playlists.detail.sortAlphaDesc' | translate }}</button>
                   <div class="dropdown-divider"></div>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'asc')"><i class="fas fa-sort-numeric-down me-1"></i> By votes, ascending</button>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'desc')"><i class="fas fa-sort-numeric-up me-1"></i> By votes, descending</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'asc')"><i class="fas fa-sort-numeric-down fa-fw"></i> {{ 'playlists.detail.sortScoreAsc' | translate }}</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'score', 'desc')"><i class="fas fa-sort-numeric-up fa-fw"></i> {{ 'playlists.detail.sortScoreDesc' | translate }}</button>
                   <div class="dropdown-divider"></div>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'asc')"><i class="fas fa-sort-numeric-down me-1"></i> By date added, ascending</button>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'desc')"><i class="fas fa-sort-numeric-up me-1"></i> By date added, descending</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'asc')"><i class="fas fa-sort-numeric-down fa-fw"></i> {{ 'playlists.detail.sortDateAsc' | translate }}</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'desc')"><i class="fas fa-sort-numeric-up fa-fw"></i> {{ 'playlists.detail.sortDateDesc' | translate }}</button>
                   <div class="dropdown-divider"></div>
-                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'random')"><i class="fas fa-random me-1"></i> Random</button>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'random')"><i class="fas fa-random fa-fw"></i> {{ 'playlists.detail.sortRandom' | translate }}</button>
                 </div>
               </div>
             }
             <!-- Export -->
             <div ngbDropdown placement="bottom-left bottom bottom-right" class="btn-group">
-              <button type="button" class="btn btn-light" title="Export playlist" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i></button>
+              <button type="button" class="btn btn-light" [title]="'playlists.detail.exportTooltip' | translate" ngbDropdownToggle><i class="fas fa-cloud-download-alt"></i></button>
               <div class="dropdown-menu shadow" ngbDropdownMenu>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)"><i class="fas fa-microphone-alt me-1"></i> KaraFun Remote</button>
-                <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)"><i class="fas fa-microphone-alt me-1"></i> KaraFun Bar</button>
-                <a href="api/v1/playlists/{{playlist.id}}/export/csv" class="dropdown-item" ngbDropdownItem><i class="fas fa-file-csv me-1"></i> CSV file</a>
+                <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunRemote(playlist, karafunRemoteExportModal)"><i class="fas fa-microphone-alt fa-fw"></i> {{ 'playlists.detail.exportKarafunRemote' | translate }}</button>
+                <button type="button" class="dropdown-item" ngbDropdownItem (click)="exportPlaylistToKarafunBar(playlist, karafunBarExportModal)"><i class="fas fa-microphone-alt fa-fw"></i> {{ 'playlists.detail.exportKarafunBar' | translate }}</button>
+                <a href="api/v1/playlists/{{playlist.id}}/export/csv" class="dropdown-item" ngbDropdownItem><i class="fas fa-file-csv fa-fw"></i> {{ 'playlists.detail.exportCsvFile' | translate }}</a>
               </div>
             </div>
           </div>
         </div>
         <div class="col-auto">
           @if (isMember(user, playlist)) {
-            <button type="button" class="btn btn-light shadow" title="Edit playlist" (click)="editPlaylist(playlist)"><i class="fas fa-edit"></i></button>
+            <button type="button" class="btn btn-light shadow" [title]="'playlists.detail.editTooltip' | translate" (click)="editPlaylist(playlist)"><i class="fas fa-edit"></i></button>
           }
         </div>
         <div class="col-auto">
           @if (isMember(user, playlist)) {
-            <button type="button" class="btn btn-danger shadow" title="Leave playlist" (click)="leavePlaylist(playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Leave</span></button>
+            <button type="button" class="btn btn-danger shadow" [title]="'playlists.detail.leaveTooltip' | translate" (click)="leavePlaylist(playlist)"><i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> {{ 'playlists.detail.leaveButton' | translate }}</span></button>
           }
         </div>
       </div>
@@ -125,7 +125,7 @@
     <app-song-list [songs]="playlist.songs" [showDuration]="true" [showRemove]="!playlist.readOnly" [allowMove]="!playlist.readOnly" (songMoved)="onSongMoved(playlist, $event)" (playlistRemoved)="onPlaylistRemoved(playlist, $event)" (songRemoved)="onSongRemoved(playlist, $event)" />
   }
   @if (!playlist.songs || playlist.songs.length == 0) {
-    <p>No song has been added to this playlist yet.</p>
+    <p>{{ 'playlists.detail.noResults' | translate }}</p>
   }
 } @else {
   <div class="d-flex justify-content-center">
@@ -138,45 +138,45 @@
 <!-- KaraFun Remote export modal -->
 <ng-template #karafunRemoteExportModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Export to KaraFun Remote</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{ 'playlists.detail.exportKarafunRemoteModal.title' | translate }}</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
     <form #karafunRemoteExportForm="ngForm">
-      <p>Enter your <strong>KaraFun Remote</strong> ID below to load the playlist.</p>
+      <p [innerHTML]="'playlists.detail.exportKarafunRemoteModal.text' | translate"></p>
       <div class="mb-3">
-        <label class="form-label" for="karafunRemoteId">Remote ID</label>
+        <label class="form-label" for="karafunRemoteId">{{ 'playlists.detail.exportKarafunRemoteModal.remoteIdLabel' | translate }}</label>
         <div class="input-group">
           <input type="number" class="form-control" id="karafunRemoteId" name="karafunRemoteId" [(ngModel)]="karafunRemoteId" #karafunRemoteIdField="ngModel" [class.is-invalid]="karafunRemoteIdField.dirty && karafunRemoteIdField.invalid" required>
         </div>
       </div>
-      <p class="text-muted small">You will find your ID displayed on the screen if this option is enabled on your KaraFun device.</p>
+      <p class="text-muted small" [innerHTML]="'playlists.detail.exportKarafunRemoteModal.instructions' | translate"></p>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-pink" [disabled]="!karafunRemoteExportForm.form.valid" (click)="modal.close(karafunRemoteId)">Export to KaraFun Remote</button>
+    <button type="button" class="btn btn-pink" [disabled]="!karafunRemoteExportForm.form.valid" (click)="modal.close(karafunRemoteId)">{{ 'playlists.detail.exportKarafunRemoteModal.confirmButton' | translate }}</button>
   </div>
 </ng-template>
 
 <!-- KaraFun Bar export modal -->
 <ng-template #karafunBarExportModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Export to KaraFun Bar</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{ 'playlists.detail.exportKarafunBarModal.title' | translate }}</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
   <div class="modal-body">
     <form #karafunBarExportForm="ngForm">
-      <p>Enter your <strong>KaraFun Bar</strong> Booking ID below to load the playlist.</p>
+      <p [innerHTML]="'playlists.detail.exportKarafunBarModal.text' | translate"></p>
       <div class="mb-3">
-        <label class="form-label" for="karafunBarId">Booking ID</label>
+        <label class="form-label" for="karafunBarId">{{ 'playlists.detail.exportKarafunBarModal.bookingIdLabel' | translate }}</label>
         <div class="input-group">
           <input type="text" class="form-control" id="karafunBarId" name="karafunBarId" [(ngModel)]="karafunBarId" #karafunBarIdField="ngModel" [class.is-invalid]="karafunBarIdField.dirty && karafunBarIdField.invalid" required>
         </div>
       </div>
-      <p class="text-muted small">Example: enter <strong>123456789</strong> if your booking URL is https://www.karafunbar.com/fr/lille/book/<strong>123456789</strong>/</p>
+      <p class="text-muted small" [innerHTML]="'playlists.detail.exportKarafunBarModal.instructions' | translate"></p>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-pink" [disabled]="!karafunBarExportForm.form.valid" (click)="modal.close(karafunBarId)">Export to KaraFun Bar</button>
+    <button type="button" class="btn btn-pink" [disabled]="!karafunBarExportForm.form.valid" (click)="modal.close(karafunBarId)">{{ 'playlists.detail.exportKarafunBarModal.confirmButton' | translate }}</button>
   </div>
 </ng-template>

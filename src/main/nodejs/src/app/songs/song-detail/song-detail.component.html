@@ -1,7 +1,7 @@
 <!-- Title -->
 @if (tab != 'error') {
   <p class="small mb-0">
-    <a href="#" routerLink="/songs" class="link-light">Songs</a> //
+    <a href="#" routerLink="/songs" class="link-light">{{'songs.title' | translate}}</a> //
     @if (song && song.artist) {
       <a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="link-light">{{ song.artist.name }}</a> //
     }
@@ -13,31 +13,31 @@
 @if (tab != 'error') {
   <ul class="nav nav-pills my-3">
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('info')" [class.active]="tab == 'info'" title="Info">
-        <i class="fas fa-info-circle"></i><span class="d-md-inline" [class.d-none]="tab != 'info'"> Info</span>
+      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('info')" [class.active]="tab == 'info'" [title]="'songs.detail.infoTab' | translate">
+        <i class="fas fa-info-circle"></i><span class="d-md-inline" [class.d-none]="tab != 'info'"> {{'songs.detail.infoTab' | translate}}</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('lyrics')" [class.active]="tab == 'lyrics'" title="Lyrics">
-        <i class="fas fa-microphone-alt"></i><span class="d-md-inline" [class.d-none]="tab != 'lyrics'"> Lyrics</span>
+      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('lyrics')" [class.active]="tab == 'lyrics'" [title]="'songs.detail.lyricsTab' | translate">
+        <i class="fas fa-microphone-alt"></i><span class="d-md-inline" [class.d-none]="tab != 'lyrics'"> {{'songs.detail.lyricsTab' | translate}}</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('comments')" [class.active]="tab == 'comments'" title="Comments">
-        <i class="fas fa-comments"></i><span class="d-md-inline" [class.d-none]="tab != 'comments'"> Comments</span>
+      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('comments')" [class.active]="tab == 'comments'" [title]="'songs.detail.commentsTab' | translate">
+        <i class="fas fa-comments"></i><span class="d-md-inline" [class.d-none]="tab != 'comments'"> {{'songs.detail.commentsTab' | translate}}</span>
         @if (song && song.comments) {
           <span class="badge text-bg-light ms-1">{{ song.commentsCount }}</span>
         }
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('related')" [class.active]="tab == 'related'" title="Related">
-        <i class="fas fa-music"></i><span class="d-md-inline" [class.d-none]="tab != 'related'"> Related</span>
+      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('related')" [class.active]="tab == 'related'" [title]="'songs.detail.relatedTab' | translate">
+        <i class="fas fa-music"></i><span class="d-md-inline" [class.d-none]="tab != 'related'"> {{'songs.detail.relatedTab' | translate}}</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('files')" [class.active]="tab == 'files'" title="Files">
-        <i class="fas fa-headphones"></i><span class="d-md-inline" [class.d-none]="tab != 'files'"> Files</span>
+      <a class="nav-link" href="#" (click)="$event.preventDefault(); switchTab('files')" [class.active]="tab == 'files'" [title]="'songs.detail.filesTab' | translate">
+        <i class="fas fa-headphones"></i><span class="d-md-inline" [class.d-none]="tab != 'files'"> {{'songs.detail.filesTab' | translate}}</span>
         @if (songFiles) {
           <span class="badge text-bg-light ms-1">{{ songFiles.length }}</span>
         }
@@ -62,13 +62,13 @@
                 <p class="card-subtitle"><a href="#" routerLink="/songs" [queryParams]="{ query: song.artist.name }" class="link-secondary"><small>{{ song.artist.name }}</small></a></p>
                 <p>
                   @if (song.duration) {
-                    <span class="badge text-bg-secondary" title="Duration">{{ song.duration | duration }}</span>
+                    <span class="badge text-bg-secondary" [title]="'songs.detail.infoDurationTooltip' | translate">{{ song.duration | duration }}</span>
                   }
                   @if (song.year) {
-                    <span class="badge text-bg-secondary ms-1" title="Year">{{ song.year }}</span>
+                    <span class="badge text-bg-secondary ms-1" [title]="'songs.detail.infoYearTooltip' | translate">{{ song.year }}</span>
                   }
                   @for (style of song.styles; track style) {
-                    <a href="#" class="badge text-bg-primary ms-1" title="Style" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
+                    <a href="#" class="badge text-bg-primary ms-1" [title]="'songs.detail.infoStyleTooltip' | translate" routerLink="/songs" [queryParams]="{ type: 'styles', query: style.catalogId }">{{ style.name }}</a>
                   }
                 </p>
                 <app-song-actions [(song)]="song" [showComments]="false" [loadingPosition]="'last'" [class]="'justify-content-center justify-content-sm-start'" />
@@ -90,9 +90,9 @@
       <div class="col">
         <div class="card">
           <div class="card-body text-dark text-center">
-            <p class="card-text" style="white-space: pre-line;">{{ songLyrics?.lyrics || 'Lyrics are not available'}}</p>
+            <p class="card-text" style="white-space: pre-line;">{{ songLyrics?.lyrics || ('songs.detail.lyricsNotAvailable' | translate) }}</p>
             @if (songLyrics?.url) {
-              <p class="card-text text-muted small">Source: <a href="{{ songLyrics?.url }}" target="_blank" rel="noopener noreferrer">{{ songLyrics?.source || songLyrics?.url }}</a></p>
+              <p class="card-text text-muted small">{{ 'songs.detail.lyricsSourceLabel' | translate }} <a href="{{ songLyrics?.url }}" target="_blank" rel="noopener noreferrer">{{ songLyrics?.source || songLyrics?.url }}</a></p>
             }
             @if (song.rights) {
               <p class="card-text text-muted small">{{ song.rights }}</p>
@@ -110,18 +110,18 @@
           <li class="list-group-item px-3 py-3">
             <form #commentForm="ngForm" (ngSubmit)="addComment(commentText, commentForm)" class="text-end">
               <div class="mb-2">
-                <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="2" placeholder="Your comment ..." required></textarea>
+                <textarea class="form-control form-control-sm" name="commentText" [(ngModel)]="commentText" #commentTextField="ngModel" [class.is-invalid]="commentTextField.dirty && commentTextField.invalid" rows="2" [placeholder]="'songs.detail.commentPlaceholder' | translate" required></textarea>
               </div>
-              <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">Add comment</button>
+              <button type="submit" class="btn btn-sm btn-pink" [disabled]="!commentForm.form.valid">{{ 'songs.detail.commentAddButton' | translate }}</button>
             </form>
           </li>
           @for (comment of song.comments; track comment.id) {
             <li class="list-group-item px-3 py-2">
               <div class="d-flex align-items-center justify-content-between">
                 <small class="text-muted flex-grow-1">{{ comment.user?.displayName }}</small>
-                <small class="text-muted">{{ comment.createdDate | date:'short' }}</small>
+                <small class="text-muted">{{ 'songs.detail.commentDate' | translate:{date: comment.createdDate} }}</small>
                 @if (comment.user?.id == user?.id) {
-                  <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeComment(comment)" title="Remove comment"><i class="fas fa-trash-alt"></i></button>
+                  <button type="button" class="btn btn-sm btn-danger ms-2" (click)="removeComment(comment)" [title]="'songs.detail.commentRemoveButton' | translate"><i class="fas fa-trash-alt"></i></button>
                 }
               </div>
               <p class="mb-2 comment-text text-dark">{{ comment.comment }}</p>
@@ -138,7 +138,7 @@
         <app-song-list [songs]="relatedSongs" />
         @if (hasMoreRelatedSongs) {
           <div class="text-center my-3">
-            <button type="button" (click)="loadMoreRelatedSongs()" class="btn btn-lg btn-outline-light w-50">Load more ...</button>
+            <button type="button" (click)="loadMoreRelatedSongs()" class="btn btn-lg btn-outline-light w-50">{{ 'songs.detail.relatedLoadMore' | translate }}</button>
           </div>
         }
       </div>
@@ -152,7 +152,7 @@
           @for (songFile of songFiles; track songFile.id) {
             <li class="list-group-item d-flex justify-content-between align-items-center g-0 px-3 py-2">
               <div class="col">
-                <p class="m-0 text-dark">{{ getSongFileTrackTypeLabel(songFile) }}</p>
+                <p class="m-0 text-dark">{{ 'songs.detail.fileTypeLabel.' + songFile.trackType | translate }}</p>
               </div>
               <div class="col-auto">
                 <small class="badge text-bg-secondary mx-1">
@@ -174,18 +174,18 @@
                   <div class="d-inline-block ms-2">
                     @switch (songFile.previewStatus) {
                       @default {
-                        <button type="button" class="btn btn-sm btn-block btn-outline-dark" title="Play audio preview" (click)="playSongFile(songFile)"><i class="fas fa-play"></i><span class="d-none d-sm-inline"> Preview</span></button>
+                        <button type="button" class="btn btn-sm btn-block btn-outline-dark" [title]="'songs.detail.filePreviewTooltip' | translate" (click)="playSongFile(songFile)"><i class="fas fa-play"></i><span class="d-none d-sm-inline"> {{ 'songs.detail.filePreviewLabel' | translate }}</span></button>
                       }
                       @case ('waiting') {
-                        <button type="button" class="btn btn-sm btn-block btn-outline-dark" (click)="stopSongFile()"><i class="fas fa-spinner fa-spin"></i><span class="d-none d-sm-inline"> Loading</span></button>
+                        <button type="button" class="btn btn-sm btn-block btn-outline-dark" (click)="stopSongFile()"><i class="fas fa-spinner fa-spin"></i><span class="d-none d-sm-inline"> {{ 'songs.detail.fileLoadingLabel' | translate }}</span></button>
                       }
                       @case ('playing') {
-                        <button type="button" class="btn btn-sm btn-block btn-dark" title="Stop audio preview" (click)="stopSongFile()"><i class="fas fa-stop"></i><span class="d-none d-sm-inline"> Playing</span></button>
+                        <button type="button" class="btn btn-sm btn-block btn-dark" [title]="'songs.detail.filePlayingTooltip' | translate" (click)="stopSongFile()"><i class="fas fa-stop"></i><span class="d-none d-sm-inline"> {{ 'songs.detail.filePlayingLabel' | translate }}</span></button>
                       }
                     }
                   </div>
                 }
-                <a href="{{ songFile.catalogUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-pink ms-2" title="Download full version"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> Download</span></a>
+                <a href="{{ songFile.catalogUrl }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-pink ms-2" [title]="'songs.detail.fileDownloadTooltip' | translate"><i class="fas fa-external-link-alt"></i><span class="d-none d-sm-inline"> {{ 'songs.detail.fileDownloadLabel' | translate }}</span></a>
               </div>
             </li>
           }
@@ -197,11 +197,11 @@
   @if (tab == 'error') {
     <div class="row">
       <div class="col text-center mt-5">
-        <h2>Oops! <i class="fas fa-sad-tear"></i></h2>
-        <p>Something went wrong, please try again.</p>
+        <h2>{{ 'songs.detail.errorTitle' | translate }} <i class="fas fa-sad-tear"></i></h2>
+        <p>{{ 'songs.detail.errorText' | translate }}</p>
         <p>
-          <a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> Go back</a> or
-          <a href="#" routerLink="/home" class="btn btn-pink shadow"><i class="fas fa-home"></i> Go home</a>
+          <a href="javascript:history.back()" class="btn btn-pink shadow"><i class="fas fa-chevron-left"></i> {{ 'songs.detail.errorBackButton' | translate }}</a> {{ 'songs.detail.errorOr' | translate }}
+          <a href="#" routerLink="/home" class="btn btn-pink shadow"><i class="fas fa-home"></i> {{ 'songs.detail.errorHomeButton' | translate }}</a>
         </p>
       </div>
     </div>
