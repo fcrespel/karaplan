@@ -1,6 +1,6 @@
-# Terraform for Google Compute Engine - Classic deployment
+# Terraform for Google Compute Engine
 
-This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Compute Engine - Classic deployment](../../gcp/gce-classic/README.md) guide. See the `main.tf` and `variables.tf` files for more information.
+This example uses [Terraform](https://terraform.io) to provision all resources described in the [Google Compute Engine](../../gcp/gce/README.md) guide. See the `main.tf` and `variables.tf` files for more information.
 
 ## Prerequisites
 
@@ -48,4 +48,4 @@ After several minutes, the application should become available at the reserved I
 
 ## Architecture diagram
 
-![Architecture](../../gcp/gce-classic/architecture.png)
+![Architecture](../../gcp/gce/architecture.png)

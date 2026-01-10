@@ -1,16 +1,16 @@
 output "http_url_ip" {
-  value       = "http://${google_compute_global_address.karaplan-ip.address}"
+  value       = module.gce.http_url_ip
   description = "HTTP URL of the load balancer"
 }
 output "https_url_ip" {
-  value       = "https://${google_compute_global_address.karaplan-ip.address}"
+  value       = module.gce.https_url_ip
   description = "HTTPS URL of the load balancer"
 }
 output "http_url_domain" {
-  value       = "http://${local.dns_name}"
+  value       = module.gce.http_url_domain
   description = "HTTP URL of the custom domain"
 }
 output "https_url_domain" {
-  value       = "https://${local.dns_name}"
+  value       = module.gce.https_url_domain
   description = "HTTPS URL of the custom domain"
 }

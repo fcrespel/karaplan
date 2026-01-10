@@ -29,12 +29,13 @@ module "secret-manager" {
   github_oauth_clientsecret   = var.github_oauth_clientsecret
 }
 
-// Compute Engine "container" module
-module "gce-container" {
-  source          = "../../gcp/gce-container"
+// Compute Engine module
+module "gce" {
+  source          = "../../gcp/gce"
   name            = var.name
   project_id      = var.project_id
   region          = var.region
+  bucket          = var.project_id
   dns_project_id  = var.dns_project_id != "" ? var.dns_project_id : var.project_id
   dns_zone        = var.dns_zone
   dns_name_prefix = var.name

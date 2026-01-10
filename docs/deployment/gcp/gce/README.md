@@ -1,4 +1,4 @@
-# Google Compute Engine - Classic deployment
+# Google Compute Engine
 
 This example uses [Compute Engine](https://cloud.google.com/compute/) to run the WAR file with a Tomcat application server in a Managed Instance Group, and [HTTPS Load Balancing](https://cloud.google.com/load-balancing/) to expose the service.
 
@@ -11,7 +11,7 @@ Then, if you are _not_ going to use Terraform, in the side menu go to **Cloud St
 * Select your bucket and enter the `karaplan` folder.
 * Click **Upload file** and select the `karaplan-startup.sh` file.
 
-Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io), [nip.io](https://nip.io) or [xip.io](http://xip.io).
+Finally, to expose the application over HTTPS, you will need to obtain a **domain name** in which you can create a **A record** pointing to a reserved IP address. If you don't have one, you may try using services from [sslip.io](https://sslip.io).
 
 ## Using Cloud Console
 
@@ -33,7 +33,7 @@ In the side menu, go to **IAM & Admin > Service Accounts**:
 In the side menu, go to **Compute Engine > Instance templates**:
 
 * Click **Create instance template**.
-* Enter `karaplan-classic-template-1` as the template **name**.
+* Enter `karaplan-template-1` as the template **name**.
 * Select `e2-medium` as the **Machine type** and **Debian GNU/Linux 12 (bookworm)** as the distribution.
 * Select the previously created `karaplan` **Service Account**.
 * Select **Allow full access to all Cloud APIs** under **Access scopes**.
@@ -44,8 +44,8 @@ In the side menu, go to **Compute Engine > Instance templates**:
 In the side menu, go to **Compute Engine > Instance groups**:
 
 * Click **Create instance group**.
-* Enter `karaplan-classic-ig` as the group name.
-* Select `karaplan-classic-template-1` as the **Instance template**.
+* Enter `karaplan-ig` as the group name.
+* Select `karaplan-template-1` as the **Instance template**.
 * Select **Multiple zones** as the **Location**, then select your preferred **Region** (e.g. `europe-west1`).
 * Set **Autoscaling** to **Off**, and set **Number of instances** to **3**.
 * Click **Create**.
@@ -55,21 +55,21 @@ In the side menu, go to **Network services > Load balancing**:
 * Click **Create load balancer**
 * Under **Application Load Balancer (HTTP/S)**, click **Start configuration**.
 * Select **From Internet to my VMs**, then click **Continue**.
-* Enter `karaplan-classic-lb` as the load balancer **name**.
+* Enter `karaplan-lb` as the load balancer **name**.
 * In **Frontend configuration**:
-    * Enter `karaplan-classic-frontend` as the frontend service **name**.
-    * In the **IP Address** dropdown, **Create IP address** named `karaplan-classic-ip`.
+    * Enter `karaplan-frontend` as the frontend service **name**.
+    * In the **IP Address** dropdown, **Create IP address** named `karaplan-ip`.
     * If you *don't* have a custom domain name, leave **HTTP** as the **Protocol**.
     * If you *do* have a custom domain name:
         * Select **HTTPS** as the **Protocol**.
-        * In the **Certificate** dropdown, **Create a new certificate** named `karaplan-classic-ssl-cert` for your custom domain name.
+        * In the **Certificate** dropdown, **Create a new certificate** named `karaplan-ssl-cert` for your custom domain name.
     * Click **Done**.
 * In **Backend configuration**, click the dropdown menu to select **Create a backend service**.
-    * Enter `karaplan-classic-bes` as the backend service **name**.
-    * Select `karaplan-classic-ig` as the **Instance group**, `8080` as the port number, then click **Done**.
+    * Enter `karaplan-bes` as the backend service **name**.
+    * Select `karaplan-ig` as the **Instance group**, `8080` as the port number, then click **Done**.
     * Uncheck **Enable Cloud CDN**.
     * In **Health check**, click **Create a health check** 
-        * Enter `karaplan-classic-hc` as the health check **name**.
+        * Enter `karaplan-hc` as the health check **name**.
         * Select **HTTP** as the **Protocol**, and `8080` as the port number.
         * Enter `/actuator/health/readiness` as the **Request path**.
     * Click **Create**.
@@ -99,24 +99,24 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:kara
 gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
 
 # Create Instance template
-gcloud compute instance-templates create karaplan-classic-template-1 --machine-type=e2-medium --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform
+gcloud compute instance-templates create karaplan-template-1 --machine-type=e2-medium --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform
 
 # Create Instance group
-gcloud compute instance-groups managed create karaplan-classic-ig --size=3 --template=karaplan-classic-template-1 --region=$REGION
-gcloud compute instance-groups managed set-named-ports karaplan-classic-ig --named-ports=http:8080 --region=$REGION
+gcloud compute instance-groups managed create karaplan-ig --size=3 --template=karaplan-template-1 --region=$REGION
+gcloud compute instance-groups managed set-named-ports karaplan-ig --named-ports=http:8080 --region=$REGION
 
 # Create HTTP health check
-gcloud compute health-checks create http karaplan-classic-hc --port=8080 --request-path=/actuator/health/readiness
+gcloud compute health-checks create http karaplan-hc --port=8080 --request-path=/actuator/health/readiness
 
 # Create Backend service
-gcloud compute backend-services create karaplan-classic-bes --global --load-balancing-scheme=EXTERNAL_MANAGED --health-checks=karaplan-classic-hc --port-name=http --protocol=HTTP
-gcloud compute backend-services add-backend karaplan-classic-bes --global --instance-group=karaplan-classic-ig --instance-group-region=$REGION
+gcloud compute backend-services create karaplan-bes --global --load-balancing-scheme=EXTERNAL_MANAGED --health-checks=karaplan-hc --port-name=http --protocol=HTTP
+gcloud compute backend-services add-backend karaplan-bes --global --instance-group=karaplan-ig --instance-group-region=$REGION
 
 # Create URL map
-gcloud compute url-maps create karaplan-classic-url-map --default-service=karaplan-classic-bes
+gcloud compute url-maps create karaplan-url-map --default-service=karaplan-bes
 
 # Create IP address
-gcloud compute addresses create karaplan-classic-ip --global
+gcloud compute addresses create karaplan-ip --global
 gcloud compute addresses list
 ```
 
@@ -124,10 +124,10 @@ If you *don't* have a custom domain name:
 
 ```sh
 # Create Target HTTP proxy
-gcloud compute target-http-proxies create karaplan-classic-http-proxy --url-map=karaplan-classic-url-map
+gcloud compute target-http-proxies create karaplan-http-proxy --url-map=karaplan-url-map
 
 # Create Forwarding rule
-gcloud compute forwarding-rules create karaplan-classic-fwd-http --global --load-balancing-scheme=EXTERNAL_MANAGED --target-http-proxy=karaplan-classic-http-proxy --global-address --address=karaplan-classic-ip --ports=80
+gcloud compute forwarding-rules create karaplan-fwd-http --global --load-balancing-scheme=EXTERNAL_MANAGED --target-http-proxy=karaplan-http-proxy --global-address --address=karaplan-ip --ports=80
 ```
 
 If you *do* have a custom domain name, add the created IP address in a **A record**, then:
@@ -136,13 +136,13 @@ If you *do* have a custom domain name, add the created IP address in a **A recor
 DOMAIN=your.custom.domain
 
 # Create SSL certificate
-gcloud compute ssl-certificates create karaplan-classic-ssl-cert --domains=$DOMAIN --global
+gcloud compute ssl-certificates create karaplan-ssl-cert --domains=$DOMAIN --global
 
 # Create Target HTTPS proxy
-gcloud compute target-https-proxies create karaplan-classic-https-proxy --ssl-certificates=karaplan-classic-ssl-cert --url-map=karaplan-classic-url-map
+gcloud compute target-https-proxies create karaplan-https-proxy --ssl-certificates=karaplan-ssl-cert --url-map=karaplan-url-map
 
 # Create Forwarding rule
-gcloud compute forwarding-rules create karaplan-classic-fwd-https --global --load-balancing-scheme=EXTERNAL_MANAGED --target-https-proxy=karaplan-classic-https-proxy --global-address --address=karaplan-classic-ip --ports=443
+gcloud compute forwarding-rules create karaplan-fwd-https --global --load-balancing-scheme=EXTERNAL_MANAGED --target-https-proxy=karaplan-https-proxy --global-address --address=karaplan-ip --ports=443
 ```
 
 After several minutes, the application should become available at this IP address and/or at the custom domain name.
@@ -151,7 +151,7 @@ After several minutes, the application should become available at this IP addres
 
 This directory contains a [Terraform](https://terraform.io) module to provision all resources automatically. See the `main.tf`, `variables.tf` and `outputs.tf` files for more information.
 
-Please refer to the [Terraform GCE Classic Deployment](../../terraform/gce-classic/README.md) guide for a full example.
+Please refer to the [Terraform GCE Deployment](../../terraform/gce/README.md) guide for a full example.
 
 ## Architecture diagram
 

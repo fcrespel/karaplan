@@ -15,15 +15,13 @@ nav:
           - Build: deployment/gcp/build/README.md
           - SQL: deployment/gcp/sql/README.md
           - Secret Manager: deployment/gcp/secret-manager/README.md
-          - GCE Classic: deployment/gcp/gce-classic/README.md
-          - GCE Container: deployment/gcp/gce-container/README.md
+          - GCE: deployment/gcp/gce/README.md
           - GKE: deployment/gcp/gke/README.md
           - GAE: deployment/gcp/gae/README.md
           - Cloud Run: deployment/gcp/cloudrun/README.md
       - Terraform:
           - deployment/terraform/README.md
-          - GCE Classic: deployment/terraform/gce-classic/README.md
-          - GCE Container: deployment/terraform/gce-container/README.md
+          - GCE: deployment/terraform/gce/README.md
           - GKE: deployment/terraform/gke/README.md
           - GKE Cluster: deployment/terraform/gke-cluster/README.md
           - GAE: deployment/terraform/gae/README.md
