@@ -3,7 +3,6 @@ package me.crespel.karaplan.service.catalog;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,20 +18,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.hash.Hashing;
@@ -74,15 +71,13 @@ import me.crespel.karaplan.service.CatalogService;
 public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 	private final KarafunWebProperties properties;
-	private final RestTemplate restTemplate;
+	private final RestClient restClient;
 	private final ConfigurableConversionService conversionService;
 	private final Map<String, KarafunWebSession> sessions = new ConcurrentHashMap<>();
 
-	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestTemplateBuilder restTemplateBuilder) {
+	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestClient.Builder restClientBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplateBuilder
-				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
+		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 		this.conversionService = new DefaultConversionService();
@@ -153,19 +148,22 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 			body.add("sk", session.getSessionKey());
 
 			// Build headers
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 			String timestamp = Long.toString(System.currentTimeMillis() / 1000L);
 			String bodyString = conversionService.convert(body, String.class);
 			String signature = Hashing.sha256().hashString(String.join("|", "kfun-v1.5", uri.toString(), bodyString, timestamp, session.getSessionKey()), StandardCharsets.UTF_8).toString();
-			headers.add("X-Request-Timestamp", timestamp);
-			headers.add("X-Request-Signature", signature);
 
 			// Call API
 			if (log.isTraceEnabled()) {
 				log.trace("KaraFun Web API request: {}?{}", uri, bodyString);
 			}
-			T response = restTemplate.postForEntity(uri, new HttpEntity<>(body, headers), responseType).getBody();
+			T response = restClient.post()
+					.uri(uri)
+					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+					.header("X-Request-Timestamp", timestamp)
+					.header("X-Request-Signature", signature)
+					.body(body)
+					.retrieve()
+					.body(responseType);
 			if (log.isTraceEnabled()) {
 				log.trace("KaraFun Web API response: {}", response);
 			}

@@ -1,18 +1,14 @@
 package me.crespel.karaplan.service.export;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -35,13 +31,11 @@ public class KarafunBarExportServiceImpl implements ExportService {
 	private static final String PLAYLIST_HASH_HEADER = "X-Playlist-Hash";
 
 	private final KarafunBarProperties properties;
-	private final RestTemplate restTemplate;
+	private final RestClient restClient;
 
-	public KarafunBarExportServiceImpl(KarafunBarProperties properties, RestTemplateBuilder restTemplateBuilder) {
+	public KarafunBarExportServiceImpl(KarafunBarProperties properties, RestClient.Builder restClientBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplateBuilder
-				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
+		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 	}
@@ -53,20 +47,27 @@ public class KarafunBarExportServiceImpl implements ExportService {
 				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint())
 						.path("/" + target + "/playlist/list");
 
+				// Retrieve the current playlist to get the playlist hash
 				log.debug("Getting current playlist for ID {}", target);
-				ResponseEntity<List<PlaylistEntry>> getResponse = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, null, new ParameterizedTypeReference<List<PlaylistEntry>>() {});
+				ResponseEntity<List<PlaylistEntry>> getResponse = restClient.get()
+						.uri(builder.build().encode().toUri())
+						.retrieve()
+						.toEntity(new ParameterizedTypeReference<List<PlaylistEntry>>() {});
 				log.debug("Get playlist response for ID {}: {}", target, getResponse);
 				if (getResponse.getStatusCode().isError()) {
 					throw new TechnicalException("Failed to get playlist for ID " + target + ": HTTP error " + getResponse.getStatusCode());
 				}
 				String playlistHash = getResponse.getHeaders().getFirst(PLAYLIST_HASH_HEADER);
 
+				// Update the playlist
 				List<SongAndSinger> songList = buildSongList(playlist.getSongs());
-				HttpHeaders songHeaders = new HttpHeaders();
-				songHeaders.add(PLAYLIST_HASH_HEADER, playlistHash);
-				HttpEntity<List<SongAndSinger>> postRequest = new HttpEntity<>(songList, songHeaders);
-				log.debug("Posting playlist for ID {}: {}", target, postRequest);
-				ResponseEntity<List<PlaylistEntry>> postResponse = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.POST, postRequest, new ParameterizedTypeReference<List<PlaylistEntry>>() {});
+				log.debug("Posting playlist for ID {}: {}", target, songList);
+				ResponseEntity<List<PlaylistEntry>> postResponse = restClient.post()
+						.uri(builder.build().encode().toUri())
+						.header(PLAYLIST_HASH_HEADER, playlistHash)
+						.body(songList)
+						.retrieve()
+						.toEntity(new ParameterizedTypeReference<List<PlaylistEntry>>() {});
 				log.debug("Post playlist response for ID {}: {}", target, postResponse);
 				if (postResponse.getStatusCode().isError()) {
 					throw new TechnicalException("Failed to post playlist for ID " + target + ": HTTP error " + postResponse.getStatusCode());

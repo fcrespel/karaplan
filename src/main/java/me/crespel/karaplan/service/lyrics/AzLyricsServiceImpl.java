@@ -1,11 +1,9 @@
 package me.crespel.karaplan.service.lyrics;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
@@ -13,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,15 +33,13 @@ public class AzLyricsServiceImpl implements LyricsService {
 	private static final Pattern LYRICS_HTML_PATTERN = Pattern.compile("<div>\\s*<!-- Usage of [^\n]+ -->\\s*(.*?)\\s*</div>", Pattern.DOTALL);
 
 	private final AzLyricsProperties properties;
-	private final RestTemplate restTemplate;
+	private final RestClient restClient;
 
-	public AzLyricsServiceImpl(AzLyricsProperties properties, RestTemplateBuilder restTemplateBuilder) {
+	public AzLyricsServiceImpl(AzLyricsProperties properties, RestClient.Builder restClientBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplateBuilder
-				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
+		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
-				.additionalMessageConverters(jacksonMessageConverter())
+				.messageConverters(c -> c.add(jacksonMessageConverter()))
 				.build();
 	}
 
@@ -61,7 +57,10 @@ public class AzLyricsServiceImpl implements LyricsService {
 		if (suggestions != null && suggestions.getSongs() != null && !suggestions.getSongs().isEmpty()) {
 			AzLyricsSuggestion suggestion = suggestions.getSongs().get(0);
 			if (suggestion.getUrl() != null && suggestion.getUrl().startsWith(properties.getEndpoint())) {
-				String lyricsHtml = restTemplate.getForObject(suggestion.getUrl(), String.class);
+				String lyricsHtml = restClient.get()
+						.uri(suggestion.getUrl())
+						.retrieve()
+						.body(String.class);
 				Matcher lyricsMatcher = LYRICS_HTML_PATTERN.matcher(lyricsHtml);
 				if (lyricsMatcher.find()) {
 					lyrics.setLyrics(lyricsMatcher.group(1).replaceAll("[\\n\\r]", "").replaceAll("<br/?>", "\n").replaceAll("</?[^>]+>", ""));
@@ -75,7 +74,10 @@ public class AzLyricsServiceImpl implements LyricsService {
 
 	private String getToken() {
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint()).path("/geo.js");
-		String remotePage = restTemplate.getForObject(builder.build().encode().toUri(), String.class);
+		String remotePage = restClient.get()
+				.uri(builder.build().encode().toUri())
+				.retrieve()
+				.body(String.class);
 		Matcher tokenMatcher = TOKEN_HTML_PATTERN.matcher(remotePage);
 		if (tokenMatcher.find()) {
 			return tokenMatcher.group(1);
@@ -90,7 +92,10 @@ public class AzLyricsServiceImpl implements LyricsService {
 					.path("/suggest/")
 					.queryParam("q", song.getName() + " - " + song.getArtist().getName())
 					.queryParam("x", token);
-			return restTemplate.getForObject(builder.build().encode().toUri(), AzLyricsSuggestResponse.class);
+			return restClient.get()
+					.uri(builder.build().encode().toUri())
+					.retrieve()
+					.body(AzLyricsSuggestResponse.class);
 		} catch (RestClientException e) {
 			log.error("Failed to retrieve lyrics from AZLyrics for {}", song, e);
 			return null;

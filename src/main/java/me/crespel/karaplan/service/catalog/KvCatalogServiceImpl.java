@@ -1,12 +1,10 @@
 package me.crespel.karaplan.service.catalog;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.convert.converter.Converter;
@@ -15,8 +13,8 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,15 +46,13 @@ import me.crespel.karaplan.service.CatalogService;
 public class KvCatalogServiceImpl implements CatalogService {
 
 	private final KvProperties properties;
-	private final RestTemplate restTemplate;
+	private final RestClient restClient;
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 	private final ConfigurableConversionService conversionService;
 
-	public KvCatalogServiceImpl(KvProperties properties, RestTemplateBuilder restTemplateBuilder) {
+	public KvCatalogServiceImpl(KvProperties properties, RestClient.Builder restClientBuilder) {
 		this.properties = properties;
-		this.restTemplate = restTemplateBuilder
-				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
+		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 		this.conversionService = new DefaultConversionService();
@@ -91,7 +87,10 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.path("/artist/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
-			KvArtistResponse response = restTemplate.getForObject(builder.build().encode().toUri(), KvArtistResponse.class);
+			KvArtistResponse response = restClient.get()
+					.uri(builder.build().encode().toUri())
+					.retrieve()
+					.body(KvArtistResponse.class);
 			return conversionService.convert(response.getArtist(), CatalogArtist.class);
 
 		} catch (JsonProcessingException | RestClientException e) {
@@ -118,7 +117,10 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.path("/song/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
-			KvSongResponse response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongResponse.class);
+			KvSongResponse response = restClient.get()
+					.uri(builder.build().encode().toUri())
+					.retrieve()
+					.body(KvSongResponse.class);
 			return conversionService.convert(response.getSong(), CatalogSong.class);
 
 		} catch (JsonProcessingException | RestClientException e) {
@@ -169,7 +171,10 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.path(path)
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
-			KvSongList response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongList.class);
+			KvSongList response = restClient.get()
+					.uri(builder.build().encode().toUri())
+					.retrieve()
+					.body(KvSongList.class);
 			return conversionService.convert(response, CatalogSongList.class).setType(type);
 
 		} catch (JsonProcessingException | RestClientException e) {
@@ -196,7 +201,10 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.path("/songfile/")
 					.queryParam("query", jsonMapper.writeValueAsString(query));
 
-			KvSongFileList response = restTemplate.getForObject(builder.build().encode().toUri(), KvSongFileList.class);
+			KvSongFileList response = restClient.get()
+					.uri(builder.build().encode().toUri())
+					.retrieve()
+					.body(KvSongFileList.class);
 			return conversionService.convert(response, CatalogSongFileList.class);
 
 		} catch (JsonProcessingException | RestClientException e) {

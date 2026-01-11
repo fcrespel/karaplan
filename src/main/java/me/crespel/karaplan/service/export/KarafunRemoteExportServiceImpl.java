@@ -1,15 +1,13 @@
 package me.crespel.karaplan.service.export;
 
-import java.time.Duration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import me.crespel.karaplan.config.KarafunRemoteConfig.KarafunRemoteProperties;
@@ -26,14 +24,12 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 	private static final Pattern remoteV2UrlPattern = Pattern.compile("\"kcs_url\":\"([^\"]+)\"");
 
 	private final KarafunRemoteProperties properties;
-	private final RestTemplate restTemplate;
+	private final RestClient restClient;
 	private final ExportService karafunRemoteV2ExportService;
 
-	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestTemplateBuilder restTemplateBuilder, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
+	public KarafunRemoteExportServiceImpl(KarafunRemoteProperties properties, RestClient.Builder restClientBuilder, @Qualifier("karafunRemoteV2Export") ExportService karafunRemoteV2ExportService) {
 		this.properties = properties;
-		this.restTemplate = restTemplateBuilder
-				.connectTimeout(Duration.ofMillis(properties.getConnectTimeout()))
-				.readTimeout(Duration.ofMillis(properties.getReadTimeout()))
+		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
 		this.karafunRemoteV2ExportService = karafunRemoteV2ExportService;
@@ -49,7 +45,10 @@ public class KarafunRemoteExportServiceImpl implements ExportService {
 			String remotePage;
 			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(properties.getEndpoint()).path(target);
 			try {
-				remotePage = restTemplate.getForObject(builder.toUriString(), String.class);
+				remotePage = restClient.get()
+						.uri(builder.toUriString())
+						.retrieve()
+						.body(String.class);
 				if (remoteDisconnectedPattern.matcher(remotePage).find()) {
 					throw new BusinessException("Remote #" + target + " is not reachable, please check KaraFun application");
 				}

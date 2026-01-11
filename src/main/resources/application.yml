@@ -17,6 +17,10 @@ spring:
   h2:
     console:
       enabled: false
+  http:
+    client:
+      connect-timeout: 10000
+      read-timeout: 30000
   jackson:
     default-property-inclusion: non-empty
   jpa:
