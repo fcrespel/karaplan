@@ -1,4 +1,4 @@
-import { DatePipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, inject, input, model, output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,7 +22,7 @@ import { PlaylistEditModalComponent } from '../playlist-edit-modal/playlist-edit
   selector: 'app-song-actions',
   templateUrl: './song-actions.component.html',
   styleUrls: ['./song-actions.component.css'],
-  imports: [NgClass, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, DatePipe, TranslatePipe]
+  imports: [NgClass, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, TranslatePipe]
 })
 export class SongActionsComponent implements OnInit, OnChanges, OnDestroy {
   private accountService = inject(AccountService);

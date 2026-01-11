@@ -1,4 +1,4 @@
-import { DatePipe, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -26,7 +26,7 @@ import { SongListComponent } from '../../shared/song-list/song-list.component';
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
-  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DatePipe, DurationPipe, TranslatePipe]
+  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);

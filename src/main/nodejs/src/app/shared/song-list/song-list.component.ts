@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDragPlaceholder, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, OnDestroy, inject, input, output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
@@ -20,7 +20,7 @@ import { SongActionsComponent } from '../song-actions/song-actions.component';
   selector: 'app-song-list',
   templateUrl: './song-list.component.html',
   styleUrls: ['./song-list.component.css'],
-  imports: [CdkDropList, CdkDrag, CdkDragPlaceholder, CdkDragHandle, NgTemplateOutlet, RouterLink, NgbTooltip, SongActionsComponent, PlyrComponent, DatePipe, DurationPipe, TranslatePipe]
+  imports: [CdkDropList, CdkDrag, CdkDragPlaceholder, CdkDragHandle, NgTemplateOutlet, RouterLink, NgbTooltip, SongActionsComponent, PlyrComponent, DurationPipe, TranslatePipe]
 })
 export class SongListComponent implements OnDestroy {
   private router = inject(Router);

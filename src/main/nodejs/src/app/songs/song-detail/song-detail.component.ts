@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
@@ -23,7 +22,7 @@ import { SongListComponent } from '../../shared/song-list/song-list.component';
   selector: 'app-song-detail',
   templateUrl: './song-detail.component.html',
   styleUrls: ['./song-detail.component.css'],
-  imports: [RouterLink, SongActionsComponent, PlyrComponent, FormsModule, SongListComponent, DatePipe, DurationPipe, TranslatePipe]
+  imports: [RouterLink, SongActionsComponent, PlyrComponent, FormsModule, SongListComponent, DurationPipe, TranslatePipe]
 })
 export class SongDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
