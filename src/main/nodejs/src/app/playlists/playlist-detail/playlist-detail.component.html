@@ -29,7 +29,7 @@
         <button type="button" class="btn btn-outline-light shadow" disabled><i class="fas fa-lock"></i><span class="d-sm-none"> {{ 'playlists.detail.lockedButton' | translate }}</span><span class="d-none d-sm-inline"> {{ 'playlists.detail.lockedTooltip' | translate }}</span></button>
       }
       @if (!isMember(user, playlist)) {
-        <button type="button" class="btn btn-pink shadow" [title]="'playlists.detail.joinTooltip' | translate" (click)="joinPlaylist(playlist)"><i class="fas fa-sign-in-alt"></i><span class="d-sm-none"> {{ 'playlists.detail.joinButton' | translate }}</span><span class="d-none d-sm-inline"> {{ 'playlists.joinTooltip' | translate }}</span></button>
+        <button type="button" class="btn btn-pink shadow" [title]="'playlists.detail.joinTooltip' | translate" (click)="joinPlaylist(playlist)"><i class="fas fa-sign-in-alt"></i><span class="d-sm-none"> {{ 'playlists.detail.joinButton' | translate }}</span><span class="d-none d-sm-inline"> {{ 'playlists.detail.joinTooltip' | translate }}</span></button>
       }
     </div>
     <div class="col-auto mb-1">
