@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, Pipe, PipeTransform, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -22,11 +22,31 @@ import { PlaylistEditModalComponent } from '../../shared/playlist-edit-modal/pla
 import { PlaylistLeaveModalComponent } from '../../shared/playlist-leave-modal/playlist-leave-modal.component';
 import { SongListComponent } from '../../shared/song-list/song-list.component';
 
+@Pipe({
+  name: 'sumDurationByUser'
+})
+export class SumDurationByUserPipe implements PipeTransform {
+
+  transform(playlist: Playlist, userId: number): number {
+    if (!playlist?.songs || !userId) {
+      return 0;
+    }
+
+    return playlist.songs.reduce((total: number, song: any) => {
+      if (song?.createdBy?.id === userId) {
+        return total + (song?.song?.duration ?? 0);
+      }
+      return total;
+    }, 0);
+  }
+}
+
+
 @Component({
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
-  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe]
+  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
