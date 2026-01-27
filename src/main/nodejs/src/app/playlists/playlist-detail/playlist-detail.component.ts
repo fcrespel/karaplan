@@ -41,31 +41,12 @@ export class SumDurationByUserPipe implements PipeTransform {
   }
 }
 
-@Pipe({
-  name: 'secondsToHms'
-})
-export class SecondsToHmsPipe implements PipeTransform {
-
-  transform(totalSeconds: number | null | undefined): string {
-    if (totalSeconds == null || totalSeconds < 0) {
-      return '00:00:00';
-    }
-
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-
-    const pad = (n: number) => n.toString().padStart(2, '0');
-
-    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  }
-}
 
 @Component({
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
-  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe, SecondsToHmsPipe]
+  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
