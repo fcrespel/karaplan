@@ -110,6 +110,8 @@
                   <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'dateAdded', 'desc')"><i class="fas fa-sort-numeric-up fa-fw"></i> {{ 'playlists.detail.sortDateDesc' | translate }}</button>
                   <div class="dropdown-divider"></div>
                   <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'random')"><i class="fas fa-random fa-fw"></i> {{ 'playlists.detail.sortRandom' | translate }}</button>
+                  <div class="dropdown-divider"></div>
+                  <button type="button" class="dropdown-item" ngbDropdownItem (click)="sortPlaylist(playlist, 'smart')"><i class="fas fa-lightbulb fa-fw"></i> {{ 'playlists.detail.sortSmart' | translate }}</button>
                 </div>
               </div>
             }
