@@ -4,5 +4,6 @@ public enum PlaylistSortType {
 	alpha,
 	score,
 	dateAdded,
-	random
+	random,
+	smart
 }

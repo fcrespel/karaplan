@@ -181,6 +181,7 @@
       "sortDateAsc": "Par date d'ajout, croissant",
       "sortDateDesc": "Par date d'ajout, décroissant",
       "sortRandom": "Aléatoire",
+      "sortSmart": "Intelligent",
       "exportTooltip": "Exporter la playlist",
       "exportKarafunRemote": "Télécommande KaraFun",
       "exportKarafunRemoteModal": {

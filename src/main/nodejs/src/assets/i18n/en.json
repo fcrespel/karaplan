@@ -181,6 +181,7 @@
       "sortDateAsc": "By date added, ascending",
       "sortDateDesc": "By date added, descending",
       "sortRandom": "Random",
+      "sortSmart": "Smart",
       "exportTooltip": "Export playlist",
       "exportKarafunRemote": "KaraFun Remote",
       "exportKarafunRemoteModal": {
