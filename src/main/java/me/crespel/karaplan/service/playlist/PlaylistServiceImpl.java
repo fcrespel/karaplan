@@ -351,14 +351,14 @@ public class PlaylistServiceImpl implements PlaylistService {
 		
 		// Create a list of each user songlist, sorted by the size of it
 		List<LinkedList<PlaylistSong>> users = songs.stream()
-		.collect(Collectors.groupingBy(
-			s -> s.getCreatedBy().getId(),
-			LinkedHashMap::new,
-			Collectors.toCollection(LinkedList::new)))
-		.values()
-		.stream()
-		.sorted((a, b) -> Integer.compare(b.size(), a.size()))
-		.toList();
+				.collect(Collectors.groupingBy(
+					s -> s.getCreatedBy().getId(),
+					LinkedHashMap::new,
+					Collectors.toCollection(LinkedList::new)))
+				.values()
+				.stream()
+				.sorted((a, b) -> Integer.compare(b.size(), a.size()))
+				.toList();
 
 		// create empty array the size of the playlist
 		PlaylistSong[] result = new PlaylistSong[songs.size()];
