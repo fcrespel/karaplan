@@ -359,15 +359,15 @@ public class PlaylistServiceImpl implements PlaylistService {
 		.stream()
 		.sorted((a, b) -> Integer.compare(b.size(), a.size()))
 		.toList();
-		
+
 		// create empty array the size of the playlist
 		PlaylistSong[] result = new PlaylistSong[songs.size()];
 		int n = result.length;
-		
+
 		// max space between each song of a user
 		for (List<PlaylistSong> userSongs : users) {
 			int count = userSongs.size();
-			
+
 			for (int k = 0; k < count; k++) {
 				// for a 40 songs playlist and 10 songs for the user : k * n / count -> k * 40 / 10 -> 0 4 8 12...
 				int target = (int) ((long) k * n / count);
@@ -377,8 +377,16 @@ public class PlaylistServiceImpl implements PlaylistService {
 				while (i < n && result[i] != null) {
 					i++;
 				}
+
+				if (i == n) {
+					i = target - 1;
+					while (i >= 0 && result[i] != null) {
+						i--;
+					}
+				}
+
 				// if empty spot is within array size, take it
-				if (i < n) {
+				if (i >= 0 && i < n) {
 					result[i] = userSongs.get(k);
 				}
 			}
