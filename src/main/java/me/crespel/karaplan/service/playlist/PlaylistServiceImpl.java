@@ -1,12 +1,12 @@
 package me.crespel.karaplan.service.playlist;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -349,43 +349,41 @@ public class PlaylistServiceImpl implements PlaylistService {
 			return songs;
 		}
 		
-		Map<Long, List<PlaylistSong>> songsByUser = new LinkedHashMap<>();
-		for (PlaylistSong song : songs) {
-			songsByUser
-			.computeIfAbsent(song.getCreatedBy().getId(), k -> new ArrayList<>())
-			.add(song);
-		}
+		// Create a list of each user songlist, sorted by the size of it
+		List<LinkedList<PlaylistSong>> users = songs.stream()
+		.collect(Collectors.groupingBy(
+			s -> s.getCreatedBy().getId(),
+			LinkedHashMap::new,
+			Collectors.toCollection(LinkedList::new)))
+		.values()
+		.stream()
+		.sorted((a, b) -> Integer.compare(b.size(), a.size()))
+		.toList();
 		
-		List<List<PlaylistSong>> users = new ArrayList<>(songsByUser.values());
-		users.sort((a, b) -> Integer.compare(b.size(), a.size()));
-		
+		// create empty array the size of the playlist
 		PlaylistSong[] result = new PlaylistSong[songs.size()];
 		int n = result.length;
 		
+		// max space between each song of a user
 		for (List<PlaylistSong> userSongs : users) {
 			int count = userSongs.size();
 			
 			for (int k = 0; k < count; k++) {
+				// for a 40 songs playlist and 10 songs for the user : k * n / count -> k * 40 / 10 -> 0 4 8 12...
 				int target = (int) ((long) k * n / count);
-				
 				int i = target;
+
+				// while spot is taken, try to take the next one
 				while (i < n && result[i] != null) {
 					i++;
 				}
-				
+				// if empty spot is within array size, take it
 				if (i < n) {
 					result[i] = userSongs.get(k);
 				}
 			}
 		}
-		
-		List<PlaylistSong> sorted = new ArrayList<>(songs.size());
-		for (PlaylistSong song : result) {
-			if (song != null) {
-				sorted.add(song);
-			}
-		}
-		
-		return sorted;
+		// put array back into List and return result
+		return Arrays.asList(result);
 	}
 }
