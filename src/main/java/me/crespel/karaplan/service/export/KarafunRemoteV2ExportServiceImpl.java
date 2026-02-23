@@ -20,7 +20,8 @@ import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.WebSocketContainer;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
@@ -44,7 +45,10 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
 			CompletableFuture<Void> completable = new CompletableFuture<>();
 			List<Long> songIds = playlist.getSongs().stream().map(it -> it.getSong().getCatalogId()).collect(Collectors.toList());
-			WebSocketConnectionManager wsConn = new WebSocketConnectionManager(new StandardWebSocketClient(), new KarafunWebSocketHandler(songIds, completable), URI.create(target));
+			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+			container.setDefaultMaxTextMessageBufferSize(1024 * 1024); // 1 MB
+			container.setDefaultMaxBinaryMessageBufferSize(1024 * 1024);
+			WebSocketConnectionManager wsConn = new WebSocketConnectionManager(new StandardWebSocketClient(container), new KarafunWebSocketHandler(songIds, completable), URI.create(target));
 			try {
 				wsConn.setSubProtocols(Arrays.asList("kcpj~v2+emuping"));
 				wsConn.start();
