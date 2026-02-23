@@ -47,7 +47,6 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 			List<Long> songIds = playlist.getSongs().stream().map(it -> it.getSong().getCatalogId()).collect(Collectors.toList());
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.setDefaultMaxTextMessageBufferSize(1024 * 1024); // 1 MB
-			container.setDefaultMaxBinaryMessageBufferSize(1024 * 1024);
 			WebSocketConnectionManager wsConn = new WebSocketConnectionManager(new StandardWebSocketClient(container), new KarafunWebSocketHandler(songIds, completable), URI.create(target));
 			try {
 				wsConn.setSubProtocols(Arrays.asList("kcpj~v2+emuping"));
