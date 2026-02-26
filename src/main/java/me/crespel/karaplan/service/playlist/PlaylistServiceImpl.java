@@ -362,11 +362,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 				.toList();
 
 		// max spacing between each song of a user
-		int maxSongs = users.stream()
-				.mapToInt(List::size)
-				.max()
-				.orElse(0);
-		for (int k = 0; k < maxSongs; k++) {
+		for (int k = 0; k < users.get(0).size(); k++) {
 			for (List<PlaylistSong> userSongs : users) {
 				if (k >= userSongs.size()) {
 					continue;
