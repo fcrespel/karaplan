@@ -362,9 +362,13 @@ public class PlaylistServiceImpl implements PlaylistService {
 				.toList();
 
 		// max spacing between each song of a user
-		for (List<PlaylistSong> userSongs : users) {
-			int count = userSongs.size();
-			for (int k = 0; k < count; k++) {
+		for (int k = 0; k < users.get(0).size(); k++) {
+			for (List<PlaylistSong> userSongs : users) {
+				if (k >= userSongs.size()) {
+					continue;
+				}
+
+				int count = userSongs.size();
 				int target = (int) ((long) k * n / count);
 				result[findFreeSlot(result, target)] = userSongs.get(k);
 			}
