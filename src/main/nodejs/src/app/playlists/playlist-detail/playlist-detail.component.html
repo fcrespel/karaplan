@@ -6,7 +6,7 @@
   @if (playlist) {
     <div class="col-auto d-none d-sm-block">
       @if (playlist.members) {
-        <span class="badge text-bg-light mx-1" [title]="'playlists.membersTooltip' | translate" ngbTooltip="{{playlistMembers}}" placement="top top-left top-right auto"><i class="fas fa-users d-none d-md-inline"></i> {{ 'playlists.membersLabel'| translate:{count: playlist.members.length} }}</span>
+        <span class="badge text-bg-light mx-1" [title]="'playlists.membersTooltip' | translate"><i class="fas fa-users d-none d-md-inline"></i> {{ 'playlists.membersLabel'| translate:{count: playlist.members.length} }}</span>
       }
       @if (playlist.songsCount) {
         <span class="badge text-bg-light mx-1" [title]="'playlists.countTooltip' | translate"><i class="fas fa-music d-none d-md-inline"></i> {{ 'playlists.countLabel' | translate:{count: playlist.songsCount} }}</span>
@@ -45,14 +45,18 @@
                 }
               </button>
               <div class="dropdown-menu members-menu shadow" ngbDropdownMenu>
-                @for (member of playlist.members; track member.id; let first = $first) {
-                  @if (!first) {
-                    <div class="dropdown-divider"></div>
+                @if (playlist.members) {
+                  @for (member of playlist.members; track member.id) {
+                    @if (!$first) {
+                      <div class="dropdown-divider"></div>
+                    }
+                    <div class="d-flex mx-3 align-items-center justify-content-between">
+                      <span class="flex-grow-1">{{ member.displayName }}</span>
+                      <small class="text-muted"><i class="far fa-clock"></i> {{ playlist | sumDurationByUser: member.id | duration }}</small>
+                    </div>
                   }
-                  <div class="d-flex mx-3 align-items-center justify-content-between">
-                    <span class="flex-grow-1">{{ member.displayName }}</span>
-                    <small class="text-muted"><i class="far fa-clock"></i> {{ playlist | sumDurationByUser: member.id | duration }}</small>
-                  </div>
+                } @else {
+                  <p class="mx-3 my-1 text-muted">{{ 'playlists.membersNone' | translate }}</p>
                 }
               </div>
             </div>

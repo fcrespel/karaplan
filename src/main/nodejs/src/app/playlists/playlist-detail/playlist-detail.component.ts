@@ -4,7 +4,6 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDropdown, NgbDropdownButtonItem, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap/dropdown';
-import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -46,7 +45,7 @@ export class SumDurationByUserPipe implements PipeTransform {
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
-  imports: [RouterLink, NgbTooltip, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe]
+  imports: [RouterLink, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
@@ -59,7 +58,6 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
 
   user?: User;
   playlist?: Playlist;
-  playlistMembers: string = '';
   commentText: string = '';
   karafunRemoteId: string = '';
   karafunBarId: string = '';
@@ -80,6 +78,9 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
 
   updatePlaylist(playlist?: Playlist) {
     if (playlist !== undefined) {
+      if (playlist.members) {
+        playlist.members.sort((a, b) => a.displayName.localeCompare(b.displayName));
+      }
       this.playlist = playlist;
     }
     if (this.playlist !== undefined) {
@@ -87,7 +88,6 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
         queryParams: {accessKey: this.playlist.accessKey}
       });
       this.shareUrl = window.location.origin + this.location.prepareExternalUrl(urlTree.toString());
-      this.playlistMembers = this.playlist.members ? this.playlist.members.map(user => user.displayName).join(', ') : '';
     }
   }
 

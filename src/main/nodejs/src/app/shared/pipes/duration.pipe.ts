@@ -13,10 +13,8 @@ export class DurationPipe implements PipeTransform {
     let secondsPadded = seconds.toString().padStart(2, '0');
     if (hours > 0) {
       return `${hours}:${minutesPadded}:${secondsPadded}`;
-    } else if (minutes > 0) {
-      return `${minutes}:${secondsPadded}`;
     } else {
-      return `${seconds}`;
+      return `${minutes}:${secondsPadded}`;
     }
   }
 

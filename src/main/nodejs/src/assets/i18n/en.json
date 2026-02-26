@@ -153,6 +153,7 @@
     "noResults": "No playlist has been created yet.",
     "membersLabel": "{count, plural, one {# member} other {# members}}",
     "membersTooltip": "Members",
+    "membersNone": "No members yet",
     "countLabel": "{count, plural, one {# song} other {# songs}}",
     "countTooltip": "Songs count",
     "durationTooltip": "Duration",
