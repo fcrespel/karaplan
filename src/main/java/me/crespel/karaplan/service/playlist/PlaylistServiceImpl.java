@@ -1,14 +1,15 @@
 package me.crespel.karaplan.service.playlist;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -279,6 +280,10 @@ public class PlaylistServiceImpl implements PlaylistService {
 		case random:
 			Collections.shuffle(sortedSongs);
 			break;
+		case smart:
+			Collections.shuffle(sortedSongs);
+			sortedSongs = sortByMaxSpacing(sortedSongs);
+			break;
 		default:
 			throw new BusinessException("Invalid sort type " + sortType);
 		}
@@ -337,4 +342,53 @@ public class PlaylistServiceImpl implements PlaylistService {
 		}
 	}
 
+	private List<PlaylistSong> sortByMaxSpacing(List<PlaylistSong> songs) {
+		if (songs == null || songs.size() <= 1) {
+			return songs;
+		}
+
+		int n = songs.size();
+		PlaylistSong[] result = new PlaylistSong[n];
+
+		// Group by user and sort users by number of songs (desc)
+		List<List<PlaylistSong>> users = songs.stream()
+				.collect(Collectors.groupingBy(
+					s -> s.getCreatedBy().getId(),
+					LinkedHashMap::new,
+					Collectors.toList()))
+				.values()
+				.stream()
+				.sorted((a, b) -> Integer.compare(b.size(), a.size()))
+				.toList();
+
+		// max spacing between each song of a user
+		for (List<PlaylistSong> userSongs : users) {
+			int count = userSongs.size();
+			for (int k = 0; k < count; k++) {
+				int target = (int) ((long) k * n / count);
+				result[findFreeSlot(result, target)] = userSongs.get(k);
+			}
+		}
+
+		return Arrays.asList(result);
+	}
+
+	private int findFreeSlot(PlaylistSong[] result, int target) {
+		int n = result.length;
+
+		// forward search
+		for (int i = target; i < n; i++) {
+			if (result[i] == null) {
+				return i;
+			}
+		}
+
+		// backward search
+		for (int i = target - 1; i >= 0; i--) {
+			if (result[i] == null) {
+				return i;
+			}
+		}
+		throw new IllegalStateException("No free slot available"); // should not be happening
+	}
 }
