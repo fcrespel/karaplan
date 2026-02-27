@@ -51,7 +51,7 @@ public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 			try {
 				wsConn.setSubProtocols(Arrays.asList("kcpj~v2+emuping"));
 				wsConn.start();
-				completable.get(30, TimeUnit.SECONDS);
+				completable.get(60, TimeUnit.SECONDS);
 			} catch (Throwable e) {
 				if (e instanceof ExecutionException) {
 					e = e.getCause();
