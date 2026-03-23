@@ -44,7 +44,7 @@
 		<!-- Dependency properties -->
 		<commons-csv.version>1.14.1</commons-csv.version>
 		<guava.version>33.5.0-jre</guava.version>
-		<opentelemetry-instrumentation.version>2.23.0-alpha</opentelemetry-instrumentation.version>
+		<opentelemetry-instrumentation.version>2.26.0-alpha</opentelemetry-instrumentation.version>
 		<node.version>v22.17.0</node.version>
 		<npm.version>11.4.2</npm.version>
 		<spring-cloud-gcp.version>7.4.5</spring-cloud-gcp.version>
