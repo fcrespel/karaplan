@@ -25,7 +25,7 @@
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@popperjs/core": "^2.11.8",
-    "ngx-cookie-service": "^21.1.0",
+    "ngx-cookie-service": "^21.3.1",
     "ngx-translate-messageformat-compiler": "^7.2.0",
     "plyr": "^3.8.4",
     "rxjs": "~7.8.2",
