@@ -28,7 +28,7 @@ jobs:
       - name: Test webapp
         run: ./mvnw ${MAVEN_CLI_OPTS} test
       - name: Upload artifacts
-        uses: actions/upload-artifact@c6a366c94c3e0affe28c06c8df20a878f24da3cf # v7.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: webapp
           path: target/karaplan.war
