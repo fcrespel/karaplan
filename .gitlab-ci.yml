@@ -17,7 +17,7 @@ stages:
 
 build:
   stage: build
-  image: eclipse-temurin:17-jdk
+  image: eclipse-temurin:21-jdk
   cache:
     key: ${CI_PROJECT_PATH_SLUG}
     paths:
@@ -33,7 +33,7 @@ build:
 
 test:
   stage: test
-  image: eclipse-temurin:17-jdk
+  image: eclipse-temurin:21-jdk
   dependencies:
     - build
   cache:

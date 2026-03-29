@@ -1,5 +1,5 @@
 steps:
-- name: 'eclipse-temurin:17-jdk'
+- name: 'eclipse-temurin:21-jdk'
   entrypoint: './mvnw'
   args: ['-B', '-Dfrontend-build', '-Ddocker-build', '-DskipTests', 'verify']
 - name: 'gcr.io/cloud-builders/docker'

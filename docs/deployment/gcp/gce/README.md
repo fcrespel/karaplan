@@ -34,7 +34,7 @@ In the side menu, go to **Compute Engine > Instance templates**:
 
 * Click **Create instance template**.
 * Enter `karaplan-template-1` as the template **name**.
-* Select `e2-medium` as the **Machine type** and **Debian GNU/Linux 12 (bookworm)** as the distribution.
+* Select `e2-medium` as the **Machine type** and **Debian GNU/Linux 13 (trixie)** as the distribution.
 * Select the previously created `karaplan` **Service Account**.
 * Select **Allow full access to all Cloud APIs** under **Access scopes**.
 * Expand the advanced options at the bottom.
@@ -99,7 +99,7 @@ gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:kara
 gcloud projects add-iam-policy-binding $PROJECT_ID --member="serviceAccount:karaplan@$PROJECT_ID.iam.gserviceaccount.com" --role=roles/cloudsql.client
 
 # Create Instance template
-gcloud compute instance-templates create karaplan-template-1 --machine-type=e2-medium --image-family=debian-12 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform
+gcloud compute instance-templates create karaplan-template-1 --machine-type=e2-medium --image-family=debian-13 --image-project=debian-cloud --boot-disk-size=10GB --boot-disk-type=pd-standard --metadata=startup-script-url=gs://$BUCKET_NAME/karaplan/karaplan-startup.sh --service-account=karaplan@$PROJECT_ID.iam.gserviceaccount.com --scopes=https://www.googleapis.com/auth/cloud-platform
 
 # Create Instance group
 gcloud compute instance-groups managed create karaplan-ig --size=3 --template=karaplan-template-1 --region=$REGION

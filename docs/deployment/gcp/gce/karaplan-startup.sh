@@ -10,19 +10,19 @@ curl -sSf https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh |
 
 # Install Tomcat
 apt-get update
-apt-get install -y openjdk-17-jre-headless tomcat10
-systemctl stop tomcat10
-rm -Rf /var/lib/tomcat10/webapps/ROOT
+apt-get install -y openjdk-21-jre-headless tomcat11
+systemctl stop tomcat11
+rm -Rf /var/lib/tomcat11/webapps/ROOT
 
 # Download app
-gsutil cp gs://$BUCKET_NAME/karaplan/karaplan.war /var/lib/tomcat10/webapps/ROOT.war
+gsutil cp gs://$BUCKET_NAME/karaplan/karaplan.war /var/lib/tomcat11/webapps/ROOT.war
 
 # Configure app
-mkdir -p /var/lib/tomcat10/bin
-cat - > /var/lib/tomcat10/bin/setenv.sh <<'EOF'
+mkdir -p /var/lib/tomcat11/bin
+cat - > /var/lib/tomcat11/bin/setenv.sh <<'EOF'
 export SPRING_PROFILES_ACTIVE="gcp"
 export SECRET_PREFIX="${SECRET_PREFIX}"
 EOF
 
 # Start Tomcat
-systemctl restart tomcat10
+systemctl restart tomcat11

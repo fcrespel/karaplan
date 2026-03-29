@@ -174,7 +174,7 @@ resource "google_storage_bucket_object" "karaplan-startup" {
 
 // VM image
 data "google_compute_image" "karaplan-image" {
-  family  = "debian-12"
+  family  = "debian-13"
   project = "debian-cloud"
 }
 
