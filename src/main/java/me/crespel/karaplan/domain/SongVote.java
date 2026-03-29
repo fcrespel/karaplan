@@ -1,21 +1,8 @@
 package me.crespel.karaplan.domain;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Comparator;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.UniqueConstraint;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,6 +12,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -64,9 +61,8 @@ public class SongVote implements Comparable<SongVote>, Serializable {
 	private User user;
 
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
-	private Calendar createdDate;
+	private Instant createdDate;
 
 	@Override
 	public int compareTo(SongVote o) {

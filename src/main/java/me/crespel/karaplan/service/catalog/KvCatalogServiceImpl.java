@@ -17,8 +17,8 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import me.crespel.karaplan.config.KvConfig.KvProperties;
 import me.crespel.karaplan.model.CatalogArtist;
@@ -93,7 +93,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.body(KvArtistResponse.class);
 			return conversionService.convert(response.getArtist(), CatalogArtist.class);
 
-		} catch (JsonProcessingException | RestClientException e) {
+		} catch (JacksonException | RestClientException e) {
 			throw new TechnicalException(e);
 		}
 	}
@@ -123,7 +123,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.body(KvSongResponse.class);
 			return conversionService.convert(response.getSong(), CatalogSong.class);
 
-		} catch (JsonProcessingException | RestClientException e) {
+		} catch (JacksonException | RestClientException e) {
 			throw new TechnicalException(e);
 		}
 	}
@@ -177,7 +177,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.body(KvSongList.class);
 			return conversionService.convert(response, CatalogSongList.class).setType(type);
 
-		} catch (JsonProcessingException | RestClientException e) {
+		} catch (JacksonException | RestClientException e) {
 			throw new TechnicalException(e);
 		}
 	}
@@ -207,7 +207,7 @@ public class KvCatalogServiceImpl implements CatalogService {
 					.body(KvSongFileList.class);
 			return conversionService.convert(response, CatalogSongFileList.class);
 
-		} catch (JsonProcessingException | RestClientException e) {
+		} catch (JacksonException | RestClientException e) {
 			throw new TechnicalException(e);
 		}
 	}

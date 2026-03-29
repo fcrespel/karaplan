@@ -14,11 +14,8 @@ spring:
         enabled: false
       sql:
         enabled: false
-  h2:
-    console:
-      enabled: false
   http:
-    client:
+    clients:
       connect-timeout: 10000
       read-timeout: 30000
   jackson:
@@ -42,10 +39,16 @@ spring:
             client-id: toComplete
             client-secret: toComplete
             scope: read:user,user:email
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
   session:
     jdbc:
       initialize-schema: always
   web:
+    error:
+      include-message: always
     resources:
       cache:
         cachecontrol:
@@ -64,13 +67,8 @@ server:
   port: ${PORT:8080}
   compression:
     enabled: true
-  error:
-    include-message: always
   forward-headers-strategy: framework
   servlet:
-    encoding:
-      charset: UTF-8
-      force: true
     session:
       timeout: 12h
   shutdown: graceful
@@ -79,10 +77,6 @@ management:
     web:
       exposure:
         include: [health, info]
-  endpoint:
-    health:
-      probes:
-        enabled: true
 otel:
   sdk:
     disabled: true

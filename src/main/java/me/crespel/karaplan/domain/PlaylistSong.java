@@ -1,23 +1,9 @@
 package me.crespel.karaplan.domain;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.stream.Stream;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,6 +16,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -55,9 +52,8 @@ public class PlaylistSong implements Comparable<PlaylistSong>, Serializable {
 	private Integer position;
 
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
-	private Calendar createdDate;
+	private Instant createdDate;
 
 	@CreatedBy
 	@ManyToOne
@@ -66,9 +62,8 @@ public class PlaylistSong implements Comparable<PlaylistSong>, Serializable {
 	private User createdBy;
 
 	@LastModifiedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
-	private Calendar updatedDate;
+	private Instant updatedDate;
 
 	@LastModifiedBy
 	@ManyToOne

@@ -1,20 +1,9 @@
 package me.crespel.karaplan.domain;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.SortedSet;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SortComparator;
 import org.springframework.data.annotation.CreatedDate;
@@ -26,6 +15,14 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -61,14 +58,12 @@ public class Artist implements Comparable<Artist>, Serializable {
 	private SortedSet<Song> songs = Sets.newTreeSet(Song.orderByNameComparator);
 
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
-	private Calendar createdDate;
+	private Instant createdDate;
 
 	@LastModifiedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
-	private Calendar updatedDate;
+	private Instant updatedDate;
 
 	@Override
 	public int compareTo(Artist o) {

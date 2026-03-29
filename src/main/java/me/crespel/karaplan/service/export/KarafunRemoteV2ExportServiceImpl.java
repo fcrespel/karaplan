@@ -19,7 +19,6 @@ import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.websocket.ContainerProvider;
 import jakarta.websocket.WebSocketContainer;
 import lombok.Data;
@@ -30,6 +29,7 @@ import me.crespel.karaplan.domain.Playlist;
 import me.crespel.karaplan.model.exception.BusinessException;
 import me.crespel.karaplan.model.exception.TechnicalException;
 import me.crespel.karaplan.service.ExportService;
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Service("karafunRemoteV2Export")

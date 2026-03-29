@@ -1,10 +1,20 @@
 package me.crespel.karaplan.domain;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.SortedSet;
+
+import org.hibernate.annotations.SortComparator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,21 +27,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
-
-import org.hibernate.annotations.SortComparator;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -112,14 +109,12 @@ public class Song implements Comparable<Song>, Serializable {
 	private SortedSet<PlaylistSong> playlists = Sets.newTreeSet(PlaylistSong.orderByPlaylistAndPositionAndSongComparator);
 
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
-	private Calendar createdDate;
+	private Instant createdDate;
 
 	@LastModifiedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
-	private Calendar updatedDate;
+	private Instant updatedDate;
 
 	public void updateStats() {
 		this.score = (votes != null) ? votes.stream().mapToInt(SongVote::getScore).sum() : 0;

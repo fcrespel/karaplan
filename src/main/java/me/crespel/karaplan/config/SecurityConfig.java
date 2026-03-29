@@ -18,7 +18,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 import io.opentelemetry.instrumentation.spring.security.config.v6_0.EnduserAttributesCapturer;
 import io.opentelemetry.instrumentation.spring.security.config.v6_0.servlet.EnduserAttributesHttpSecurityCustomizer;
@@ -57,7 +57,7 @@ public class SecurityConfig {
 					.userService(oauth2UserService(userService))
 					.oidcUserService(oidcUserService(userService))))
 			.exceptionHandling(handling -> handling
-				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), new AntPathRequestMatcher("/api/**")));
+				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), PathPatternRequestMatcher.pathPattern("/api/**")));
 
 		if (otelEndUserIdEnabled) {
 			EnduserAttributesCapturer capturer = new EnduserAttributesCapturer();

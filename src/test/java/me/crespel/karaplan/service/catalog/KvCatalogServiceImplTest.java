@@ -4,7 +4,6 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,7 +12,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
+import org.springframework.boot.restclient.test.autoconfigure.RestClientTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpMethod;
@@ -22,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
 import me.crespel.karaplan.config.KvConfig;
 import me.crespel.karaplan.config.KvConfig.KvProperties;
@@ -86,26 +85,22 @@ public class KvCatalogServiceImplTest extends AbstractCatalogServiceTest<KvCatal
 	}
 
 	private <T> void addMockResponse(String path, String function, T params, Object... id) {
-		try {
-			KvQuery<T> query = new KvQuery<T>()
-					.setAffiliateId(properties.getAffiliateId())
-					.setFunction(function)
-					.setParameters(params);
-			URI uri = UriComponentsBuilder.fromUriString(properties.getEndpoint())
-					.path("/" + path + "/")
-					.queryParam("query", jsonMapper.writeValueAsString(query))
-					.build().encode().toUri();
-			String name = Stream.concat(Stream.of(path, function), Arrays.stream(id))
-					.map(Object::toString)
-					.map(String::toLowerCase)
-					.collect(Collectors.joining("_"));
-			Resource resource = new ClassPathResource("kv/" + name + ".json", getClass());
-			mockServer.expect(requestTo(uri))
-					.andExpect(method(HttpMethod.GET))
-					.andRespond(withSuccess(resource, MediaType.APPLICATION_JSON));
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		KvQuery<T> query = new KvQuery<T>()
+				.setAffiliateId(properties.getAffiliateId())
+				.setFunction(function)
+				.setParameters(params);
+		URI uri = UriComponentsBuilder.fromUriString(properties.getEndpoint())
+				.path("/" + path + "/")
+				.queryParam("query", jsonMapper.writeValueAsString(query))
+				.build().encode().toUri();
+		String name = Stream.concat(Stream.of(path, function), Arrays.stream(id))
+				.map(Object::toString)
+				.map(String::toLowerCase)
+				.collect(Collectors.joining("_"));
+		Resource resource = new ClassPathResource("kv/" + name + ".json", getClass());
+		mockServer.expect(requestTo(uri))
+				.andExpect(method(HttpMethod.GET))
+				.andRespond(withSuccess(resource, MediaType.APPLICATION_JSON));
 	}
 
 }

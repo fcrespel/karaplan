@@ -8,15 +8,15 @@ import java.util.Set;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
+import tools.jackson.databind.JacksonModule;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.datatype.hibernate7.Hibernate7Module;
 
 @Configuration
 public class JacksonConfig {
 
 	@Bean
-	public Module simpleModule() {
+	public JacksonModule simpleModule() {
 		SimpleModule module = new SimpleModule();
 		module.addAbstractTypeMapping(Set.class, LinkedHashSet.class);
 		module.addAbstractTypeMapping(Map.class, LinkedHashMap.class);
@@ -24,9 +24,9 @@ public class JacksonConfig {
 	}
 
 	@Bean
-	public Module hibernateModule() {
-		Hibernate6Module module = new Hibernate6Module();
-		module.disable(Hibernate6Module.Feature.USE_TRANSIENT_ANNOTATION);
+	public JacksonModule hibernateModule() {
+		Hibernate7Module module = new Hibernate7Module();
+		module.disable(Hibernate7Module.Feature.USE_TRANSIENT_ANNOTATION);
 		return module;
 	}
 

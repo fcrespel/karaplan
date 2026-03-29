@@ -1,20 +1,9 @@
 package me.crespel.karaplan.domain;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.time.Instant;
 import java.util.Locale;
 import java.util.SortedSet;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.NotNull;
 
 import org.hibernate.annotations.SortComparator;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,6 +15,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.collect.Sets;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -86,14 +83,12 @@ public class User implements Serializable {
 	private SortedSet<SongComment> comments = Sets.newTreeSet(SongComment.orderByIdDescComparator);
 
 	@CreatedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED_DATE")
-	private Calendar createdDate;
+	private Instant createdDate;
 
 	@LastModifiedDate
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATED_DATE")
-	private Calendar updatedDate;
+	private Instant updatedDate;
 
 	private transient Locale localeParsed = null;
 
