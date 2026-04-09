@@ -12,6 +12,35 @@ services:
       - MARIADB_USER=karaplan
       - MARIADB_PASSWORD=KaraPlan123
       - MARIADB_ROOT_PASSWORD=Root123
+  mysql:
+    image: mysql:8.0
+    restart: on-failure
+    hostname: mysql
+    ports:
+      - '3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=karaplan
+      - MYSQL_USER=karaplan
+      - MYSQL_PASSWORD=KaraPlan123
+      - MYSQL_ROOT_PASSWORD=Root123
+    profiles:
+      - mysql
+  postgresql:
+    image: postgres:15
+    restart: on-failure
+    hostname: postgresql
+    ports:
+      - '5432'
+    volumes:
+      - postgresql-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=karaplan
+      - POSTGRES_USER=karaplan
+      - POSTGRES_PASSWORD=KaraPlan123
+    profiles:
+      - postgresql
   grafana:
     image: grafana/otel-lgtm:0.23.0
     restart: on-failure
@@ -26,4 +55,6 @@ services:
       - grafana
 volumes:
   mariadb-data:
+  mysql-data:
+  postgresql-data:
   grafana-data:

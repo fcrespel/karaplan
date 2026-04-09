@@ -9,7 +9,7 @@ This directory contains specific deployment instructions and examples for:
 
 ## Database
 
-An external database is required for deployment, e.g. MySQL. Other database types supported by Spring Boot, such as PostgreSQL, may also work but have not been tested.
+An external database is required for deployment, either MySQL, MariaDB or PostgreSQL.
 
 ## Authentication
 

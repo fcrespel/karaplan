@@ -17,6 +17,9 @@ spring:
   docker:
     compose:
       enabled: false
+  flyway:
+    baseline-on-migrate: true
+    locations: classpath:db/migration/{vendor}
   http:
     clients:
       connect-timeout: 10000
@@ -24,7 +27,6 @@ spring:
   jackson:
     default-property-inclusion: non-empty
   jpa:
-    generate-ddl: true
     open-in-view: false
     properties:
       hibernate.globally_quoted_identifiers: true

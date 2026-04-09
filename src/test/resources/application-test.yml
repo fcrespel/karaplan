@@ -1,4 +1,8 @@
 spring:
+  flyway:
+    enabled: false
+  jpa:
+    generate-ddl: true
   main:
     lazy-initialization: false
 logging:
