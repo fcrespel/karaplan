@@ -5,12 +5,18 @@
 To build the application and Docker image locally, execute the following command, from the project directory:
 
 ```sh
-./mvnw -DskipTests -Dfrontend-build -Ddocker-build -Ddocker.image.tag=latest clean package dockerfile:build
+./mvnw -Dfrontend-build -Ddocker-build -Ddocker.image.tag=latest clean package dockerfile:build
 ```
 
 A Docker image tagged `ghcr.io/fcrespel/karaplan:latest` will then be created.
 
 You may set the `docker.image.prefix` system property to specify a different Docker registry/repository.
+
+## Using GitHub Actions
+
+A `.github/workflows/build.yml` file is available in the repository to automate the build/test/publish pipeline on GitHub Actions.
+
+The pipeline will produce a WAR file and a Docker image, and push it to GitHub Container Registry.
 
 ## Using GitLab
 

@@ -1,0 +1,29 @@
+services:
+  mariadb:
+    image: mariadb:11.8
+    restart: on-failure
+    hostname: mariadb
+    ports:
+      - '3306'
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      - MARIADB_DATABASE=karaplan
+      - MARIADB_USER=karaplan
+      - MARIADB_PASSWORD=KaraPlan123
+      - MARIADB_ROOT_PASSWORD=Root123
+  grafana:
+    image: grafana/otel-lgtm:0.23.0
+    restart: on-failure
+    hostname: grafana
+    ports:
+      - '3000:3000'
+      - '4317:4317'
+      - '4318:4318'
+    volumes:
+      - grafana-data:/data
+    profiles:
+      - grafana
+volumes:
+  mariadb-data:
+  grafana-data:
