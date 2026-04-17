@@ -187,8 +187,10 @@
       "exportKarafunRemote": "Télécommande KaraFun",
       "exportKarafunRemoteModal": {
         "title": "Exporter vers la Télécommande KaraFun",
-        "text": "Entrez votre ID de <strong>Télécommande KaraFun</strong> ci-dessous pour charger la playlist.",
+        "text": "Entrez votre ID de <strong>Télécommande KaraFun</strong> ci-dessous pour charger la playlist, ou scannez le QR code à l'écran.",
         "remoteIdLabel": "ID de Télécommande",
+        "scanQrCodeButton": "Scanner le QR code",
+        "scanQrCodeError": "QR code invalide. Veuillez saisir l'ID de télécommande manuellement.",
         "instructions": "Exemple: entrez <strong>123456</strong> si votre URL de télécommande est www.karafun.fr/<strong>123456</strong>",
         "confirmButton": "Exporter vers la Télécommande KaraFun"
       },

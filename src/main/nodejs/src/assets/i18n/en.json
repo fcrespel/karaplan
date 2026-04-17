@@ -187,8 +187,10 @@
       "exportKarafunRemote": "KaraFun Remote",
       "exportKarafunRemoteModal": {
         "title": "Export to KaraFun Remote",
-        "text": "Enter your <strong>KaraFun Remote</strong> ID below to load the playlist.",
+        "text": "Enter your <strong>KaraFun Remote</strong> ID below to load the playlist, or scan the QR code on screen.",
         "remoteIdLabel": "Remote ID",
+        "scanQrCodeButton": "Scan QR code",
+        "scanQrCodeError": "Invalid QR code. Please enter the Remote ID manually.",
         "instructions": "Example: enter <strong>123456</strong> if your remote URL is www.karafun.com/<strong>123456</strong>",
         "confirmButton": "Export to KaraFun Remote"
       },

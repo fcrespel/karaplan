@@ -173,9 +173,18 @@
       <div class="mb-3">
         <label class="form-label" for="karafunRemoteId">{{ 'playlists.detail.exportKarafunRemoteModal.remoteIdLabel' | translate }}</label>
         <div class="input-group">
+          <button type="button" class="btn" [ngClass]="{ 'btn-secondary': scanQrCodeEnabled(), 'btn-outline-secondary': !scanQrCodeEnabled() }" [title]="'playlists.detail.exportKarafunRemoteModal.scanQrCodeButton' | translate" (click)="toggleQrCodeScanner()"><i class="fas fa-camera"></i></button>
           <input type="number" class="form-control" id="karafunRemoteId" name="karafunRemoteId" [(ngModel)]="karafunRemoteId" #karafunRemoteIdField="ngModel" [class.is-invalid]="karafunRemoteIdField.dirty && karafunRemoteIdField.invalid" required>
         </div>
       </div>
+      @if (scanQrCodeError()) {
+        <p class="text-danger small mb-2">{{ 'playlists.detail.exportKarafunRemoteModal.scanQrCodeError' | translate }}</p>
+      }
+      @if (scanQrCodeEnabled()) {
+        <div class="mb-3">
+          <zxing-scanner (scanSuccess)="parseKarafunRemoteQrCode($event)"></zxing-scanner>
+        </div>
+      }
       <p class="text-muted small" [innerHTML]="'playlists.detail.exportKarafunRemoteModal.instructions' | translate"></p>
     </form>
   </div>

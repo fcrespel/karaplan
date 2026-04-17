@@ -1,5 +1,5 @@
-import { Location } from '@angular/common';
-import { Component, OnDestroy, OnInit, Pipe, PipeTransform, inject } from '@angular/core';
+import { Location, NgClass } from '@angular/common';
+import { Component, OnDestroy, OnInit, Pipe, PipeTransform, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,6 +17,7 @@ import { AccountService } from '../../services/account.service';
 import { AlertService } from '../../services/alert.service';
 import { PlaylistsService } from '../../services/playlists.service';
 import { DurationPipe } from '../../shared/pipes/duration.pipe';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { PlaylistEditModalComponent } from '../../shared/playlist-edit-modal/playlist-edit-modal.component';
 import { PlaylistLeaveModalComponent } from '../../shared/playlist-leave-modal/playlist-leave-modal.component';
 import { SongListComponent } from '../../shared/song-list/song-list.component';
@@ -45,7 +46,7 @@ export class SumDurationByUserPipe implements PipeTransform {
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
-  imports: [RouterLink, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe]
+  imports: [RouterLink, NgClass, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe, ZXingScannerModule]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
@@ -62,6 +63,8 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
   karafunRemoteId: string = '';
   karafunBarId: string = '';
   shareUrl: string = '';
+  scanQrCodeEnabled = signal(false);
+  scanQrCodeError = signal(false);
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   ngOnInit() {
@@ -159,8 +162,26 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
       .subscribe(playlist => this.updatePlaylist(playlist));
   }
 
+  parseKarafunRemoteQrCode(result: string) {
+    const match = /(\d+)\/?$/.exec(result);
+    if (match) {
+      this.karafunRemoteId = match[1];
+      this.scanQrCodeEnabled.set(false);
+      this.scanQrCodeError.set(false);
+    } else {
+      this.scanQrCodeError.set(true);
+    }
+  }
+
+  toggleQrCodeScanner() {
+    this.scanQrCodeEnabled.set(!this.scanQrCodeEnabled());
+    this.scanQrCodeError.set(false);
+  }
+
   exportPlaylistToKarafunRemote(playlist: Playlist, modalContent: any) {
     this.modalService.open(modalContent).result.then(remoteId => {
+      this.scanQrCodeEnabled.set(false);
+      this.scanQrCodeError.set(false);
       if (remoteId) {
         this.playlistsService.exportPlaylistToKarafunRemote(playlist.id, remoteId)
           .pipe(takeUntil(this.destroy$))
@@ -173,7 +194,10 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
             this.alertService.addMessage(message);
           });
       }
-    }, reason => {});
+    }, reason => {
+      this.scanQrCodeEnabled.set(false);
+      this.scanQrCodeError.set(false);
+    });
   }
 
   exportPlaylistToKarafunBar(playlist: Playlist, modalContent: any) {
