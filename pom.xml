@@ -47,8 +47,8 @@
 		<opentelemetry-instrumentation.version>2.26.1-alpha</opentelemetry-instrumentation.version>
 		<node.version>v22.22.2</node.version>
 		<npm.version>11.12.1</npm.version>
-		<spring-cloud-gcp.version>8.0.1</spring-cloud-gcp.version>
-		<springdoc.version>3.0.2</springdoc.version>
+		<spring-cloud-gcp.version>8.0.2</spring-cloud-gcp.version>
+		<springdoc.version>3.0.3</springdoc.version>
 	</properties>
 
 	<scm>
