@@ -168,8 +168,8 @@ public class PlaylistController {
 	@PostMapping("/{playlistId}/export/karafun/{remoteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Operation(summary = "Export a playlist to Karafun Remote")
-	public void exportPlaylistToKarafunRemote(@PathVariable Long playlistId, @PathVariable String remoteId) {
-		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	public void exportPlaylistToKarafunRemote(@PathVariable Long playlistId, @PathVariable String remoteId, @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunRemoteExportService.exportPlaylist(playlist, remoteId);
 	}
 
@@ -177,22 +177,22 @@ public class PlaylistController {
 	@PostMapping("/{playlistId}/export/karafunbar/{bookingId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Operation(summary = "Export a playlist to Karafun Bar")
-	public void exportPlaylistToKarafunBar(@PathVariable Long playlistId, @PathVariable String bookingId) {
-		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	public void exportPlaylistToKarafunBar(@PathVariable Long playlistId, @PathVariable String bookingId, @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		karafunBarExportService.exportPlaylist(playlist, bookingId);
 	}
 
 	@Transactional(readOnly = true)
 	@GetMapping("/{playlistId}/export/csv")
 	@Operation(summary = "Export a playlist to a CSV file")
-	public ResponseEntity<Resource> exportPlaylistToCSV(@PathVariable Long playlistId) {
-		Playlist playlist = playlistService.findById(playlistId, true).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
+	public ResponseEntity<Resource> exportPlaylistToCSV(@PathVariable Long playlistId, @AuthenticationPrincipal(expression = "user") User user) {
+		Playlist playlist = playlistService.findById(playlistId, true, user).orElseThrow(() -> new BusinessException("Invalid playlist ID"));
 		File csvFile = null;
 		try {
 			csvFile = File.createTempFile("karaplan", ".csv");
 			csvExportService.exportPlaylist(playlist, csvFile.getAbsolutePath());
 			Resource resource = new ByteArrayResource(Files.readAllBytes(csvFile.toPath()));
-			String csvFileName = playlist.getName().replace("\"", "");
+			String csvFileName = playlist.getName().replaceAll("[\"\\r\\n]", "");
 			return ResponseEntity.ok()
 					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Playlist " + csvFileName + ".csv\"")
 					.contentType(MediaType.TEXT_PLAIN)

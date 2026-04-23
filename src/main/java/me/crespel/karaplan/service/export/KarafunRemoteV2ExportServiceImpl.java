@@ -35,12 +35,12 @@ import tools.jackson.databind.ObjectMapper;
 @Service("karafunRemoteV2Export")
 public class KarafunRemoteV2ExportServiceImpl implements ExportService {
 
-	private static final Pattern remoteTargetPattern = Pattern.compile("wss://.*");
+	private static final Pattern remoteTargetPattern = Pattern.compile("wss://[a-z0-9\\.-]+\\.recis\\.io/.*");
 
 	@Override
 	public void exportPlaylist(Playlist playlist, String target) {
 		if (!remoteTargetPattern.matcher(target).matches()) {
-			throw new BusinessException("Invalid KaraFun Remote V2 target, must be a WebSocket URL");
+			throw new BusinessException("Invalid KaraFun Remote V2 target, must be a valid WebSocket URL");
 		}
 		if (playlist.getSongs() != null && !playlist.getSongs().isEmpty()) {
 			CompletableFuture<Void> completable = new CompletableFuture<>();

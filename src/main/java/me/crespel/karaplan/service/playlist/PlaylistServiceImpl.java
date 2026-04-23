@@ -86,7 +86,7 @@ public class PlaylistServiceImpl implements PlaylistService {
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<Playlist> findById(Long id, boolean includeDetails, User user) {
-		return findById(id, includeDetails, null, null);
+		return findById(id, includeDetails, user, null);
 	}
 
 	@Override
