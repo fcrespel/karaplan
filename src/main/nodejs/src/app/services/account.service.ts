@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { shareReplay, switchMapTo } from 'rxjs/operators';
-import { Principal } from '../models/principal';
 import { User } from '../models/user';
 
 @Injectable({
@@ -12,20 +11,8 @@ export class AccountService {
   private http = inject(HttpClient);
 
   private accountUrl = 'api/v1/account';
-  private principal$?: Observable<Principal>;
-  private principalRefresh$ = new BehaviorSubject<void>(undefined);
   private user$?: Observable<User>;
   private userRefresh$ = new BehaviorSubject<void>(undefined);
-
-  getPrincipal(cache: boolean = true): Observable<Principal> {
-    const url = `${this.accountUrl}/principal`;
-    if (!cache) {
-      return this.http.get<Principal>(url);
-    } else if (this.principal$ === undefined) {
-      this.principal$ = this.principalRefresh$.pipe(switchMapTo(this.http.get<Principal>(url)), shareReplay(1));
-    }
-    return this.principal$;
-  }
 
   getUser(cache: boolean = true): Observable<User> {
     const url = `${this.accountUrl}/user`;
@@ -49,7 +36,6 @@ export class AccountService {
   }
 
   refreshCache() {
-    this.principalRefresh$.next(undefined);
     this.userRefresh$.next(undefined);
   }
 }

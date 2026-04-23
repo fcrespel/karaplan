@@ -3,7 +3,6 @@ package me.crespel.karaplan.web.api.v1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,22 +27,6 @@ public class AccountController {
 
 	@Autowired
 	private UserService userService;
-
-	@GetMapping("/authentication")
-	@Operation(summary = "Get authentication info")
-	public Authentication getAuthentication(Authentication auth) {
-		return auth;
-	}
-
-	@GetMapping("/principal")
-	@Operation(summary = "Get the authenticated principal")
-	public UserWrapper getPrincipal(@AuthenticationPrincipal Object principal) {
-		if (principal instanceof UserWrapper) {
-			return (UserWrapper) principal;
-		} else {
-			return null;
-		}
-	}
 
 	@GetMapping("/user")
 	@Operation(summary = "Get the authenticated user")
