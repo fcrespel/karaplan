@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDropdown, NgbDropdownButtonItem, NgbDropdownItem, NgbDropdownMenu, NgbDropdownToggle } from '@ng-bootstrap/ng-bootstrap/dropdown';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { AlertMessage } from '../../models/alert-message';
 import { Playlist } from '../../models/playlist';
 import { PlaylistComment } from '../../models/playlist-comment';
@@ -59,6 +59,9 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
 
   user?: User;
   playlist?: Playlist;
+  filteredSongs: PlaylistSong[] = [];
+  filterText: string = '';
+  filterText$ = new Subject<string>();
   commentText: string = '';
   karafunRemoteId: string = '';
   karafunBarId: string = '';
@@ -77,6 +80,9 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
         this.playlistsService.getPlaylist(+params.get('id')!, this.route.snapshot.queryParamMap.get('accessKey'))
       ))
       .subscribe(playlist => this.updatePlaylist(playlist));
+    this.filterText$
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe(text => this.applyFilter(text));
   }
 
   updatePlaylist(playlist?: Playlist) {
@@ -86,11 +92,35 @@ export class PlaylistDetailComponent implements OnInit, OnDestroy {
       }
       this.playlist = playlist;
     }
+    this.applyFilter(this.filterText);
     if (this.playlist !== undefined) {
       let urlTree = this.router.createUrlTree(['/playlists', this.playlist.id], {
         queryParams: {accessKey: this.playlist.accessKey}
       });
       this.shareUrl = window.location.origin + this.location.prepareExternalUrl(urlTree.toString());
+    }
+  }
+
+  onFilterChange(text: string) {
+    this.filterText$.next(text);
+  }
+
+  clearFilter() {
+    this.filterText = '';
+    this.applyFilter('');
+  }
+
+  private applyFilter(text: string) {
+    const query = text.trim().toLowerCase();
+    const songs = this.playlist?.songs ?? [];
+    if (!query) {
+      this.filteredSongs = songs;
+    } else {
+      this.filteredSongs = songs.filter(ps =>
+        ps.song.name?.toLowerCase().includes(query) ||
+        ps.song.artist?.name?.toLowerCase().includes(query) ||
+        ps.createdBy?.displayName?.toLowerCase().includes(query)
+      );
     }
   }
 
