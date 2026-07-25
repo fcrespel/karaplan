@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.7</version>
+		<version>4.1.0</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -48,7 +48,7 @@
 		<opentelemetry-instrumentation.version>2.29.0-alpha</opentelemetry-instrumentation.version>
 		<node.version>v22.22.2</node.version>
 		<npm.version>11.12.1</npm.version>
-		<spring-cloud-gcp.version>8.0.4</spring-cloud-gcp.version>
+		<spring-cloud-gcp.version>8.1.0</spring-cloud-gcp.version>
 		<springdoc.version>3.0.3</springdoc.version>
 	</properties>
 
