@@ -21,14 +21,16 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import tools.jackson.databind.ObjectMapper;
-
+import io.github.resilience4j.springboot.bulkhead.autoconfigure.BulkheadAutoConfiguration;
+import io.github.resilience4j.springboot.ratelimiter.autoconfigure.RateLimiterAutoConfiguration;
+import io.github.resilience4j.springboot.retry.autoconfigure.RetryAutoConfiguration;
 import me.crespel.karaplan.config.KvConfig;
 import me.crespel.karaplan.config.KvConfig.KvProperties;
 import me.crespel.karaplan.model.kv.KvQuery;
+import tools.jackson.databind.ObjectMapper;
 
 @RestClientTest(KvCatalogServiceImpl.class)
-@ContextConfiguration(classes = { KvCatalogServiceImpl.class, KvConfig.class })
+@ContextConfiguration(classes = { KvCatalogServiceImpl.class, KvConfig.class, RetryAutoConfiguration.class, RateLimiterAutoConfiguration.class, BulkheadAutoConfiguration.class })
 public class KvCatalogServiceImplTest extends AbstractCatalogServiceTest<KvCatalogServiceImpl> {
 
 	@Autowired

@@ -48,6 +48,7 @@
 		<opentelemetry-instrumentation.version>2.29.0-alpha</opentelemetry-instrumentation.version>
 		<node.version>v22.22.2</node.version>
 		<npm.version>11.12.1</npm.version>
+		<resilience4j.version>2.4.0</resilience4j.version>
 		<spring-cloud-gcp.version>8.1.0</spring-cloud-gcp.version>
 		<springdoc.version>3.0.3</springdoc.version>
 	</properties>
@@ -209,6 +210,10 @@
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>io.github.resilience4j</groupId>
+			<artifactId>resilience4j-spring-boot4</artifactId>
+		</dependency>
 
 		<!-- Databases -->
 		<dependency>
@@ -289,6 +294,11 @@
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.resilience4j</groupId>
+				<artifactId>resilience4j-spring-boot4</artifactId>
+				<version>${resilience4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.cloud</groupId>

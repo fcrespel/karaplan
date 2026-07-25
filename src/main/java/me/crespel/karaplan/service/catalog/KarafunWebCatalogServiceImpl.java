@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,6 +35,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.hash.Hashing;
 
+import io.github.resilience4j.bulkhead.Bulkhead;
+import io.github.resilience4j.bulkhead.BulkheadRegistry;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
 import lombok.extern.slf4j.Slf4j;
 import me.crespel.karaplan.config.KarafunWebConfig.KarafunWebProperties;
 import me.crespel.karaplan.model.CatalogArtist;
@@ -70,16 +77,24 @@ import me.crespel.karaplan.service.CatalogService;
 @CacheConfig(cacheNames = "karafunWebCatalogCache")
 public class KarafunWebCatalogServiceImpl implements CatalogService {
 
+	private static final String RESILIENCE4J_INSTANCE_NAME = "karafun";
+
 	private final KarafunWebProperties properties;
 	private final RestClient restClient;
+	private final Retry retry;
+	private final RateLimiter rateLimiter;
+	private final Bulkhead bulkhead;
 	private final ConfigurableConversionService conversionService;
 	private final Map<String, KarafunWebSession> sessions = new ConcurrentHashMap<>();
 
-	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestClient.Builder restClientBuilder) {
+	public KarafunWebCatalogServiceImpl(KarafunWebProperties properties, RestClient.Builder restClientBuilder, RetryRegistry retryRegistry, RateLimiterRegistry rateLimiterRegistry, BulkheadRegistry bulkheadRegistry) {
 		this.properties = properties;
 		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
+		this.retry = retryRegistry.retry(RESILIENCE4J_INSTANCE_NAME);
+		this.rateLimiter = rateLimiterRegistry.rateLimiter(RESILIENCE4J_INSTANCE_NAME);
+		this.bulkhead = bulkheadRegistry.bulkhead(RESILIENCE4J_INSTANCE_NAME);
 		this.conversionService = new DefaultConversionService();
 		this.conversionService.addConverter(new MultiValueMapToStringConverter());
 		this.conversionService.addConverter(new KarafunToCatalogArtistConverter());
@@ -156,7 +171,7 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 			if (log.isTraceEnabled()) {
 				log.trace("KaraFun Web API request: {}?{}", uri, bodyString);
 			}
-			T response = restClient.post()
+			Supplier<T> supplier = () -> restClient.post()
 					.uri(uri)
 					.contentType(MediaType.APPLICATION_FORM_URLENCODED)
 					.header("X-Request-Timestamp", timestamp)
@@ -164,6 +179,10 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 					.body(body)
 					.retrieve()
 					.body(responseType);
+			supplier = Bulkhead.decorateSupplier(bulkhead, supplier);
+			supplier = RateLimiter.decorateSupplier(rateLimiter, supplier);
+			supplier = Retry.decorateSupplier(retry, supplier);
+			T response = supplier.get();
 			if (log.isTraceEnabled()) {
 				log.trace("KaraFun Web API response: {}", response);
 			}
@@ -204,6 +223,11 @@ public class KarafunWebCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogArtist getArtist(long artistId) {
+		return getArtist(artistId, null);
+	}
+
+	@Override
+	public CatalogArtist getArtist(long artistId, Locale locale) {
 		throw new UnsupportedOperationException();
 	}
 

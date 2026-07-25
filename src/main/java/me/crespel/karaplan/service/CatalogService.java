@@ -15,6 +15,8 @@ public interface CatalogService {
 
 	CatalogArtist getArtist(long artistId);
 
+	CatalogArtist getArtist(long artistId, Locale locale);
+
 	CatalogSong getSong(long songId);
 
 	CatalogSong getSong(long songId, Locale locale);

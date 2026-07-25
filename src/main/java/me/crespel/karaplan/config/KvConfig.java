@@ -22,7 +22,7 @@ public class KvConfig {
 	public static class KvProperties {
 		private String endpoint = "https://www.karaoke-version.com/api";
 		private Map<String, String> endpointForLocale = new HashMap<>();
-		private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
+		private String userAgent = "";
 		private Integer affiliateId = 77;
 	}
 

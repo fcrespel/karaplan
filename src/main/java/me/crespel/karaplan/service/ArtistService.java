@@ -1,5 +1,6 @@
 package me.crespel.karaplan.service;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -16,6 +17,8 @@ public interface ArtistService {
 	Optional<Artist> findById(Long id);
 
 	Optional<Artist> findByCatalogId(Long catalogId);
+
+	Optional<Artist> findByCatalogId(Long catalogId, Locale locale);
 
 	Artist save(Artist artist);
 

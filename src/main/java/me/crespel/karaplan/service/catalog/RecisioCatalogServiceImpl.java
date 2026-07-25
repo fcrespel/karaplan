@@ -30,7 +30,12 @@ public class RecisioCatalogServiceImpl implements CatalogService {
 
 	@Override
 	public CatalogArtist getArtist(long artistId) {
-		return kvCatalog.getArtist(artistId);
+		return getArtist(artistId, null);
+	}
+
+	@Override
+	public CatalogArtist getArtist(long artistId, Locale locale) {
+		return kvCatalog.getArtist(artistId, locale);
 	}
 
 	@Override

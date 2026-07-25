@@ -22,7 +22,7 @@ public class KarafunRemoteConfig {
 	public static class KarafunRemoteProperties {
 		private String endpoint = "https://www.karafun.com";
 		private Map<String, String> endpointForLocale = new HashMap<>();
-		private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0";
+		private String userAgent = "";
 		private Integer remoteId = 123456;
 	}
 

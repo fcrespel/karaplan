@@ -66,7 +66,7 @@ public abstract class AbstractCatalogServiceTest<T extends CatalogService> {
 	@Test
 	public void testGetArtist() {
 		assumeThat(testGetArtistEnabled).isTrue();
-		CatalogArtist artist = catalogService.getArtist(ARTIST_ID);
+		CatalogArtist artist = catalogService.getArtist(ARTIST_ID, locale);
 		assertThat(artist).isNotNull();
 		assertThat(artist.getId()).isEqualTo(ARTIST_ID);
 		assertThat(artist.getName()).isEqualTo(ARTIST_NAME);

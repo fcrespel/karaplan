@@ -3,6 +3,7 @@ package me.crespel.karaplan.service.catalog;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.CacheConfig;
@@ -17,9 +18,12 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import tools.jackson.core.JacksonException;
-import tools.jackson.databind.ObjectMapper;
-
+import io.github.resilience4j.bulkhead.Bulkhead;
+import io.github.resilience4j.bulkhead.BulkheadRegistry;
+import io.github.resilience4j.ratelimiter.RateLimiter;
+import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
+import io.github.resilience4j.retry.Retry;
+import io.github.resilience4j.retry.RetryRegistry;
 import me.crespel.karaplan.config.KvConfig.KvProperties;
 import me.crespel.karaplan.model.CatalogArtist;
 import me.crespel.karaplan.model.CatalogSelection;
@@ -40,21 +44,31 @@ import me.crespel.karaplan.model.kv.KvSongFileList;
 import me.crespel.karaplan.model.kv.KvSongList;
 import me.crespel.karaplan.model.kv.KvSongResponse;
 import me.crespel.karaplan.service.CatalogService;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Service("kvCatalog")
 @CacheConfig(cacheNames = "kvCatalogCache")
 public class KvCatalogServiceImpl implements CatalogService {
 
+	private static final String RESILIENCE4J_INSTANCE_NAME = "kv";
+
 	private final KvProperties properties;
 	private final RestClient restClient;
+	private final Retry retry;
+	private final RateLimiter rateLimiter;
+	private final Bulkhead bulkhead;
 	private final ObjectMapper jsonMapper = new ObjectMapper();
 	private final ConfigurableConversionService conversionService;
 
-	public KvCatalogServiceImpl(KvProperties properties, RestClient.Builder restClientBuilder) {
+	public KvCatalogServiceImpl(KvProperties properties, RestClient.Builder restClientBuilder, RetryRegistry retryRegistry, RateLimiterRegistry rateLimiterRegistry, BulkheadRegistry bulkheadRegistry) {
 		this.properties = properties;
 		this.restClient = restClientBuilder
 				.defaultHeader(HttpHeaders.USER_AGENT, properties.getUserAgent())
 				.build();
+		this.retry = retryRegistry.retry(RESILIENCE4J_INSTANCE_NAME);
+		this.rateLimiter = rateLimiterRegistry.rateLimiter(RESILIENCE4J_INSTANCE_NAME);
+		this.bulkhead = bulkheadRegistry.bulkhead(RESILIENCE4J_INSTANCE_NAME);
 		this.conversionService = new DefaultConversionService();
 		this.conversionService.addConverter(new KvToCatalogArtistConverter());
 		this.conversionService.addConverter(new KvToCatalogSongConverter());
@@ -74,28 +88,41 @@ public class KvCatalogServiceImpl implements CatalogService {
 		return endpoint;
 	}
 
+	private <T> T callApi(Locale locale, String path, KvQuery<?> query, Class<T> responseType) {
+		try {
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
+					.path(path)
+					.queryParam("query", jsonMapper.writeValueAsString(query));
+
+			Supplier<T> supplier = () -> restClient.get()
+					.uri(builder.build().encode().toUri())
+					.retrieve()
+					.body(responseType);
+			supplier = Bulkhead.decorateSupplier(bulkhead, supplier);
+			supplier = RateLimiter.decorateSupplier(rateLimiter, supplier);
+			supplier = Retry.decorateSupplier(retry, supplier);
+			return supplier.get();
+		} catch (JacksonException | RestClientException e) {
+			throw new TechnicalException("Karaoke Version technical error: " + e.getMessage(), e);
+		}
+	}
+
 	@Override
 	@Cacheable
 	public CatalogArtist getArtist(long artistId) {
-		try {
-			KvQuery<KvQuery.ArtistGet> query = new KvQuery<KvQuery.ArtistGet>()
-					.setAffiliateId(properties.getAffiliateId())
-					.setFunction("get")
-					.setParameters(new KvQuery.ArtistGet().setId(artistId));
+		return getArtist(artistId, null);
+	}
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(null))
-					.path("/artist/")
-					.queryParam("query", jsonMapper.writeValueAsString(query));
+	@Override
+	@Cacheable
+	public CatalogArtist getArtist(long artistId, Locale locale) {
+		KvQuery<KvQuery.ArtistGet> query = new KvQuery<KvQuery.ArtistGet>()
+				.setAffiliateId(properties.getAffiliateId())
+				.setFunction("get")
+				.setParameters(new KvQuery.ArtistGet().setId(artistId));
 
-			KvArtistResponse response = restClient.get()
-					.uri(builder.build().encode().toUri())
-					.retrieve()
-					.body(KvArtistResponse.class);
-			return conversionService.convert(response.getArtist(), CatalogArtist.class);
-
-		} catch (JacksonException | RestClientException e) {
-			throw new TechnicalException(e);
-		}
+		KvArtistResponse response = callApi(locale, "/artist/", query, KvArtistResponse.class);
+		return conversionService.convert(response.getArtist(), CatalogArtist.class);
 	}
 
 	@Override
@@ -107,25 +134,13 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable
 	public CatalogSong getSong(long songId, Locale locale) {
-		try {
-			KvQuery<KvQuery.SongGet> query = new KvQuery<KvQuery.SongGet>()
-					.setAffiliateId(properties.getAffiliateId())
-					.setFunction("get")
-					.setParameters(new KvQuery.SongGet().setId(songId));
+		KvQuery<KvQuery.SongGet> query = new KvQuery<KvQuery.SongGet>()
+				.setAffiliateId(properties.getAffiliateId())
+				.setFunction("get")
+				.setParameters(new KvQuery.SongGet().setId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
-					.path("/song/")
-					.queryParam("query", jsonMapper.writeValueAsString(query));
-
-			KvSongResponse response = restClient.get()
-					.uri(builder.build().encode().toUri())
-					.retrieve()
-					.body(KvSongResponse.class);
-			return conversionService.convert(response.getSong(), CatalogSong.class);
-
-		} catch (JacksonException | RestClientException e) {
-			throw new TechnicalException(e);
-		}
+		KvSongResponse response = callApi(locale, "/song/", query, KvSongResponse.class);
+		return conversionService.convert(response.getSong(), CatalogSong.class);
 	}
 
 	@Override
@@ -137,49 +152,37 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable
 	public CatalogSongList getSongList(CatalogSongListType type, String filter, Integer limit, Long offset, Locale locale) {
-		try {
-			String path;
-			KvQuery<?> query;
-			switch (type) {
-			case query:
-				if (StringUtils.hasText(filter)) {
-					path = "/search/";
-					query = new KvQuery<KvQuery.SearchSong>()
-							.setAffiliateId(properties.getAffiliateId())
-							.setFunction("song")
-							.setParameters(new KvQuery.SearchSong().setQuery(filter).setLimit(limit).setOffset(offset));
-				} else {
-					path = "/song/";
-					query = new KvQuery<KvQuery.SongList>()
-							.setAffiliateId(properties.getAffiliateId())
-							.setFunction("list")
-							.setParameters(new KvQuery.SongList().setLimit(limit).setOffset(offset));
-				}
-				break;
-			case artist:
+		String path;
+		KvQuery<?> query;
+		switch (type) {
+		case query:
+			if (StringUtils.hasText(filter)) {
+				path = "/search/";
+				query = new KvQuery<KvQuery.SearchSong>()
+						.setAffiliateId(properties.getAffiliateId())
+						.setFunction("song")
+						.setParameters(new KvQuery.SearchSong().setQuery(filter).setLimit(limit).setOffset(offset));
+			} else {
 				path = "/song/";
 				query = new KvQuery<KvQuery.SongList>()
 						.setAffiliateId(properties.getAffiliateId())
 						.setFunction("list")
-						.setParameters(new KvQuery.SongList().setArtistId(Arrays.asList(Long.valueOf(filter))).setLimit(limit).setOffset(offset));
-				break;
-			default:
-				throw new UnsupportedOperationException("Unsupported song list type '" + type + "'");
+						.setParameters(new KvQuery.SongList().setLimit(limit).setOffset(offset));
 			}
-
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
-					.path(path)
-					.queryParam("query", jsonMapper.writeValueAsString(query));
-
-			KvSongList response = restClient.get()
-					.uri(builder.build().encode().toUri())
-					.retrieve()
-					.body(KvSongList.class);
-			return conversionService.convert(response, CatalogSongList.class).setType(type);
-
-		} catch (JacksonException | RestClientException e) {
-			throw new TechnicalException(e);
+			break;
+		case artist:
+			path = "/song/";
+			query = new KvQuery<KvQuery.SongList>()
+					.setAffiliateId(properties.getAffiliateId())
+					.setFunction("list")
+					.setParameters(new KvQuery.SongList().setArtistId(Arrays.asList(Long.valueOf(filter))).setLimit(limit).setOffset(offset));
+			break;
+		default:
+			throw new UnsupportedOperationException("Unsupported song list type '" + type + "'");
 		}
+
+		KvSongList response = callApi(locale, path, query, KvSongList.class);
+		return conversionService.convert(response, CatalogSongList.class).setType(type);
 	}
 
 	@Override
@@ -191,25 +194,13 @@ public class KvCatalogServiceImpl implements CatalogService {
 	@Override
 	@Cacheable
 	public CatalogSongFileList getSongFileList(long songId, Locale locale) {
-		try {
-			KvQuery<KvQuery.SongFileList> query = new KvQuery<KvQuery.SongFileList>()
-					.setAffiliateId(properties.getAffiliateId())
-					.setFunction("list")
-					.setParameters(new KvQuery.SongFileList().setSongId(songId));
+		KvQuery<KvQuery.SongFileList> query = new KvQuery<KvQuery.SongFileList>()
+				.setAffiliateId(properties.getAffiliateId())
+				.setFunction("list")
+				.setParameters(new KvQuery.SongFileList().setSongId(songId));
 
-			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getEndpoint(locale))
-					.path("/songfile/")
-					.queryParam("query", jsonMapper.writeValueAsString(query));
-
-			KvSongFileList response = restClient.get()
-					.uri(builder.build().encode().toUri())
-					.retrieve()
-					.body(KvSongFileList.class);
-			return conversionService.convert(response, CatalogSongFileList.class);
-
-		} catch (JacksonException | RestClientException e) {
-			throw new TechnicalException(e);
-		}
+		KvSongFileList response = callApi(locale, "/songfile/", query, KvSongFileList.class);
+		return conversionService.convert(response, CatalogSongFileList.class);
 	}
 
 	@Override

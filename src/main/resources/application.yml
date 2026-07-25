@@ -85,6 +85,38 @@ management:
 otel:
   sdk:
     disabled: true
+resilience4j:
+  bulkhead:
+    configs:
+      default:
+        max-concurrent-calls: 1
+        max-wait-duration: 1s
+    instances:
+      karafun:
+        base-config: default
+      kv:
+        base-config: default
+  ratelimiter:
+    configs:
+      default:
+        limit-for-period: 1
+        limit-refresh-period: 50ms
+        timeout-duration: 1s
+    instances:
+      karafun:
+        base-config: default
+      kv:
+        base-config: default
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 100ms
+    instances:
+      karafun:
+        base-config: default
+      kv:
+        base-config: default
 karaplan:
   karafun:
     remote:

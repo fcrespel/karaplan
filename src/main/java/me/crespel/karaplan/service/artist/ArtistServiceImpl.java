@@ -1,5 +1,6 @@
 package me.crespel.karaplan.service.artist;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,9 +54,15 @@ public class ArtistServiceImpl implements ArtistService {
 	@Override
 	@Transactional(readOnly = true)
 	public Optional<Artist> findByCatalogId(Long catalogId) {
+		return findByCatalogId(catalogId, null);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<Artist> findByCatalogId(Long catalogId, Locale locale) {
 		Optional<Artist> artist = artistRepo.findByCatalogId(catalogId);
 		if (!artist.isPresent()) {
-			artist = Optional.ofNullable(conversionService.convert(catalogService.getArtist(catalogId), Artist.class));
+			artist = Optional.ofNullable(conversionService.convert(catalogService.getArtist(catalogId, locale), Artist.class));
 		}
 		return artist;
 	}

@@ -89,8 +89,10 @@ public class SongServiceImpl implements SongService {
 	@Transactional(readOnly = true)
 	public Optional<Song> findByCatalogId(Long catalogId, Locale locale) {
 		Optional<Song> localSong = songRepo.findByCatalogId(catalogId);
-		Optional<Song> catalogSong = Optional.ofNullable(conversionService.convert(catalogService.getSong(catalogId, locale), Song.class));
-		return mergeSongs(localSong, catalogSong);
+		CatalogSong catalogSong = catalogService.getSong(catalogId, locale);
+		Optional<Song> remoteSong = Optional.ofNullable(conversionService.convert(catalogSong, Song.class))
+				.map(s -> s.setArtist(artistService.findByCatalogId(catalogSong.getArtist().getId(), locale).orElse(null)));
+		return mergeSongs(localSong, remoteSong);
 	}
 
 	@Override
@@ -108,7 +110,8 @@ public class SongServiceImpl implements SongService {
 		if (catalogSongList.getSongs() != null) {
 			// Convert catalog songs
 			Set<Song> catalogSongs = catalogSongList.getSongs().stream()
-					.map(it -> conversionService.convert(it, Song.class))
+					.map(it -> conversionService.convert(it, Song.class)
+							.setArtist(artistService.findByCatalogId(it.getArtist().getId(), locale).orElse(null)))
 					.collect(Collectors.toCollection(LinkedHashSet::new));
 
 			// Find all catalog IDs
@@ -244,8 +247,7 @@ public class SongServiceImpl implements SongService {
 					.setDuration(source.getDuration())
 					.setYear(source.getYear())
 					.setImage(source.getImg())
-					.setRights(source.getRights())
-					.setArtist(artistService.findByCatalogId(source.getArtist().getId()).orElse(null));
+					.setRights(source.getRights());
 			if (source.getStyles() != null) {
 				song.setStyles(source.getStyles().stream()
 						.map(it -> conversionService.convert(it, Style.class))

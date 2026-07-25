@@ -27,11 +27,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.hash.Hashing;
 
+import io.github.resilience4j.springboot.bulkhead.autoconfigure.BulkheadAutoConfiguration;
+import io.github.resilience4j.springboot.ratelimiter.autoconfigure.RateLimiterAutoConfiguration;
+import io.github.resilience4j.springboot.retry.autoconfigure.RetryAutoConfiguration;
 import me.crespel.karaplan.config.KarafunWebConfig;
 import me.crespel.karaplan.config.KarafunWebConfig.KarafunWebProperties;
 
 @RestClientTest(KarafunWebCatalogServiceImpl.class)
-@ContextConfiguration(classes = { KarafunWebCatalogServiceImpl.class, KarafunWebConfig.class })
+@ContextConfiguration(classes = { KarafunWebCatalogServiceImpl.class, KarafunWebConfig.class, RetryAutoConfiguration.class, RateLimiterAutoConfiguration.class, BulkheadAutoConfiguration.class })
 public class KarafunWebCatalogServiceImplTest extends AbstractCatalogServiceTest<KarafunWebCatalogServiceImpl> {
 
 	@Autowired
