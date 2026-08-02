@@ -20,8 +20,8 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
-import io.opentelemetry.instrumentation.spring.security.config.v6_0.EnduserAttributesCapturer;
-import io.opentelemetry.instrumentation.spring.security.config.v6_0.servlet.EnduserAttributesHttpSecurityCustomizer;
+import io.opentelemetry.instrumentation.spring.security.config.v6_0.UserAttributesCapturer;
+import io.opentelemetry.instrumentation.spring.security.config.v6_0.servlet.UserAttributesHttpSecurityCustomizer;
 import me.crespel.karaplan.security.OAuth2UserServiceWrapper;
 import me.crespel.karaplan.security.OidcUserServiceWrapper;
 import me.crespel.karaplan.service.UserService;
@@ -60,9 +60,9 @@ public class SecurityConfig {
 				.defaultAuthenticationEntryPointFor(new BearerTokenAuthenticationEntryPoint(), PathPatternRequestMatcher.pathPattern("/api/**")));
 
 		if (otelEndUserIdEnabled) {
-			EnduserAttributesCapturer capturer = new EnduserAttributesCapturer();
-			capturer.setEnduserIdEnabled(true);
-			new EnduserAttributesHttpSecurityCustomizer(capturer).customize(http);
+			UserAttributesCapturer capturer = new UserAttributesCapturer();
+			capturer.setNameEnabled(true);
+			new UserAttributesHttpSecurityCustomizer(capturer).customize(http);
 		}
 
 		return http.build();
