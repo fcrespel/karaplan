@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { Component, OnInit, inject, model } from '@angular/core';
+import { Component, OnInit, inject, model, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -10,6 +10,7 @@ import { Playlist } from '../../models/playlist';
   selector: 'app-playlist-leave-modal',
   templateUrl: './playlist-leave-modal.component.html',
   styleUrls: ['./playlist-leave-modal.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [FormsModule, TranslatePipe]
 })
 export class PlaylistLeaveModalComponent implements OnInit {

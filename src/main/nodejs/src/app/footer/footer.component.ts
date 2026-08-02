@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { ActuatorService } from '../services/actuator.service';
   selector: 'app-footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, DatePipe, TranslatePipe]
 })
 export class FooterComponent implements OnInit, OnDestroy {

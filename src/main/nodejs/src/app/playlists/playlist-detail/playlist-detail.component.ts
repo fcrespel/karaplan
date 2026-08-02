@@ -1,5 +1,5 @@
 import { Location, NgClass } from '@angular/common';
-import { Component, OnDestroy, OnInit, Pipe, PipeTransform, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, Pipe, PipeTransform, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -46,6 +46,7 @@ export class SumDurationByUserPipe implements PipeTransform {
   selector: 'app-playlist-detail',
   templateUrl: './playlist-detail.component.html',
   styleUrls: ['./playlist-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, NgClass, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, NgbDropdownButtonItem, NgbDropdownItem, SongListComponent, DurationPipe, TranslatePipe, SumDurationByUserPipe, ZXingScannerModule]
 })
 export class PlaylistDetailComponent implements OnInit, OnDestroy {

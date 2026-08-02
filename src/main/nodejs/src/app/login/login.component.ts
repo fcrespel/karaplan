@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { AlertService } from '../services/alert.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslatePipe]
 })
 export class LoginComponent implements OnInit, OnDestroy {

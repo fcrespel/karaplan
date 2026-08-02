@@ -1,5 +1,5 @@
 import { NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -15,6 +15,7 @@ import { PlaylistLeaveModalComponent } from '../shared/playlist-leave-modal/play
   selector: 'app-playlists',
   templateUrl: './playlists.component.html',
   styleUrls: ['./playlists.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgTemplateOutlet, NgClass, DurationPipe, TranslatePipe]
 })
 export class PlaylistsComponent implements OnInit, OnDestroy {

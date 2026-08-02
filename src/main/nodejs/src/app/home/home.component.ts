@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -10,6 +10,7 @@ import { AccountService } from '../services/account.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, TranslatePipe]
 })
 export class HomeComponent implements OnInit, OnDestroy {

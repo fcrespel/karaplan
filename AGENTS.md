@@ -2,7 +2,7 @@
 
 **KaraPlan** is a Karaoke Planner web application with song search, ratings, comments, playlists and more.
 
-Backend: **Java 21 / Spring Boot 4**, frontend: **Angular 21** (served by Spring Boot). See [README.md](../README.md) and [docs/](../docs/) for full context.
+Backend: **Java 21 / Spring Boot 4**, frontend: **Angular 22** (served by Spring Boot). See [README.md](../README.md) and [docs/](../docs/) for full context.
 
 ## Build & Test
 

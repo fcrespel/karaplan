@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
@@ -11,6 +11,7 @@ import { SongListComponent } from '../../shared/song-list/song-list.component';
   selector: 'app-user-votes',
   templateUrl: './user-votes.component.html',
   styleUrls: ['./user-votes.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, SongListComponent, TranslatePipe]
 })
 export class UserVotesComponent implements OnInit, OnDestroy {

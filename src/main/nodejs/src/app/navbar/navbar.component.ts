@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgbCollapse } from '@ng-bootstrap/ng-bootstrap/collapse';
@@ -17,6 +17,7 @@ import { ActuatorService } from '../services/actuator.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   imports: [RouterLink, NgbCollapse, RouterLinkActive, NgbDropdown, NgbDropdownToggle, NgbDropdownMenu, FormsModule, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [CookieService]
 })
 export class NavbarComponent implements OnInit, OnDestroy {

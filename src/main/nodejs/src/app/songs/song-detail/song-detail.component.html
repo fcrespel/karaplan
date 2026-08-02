@@ -92,7 +92,7 @@
           <div class="card-body text-dark text-center">
             <p class="card-text" style="white-space: pre-line;">{{ songLyrics?.lyrics || ('songs.detail.lyricsNotAvailable' | translate) }}</p>
             @if (songLyrics?.url) {
-              <p class="card-text text-muted small">{{ 'songs.detail.lyricsSourceLabel' | translate }} <a href="{{ songLyrics?.url }}" target="_blank" rel="noopener noreferrer">{{ songLyrics?.source || songLyrics?.url }}</a></p>
+              <p class="card-text text-muted small">{{ 'songs.detail.lyricsSourceLabel' | translate }} <a href="{{ songLyrics.url }}" target="_blank" rel="noopener noreferrer">{{ songLyrics.source || songLyrics.url }}</a></p>
             }
             @if (song.rights) {
               <p class="card-text text-muted small">{{ song.rights }}</p>

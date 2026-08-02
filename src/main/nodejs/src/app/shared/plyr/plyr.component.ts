@@ -1,9 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, SimpleChanges, input, output, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, SimpleChanges, input, output, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import * as Plyr from 'plyr';
 
 @Component({
   selector: 'app-plyr, [plyr]',
   templateUrl: './plyr.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./plyr.component.css']
 })
 export class PlyrComponent implements AfterViewInit, OnChanges, OnDestroy {

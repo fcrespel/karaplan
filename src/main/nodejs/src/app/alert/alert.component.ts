@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 import { AlertMessage } from '../models/alert-message';
 import { AlertService } from '../services/alert.service';
@@ -7,6 +7,7 @@ import { AlertService } from '../services/alert.service';
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [NgbToast]
 })
 export class AlertComponent {

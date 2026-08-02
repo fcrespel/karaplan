@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -22,6 +22,7 @@ import { SongListComponent } from '../../shared/song-list/song-list.component';
   selector: 'app-song-detail',
   templateUrl: './song-detail.component.html',
   styleUrls: ['./song-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, SongActionsComponent, PlyrComponent, FormsModule, SongListComponent, DurationPipe, TranslatePipe]
 })
 export class SongDetailComponent implements OnInit, OnDestroy {

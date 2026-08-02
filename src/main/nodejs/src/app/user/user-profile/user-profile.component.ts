@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +14,7 @@ import { AlertService } from '../../services/alert.service';
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, FormsModule, TranslatePipe]
 })
 export class UserProfileComponent implements OnInit, OnDestroy {

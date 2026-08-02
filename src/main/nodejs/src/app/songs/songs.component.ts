@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { SongSelectionsComponent } from '../shared/song-selections/song-selectio
   selector: 'app-songs',
   templateUrl: './songs.component.html',
   styleUrls: ['./songs.component.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [RouterLink, FormsModule, SongSelectionsComponent, SongListComponent, TranslatePipe]
 })
 export class SongsComponent implements OnInit, OnDestroy {
