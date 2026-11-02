@@ -20,7 +20,7 @@
     "@angular/platform-browser": "^22.2.4",
     "@angular/platform-browser-dynamic": "^22.2.4",
     "@angular/router": "^22.2.4",
-    "@messageformat/core": "^3.4.0",
+    "@messageformat/core": "^3.4.1",
     "@ng-bootstrap/ng-bootstrap": "^21.0.0",
     "@ngx-translate/core": "^18.0.0",
     "@ngx-translate/http-loader": "^18.0.0",
