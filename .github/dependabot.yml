@@ -28,6 +28,9 @@ updates:
       angular:
         patterns:
           - "@angular*"
+      ngx-translate:
+        patterns:
+          - "@ngx-translate*"
       testing:
         patterns:
           - "@types/jasmine"
